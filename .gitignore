@@ -23,3 +23,18 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio
+*.exp
+*.ilk
+*.pdb
+
+#folders
+
+/.build
+/git_excluded
+/third-party
+/binf
+/doxygen
+/tools/*/*.zip
+
