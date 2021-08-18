@@ -100,12 +100,12 @@ project "Benchmark"
     files { "src/benchmark/**.h", "src/benchmark/**.inl", "src/benchmark/**.cpp" }
     location ".build/Engine/Benchmark"
 
-    includedirs { "C:/Engine/third-party/googlebench/include" }
+    includedirs { "third-party/googlebench/include" }
 
     links { "Core" }
     dependson { "Core" }
 
-    libdirs { "C:/Engine/third-party/googlebench/build/src/Release" }
+    libdirs { "third-party/googlebench/build/src/Release" }
     links { "benchmark.lib" }
 
     filter "platforms:Windows"
