@@ -30,8 +30,8 @@
 #define RELEASE_ 0
 
 #define ENABLE_ASSERT 1
-#define ENABLE_FREQ_ASSERT 1
-#define ENABLE_SLOW_ASSERT 1
+#define ENABLE_FREQ_ASSERT 0
+#define ENABLE_SLOW_ASSERT 0
 #define ENABLE_ALLOC_STATS 1
 
 #else

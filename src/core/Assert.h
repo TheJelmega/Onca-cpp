@@ -13,14 +13,14 @@
 // TODO: better assert impl
 #	define FREQ_ASSERT(cond, msg) assert((cond) && (msg))
 #else
-#	define ASSERT(cond, msg)
+#	define FREQ_ASSERT(cond, msg)
 #endif
 
 #if ENABLE_SLOW_ASSERT
 // TODO: better assert impl
 #	define SLOW_ASSERT(cond, msg) assert((cond) && (msg))
 #else
-#	define ASSERT(cond, msg)
+#	define SLOW_ASSERT(cond, msg)
 #endif
 
 

@@ -40,20 +40,24 @@ namespace Core
 	auto MemRef<T>::operator=(MemRef<T>&& moved) noexcept -> MemRef<T>&
 	{
 		MemCpy(*this, moved);
-		MemClear(moved);
+		moved.m_handle = ~usize(0);
 		return *this;
 	}
 
 	template <typename T>
 	auto MemRef<T>::Ptr() noexcept -> T*
 	{
-		return m_pAlloc->TranslateToPtr(*this);
+		if (m_pAlloc) LIKELY
+			return m_pAlloc->TranslateToPtr(*this);
+		return nullptr;
 	}
 
 	template <typename T>
 	auto MemRef<T>::Ptr() const noexcept -> const T*
 	{
-		return m_pAlloc->TranslateToPtr(*this);
+		if (m_pAlloc) LIKELY
+			return m_pAlloc->TranslateToPtr(*this);
+		return nullptr;
 	}
 
 	template <typename T>
@@ -89,7 +93,7 @@ namespace Core
 	template <typename T>
 	auto MemRef<T>::IsValid() const -> bool
 	{
-		return m_handle && m_pAlloc && m_size != 0;
+		return m_handle != ~usize(0) && m_pAlloc && m_size != 0;
 	}
 
 	template <typename T>

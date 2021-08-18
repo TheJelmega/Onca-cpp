@@ -93,4 +93,22 @@ project "Unittest"
         libdirs { "third-party/googletest/build/lib/Release/" }
         links { "gtest.lib", "gtest_main.lib" }
 
+project "Benchmark"
+    kind "ConsoleApp"
+    language "C++"
+
+    files { "src/benchmark/**.h", "src/benchmark/**.inl", "src/benchmark/**.cpp" }
+    location ".build/Engine/Benchmark"
+
+    includedirs { "C:/Engine/third-party/googlebench/include" }
+
+    links { "Core" }
+    dependson { "Core" }
+
+    libdirs { "C:/Engine/third-party/googlebench/build/src/Release" }
+    links { "benchmark.lib" }
+
+    filter "platforms:Windows"
+        links { "Shlwapi.lib" }
+
 

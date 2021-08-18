@@ -11,8 +11,9 @@ namespace Core::Alloc
 		ASSERT(blockSize > sizeof(usize), "Block size needs to be larger than the size of usize");
 		ASSERT(numBlocks != 0, "Needs to have at least 1 block");
 
-		const usize mask = ~(blockAlign - 1);
-		const usize blockPadding = u16(blockAlign - (blockSize & mask));
+		const usize mask = blockAlign - 1;
+		const usize diff = blockSize & mask;
+		const usize blockPadding = diff == 0 ? diff : blockAlign - diff;
 		const usize totalBlockSize = blockSize + blockPadding;
 		const usize memSize = totalBlockSize * numBlocks;
 

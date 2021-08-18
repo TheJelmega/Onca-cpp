@@ -230,7 +230,7 @@ namespace Core
 		 * Erase a number of elements from the DynArray
 		 * \param[in] it Iterator to first element to erase
 		 * \param[in] count Number of elements to erase
-		 */		 [in]
+		 */
 		auto Erase(const Iterator& it, usize count) noexcept -> void;
 		/**
 		 * Erase a range of elements from the DynArray

@@ -12,6 +12,7 @@ namespace Core
 	 * \brief Struct that encapsulates all info for an allocation
 	 * \tparam T Underlying type
 	 */
+	// TODO: introduce pointer caching system as converting handles to pointer can be slow
 	template<typename T>
 	class MemRef
 	{
@@ -91,7 +92,7 @@ namespace Core
 
 	private:
 
-		usize              m_handle;                                  ///< Handle to allocated memory
+		usize              m_handle;                                  ///< Handle to allocated memory (~usize(0) == Invalid handle)
 		Alloc::IAllocator* m_pAlloc;                                  ///< Allocator used to allocate the allocation
 		u8                 m_log2Align : 7;                           ///< Log2 of alignment
 		bool               m_isBackingMem : 1;                        ///< Whether the memory backs an allocator

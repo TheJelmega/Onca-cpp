@@ -103,16 +103,43 @@ namespace Core
 	template <ForwardIterator It>
 	auto DynArray<T>::Assign(const It& begin, const It& end) noexcept -> void
 	{
-		for (It it = begin; it != end; ++it)
-			Add(*it);
+		if constexpr (RandomAccessIterator<It>)
+		{
+			ASSERT(begin < end, "'begin' iterator must be smaller than 'end' iterator");
+			Reserve(usize(end - begin));
+		}
+
+		if constexpr (ContiguousIterator<It> && MemCopyable<T>)
+		{
+			const usize size = usize(end - begin);
+			T* pBegin = m_mem.Ptr();
+			MemCpy(pBegin, &*begin, size * sizeof(T));
+			m_size = size; 
+		}
+		else
+		{
+			for(It it = begin; it != end; ++it)
+				InsertEnd(StdMove(T{ *it }));
+		}
 	}
+	
 
 	template <MoveConstructable T>
 	auto DynArray<T>::Assign(const InitializerList<T>& il) noexcept -> void
 	{
-		Reserve(il.size());
-		for (const T* it = il.begin(), *end = il.end(); it != end; ++it)
-			Add(*it);
+		const usize size = il.size();
+		Reserve(size);
+		if constexpr (MemCopyable<T>)
+		{
+			T* pBegin = m_mem.Ptr();
+			MemCpy(pBegin, il.begin(), size * sizeof(T));
+			m_size = size;
+		}
+		else
+		{
+			for (const T* it = il.begin(), *end = il.end(); it != end; ++it)
+				InsertEnd(StdMove(T{ *it }));
+		}
 	}
 
 	template <MoveConstructable T>
@@ -137,11 +164,13 @@ namespace Core
 		if (curCap >= newCap)
 			return;
 
-		usize cap = 2;
+		// Capacity increases in 1.5x steps to balance memory used vs number of reserves
+		// Actual results of capacity calculation may differ from other because calls to ShrinkToFit
+		usize cap = curCap == 0 ? 2 : curCap;
 		while (cap < newCap)
 			cap = (cap << 1) - (cap >> 1);
 
-		MemRef<T> mem = m_mem.Alloc()->template Allocate<T>(newCap * sizeof(T));
+		MemRef<T> mem = m_mem.Alloc()->template Allocate<T>(cap * sizeof(T));
 		if (m_mem.IsValid())
 		{
 			MemCpy(mem.Ptr(), m_mem.Ptr(), m_size * sizeof(T));
@@ -163,8 +192,9 @@ namespace Core
 		else
 		{
 			Reserve(newSize);
+			T* pBegin = m_mem.Ptr();
 			for (usize i = m_size; i < newSize; ++i)
-				Add(val);
+				new (pBegin + i) T{ val };
 		}
 		m_size = newSize;
 	}
@@ -173,17 +203,25 @@ namespace Core
 	auto DynArray<T>::Resize(usize newSize) noexcept -> void
 	{
 		STATIC_ASSERT(IsNothrowDefaultConstructable<T>, "T needs to be nothrow default constructable");
-		T* pBegin = m_mem.Ptr();
 		if (newSize < m_size)
 		{
+			T* pBegin = m_mem.Ptr();
 			for (T* it = pBegin + newSize, *end = pBegin + m_size; it != end; ++it)
 				it->~T();
 		}
 		else
 		{
 			Reserve(newSize);
-			for (T* it = pBegin + m_size, *end = pBegin + newSize; it != end; ++it)
-				new (it) T{};
+			T* pBegin = m_mem.Ptr();
+			if constexpr (IsPrimitive<T>)
+			{
+				MemClear(pBegin, (newSize - m_size) * sizeof(T));
+			}
+			else
+			{
+				for (T* it = pBegin + m_size, *end = pBegin + newSize; it != end; ++it)
+					new (it) T{};
+			}
 		}
 		m_size = newSize;
 	}
@@ -260,9 +298,6 @@ namespace Core
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
-
-		const usize endIdx = m_size;
-		m_size += count;
 
 		Iterator loc = PrepareInsert(offset, count);
 
@@ -424,28 +459,28 @@ namespace Core
 	template <MoveConstructable T>
 	auto DynArray<T>::IteratorAt(usize idx) noexcept -> Iterator
 	{
-		ASSERT(idx < m_size, "Index out of range");
+		FREQ_ASSERT(idx < m_size, "Index out of range");
 		return m_mem.Ptr() + idx;
 	}
 
 	template <MoveConstructable T>
 	auto DynArray<T>::IteratorAt(usize idx) const noexcept -> ConstIterator
 	{
-		ASSERT(idx < m_size, "Index out of range");
+		FREQ_ASSERT(idx < m_size, "Index out of range");
 		return m_mem.Ptr() + idx;
 	}
 
 	template <MoveConstructable T>
 	auto DynArray<T>::operator[](usize idx) noexcept -> T&
 	{
-		ASSERT(idx < m_size, "Index out of range");
+		FREQ_ASSERT(idx < m_size, "Index out of range");
 		return *(m_mem.Ptr() + idx);
 	}
 
 	template <MoveConstructable T>
 	auto DynArray<T>::operator[](usize idx) const noexcept -> const T&
 	{
-		ASSERT(idx < m_size, "Index out of range");
+		FREQ_ASSERT(idx < m_size, "Index out of range");
 		return *(m_mem.Ptr() + idx);
 	}
 
@@ -639,6 +674,7 @@ namespace Core
 		const usize idx = m_size++;
 		Reserve(m_size);
 		T* loc = m_mem.Ptr() + idx;
+		//T* loc = reinterpret_cast<T*>(m_mem.GetRawHandle()) + idx;
 		new (loc) T{ StdMove(val) };
 		return loc;
 	}

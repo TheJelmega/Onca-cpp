@@ -7,7 +7,7 @@ auto main(int argc, char* argv[]) -> int
 {
 	Core::Alloc::Mallocator mallocator;
 
-	Core::Alloc::ExpandableArena<Core::Alloc::StackAllocator, usize, u16> expandableArena{ &mallocator, 64, 8 };
+	Core::Alloc::PoolAllocator alloc{ &mallocator, 8, 1024, 1 };
 
 	//Core::MemRef<u8> mem = expandableArena.Allocate<u8>();
 	
