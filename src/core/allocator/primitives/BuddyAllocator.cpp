@@ -23,6 +23,8 @@ namespace Core::Alloc
 
 		const auto [sizeClass, sizeClassBlockSize] = CalculateSizeClassAndBlockSize(size);
 
+		Threading::Lock lock{ m_mutex };
+
 		const usize divIdx = GetSubIdx(pManagementInfo, sizeClass, 0, 0);
 		if (divIdx == usize(-1))
 			return MemRef<u8>{ nullptr };
@@ -43,6 +45,8 @@ namespace Core::Alloc
 
 		const usize offset = mem.GetRawHandle() / sizeClassBlockSize;
 		const usize divIdx = sizeClass == 0 ? 0 : (1ull << sizeClass) - 1 + offset;
+
+		Threading::Lock lock{ m_mutex };
 
 		Unmark(pManagementInfo, divIdx);
 	}
