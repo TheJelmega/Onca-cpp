@@ -6,10 +6,13 @@
 auto main(int argc, char* argv[]) -> int
 {
 	Core::Alloc::Mallocator mallocator;
+	Core::Alloc::BuddyAllocator alloc{ &mallocator, 256, 4 };
+	/*for (usize i = 256; i < 1024; i += 256)
+	{
+		auto mem = alloc.Allocate<u8>(i);
+		alloc.Deallocate(StdMove(mem));
+	}*/
 
-	Core::Alloc::PoolAllocator alloc{ &mallocator, 8, 1024, 1 };
-
-	//Core::MemRef<u8> mem = expandableArena.Allocate<u8>();
-	
-	std::cout << "Hello world";
+	auto mem0 = alloc.Allocate<u8>(256);
+	alloc.Deallocate(StdMove(mem0));
 }

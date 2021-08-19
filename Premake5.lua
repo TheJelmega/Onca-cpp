@@ -108,6 +108,9 @@ project "Benchmark"
     libdirs { "third-party/googlebench/build/src/Release" }
     links { "benchmark.lib" }
 
+    filter "configurations:Debug"
+        kind "None"
+
     filter "platforms:Windows"
         links { "Shlwapi.lib" }
 

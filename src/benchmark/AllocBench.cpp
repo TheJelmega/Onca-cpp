@@ -58,4 +58,45 @@ BENCHMARK(PoolAllocatorBench)
 	->DenseRange(256, 1024, 256)
 	->Complexity();
 
+auto SmallBlockBitmapAllocatorBench(benchmark::State& state) -> void
+{
+	Core::Alloc::Mallocator mallocator;
+	Core::Alloc::BitmapAllocator alloc{ &mallocator, 32, 32 };
+	for (auto _ : state)
+	{
+		auto mem = alloc.Allocate<u8>(state.range(0));
+		alloc.Deallocate(StdMove(mem));
+	}
+}
+BENCHMARK(SmallBlockBitmapAllocatorBench)
+	->DenseRange(256, 1024, 256)
+	->Complexity();
+
+auto LargeBlockBitmapAllocatorBench(benchmark::State& state) -> void
+{
+	Core::Alloc::Mallocator mallocator;
+	Core::Alloc::BitmapAllocator alloc{ &mallocator, 256, 4 };
+	for (auto _ : state)
+	{
+		auto mem = alloc.Allocate<u8>(state.range(0));
+		alloc.Deallocate(StdMove(mem));
+	}
+}
+BENCHMARK(LargeBlockBitmapAllocatorBench)
+	->DenseRange(256, 1024, 256)
+	->Complexity();
+
+auto BuddyAllocatorBench(benchmark::State& state) -> void
+{
+	Core::Alloc::Mallocator mallocator;
+	Core::Alloc::BuddyAllocator alloc{ &mallocator, 1024, 2 };
+	for (auto _ : state)
+	{
+		auto mem = alloc.Allocate<u8>(state.range(0));
+		alloc.Deallocate(StdMove(mem));
+	}
+}
+BENCHMARK(BuddyAllocatorBench)
+	->DenseRange(256, 1024, 256)
+	->Complexity();
 #endif

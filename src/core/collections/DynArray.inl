@@ -258,8 +258,16 @@ namespace Core
 	auto DynArray<T>::Add(const DynArray<T>& other) -> void
 	{
 		Reserve(m_size + other.m_size);
-		for (const T& val : other)
-			InsertEnd(StdMove(T{ val }));
+		if constexpr (MemCopyable<T>)
+		{
+			MemCpy(m_mem.Ptr() + m_size, other.m_mem.Ptr(), other.m_size);
+			m_size += other.m_size;
+		}
+		else
+		{
+			for (const T& val : other)
+				InsertEnd(StdMove(T{ val }));
+		}
 	}
 
 	template <MoveConstructable T>
@@ -391,7 +399,9 @@ namespace Core
 	template <MoveConstructable T>
 	auto DynArray<T>::Pop() noexcept -> void
 	{
+		ASSERT(m_size, "Cannot pop from an empty DynArray");
 		--m_size;
+		(m_mem.Ptr() + m_size)->~T();
 	}
 
 	template <MoveConstructable T>
@@ -409,6 +419,10 @@ namespace Core
 		const usize maxCount = m_size - offset;
 		count = maxCount < count ? maxCount : count;
 		const usize moveSize = maxCount - count;
+
+		T* eraseIt = it;
+		for (usize i = 0; i < count; ++i, ++eraseIt)
+			eraseIt->~T();
 
 		if (moveSize)
 			MemMove(it, it + count, moveSize * sizeof(T));

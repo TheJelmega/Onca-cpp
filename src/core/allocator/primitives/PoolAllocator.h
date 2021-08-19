@@ -5,7 +5,7 @@
 namespace Core::Alloc
 {
 	/**
-	 * \brief An allocators that allocated memory from fixed-size block in the allocator
+	 * An allocator that allocates memory from fixed-size block in the allocator
 	 */
 	class CORE_API PoolAllocator final : public IAllocator
 	{

@@ -18,7 +18,9 @@
 #include "allocator/primitives/StackAllocator.h"
 #include "allocator/primitives/PoolAllocator.h"
 #include "allocator/primitives/BitmapAllocator.h"
+#include "allocator/primitives/BuddyAllocator.h"
 #include "allocator/composable/ExpandableArena.h"
+#include "allocator/composable/FallbackArena.h"
 
 #include "collections/DynArray.h"
 

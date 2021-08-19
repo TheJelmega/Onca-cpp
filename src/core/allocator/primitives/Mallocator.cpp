@@ -1,6 +1,8 @@
 #include "Mallocator.h"
 #include <cstdlib>
 
+#pragma optimize("", off)
+
 namespace Core::Alloc
 {
 	Mallocator::~Mallocator() noexcept
@@ -27,7 +29,7 @@ namespace Core::Alloc
 		}
 		else
 		{
-			alignedPtr[-1] = u8(diff) & 0x80;
+			alignedPtr[-1] = (u8(diff) & 0x7F) | 0x80;
 			alignedPtr[-2] = u8(diff >> 7);
 		}
 
@@ -44,7 +46,7 @@ namespace Core::Alloc
 		usize offset = ptr[-1];
 		if (offset & 0x80)
 		{
-			offset &= 0xFF;
+			offset &= 0x7F;
 			offset |= usize(ptr[-2]) << 7;
 		}
 

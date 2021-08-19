@@ -5,7 +5,7 @@
 namespace Core::Alloc
 {
 	BitmapAllocator::BitmapAllocator(IAllocator* pBackingAlloc, usize blockSize, usize numBlocks) noexcept
-		: m_mem(pBackingAlloc->Allocate<u8>(CalcReqMemSize(blockSize, numBlocks), u16(blockSize > 0xFFFF ? 0xFFFF : blockSize), true))
+		: m_mem(pBackingAlloc->Allocate<u8>(CalcReqMemSize(blockSize, numBlocks), u16(blockSize > 0x8000 ? 0x8000 : blockSize), true))
 		, m_blockSize(blockSize)
 		, m_numBlocks(numBlocks)
 	{
@@ -25,7 +25,7 @@ namespace Core::Alloc
 		ASSERT(align < m_blockSize, "Alignment cannot be greater than blocksize");
 		Threading::Lock lock{m_mutex};
 		
-		const u8* pManagmentInfo = m_mem.Ptr();
+		const u8* pManagementInfo = m_mem.Ptr();
 		const usize blocksNeeded = (size + m_blockSize - 1) / m_blockSize;
 		
 		for (usize i = 0; i < m_numBlocks; ++i)
@@ -39,7 +39,7 @@ namespace Core::Alloc
 				const u8 curBlockShift = u8(numBlocks >= 8 ? 0 : 8 - numBlocks);
 				u8 searchMask = u8(0xFF << curBlockShift) >> startBit;
 
-				if (pManagmentInfo[byteIdx] & searchMask)
+				if (pManagementInfo[byteIdx] & searchMask)
 					break;
 
 				++byteIdx;
@@ -86,14 +86,14 @@ namespace Core::Alloc
 
 	auto BitmapAllocator::CalcReqMemSize(usize blockSize, usize numBlocks) noexcept -> usize
 	{
-		const usize numManagmentBytes = numBlocks / 8;
+		const usize numManagmentBytes = (numBlocks + 7) / 8;
 		const usize numManagmentBlocks = (numManagmentBytes + blockSize - 1) / blockSize;
 		return blockSize * (numBlocks + numManagmentBlocks);
 	}
 
 	auto BitmapAllocator::MarkBits(usize startIdx, usize numBlocks, bool set) noexcept -> void
 	{
-		u8* pManagmentInfo = m_mem.Ptr();
+		u8* pManagementInfo = m_mem.Ptr();
 
 		const u8 firstByteOffset = startIdx & 0x07;
 		if (firstByteOffset)
@@ -106,8 +106,8 @@ namespace Core::Alloc
 			mask >>= firstByteOffset;
 
 			const usize byteIdx = startIdx / 8;
-			u8 curVal = pManagmentInfo[byteIdx];
-			pManagmentInfo[byteIdx] = set ? curVal | mask : curVal & ~mask;
+			u8 curVal = pManagementInfo[byteIdx];
+			pManagementInfo[byteIdx] = set ? curVal | mask : curVal & ~mask;
 			startIdx += 8 - firstByteOffset;
 		}
 
@@ -118,8 +118,8 @@ namespace Core::Alloc
 			u8 mask = u8(0xFF) << curBlockShift;
 
 			const usize byteIdx = i / 8;
-			u8 curVal = pManagmentInfo[byteIdx];
-			pManagmentInfo[byteIdx] = set ? curVal | mask : curVal & ~mask;
+			u8 curVal = pManagementInfo[byteIdx];
+			pManagementInfo[byteIdx] = set ? curVal | mask : curVal & ~mask;
 		}
 	}
 }

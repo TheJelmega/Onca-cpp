@@ -150,7 +150,7 @@ namespace Core
 		auto operator^=(T val) noexcept -> T;
 
 	private:
-		std::atomic<T> m_atomic; ///< Wrapped atomicwww
+		std::atomic<T> m_atomic; ///< Wrapped atomic
 	};
 }
 
