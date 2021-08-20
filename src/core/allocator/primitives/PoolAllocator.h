@@ -5,7 +5,19 @@
 namespace Core::Alloc
 {
 	/**
-	 * An allocator that allocates memory from fixed-size block in the allocator
+	 * \brief An allocator that allocates memory from fixed-size block in the allocator
+	 *
+	 * A pool allocator manages a chunk of memory as a pool of blocks, which can be given out or returned at any moment.
+	 * Each block's size is required to be a power of 2, as the size of the blocks also defines the maximum alignment of an allocation.
+	 * Each allocation is limited to the size of a single block, this help avoid the need for defragmentation and avoids additional overhead to manage the allocations.
+	 *
+	 *     used     used     free     used     used     free     free
+	 *     v        v        v        v        v        v        v
+	 * +--------+--------+--------+--------+--------+--------+--------+
+	 * |506F6F6C|29416C6C|????????|6F636174|6F720000|????????|????????|
+	 * +--------+--------+--------+--------+--------+--------+--------+
+	 *
+	 * \note This allocator needs no defragmentation as all blocks can always be used
 	 */
 	class CORE_API PoolAllocator final : public IAllocator
 	{

@@ -6,6 +6,17 @@ namespace Core::Alloc
 {
 	/**
 	 * \brief An allocator that uses a bitmap to keep track of allocations
+	 *
+	 * A bitmap allocator manages a chunk of memory as a blocks, similar to a pool allocator, but a single allocation can consist of multiple blocks,
+	 * The blocks that are used by allocations are managed by a bitmap.
+	 *
+	 * Each block's size is required to be a power of 2, as the size of the blocks also defines the maximum alignment of an allocation.
+	 *
+	 *     alloc 1  alloc 2  free     alloc 3  alloc 3  free     free
+	 *     v        v        v        v        v        v        v
+	 * +--------+--------+--------+--------+--------+--------+--------+
+	 * |4269746D|61702041|????????|6C6C6F63|61746F72|????????|????????|
+	 * +--------+--------+--------+--------+--------+--------+--------+
 	 */
 	class CORE_API BitmapAllocator final : public IAllocator
 	{

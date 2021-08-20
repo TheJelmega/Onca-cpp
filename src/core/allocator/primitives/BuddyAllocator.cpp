@@ -10,7 +10,7 @@ namespace Core::Alloc
 		ASSERT(IsPowOf2(size), "A buddy allocator requires a size that is a power of 2");
 		const usize minAlign = size >> maxSubDivisions;
 		const u16 align = minAlign > 0x8000 ? 0x8000 : u16(minAlign);
-		m_managmentSize = CalculateManagementSize(maxSubDivisions);
+		m_managmentSize = CalculateManagementSize(maxSubDivisions, size);
 		m_mem = pBackingAlloc->Allocate<u8>(size + m_managmentSize, align, true);
 		MemClear(m_mem.Ptr(), m_managmentSize);
 	}
@@ -56,10 +56,13 @@ namespace Core::Alloc
 		return m_mem.Ptr() + m_managmentSize + mem.GetRawHandle();
 	}
 
-	auto BuddyAllocator::CalculateManagementSize(u8 numDivisions) noexcept -> usize
+	auto BuddyAllocator::CalculateManagementSize(u8 numDivisions, usize size) noexcept -> usize
 	{
 		const usize numFlags = (1ull << (numDivisions + 1)) - 1;
-		return (numFlags + 3) / 4;
+		const usize numManagmentBytes = (numFlags + 3) / 4;
+		const usize smallestBlockSize = size << numDivisions;
+		const usize numBlocks = (numManagmentBytes + smallestBlockSize - 1) / smallestBlockSize;
+		return numBlocks * smallestBlockSize;
 	}
 
 	auto BuddyAllocator::CalculateSizeClassAndBlockSize(usize size) noexcept -> Tuple<usize, usize>
@@ -79,7 +82,11 @@ namespace Core::Alloc
 
 		usize newDivIdx = curDivIdx * 2 + 1;
 		if (!isLastStep && (flag == FreeFlag || flag == SplitFlag))
-			return GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx);
+		{
+			usize idx = GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx);
+			if (idx != usize(-1))
+				return idx;
+		}
 
 		++newDivIdx;
 		flag = GetDivFlag(pManagementInfo, curDivIdx + 1);
@@ -87,7 +94,11 @@ namespace Core::Alloc
 			return curDivIdx + 1;
 
 		if (!isLastStep && (flag == FreeFlag || flag == SplitFlag))
-			return GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx);
+		{
+			usize idx = GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx);
+			if (idx != usize(-1))
+				return idx;
+		}
 
 		return usize(-1);
 	}
