@@ -20,7 +20,7 @@ namespace Core::Alloc
 	 */
 	template<typename Alloc, typename ...AllocArgs>
 		requires ExtendableAlloc<Alloc, AllocArgs...>
-	class ExpandableArena : public IAllocator
+	class ExpandableArena final : public IAllocator
 	{
 	public:
 		ExpandableArena(IAllocator* expandAlloc, AllocArgs&&... allocArgs);

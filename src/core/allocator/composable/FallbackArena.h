@@ -4,7 +4,7 @@
 namespace Core::Alloc
 {
 	template<typename MainAlloc, typename FallbackAlloc>
-	class FallbackArena : public IAllocator
+	class FallbackArena final : public IAllocator
 	{
 	public:
 		FallbackArena(MainAlloc&& main, FallbackAlloc&& fallback);

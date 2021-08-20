@@ -28,7 +28,7 @@ namespace Core::Alloc
 	 *
 	 *
 	 */
-	class CORE_API BuddyAllocator : public IAllocator
+	class CORE_API BuddyAllocator final : public IAllocator
 	{
 	private:
 		static constexpr u8 FreeFlag  = 0x00;
