@@ -20,14 +20,15 @@ namespace Core::Alloc
 		m_mem = pBackingAlloc->Allocate<u8>(memSize, blockAlign, true);
 
 		// Setup free blocks
-		usize* pBegin = reinterpret_cast<usize*>(m_mem.Ptr());
+		u8* pBegin = m_mem.Ptr();
 
 		for (usize i = 0; i < memSize;)
 		{
 			usize next = i + m_blockSize;
-			*(pBegin + i) = next;
+			*reinterpret_cast<usize*>(pBegin + i) = next;
 			i = next;
 		}
+		*reinterpret_cast<usize*>(pBegin + memSize - m_blockSize) = usize(-1);
 
 #if ENABLE_ALLOC_STATS
 		m_blockPadding = u16(blockPadding);
@@ -64,7 +65,7 @@ namespace Core::Alloc
 			if (handle >= m_mem.Size()) UNLIKELY
 				return MemRef<u8>{ nullptr };
 
-			next = *(pMem + handle);
+			next = *reinterpret_cast<usize*>(pMem + handle);
 		}
 		while (!m_head.CompareExchangeWeak(handle, next));
 

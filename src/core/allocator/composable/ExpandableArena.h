@@ -5,6 +5,11 @@
 
 namespace Core::Alloc
 {
+	/**
+	 * An interface defining the requirements an allocator needs to be able to be used in an expandable allocator
+	 * \tparam T Type to constrain
+	 * \tparam Args Argument types for allocator ctor
+	 */
 	template<typename T, typename ...Args>
 	concept ExtendableAlloc = requires(IAllocator* alloc, Args... args)
 	{
@@ -14,7 +19,8 @@ namespace Core::Alloc
 	};
 
 	/**
-	 * An arena encapsulating a number of dynamic allocators to satisfy a certain amount of space
+	 * An expandable arena managed a set of allocators and allows the creation of additional allocators when the current ones run out of space
+	 *
 	 * \tparam Alloc Allocator to use
 	 * \tparam AllocArgs Types of allocation arguments
 	 */
@@ -23,6 +29,11 @@ namespace Core::Alloc
 	class ExpandableArena final : public IAllocator
 	{
 	public:
+		/**
+		 * Create an expandable allocator
+		 * \param expandAlloc Backing allocator used to expand size
+		 * \param allocArgs Arguments for sub allocators
+		 */
 		ExpandableArena(IAllocator* expandAlloc, AllocArgs&&... allocArgs);
 
 	protected:

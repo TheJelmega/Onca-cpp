@@ -3,6 +3,11 @@
 
 namespace Core::Alloc
 {
+	/**
+	 * An allocator that can fallback to another allocator if the main allcoator fails to allocate
+	 * \tparam MainAlloc Main allocator type
+	 * \tparam FallbackAlloc Allocator type to use when the main allocator is out of memory
+	 */
 	template<typename MainAlloc, typename FallbackAlloc>
 	class FallbackArena final : public IAllocator
 	{

@@ -20,7 +20,7 @@ namespace Core::Alloc
 	 *
 	 * \note A linear allocator cannot be defragmented
 	 */
-	class LinearAllocator final : public IAllocator
+	class CORE_API LinearAllocator final : public IAllocator
 	{
 	public:
 		/**

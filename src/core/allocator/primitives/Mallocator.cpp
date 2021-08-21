@@ -37,7 +37,7 @@ namespace Core::Alloc
 		m_stats.AddAlloc(size, align, isBacking);
 #endif
 		
-		return { reinterpret_cast<usize>(alignedPtr), this, Log2(align), size };
+		return { reinterpret_cast<usize>(alignedPtr), this, Log2(align), size, isBacking };
 	}
 
 	auto Mallocator::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void

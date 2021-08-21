@@ -15,10 +15,12 @@
 
 #include "allocator/IAllocator.h"
 #include "allocator/primitives/Mallocator.h"
+#include "allocator/primitives/LinearAllocator.h"
 #include "allocator/primitives/StackAllocator.h"
 #include "allocator/primitives/PoolAllocator.h"
 #include "allocator/primitives/BitmapAllocator.h"
 #include "allocator/primitives/BuddyAllocator.h"
+#include "allocator/primitives/FreeListAllocator.h"
 #include "allocator/composable/ExpandableArena.h"
 #include "allocator/composable/FallbackArena.h"
 

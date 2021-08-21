@@ -22,7 +22,7 @@ namespace Core
 		 * \param[in] pAlloc Allocator to be used
 		 */
 		explicit MemRef(Alloc::IAllocator* pAlloc) noexcept;
-		MemRef(usize handle, Alloc::IAllocator* pAlloc, u8 log2Align, usize size, bool isBacking = false) noexcept;
+		MemRef(usize handle, Alloc::IAllocator* pAlloc, u8 log2Align, usize size, bool isBacking) noexcept;
 		
 		MemRef(MemRef<T>&& moved) noexcept;
 		auto operator=(MemRef<T>&& moved) noexcept -> MemRef<T>&;

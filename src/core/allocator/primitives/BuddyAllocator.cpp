@@ -25,7 +25,7 @@ namespace Core::Alloc
 
 		Threading::Lock lock{ m_mutex };
 
-		const usize divIdx = GetSubIdx(pManagementInfo, sizeClass, 0, 0);
+		const usize divIdx = GetIdx(pManagementInfo, sizeClass);
 		if (divIdx == usize(-1))
 			return MemRef<u8>{ nullptr };
 
@@ -33,6 +33,11 @@ namespace Core::Alloc
 		const usize memOffset = offset * sizeClassBlockSize;
 
 		Mark(pManagementInfo, divIdx);
+
+#if ENABLE_ALLOC_STATS
+		const usize overHead = sizeClassBlockSize - size;
+		m_stats.AddAlloc(size, overHead, isBacking);
+#endif
 
 		return MemRef<u8>{ memOffset, this, Log2(align), size, isBacking };
 	}
@@ -49,6 +54,11 @@ namespace Core::Alloc
 		Threading::Lock lock{ m_mutex };
 
 		Unmark(pManagementInfo, divIdx);
+
+#if ENABLE_ALLOC_STATS
+		const usize overHead = sizeClassBlockSize - mem.Size();
+		m_stats.AddAlloc(mem.Size(), overHead, mem.IsBackingMem());
+#endif
 	}
 
 	auto BuddyAllocator::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
@@ -73,14 +83,34 @@ namespace Core::Alloc
 		return { sizeClass, sizeClassBlockSize };
 	}
 
+	auto BuddyAllocator::GetIdx(u8* pManagementInfo, usize neededClass) noexcept -> usize
+	{
+		u8 flag = GetDivFlag(pManagementInfo, 0);
+		if (neededClass == 0)
+		{
+			return flag == FreeFlag ? 0 : usize(-1);
+		}
+		if (flag & UsedFlag)
+			return usize(-1);
+		
+		usize idx = GetSubIdx(pManagementInfo, neededClass, 1, 1);
+		if (idx != usize(-1))
+			return idx;
+
+		return GetSubIdx(pManagementInfo, neededClass, 1, 2);
+	}
+
 	auto BuddyAllocator::GetSubIdx(u8* pManagementInfo, usize neededClass, usize curClass, usize curDivIdx) noexcept -> usize
 	{
 		bool isLastStep = neededClass == curClass;
 		u8 flag = GetDivFlag(pManagementInfo, curDivIdx);
 		if (isLastStep && flag == FreeFlag)
 			return curDivIdx;
+		if (flag & UsedFlag)
+			return usize(-1);
 
 		usize newDivIdx = curDivIdx * 2 + 1;
+		flag = GetDivFlag(pManagementInfo, curDivIdx);
 		if (!isLastStep && (flag == FreeFlag || flag == SplitFlag))
 		{
 			usize idx = GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx);
@@ -89,7 +119,7 @@ namespace Core::Alloc
 		}
 
 		++newDivIdx;
-		flag = GetDivFlag(pManagementInfo, curDivIdx + 1);
+		flag = GetDivFlag(pManagementInfo, newDivIdx);
 		if (isLastStep && flag == FreeFlag)
 			return curDivIdx + 1;
 

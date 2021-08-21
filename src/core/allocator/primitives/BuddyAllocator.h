@@ -26,7 +26,6 @@ namespace Core::Alloc
 	 * | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 4
 	 * +----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
 	 *
-	 *
 	 */
 	class CORE_API BuddyAllocator final : public IAllocator
 	{
@@ -65,6 +64,14 @@ namespace Core::Alloc
 		 * \return Size class and block size for allocation
 		 */
 		auto CalculateSizeClassAndBlockSize(usize size) noexcept -> Tuple<usize, usize>;
+
+		/**
+		 * Get the index of a free division fitting the requested size class
+		 * \param pManagementInfo Pointer to management info
+		 * \param neededClass Size class needed for allocation
+		 * \return Index of a free division, or usize(-1) if no free division is found
+		 */
+		auto GetIdx(u8* pManagementInfo, usize neededClass) noexcept -> usize;
 
 		/**
 		 * Get the index of a free division fitting the requested size class
