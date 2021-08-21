@@ -1,6 +1,8 @@
 # Engine
 
-An early WIP version of my personal engine
+An early WIP version of my personal engine using C++20.
+
+The engine will likely switch over to C++20 modules once support in tooling has improved.
 
 # Build
 
