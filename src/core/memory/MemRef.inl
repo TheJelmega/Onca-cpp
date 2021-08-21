@@ -118,7 +118,7 @@ namespace Core
 	}
 
 	template <typename T>
-	MemRef<T>::operator bool()
+	MemRef<T>::operator bool() const noexcept
 	{
 		return IsValid();
 	}

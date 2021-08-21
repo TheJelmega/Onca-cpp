@@ -92,45 +92,37 @@ namespace Core::Alloc
 		}
 		if (flag & UsedFlag)
 			return usize(-1);
-		
-		usize idx = GetSubIdx(pManagementInfo, neededClass, 1, 1);
-		if (idx != usize(-1))
-			return idx;
 
+		auto [lFlag, rflag] = GetDivFlags(pManagementInfo, 1);
+		if (neededClass == 1)
+		{
+			if (lFlag == FreeFlag)
+				return 1;
+			if (rflag == FreeFlag)
+				return 2;
+		}
+
+		if (!(lFlag & UsedFlag))
+			return GetSubIdx(pManagementInfo, neededClass, 1, 1);
 		return GetSubIdx(pManagementInfo, neededClass, 1, 2);
 	}
 
 	auto BuddyAllocator::GetSubIdx(u8* pManagementInfo, usize neededClass, usize curClass, usize curDivIdx) noexcept -> usize
 	{
-		bool isLastStep = neededClass == curClass;
-		u8 flag = GetDivFlag(pManagementInfo, curDivIdx);
-		if (isLastStep && flag == FreeFlag)
-			return curDivIdx;
-		if (flag & UsedFlag)
-			return usize(-1);
-
 		usize newDivIdx = curDivIdx * 2 + 1;
-		flag = GetDivFlag(pManagementInfo, curDivIdx);
-		if (!isLastStep && (flag == FreeFlag || flag == SplitFlag))
+		auto [lFlag, rflag] = GetDivFlags(pManagementInfo, newDivIdx);
+
+		if (neededClass == curClass + 1)
 		{
-			usize idx = GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx);
-			if (idx != usize(-1))
-				return idx;
+			if (lFlag == FreeFlag)
+				return newDivIdx;
+			if (rflag == FreeFlag)
+				return newDivIdx + 1;
 		}
 
-		++newDivIdx;
-		flag = GetDivFlag(pManagementInfo, newDivIdx);
-		if (isLastStep && flag == FreeFlag)
-			return curDivIdx + 1;
-
-		if (!isLastStep && (flag == FreeFlag || flag == SplitFlag))
-		{
-			usize idx = GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx);
-			if (idx != usize(-1))
-				return idx;
-		}
-
-		return usize(-1);
+		if (!(lFlag & UsedFlag))
+			return GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx);
+		return GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx + 1);
 	}
 
 	auto BuddyAllocator::GetDivFlag(u8* pManagementInfo, usize divIdx) noexcept -> u8
@@ -138,6 +130,19 @@ namespace Core::Alloc
 		usize bitIdx = (3 - (divIdx & 0x3)) * 2;
 		usize byteIdx = divIdx / 4;
 		return (pManagementInfo[byteIdx] >> bitIdx) & 0x3;
+	}
+
+	auto BuddyAllocator::GetDivFlags(u8* pManagementInfo, usize divIdx) noexcept -> Tuple<u8, u8>
+	{
+		usize bitIdx = (6 - (divIdx & 0x3)) * 2;
+		usize byteIdx = divIdx / 4;
+
+		u16 data = TO_BIG_ENDIAN(*reinterpret_cast<u16*>(pManagementInfo + byteIdx));
+		u16 mask = 0x0F << bitIdx;
+		u16 flags = (data & mask);
+		flags >>= bitIdx;
+
+		return { u8(flags >> 2), u8(flags & 0x03) };
 	}
 
 	auto BuddyAllocator::SetDivFlag(u8* pManagementInfo, usize divIdx, u8 flag) noexcept -> void

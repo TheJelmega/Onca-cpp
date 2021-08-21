@@ -88,7 +88,7 @@ namespace Core
 		template<typename U>
 		auto As() const noexcept -> const MemRef<U>&;
 		
-		explicit operator bool();
+		explicit operator bool() const noexcept;
 
 		template<typename U>
 		auto operator==(const MemRef<U>& other) const noexcept -> bool;

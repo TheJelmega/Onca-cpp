@@ -58,6 +58,9 @@
 #	error Unsupported platform
 #endif
 
+// TODO: Based on architecture
+#define IS_LITTLE_ENDIAN 1
+
 /**
  * \def INL
  * Defines inline specifier
