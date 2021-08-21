@@ -90,6 +90,11 @@ namespace Core
 		
 		explicit operator bool();
 
+		template<typename U>
+		auto operator==(const MemRef<U>& other) const noexcept -> bool;
+		template<typename U>
+		auto operator!=(const MemRef<U>& other) const noexcept -> bool;
+
 	private:
 
 		usize              m_handle;                                  ///< Handle to allocated memory (~usize(0) == Invalid handle)

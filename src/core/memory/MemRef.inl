@@ -122,4 +122,19 @@ namespace Core
 	{
 		return IsValid();
 	}
+
+	template <typename T>
+	template <typename U>
+	auto MemRef<T>::operator==(const MemRef<U>& other) const noexcept -> bool
+	{
+		return m_pAlloc == other.m_pAlloc &&
+			m_handle == other.m_handle;
+	}
+
+	template <typename T>
+	template <typename U>
+	auto MemRef<T>::operator!=(const MemRef<U>& other) const noexcept -> bool
+	{
+		return !(*this == other);
+	}
 }
