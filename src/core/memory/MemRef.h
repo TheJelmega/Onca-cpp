@@ -67,11 +67,11 @@ namespace Core
 		 * Checks whether the allocation is valid
 		 * \return Whether the allocation is valid
 		 */
-		auto IsValid() const -> bool;
+		auto IsValid() const noexcept -> bool;
 		/**
 		 * Deallocates the allocation
 		 */
-		auto Dealloc() -> void;
+		auto Dealloc() noexcept -> void;
 
 		/**
 		 * \brief Cast a MemRef to use a new underlying type

@@ -33,7 +33,7 @@ namespace Core
 		, m_isBackingMem(moved.m_isBackingMem)
 		, m_size(moved.m_size)
 	{
-		MemClear(moved);
+		MemClearData(moved);
 	}
 
 	template <typename T>
@@ -91,19 +91,16 @@ namespace Core
 	}
 
 	template <typename T>
-	auto MemRef<T>::IsValid() const -> bool
+	auto MemRef<T>::IsValid() const noexcept -> bool
 	{
 		return m_handle != ~usize(0) && m_pAlloc && m_size != 0;
 	}
 
 	template <typename T>
-	auto MemRef<T>::Dealloc() -> void
+	auto MemRef<T>::Dealloc() noexcept -> void
 	{
 		if (IsValid())
-		{
 			m_pAlloc->Deallocate(StdMove(*this));
-			MemClear(*this);
-		}
 	}
 
 	template <typename T>

@@ -18,7 +18,7 @@ namespace Core::Alloc
 	{
 		ASSERT(Owns(ref), "MemRef is not owned by allocator");
 		DeallocateRaw(ref.template As<u8>());
-		MemClear(&ref, sizeof(MemRef<T>));
+		MemClearData(ref);
 	}
 
 	template <typename T>
