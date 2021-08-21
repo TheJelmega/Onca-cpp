@@ -109,7 +109,7 @@ project "Benchmark"
     links { "benchmark.lib" }
 
     filter "configurations:Debug"
-        kind "None"
+        runtime "Release"
 
     filter "platforms:Windows"
         links { "Shlwapi.lib" }

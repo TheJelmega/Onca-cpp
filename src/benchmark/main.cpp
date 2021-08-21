@@ -1,3 +1,3 @@
-#include <benchmark/benchmark.h>
+#include "Config.h"
 
 BENCHMARK_MAIN();
