@@ -24,6 +24,7 @@
 #include "allocator/primitives/FreeListAllocator.h"
 #include "allocator/composable/ExpandableArena.h"
 #include "allocator/composable/FallbackArena.h"
+#include "allocator/composable/SegregatorArena.h"
 
 #include "collections/DynArray.h"
 
