@@ -38,7 +38,7 @@ BENCHMARK(MallocatorBench)
 auto LinearAllocatorBench(benchmark::State& state) -> void
 {
 	Core::Alloc::Mallocator mallocator;
-	Core::Alloc::LinearAllocator alloc{ &mallocator, 1024, 8 };
+	Core::Alloc::LinearAllocator<1024, 8> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
@@ -52,7 +52,7 @@ BENCHMARK(LinearAllocatorBench)
 auto StackAllocatorBench(benchmark::State& state) -> void
 {
 	Core::Alloc::Mallocator mallocator;
-	Core::Alloc::StackAllocator alloc{ &mallocator, 1024, 8 };
+	Core::Alloc::StackAllocator<1024, 8> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
@@ -195,7 +195,7 @@ auto LinearAllocatorBenchMulti(benchmark::State& state) -> void
 	MultiAllocDummy refs[128];
 
 	Core::Alloc::Mallocator mallocator;
-	Core::Alloc::LinearAllocator alloc{ &mallocator, usize(state.range(0)) * 32, 8 };
+	Core::Alloc::LinearAllocator<128 * 32, 8> alloc{ &mallocator };
 	usize count = usize(state.range(0));
 	for (auto _ : state)
 	{
@@ -215,7 +215,7 @@ auto StackAllocatorBenchMulti(benchmark::State& state) -> void
 	MultiAllocDummy refs[128];
 
 	Core::Alloc::Mallocator mallocator;
-	Core::Alloc::StackAllocator alloc{ &mallocator, usize(state.range(0)) * 32, 8 };
+	Core::Alloc::StackAllocator<128 * 32, 8> alloc{ &mallocator };
 	usize count = usize(state.range(0));
 	usize end = count - 1;
 	for (auto _ : state)

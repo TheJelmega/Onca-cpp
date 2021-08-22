@@ -17,18 +17,20 @@ namespace Core::Alloc
 	  * |537461636B20|4416C6C6F63|?????????????????
 	  * +------------+-----------+-----------------
 	  *
+	  *	\tparam Size Size of the managed memory
+	  *	\tparam MaxAlignment Maximum alignment of an allocation
+	  *
 	  * \note A linear allocator cannot be defragmented
 	  */
-	class CORE_API StackAllocator final : public IAllocator
+	template<usize Size, usize MaxAlignment>
+	class StackAllocator final : public IAllocator
 	{
 	public:
 		/**
 		 * \brief Create a stack allocator
 		 * \param[in] pBackingAlloc Allocator to create the underlying memory block
-		 * \param[in] size Size of the internal memory
-		 * \param[in] maxAlign Maximum alignment for an element
 		 */
-		explicit StackAllocator(IAllocator* pBackingAlloc, usize size, u16 maxAlign) noexcept;
+		explicit StackAllocator(IAllocator* pBackingAlloc) noexcept;
 		StackAllocator(StackAllocator&&) = default;
 		~StackAllocator() noexcept override;
 
@@ -40,6 +42,7 @@ namespace Core::Alloc
 	private:
 		MemRef<u8>  m_mem;      ///< Managed memory
 		usize       m_offset;   ///< Current location on the stack
-		const usize m_maxAlign; ///< Maximum alignment possible
 	};
 }
+
+#include "StackAllocator.inl"

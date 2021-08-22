@@ -18,18 +18,20 @@ namespace Core::Alloc
 	 * |4C696E65617229416C6C6F63|?????????????????
 	 * +------------------------+-----------------
 	 *
+	 * \tparam Size Size of the managed memory
+	 * \tparam BaseAlignment Alignment of initial offset
+	 *
 	 * \note A linear allocator cannot be defragmented
 	 */
-	class CORE_API LinearAllocator final : public IAllocator
+	template<usize Size, usize BaseAlignment>
+	class LinearAllocator final : public IAllocator
 	{
 	public:
 		/**
-		 * Create a linear allcoator
+		 * Create a linear allocator
 		 * \param pBackingAlloc Allocator to create the underlying memory block
-		 * \param size Size of the allocator
-		 * \param startAlign Start alignment for the allocator
 		 */
-		LinearAllocator(IAllocator* pBackingAlloc, usize size, u16 startAlign);
+		LinearAllocator(IAllocator* pBackingAlloc);
 		LinearAllocator(LinearAllocator&&) = default;
 		~LinearAllocator() noexcept override;
 
@@ -50,3 +52,5 @@ namespace Core::Alloc
 	};
 
 }
+
+#include "LinearAllocator.inl"
