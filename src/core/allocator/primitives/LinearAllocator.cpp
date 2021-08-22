@@ -8,6 +8,11 @@ namespace Core::Alloc
 	{
 	}
 
+	LinearAllocator::~LinearAllocator() noexcept
+	{
+		m_mem.Dealloc();
+	}
+
 	auto LinearAllocator::Reset() noexcept -> void
 	{
 		m_offset = 0;

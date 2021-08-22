@@ -17,17 +17,19 @@ namespace Core::Alloc
 	 * +--------+--------+--------+--------+--------+--------+--------+
 	 * |4269746D|61702041|????????|6C6C6F63|61746F72|????????|????????|
 	 * +--------+--------+--------+--------+--------+--------+--------+
+	 *
+	 * \tparam BlockSize Size of a block
+	 * \tparam NumBlocks Number of blocks
 	 */
-	class CORE_API BitmapAllocator final : public IAllocator
+	template<usize BlockSize, usize NumBlocks>
+	class BitmapAllocator final : public IAllocator
 	{
 	public:
 		/**
 		 * Create a bitmap allocator
 		 * \param[in] pBackingAlloc Allocator to create the underlying memory block
-		 * \param[in] blockSize Size of managed block
-		 * \param[in] numBlocks Number of blocks
 		 */
-		BitmapAllocator(IAllocator* pBackingAlloc, usize blockSize, usize numBlocks) noexcept;
+		BitmapAllocator(IAllocator* pBackingAlloc) noexcept;
 		BitmapAllocator(BitmapAllocator&&) = default;
 		~BitmapAllocator() noexcept override;
 
@@ -37,13 +39,19 @@ namespace Core::Alloc
 		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	private:
+		static constexpr auto CalcNumManagementBlocks() noexcept -> usize
+		{
+			const usize numManagmentBytes = (NumBlocks + 7) / 8;
+			return (numManagmentBytes + BlockSize - 1) / BlockSize;
+		}
 		/**
 		 * Calculate the required size for a number of block with a specific size, with additional space for the bitmap
-		 * \param[in] blockSize Size of a block
-		 * \param[in] numBlocks Number of blocks
 		 * \return Size required to store blocks and the bitmap
 		 */
-		auto CalcReqMemSize(usize blockSize, usize numBlocks) noexcept -> usize;
+		static constexpr auto CalcReqMemSize() noexcept -> usize
+		{
+			return BlockSize * (NumBlocks + CalcNumManagementBlocks());
+		}
 
 		/**
 		 * Mark bits to show the block has been used
@@ -52,11 +60,12 @@ namespace Core::Alloc
 		 * \param[in] set Whether to mark the bits as set or not
 		 */
 		auto MarkBits(usize startIdx, usize numBlocks, bool set) noexcept -> void;
+
+		static constexpr usize NumManagementBlocks = CalcNumManagementBlocks();
 	
 		MemRef<u8>       m_mem;                 ///< Managed memory
-		usize            m_blockSize;           ///< Size of a block
-		usize            m_numBlocks;           ///< Number of blocks
-		usize            m_numManagementBlocks; ///< number of block used to manage bitmap
 		Threading::Mutex m_mutex;               ///< Mutex to guard bitmap modifications
 	};
 }
+
+#include "BitmapAllocator.inl"

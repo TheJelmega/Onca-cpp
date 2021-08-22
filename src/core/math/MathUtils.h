@@ -15,7 +15,7 @@ namespace Core
 	 * \return Minimum value
 	 */
 	template<LessComparable T>
-	auto Min(T a, T b) noexcept -> T;
+	constexpr auto Min(T a, T b) noexcept -> T;
 
 	/**
 	 * \brief Get the maximum value
@@ -25,13 +25,13 @@ namespace Core
 	 * \return Maximum value
 	 */
 	template<GreaterComparable T>
-	auto Max(T a, T b) noexcept -> T;
+	constexpr auto Max(T a, T b) noexcept -> T;
 
-	INL auto IsPowOf2(u64 val) noexcept -> bool;
-	INL auto Log2(u64 val) noexcept -> u8;
-	INL auto Log2(u32 val) noexcept -> u8;
-	INL auto Log2(u16 val) noexcept -> u8;
-	INL auto Log2(u8 val) noexcept -> u8;
+	constexpr auto IsPowOf2(u64 val) noexcept -> bool;
+	constexpr auto Log2(u64 val) noexcept -> u8;
+	constexpr auto Log2(u32 val) noexcept -> u8;
+	constexpr auto Log2(u16 val) noexcept -> u8;
+	constexpr auto Log2(u8 val) noexcept -> u8;
 }
 
 #include "MathUtils.inl"

@@ -2,20 +2,25 @@
 
 namespace Core::Alloc
 {
-	BuddyAllocator::BuddyAllocator(IAllocator* pBackingAlloc, usize size, u8 maxSubDivisions)
+	template<usize Size, u8 MaxSubDivisions>
+	BuddyAllocator<Size, MaxSubDivisions>::BuddyAllocator(IAllocator* pBackingAlloc)
 		: m_mem(nullptr)
-		, m_size(size)
-		, m_maxDivisions(maxSubDivisions)
 	{
-		ASSERT(IsPowOf2(size), "A buddy allocator requires a size that is a power of 2");
-		const usize minAlign = size >> maxSubDivisions;
-		const u16 align = minAlign > 0x8000 ? 0x8000 : u16(minAlign);
-		m_managmentSize = CalculateManagementSize(maxSubDivisions, size);
-		m_mem = pBackingAlloc->Allocate<u8>(size + m_managmentSize, align, true);
-		MemClear(m_mem.Ptr(), m_managmentSize);
+		STATIC_ASSERT(IsPowOf2(Size), "A buddy allocator requires a size that is a power of 2");
+		STATIC_ASSERT(SmallestBlockSize, "MaxSubDivision is too high");
+		const u16 align = SmallestBlockSize > 0x8000 ? 0x8000 : u16(SmallestBlockSize);
+		m_mem = pBackingAlloc->Allocate<u8>(Size + ManagementSize, align, true);
+		MemClear(m_mem.Ptr(), ManagementSize);
 	}
 
-	auto BuddyAllocator::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
+	template <usize Size, u8 MaxSubDivisions>
+	BuddyAllocator<Size, MaxSubDivisions>::~BuddyAllocator() noexcept
+	{
+		m_mem.Dealloc();
+	}
+
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
 		u8* pManagementInfo = m_mem.Ptr();
 		if (pManagementInfo[0] & 0x80) UNLIKELY
@@ -42,7 +47,8 @@ namespace Core::Alloc
 		return MemRef<u8>{ memOffset, this, Log2(align), size, isBacking };
 	}
 
-	auto BuddyAllocator::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
 	{
 		u8* pManagementInfo = m_mem.Ptr();
 
@@ -61,29 +67,22 @@ namespace Core::Alloc
 #endif
 	}
 
-	auto BuddyAllocator::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
 	{
-		return m_mem.Ptr() + m_managmentSize + mem.GetRawHandle();
+		return m_mem.Ptr() + ManagementSize + mem.GetRawHandle();
 	}
-
-	auto BuddyAllocator::CalculateManagementSize(u8 numDivisions, usize size) noexcept -> usize
+	
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::CalculateSizeClassAndBlockSize(usize size) noexcept -> Tuple<usize, usize>
 	{
-		const usize numFlags = (1ull << (numDivisions + 1)) - 1;
-		const usize numManagmentBytes = (numFlags + 3) / 4;
-		const usize smallestBlockSize = size << numDivisions;
-		const usize numBlocks = (numManagmentBytes + smallestBlockSize - 1) / smallestBlockSize;
-		return numBlocks * smallestBlockSize;
-	}
-
-	auto BuddyAllocator::CalculateSizeClassAndBlockSize(usize size) noexcept -> Tuple<usize, usize>
-	{
-		const usize smallestBlockSize = m_size >> m_maxDivisions;
-		const usize sizeClass = m_maxDivisions - Log2((size + smallestBlockSize - 1) / smallestBlockSize);
-		const usize sizeClassBlockSize = m_size >> sizeClass;
+		const usize sizeClass = MaxSubDivisions - Log2((size + SmallestBlockSize - 1) / SmallestBlockSize);
+		const usize sizeClassBlockSize = Size >> sizeClass;
 		return { sizeClass, sizeClassBlockSize };
 	}
 
-	auto BuddyAllocator::GetIdx(u8* pManagementInfo, usize neededClass) noexcept -> usize
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::GetIdx(u8* pManagementInfo, usize neededClass) noexcept -> usize
 	{
 		u8 flag = GetDivFlag(pManagementInfo, 0);
 		if (neededClass == 0)
@@ -107,7 +106,8 @@ namespace Core::Alloc
 		return GetSubIdx(pManagementInfo, neededClass, 1, 2);
 	}
 
-	auto BuddyAllocator::GetSubIdx(u8* pManagementInfo, usize neededClass, usize curClass, usize curDivIdx) noexcept -> usize
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::GetSubIdx(u8* pManagementInfo, usize neededClass, usize curClass, usize curDivIdx) noexcept -> usize
 	{
 		usize newDivIdx = curDivIdx * 2 + 1;
 		auto [lFlag, rflag] = GetDivFlags(pManagementInfo, newDivIdx);
@@ -125,14 +125,16 @@ namespace Core::Alloc
 		return GetSubIdx(pManagementInfo, neededClass, curClass + 1, newDivIdx + 1);
 	}
 
-	auto BuddyAllocator::GetDivFlag(u8* pManagementInfo, usize divIdx) noexcept -> u8
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::GetDivFlag(u8* pManagementInfo, usize divIdx) noexcept -> u8
 	{
 		usize bitIdx = (3 - (divIdx & 0x3)) * 2;
 		usize byteIdx = divIdx / 4;
 		return (pManagementInfo[byteIdx] >> bitIdx) & 0x3;
 	}
 
-	auto BuddyAllocator::GetDivFlags(u8* pManagementInfo, usize divIdx) noexcept -> Tuple<u8, u8>
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::GetDivFlags(u8* pManagementInfo, usize divIdx) noexcept -> Tuple<u8, u8>
 	{
 		usize bitIdx = (6 - (divIdx & 0x3)) * 2;
 		usize byteIdx = divIdx / 4;
@@ -145,7 +147,8 @@ namespace Core::Alloc
 		return { u8(flags >> 2), u8(flags & 0x03) };
 	}
 
-	auto BuddyAllocator::SetDivFlag(u8* pManagementInfo, usize divIdx, u8 flag) noexcept -> void
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::SetDivFlag(u8* pManagementInfo, usize divIdx, u8 flag) noexcept -> void
 	{
 		usize bitIdx = (3 - (divIdx & 0x3)) * 2;
 		usize byteIdx = divIdx / 4;
@@ -154,7 +157,8 @@ namespace Core::Alloc
 		pManagementInfo[byteIdx] |= flag << bitIdx;
 	}
 
-	auto BuddyAllocator::Mark(u8* pManagementInfo, usize divIdx) noexcept -> void
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::Mark(u8* pManagementInfo, usize divIdx) noexcept -> void
 	{
 		SetDivFlag(pManagementInfo, divIdx, UsedFlag);
 		u8 ownFlag = UsedFlag;
@@ -171,7 +175,8 @@ namespace Core::Alloc
 		}
 	}
 
-	auto BuddyAllocator::Unmark(u8* pManagementInfo, usize divIdx) noexcept -> void
+	template<usize Size, u8 MaxSubDivisions>
+	auto BuddyAllocator<Size, MaxSubDivisions>::Unmark(u8* pManagementInfo, usize divIdx) noexcept -> void
 	{
 		SetDivFlag(pManagementInfo, divIdx, FreeFlag);
 		u8 ownFlag = FreeFlag;

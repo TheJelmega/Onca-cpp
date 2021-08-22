@@ -66,7 +66,7 @@ BENCHMARK(StackAllocatorBench)
 auto PoolAllocatorBench(benchmark::State& state) -> void
 {
 	Core::Alloc::Mallocator mallocator;
-	Core::Alloc::PoolAllocator alloc{ &mallocator, 8, 1024, 1 };
+	Core::Alloc::PoolAllocator<1024, 1> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
@@ -80,7 +80,7 @@ BENCHMARK(PoolAllocatorBench)
 auto SmallBlockBitmapAllocatorBench(benchmark::State& state) -> void
 {
 	Core::Alloc::Mallocator mallocator;
-	Core::Alloc::BitmapAllocator alloc{ &mallocator, 32, 32 };
+	Core::Alloc::BitmapAllocator<32, 32> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
@@ -94,7 +94,7 @@ BENCHMARK(SmallBlockBitmapAllocatorBench)
 auto LargeBlockBitmapAllocatorBench(benchmark::State& state) -> void
 {
 	Core::Alloc::Mallocator mallocator;
-	Core::Alloc::BitmapAllocator alloc{ &mallocator, 256, 4 };
+	Core::Alloc::BitmapAllocator<256, 4> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
@@ -108,7 +108,7 @@ BENCHMARK(LargeBlockBitmapAllocatorBench)
 auto BuddyAllocatorBench(benchmark::State& state) -> void
 {
 	Core::Alloc::Mallocator mallocator;
-	Core::Alloc::BuddyAllocator alloc{ &mallocator, 1024, 2 };
+	Core::Alloc::BuddyAllocator<1024, 2> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
@@ -122,7 +122,7 @@ BENCHMARK(BuddyAllocatorBench)
 auto FreeListAllocatorBench(benchmark::State& state) -> void
 {
 	Core::Alloc::Mallocator mallocator;
-	Core::Alloc::FreeListAllocator alloc{ &mallocator, 1024 };
+	Core::Alloc::FreeListAllocator<1024> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
@@ -240,7 +240,7 @@ auto PoolAllocatorBenchMulti(benchmark::State& state) -> void
 
 	Core::Alloc::Mallocator mallocator;
 	usize count = usize(state.range(0));
-	Core::Alloc::PoolAllocator alloc{ &mallocator, 8, 32, count };
+	Core::Alloc::PoolAllocator<32, 128> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		for (usize i = 0; i < count; ++i)
@@ -263,7 +263,7 @@ auto BitmapAllocatorBenchSmallBlockMulti(benchmark::State& state) -> void
 
 	Core::Alloc::Mallocator mallocator;
 	usize count = usize(state.range(0));
-	Core::Alloc::BitmapAllocator alloc{ &mallocator, 8, count * 4 };
+	Core::Alloc::BitmapAllocator<8, 128 * 4> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		for (usize i = 0; i < count; ++i)
@@ -286,7 +286,7 @@ auto BitmapAllocatorBenchLargeBlockMulti(benchmark::State& state) -> void
 
 	Core::Alloc::Mallocator mallocator;
 	usize count = usize(state.range(0));
-	Core::Alloc::BitmapAllocator alloc{ &mallocator, 32, count * 4 };
+	Core::Alloc::BitmapAllocator<32, 128> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		for (usize i = 0; i < count; ++i)
@@ -311,7 +311,7 @@ auto BuddyAllocatorBenchMulti(benchmark::State& state) -> void
 	usize count = usize(state.range(0));
 	count = count == 96 ? 128 : count;
 	u8 numDivs = Core::Log2(count);
-	Core::Alloc::BuddyAllocator alloc{ &mallocator, count * 32, numDivs };
+	Core::Alloc::BuddyAllocator<128 * 32, Core::Log2(128u)> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		for (usize i = 0; i < count; ++i)
@@ -334,7 +334,7 @@ auto FreeListAllocatorBenchMulti(benchmark::State& state) -> void
 
 	Core::Alloc::Mallocator mallocator;
 	usize count = usize(state.range(0));
-	Core::Alloc::FreeListAllocator alloc{ &mallocator, count * 64 };
+	Core::Alloc::FreeListAllocator<128 * 64> alloc{ &mallocator };
 	for (auto _ : state)
 	{
 		for (usize i = 0; i < count; ++i)

@@ -8,25 +8,25 @@
 namespace Core
 {
 	template<LessComparable T>
-	auto Min(T a, T b) noexcept -> T
+	constexpr auto Min(T a, T b) noexcept -> T
 	{
 		return a < b ? a : b;
 	}
 
 	template<GreaterComparable T>
-	auto Max(T a, T b) noexcept -> T
+	constexpr auto Max(T a, T b) noexcept -> T
 	{
 		return a > b ? a : b;
 	}
 
-	INL auto IsPowOf2(u64 val) noexcept -> bool
+	constexpr auto IsPowOf2(u64 val) noexcept -> bool
 	{
 		return !(val & (val - 1));
 	}
 
 #define LOG2_HELPER(n) if (val >= 1ull << (n)) { res += n; val >>= n; } 
 
-	INL auto Log2(u64 val) noexcept -> u8
+	constexpr auto Log2(u64 val) noexcept -> u8
 	{
 		u8 res = -(val == 0);
 		if (val >= 1ull << 32) { res += 32; val >>= 32; };
@@ -38,7 +38,7 @@ namespace Core
 		return res;
 	}
 
-	INL auto Log2(u32 val) noexcept -> u8
+	constexpr auto Log2(u32 val) noexcept -> u8
 	{
 		u8 res = -(val == 0);
 		if (val >= 1ull << 16) { res += 16; val >>= 16; };
@@ -49,7 +49,7 @@ namespace Core
 		return res;
 	}
 
-	INL auto Log2(u16 val) noexcept -> u8
+	constexpr auto Log2(u16 val) noexcept -> u8
 	{
 		u8 res = -(val == 0);
 		if (val >= 1ull << 8) { res += 8; val >>= 8; };
@@ -59,7 +59,7 @@ namespace Core
 		return res;
 	}
 
-	INL auto Log2(u8 val) noexcept -> u8
+	constexpr auto Log2(u8 val) noexcept -> u8
 	{
 		u8 res = -(val == 0);
 		if (val >= 1ull << 4) { res += 4; val >>= 4; };

@@ -142,6 +142,9 @@ namespace Core::Alloc
 #endif
 	};
 
+	template<typename T>
+	concept ImplementsIAllocator = DerivesFrom<T, IAllocator>;
+
 }
 
 #include "IAllocator.inl"

@@ -2,17 +2,25 @@
 
 namespace Core::Alloc
 {
-	FreeListAllocator::FreeListAllocator(IAllocator* pBackingAllocator, usize size) noexcept
-		: m_mem(pBackingAllocator->Allocate<u8>(size, sizeof(usize), true))
+	template<usize Size>
+	FreeListAllocator<Size>::FreeListAllocator(IAllocator* pBackingAllocator) noexcept
+		: m_mem(pBackingAllocator->Allocate<u8>(Size, sizeof(usize), true))
 		, m_head(0)
 	{
-		ASSERT(size > sizeof(FreeHeader), "Size needs to be larger than 16 bytes");
+		STATIC_ASSERT(Size > sizeof(FreeHeader), "Size needs to be larger than 16 bytes");
 		FreeHeader* pFreeHeader = reinterpret_cast<FreeHeader*>(m_mem.Ptr());
 		pFreeHeader->next = usize(-1);
-		pFreeHeader->size = size;
+		pFreeHeader->size = Size;
 	}
 
-	auto FreeListAllocator::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
+	template <usize Size>
+	FreeListAllocator<Size>::~FreeListAllocator() noexcept
+	{
+		m_mem.Dealloc();
+	}
+
+	template<usize Size>
+	auto FreeListAllocator<Size>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
 		const usize loc = AllocFirst(size, align, isBacking);
 		if (loc == usize(-1))
@@ -20,7 +28,8 @@ namespace Core::Alloc
 		return { loc, this, Log2(align), size, isBacking };
 	}
 
-	auto FreeListAllocator::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	template<usize Size>
+	auto FreeListAllocator<Size>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
 	{
 		const usize loc = mem.GetRawHandle();
 		u8* pBegin = m_mem.Ptr();
@@ -62,12 +71,14 @@ namespace Core::Alloc
 #endif
 	}
 
-	auto FreeListAllocator::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
+	template<usize Size>
+	auto FreeListAllocator<Size>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
 	{
 		return m_mem.Ptr() + mem.GetRawHandle();
 	}
 
-	auto FreeListAllocator::AllocFirst(usize size, u16 align, bool isBacking) noexcept -> usize
+	template<usize Size>
+	auto FreeListAllocator<Size>::AllocFirst(usize size, u16 align, bool isBacking) noexcept -> usize
 	{
 		usize head = m_head;
 		usize prevHead = usize(-1);
@@ -139,7 +150,8 @@ namespace Core::Alloc
 		return usize(-1);
 	}
 
-	auto FreeListAllocator::Coalesce(u8* pBegin, usize prevLoc, usize curLoc, usize nextLoc) noexcept -> void
+	template<usize Size>
+	auto FreeListAllocator<Size>::Coalesce(u8* pBegin, usize prevLoc, usize curLoc, usize nextLoc) noexcept -> void
 	{
 		FreeHeader* pPrevHeader = prevLoc == usize(-1) ? nullptr : reinterpret_cast<FreeHeader*>(pBegin + prevLoc);
 		FreeHeader* pCurHeader = reinterpret_cast<FreeHeader*>(pBegin + curLoc);

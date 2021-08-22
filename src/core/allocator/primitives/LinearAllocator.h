@@ -31,6 +31,7 @@ namespace Core::Alloc
 		 */
 		LinearAllocator(IAllocator* pBackingAlloc, usize size, u16 startAlign);
 		LinearAllocator(LinearAllocator&&) = default;
+		~LinearAllocator() noexcept override;
 
 		/**
 		 * Reset the head of the allocator

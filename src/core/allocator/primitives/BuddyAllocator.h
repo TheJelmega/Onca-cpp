@@ -26,8 +26,12 @@ namespace Core::Alloc
 	 * | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 4
 	 * +----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
 	 *
+	 * \tparam Size Size of the managed memory
+	 * \tparam MaxSubDivisions Maximum number of subdivision
+	 *
 	 */
-	class CORE_API BuddyAllocator final : public IAllocator
+	template<usize Size, u8 MaxSubDivisions>
+	class BuddyAllocator final : public IAllocator
 	{
 	private:
 		static constexpr u8 FreeFlag  = 0x00;
@@ -38,25 +42,28 @@ namespace Core::Alloc
 		/**
 		 * Create a buddy allocator
 		 * \param pBackingAlloc Allocator to create the underlying memory block
-		 * \param size Size of full memory block
-		 * \param maxSubDivisions Maximum number of subdivision
 		 */
-		BuddyAllocator(IAllocator* pBackingAlloc, usize size, u8 maxSubDivisions);
+		BuddyAllocator(IAllocator* pBackingAlloc);
 		BuddyAllocator(BuddyAllocator&&) = default;
+		~BuddyAllocator() noexcept override;
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
 		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
-	private:
+	public:
 		/**
 		 * Get the number of bytes needed to managed the divisions
-		 * \param numDivisions Number of division to managed
-		 * \param size Size of the managed memory
 		 * \return Number of bytes needed to manage the divisions
 		 */
-		auto CalculateManagementSize(u8 numDivisions, usize size) noexcept -> usize;
+		static constexpr auto CalculateManagementSize() noexcept -> usize
+		{
+			constexpr usize numFlags = (1ull << (MaxSubDivisions + 1)) - 1;
+			constexpr usize numManagmentBytes = (numFlags + 3) / 4;
+			constexpr usize numBlocks = (numManagmentBytes + SmallestBlockSize - 1) / SmallestBlockSize;
+			return numBlocks * SmallestBlockSize;
+		}
 
 		/**
 		 * Calculate the size class and block size for an allocation of a certain size
@@ -113,10 +120,13 @@ namespace Core::Alloc
 		 */
 		auto Unmark(u8* pManagementInfo, usize divIdx) noexcept -> void;
 
+		static constexpr usize SmallestBlockSize = Size >> MaxSubDivisions;
+		static constexpr usize ManagementSize = CalculateManagementSize();
+
 		MemRef<u8>       m_mem;           ///< Managed memory
-		usize            m_size;          ///< Size of div 0
-		usize            m_maxDivisions;  ///< Maximum levels of divisions
 		usize            m_managmentSize; ///< Memory used for management
 		Threading::Mutex m_mutex;         ///< Mutex to guard division flag modifications
 	};
 }
+
+#include "BuddyAllocator.inl"

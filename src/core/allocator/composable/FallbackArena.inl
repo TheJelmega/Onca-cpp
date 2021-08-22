@@ -3,14 +3,14 @@
 
 namespace Core::Alloc
 {
-	template <typename MainAlloc, typename Fallback>
+	template <ImplementsIAllocator MainAlloc, ImplementsIAllocator Fallback>
 	FallbackArena<MainAlloc, Fallback>::FallbackArena(MainAlloc&& main, Fallback&& fallback)
 		: m_main(StdMove(main))
 		, m_fallback(StdMove(fallback))
 	{
 	}
 
-	template <typename MainAlloc, typename Fallback>
+	template <ImplementsIAllocator MainAlloc, ImplementsIAllocator Fallback>
 	auto FallbackArena<MainAlloc, Fallback>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
 		
@@ -47,7 +47,7 @@ namespace Core::Alloc
 		return mem;
 	}
 
-	template <typename MainAlloc, typename Fallback>
+	template <ImplementsIAllocator MainAlloc, ImplementsIAllocator Fallback>
 	auto FallbackArena<MainAlloc, Fallback>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
 	{
 		if (m_main.Owns(mem))
@@ -82,7 +82,7 @@ namespace Core::Alloc
 		}
 	}
 
-	template <typename MainAlloc, typename FallbackAlloc>
+	template <ImplementsIAllocator MainAlloc, ImplementsIAllocator FallbackAlloc>
 	auto FallbackArena<MainAlloc, FallbackAlloc>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
 	{
 		ASSERT(false, "MemRef's allocator should never reference a FallbackArena");

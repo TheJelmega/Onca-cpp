@@ -3,19 +3,18 @@
 
 namespace Core::Alloc
 {
-	template<typename Alloc, typename ...AllocArgs>
-		requires ExtendableAlloc<Alloc, AllocArgs...>
-	ExpandableArena<Alloc, AllocArgs...>::ExpandableArena(IAllocator* expandAlloc, AllocArgs&&... allocArgs)
+	template<ExtendableAlloc Alloc>
+	ExpandableArena<Alloc>::ExpandableArena(IAllocator* expandAlloc)
 		: m_backingAlloc(expandAlloc)
-		, m_allocArgs(allocArgs...)
 		, m_allocs(*expandAlloc)
 	{
 	}
 
-	template<typename Alloc, typename ...AllocArgs>
-		requires ExtendableAlloc<Alloc, AllocArgs...>
-	auto ExpandableArena<Alloc, AllocArgs...>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
+	template<ExtendableAlloc Alloc>
+	auto ExpandableArena<Alloc>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
+		Threading::Lock lock{ m_mutex };
+
 		for (Unique<Alloc>& alloc : m_allocs)
 		{
 #if ENABLE_ALLOC_STATS
@@ -38,9 +37,7 @@ namespace Core::Alloc
 		}
 
 		// No place left, so expand the allocator
-		// TODO: Unique::CreateFromTuple
-		Alloc tmpAlloc = ConstructFromTuple<Alloc>(ConcatTuple(m_backingAlloc, m_allocArgs));
-		m_allocs.Add(Unique<Alloc>::CreateWitAlloc(*std::get<0>(m_backingAlloc), StdMove(tmpAlloc)));
+		m_allocs.Add(Unique<Alloc>::CreateWitAlloc(*std::get<0>(m_backingAlloc), Alloc{}));
 		MemRef<u8> mem = m_allocs.Last()->template Allocate<u8>(size, align);
 
 #if ENABLE_ALLOC_STATS
@@ -52,10 +49,11 @@ namespace Core::Alloc
 		return mem;
 	}
 
-	template<typename Alloc, typename ...AllocArgs>
-		requires ExtendableAlloc<Alloc, AllocArgs...>
-	auto ExpandableArena<Alloc, AllocArgs...>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	template<ExtendableAlloc Alloc>
+	auto ExpandableArena<Alloc>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
 	{
+		Threading::Lock lock{ m_mutex };
+
 		for (Unique<Alloc>& alloc : m_allocs)
 		{
 			if (!alloc->Owns(mem))
@@ -78,9 +76,11 @@ namespace Core::Alloc
 		}
 	}
 
-	template <typename Alloc, typename ... AllocArgs> requires ExtendableAlloc<Alloc, AllocArgs...>
-	bool ExpandableArena<Alloc, AllocArgs...>::OwnsInternal(IAllocator* pAlloc) noexcept
+	template <ExtendableAlloc Alloc>
+	bool ExpandableArena<Alloc>::OwnsInternal(IAllocator* pAlloc) noexcept
 	{
+		Threading::Lock lock{ m_mutex };
+
 		MemRef<u8> dummyMem{ pAlloc };
 		for (Unique<Alloc>& subAlloc : m_allocs)
 		{
@@ -90,8 +90,8 @@ namespace Core::Alloc
 		return false;
 	}
 
-	template <typename Alloc, typename ... AllocArgs> requires ExtendableAlloc<Alloc, AllocArgs...>
-	auto ExpandableArena<Alloc, AllocArgs...>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
+	template <ExtendableAlloc Alloc>
+	auto ExpandableArena<Alloc>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
 	{
 		ASSERT(false, "MemRef's allocator should never reference a FallbackArena");
 		return nullptr;

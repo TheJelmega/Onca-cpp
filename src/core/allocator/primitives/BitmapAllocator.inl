@@ -4,31 +4,30 @@
 
 namespace Core::Alloc
 {
-	BitmapAllocator::BitmapAllocator(IAllocator* pBackingAlloc, usize blockSize, usize numBlocks) noexcept
-		: m_mem(pBackingAlloc->Allocate<u8>(CalcReqMemSize(blockSize, numBlocks), u16(blockSize > 0x8000 ? 0x8000 : blockSize), true))
-		, m_blockSize(blockSize)
-		, m_numBlocks(numBlocks)
+	template<usize BlockSize, usize NumBlocks>
+	BitmapAllocator<BlockSize, NumBlocks>::BitmapAllocator(IAllocator* pBackingAlloc) noexcept
+		: m_mem(pBackingAlloc->Allocate<u8>(CalcReqMemSize(), u16(BlockSize > 0x8000 ? 0x8000 : BlockSize), true))
 	{
-		ASSERT(IsPowOf2(blockSize), "Blocksize needs to be a power of 2");
-		
-		m_numManagementBlocks = m_mem.Size() / blockSize - numBlocks;
-		MemClear(m_mem.Ptr(), m_numManagementBlocks * blockSize);
+		STATIC_ASSERT(IsPowOf2(BlockSize), "Blocksize needs to be a power of 2");
+		MemClear(m_mem.Ptr(), NumManagementBlocks * BlockSize);
 	}
 
-	BitmapAllocator::~BitmapAllocator() noexcept
+	template<usize BlockSize, usize NumBlocks>
+	BitmapAllocator<BlockSize, NumBlocks>::~BitmapAllocator() noexcept
 	{
 		m_mem.Dealloc();
 	}
 
-	auto BitmapAllocator::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
+	template<usize BlockSize, usize NumBlocks>
+	auto BitmapAllocator<BlockSize, NumBlocks>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
 		ASSERT(align < m_blockSize, "Alignment cannot be greater than blocksize");
 		Threading::Lock lock{m_mutex};
 		
 		const u8* pManagementInfo = m_mem.Ptr();
-		const usize blocksNeeded = (size + m_blockSize - 1) / m_blockSize;
+		const usize blocksNeeded = (size + BlockSize - 1) / BlockSize;
 		
-		for (usize i = 0; i < m_numBlocks; ++i)
+		for (usize i = 0; i < NumBlocks; ++i)
 		{
 			u8 startBit = u8(i & 0x07);
 			usize byteIdx = i / 8;
@@ -64,13 +63,14 @@ namespace Core::Alloc
 		return MemRef<u8>{ nullptr };
 	}
 
-	auto BitmapAllocator::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	template<usize BlockSize, usize NumBlocks>
+	auto BitmapAllocator<BlockSize, NumBlocks>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
 	{
 		Threading::Lock lock{ m_mutex };
 		
 		const usize startIdx = mem.GetRawHandle();
 		const usize size = mem.Size();
-		const usize numBlocks = (size + m_blockSize - 1) / m_blockSize;
+		const usize numBlocks = (size + BlockSize - 1) / BlockSize;
 		MarkBits(startIdx, numBlocks, false);
 
 #if ENABLE_ALLOC_STATS
@@ -79,19 +79,14 @@ namespace Core::Alloc
 #endif
 	}
 
-	auto BitmapAllocator::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
+	template<usize BlockSize, usize NumBlocks>
+	auto BitmapAllocator<BlockSize, NumBlocks>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
 	{
-		return m_mem.Ptr() + (m_numManagementBlocks + mem.GetRawHandle()) * m_blockSize;
+		return m_mem.Ptr() + (NumManagementBlocks + mem.GetRawHandle()) * BlockSize;
 	}
 
-	auto BitmapAllocator::CalcReqMemSize(usize blockSize, usize numBlocks) noexcept -> usize
-	{
-		const usize numManagmentBytes = (numBlocks + 7) / 8;
-		const usize numManagmentBlocks = (numManagmentBytes + blockSize - 1) / blockSize;
-		return blockSize * (numBlocks + numManagmentBlocks);
-	}
-
-	auto BitmapAllocator::MarkBits(usize startIdx, usize numBlocks, bool set) noexcept -> void
+	template<usize BlockSize, usize NumBlocks>
+	auto BitmapAllocator<BlockSize, NumBlocks>::MarkBits(usize startIdx, usize numBlocks, bool set) noexcept -> void
 	{
 		u8* pManagementInfo = m_mem.Ptr();
 

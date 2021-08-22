@@ -8,33 +8,30 @@ namespace Core::Alloc
 	/**
 	 * An interface defining the requirements an allocator needs to be able to be used in an expandable allocator
 	 * \tparam T Type to constrain
-	 * \tparam Args Argument types for allocator ctor
 	 */
-	template<typename T, typename ...Args>
-	concept ExtendableAlloc = requires(IAllocator* alloc, Args... args)
+	template<typename T>
+	concept ExtendableAlloc =
+		ImplementsIAllocator &&
+		MoveConstructable &&
+		requires(IAllocator* pAlloc)
 	{
-		MoveConstructable<T>;
-		DerivesFrom<T, IAllocator>;
-		{ T{ alloc, args... } } noexcept;
+		{ T{ pAlloc } } noexcept;
 	};
 
 	/**
 	 * An expandable arena managed a set of allocators and allows the creation of additional allocators when the current ones run out of space
 	 *
 	 * \tparam Alloc Allocator to use
-	 * \tparam AllocArgs Types of allocation arguments
 	 */
-	template<typename Alloc, typename ...AllocArgs>
-		requires ExtendableAlloc<Alloc, AllocArgs...>
+	template<ExtendableAlloc Alloc>
 	class ExpandableArena final : public IAllocator
 	{
 	public:
 		/**
 		 * Create an expandable allocator
 		 * \param expandAlloc Backing allocator used to expand size
-		 * \param allocArgs Arguments for sub allocators
 		 */
-		ExpandableArena(IAllocator* expandAlloc, AllocArgs&&... allocArgs);
+		ExpandableArena(IAllocator* expandAlloc);
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
@@ -43,9 +40,10 @@ namespace Core::Alloc
 		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	private:
-		Tuple<IAllocator*>      m_backingAlloc; ///< Allocator to back sub-allocators
-		Tuple<AllocArgs...>     m_allocArgs;    ///< Additional arguments for the allocator
+		IAllocator*             m_backingAlloc; ///< Allocator to back sub-allocators
+		// TODO: replace with theadsafe container
 		DynArray<Unique<Alloc>> m_allocs;       ///< Allocators
+		Threading::Mutex        m_mutex;        ///< Mutex to guard DynArray
 	};
 }
 

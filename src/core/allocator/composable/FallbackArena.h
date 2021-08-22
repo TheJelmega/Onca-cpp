@@ -8,7 +8,7 @@ namespace Core::Alloc
 	 * \tparam MainAlloc Main allocator type
 	 * \tparam FallbackAlloc Allocator type to use when the main allocator is out of memory
 	 */
-	template<typename MainAlloc, typename FallbackAlloc>
+	template<ImplementsIAllocator MainAlloc, ImplementsIAllocator FallbackAlloc>
 	class FallbackArena final : public IAllocator
 	{
 	public:
