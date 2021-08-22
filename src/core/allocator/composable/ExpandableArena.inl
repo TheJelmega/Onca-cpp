@@ -37,7 +37,7 @@ namespace Core::Alloc
 		}
 
 		// No place left, so expand the allocator
-		m_allocs.Add(Unique<Alloc>::CreateWitAlloc(*std::get<0>(m_backingAlloc), Alloc{}));
+		m_allocs.Add(Unique<Alloc>::CreateWitAlloc(*m_backingAlloc, m_backingAlloc));
 		MemRef<u8> mem = m_allocs.Last()->template Allocate<u8>(size, align);
 
 #if ENABLE_ALLOC_STATS

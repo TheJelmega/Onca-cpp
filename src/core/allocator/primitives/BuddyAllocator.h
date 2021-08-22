@@ -43,8 +43,8 @@ namespace Core::Alloc
 		 * Create a buddy allocator
 		 * \param pBackingAlloc Allocator to create the underlying memory block
 		 */
-		BuddyAllocator(IAllocator* pBackingAlloc);
-		BuddyAllocator(BuddyAllocator&&) = default;
+		BuddyAllocator(IAllocator* pBackingAlloc) noexcept;
+		BuddyAllocator(BuddyAllocator&&) noexcept = default;
 		~BuddyAllocator() noexcept override;
 
 	protected:

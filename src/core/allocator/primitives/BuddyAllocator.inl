@@ -3,7 +3,7 @@
 namespace Core::Alloc
 {
 	template<usize Size, u8 MaxSubDivisions>
-	BuddyAllocator<Size, MaxSubDivisions>::BuddyAllocator(IAllocator* pBackingAlloc)
+	BuddyAllocator<Size, MaxSubDivisions>::BuddyAllocator(IAllocator* pBackingAlloc) noexcept
 		: m_mem(nullptr)
 	{
 		STATIC_ASSERT(IsPowOf2(Size), "A buddy allocator requires a size that is a power of 2");

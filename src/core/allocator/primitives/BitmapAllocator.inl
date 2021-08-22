@@ -21,7 +21,7 @@ namespace Core::Alloc
 	template<usize BlockSize, usize NumBlocks>
 	auto BitmapAllocator<BlockSize, NumBlocks>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
-		ASSERT(align < m_blockSize, "Alignment cannot be greater than blocksize");
+		ASSERT(align <= BlockSize, "Alignment cannot be greater than blocksize");
 		Threading::Lock lock{m_mutex};
 		
 		const u8* pManagementInfo = m_mem.Ptr();
@@ -53,7 +53,7 @@ namespace Core::Alloc
 				MarkBits(i, blocksNeeded, true);
 
 #if ENABLE_ALLOC_STATS
-				const usize overhead = blocksNeeded * m_blockSize - size;
+				const usize overhead = blocksNeeded * BlockSize - size;
 				m_stats.RemoveAlloc(size, overhead, isBacking);
 #endif		
 				return { i, this, Log2(align), size, isBacking };
@@ -74,7 +74,7 @@ namespace Core::Alloc
 		MarkBits(startIdx, numBlocks, false);
 
 #if ENABLE_ALLOC_STATS
-		const usize overhead = numBlocks * m_blockSize - size;
+		const usize overhead = numBlocks * BlockSize - size;
 		m_stats.RemoveAlloc(size, overhead, mem.IsBackingMem());
 #endif
 	}

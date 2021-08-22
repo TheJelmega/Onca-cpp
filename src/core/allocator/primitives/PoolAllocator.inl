@@ -9,7 +9,7 @@ namespace Core::Alloc
 		, m_head(0)
 	{
 		STATIC_ASSERT(IsPowOf2(BlockSize), "Block size needs to be a power of 2");
-		STATIC_ASSERT(BlockSize > sizeof(usize), "Block size needs to be larger than the size of usize");
+		STATIC_ASSERT(BlockSize >= sizeof(usize), "Block size needs to be larger or equal than the size of usize");
 		STATIC_ASSERT(NumBlocks != 0, "Needs to have at least 1 block");
 		
 		constexpr usize memSize = BlockSize * NumBlocks;
@@ -25,19 +25,12 @@ namespace Core::Alloc
 			i = next;
 		}
 		*reinterpret_cast<usize*>(pBegin + memSize - BlockSize) = usize(-1);
-
-#if ENABLE_ALLOC_STATS
-		m_blockPadding = u16(blockPadding);
-#endif
 	}
 
 	template<usize BlockSize, usize NumBlocks>
 	PoolAllocator<BlockSize, NumBlocks>::PoolAllocator(PoolAllocator&& other) noexcept
 		: m_mem(StdMove(other.m_mem))
 		, m_head(StdMove(other.m_head))
-#if ENABLE_ALLOC_STATS
-		, m_blockPadding(other.m_blockPadding)
-#endif
 	{
 	}
 
@@ -68,7 +61,7 @@ namespace Core::Alloc
 		while (!m_head.CompareExchangeWeak(handle, next));
 
 #if ENABLE_ALLOC_STATS
-		const usize overhead = m_blockSize - size;
+		const usize overhead = BlockSize - size;
 		m_stats.AddAlloc(size, overhead, isBacking);
 #endif
 		
@@ -90,7 +83,7 @@ namespace Core::Alloc
 
 #if ENABLE_ALLOC_STATS
 		const usize size = mem.Size();
-		const usize overhead = m_blockSize - size;
+		const usize overhead = BlockSize - size;
 		m_stats.RemoveAlloc(size, overhead, mem.IsBackingMem());
 #endif
 	}
