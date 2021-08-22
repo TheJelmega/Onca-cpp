@@ -22,13 +22,13 @@ namespace Core::Alloc
 	template<usize Size, u8 MaxSubDivisions>
 	auto BuddyAllocator<Size, MaxSubDivisions>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
+		Threading::Lock lock{ m_mutex };
+
 		u8* pManagementInfo = m_mem.Ptr();
 		if (pManagementInfo[0] & 0x80) UNLIKELY
 			return MemRef<u8>{ nullptr };
 
 		const auto [sizeClass, sizeClassBlockSize] = CalculateSizeClassAndBlockSize(size);
-
-		Threading::Lock lock{ m_mutex };
 
 		const usize divIdx = GetIdx(pManagementInfo, sizeClass);
 		if (divIdx == usize(-1))
@@ -50,8 +50,6 @@ namespace Core::Alloc
 	template<usize Size, u8 MaxSubDivisions>
 	auto BuddyAllocator<Size, MaxSubDivisions>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
 	{
-		u8* pManagementInfo = m_mem.Ptr();
-
 		const auto [sizeClass, sizeClassBlockSize] = CalculateSizeClassAndBlockSize(mem.Size());
 
 		const usize offset = mem.GetRawHandle() / sizeClassBlockSize;
@@ -59,6 +57,7 @@ namespace Core::Alloc
 
 		Threading::Lock lock{ m_mutex };
 
+		u8* pManagementInfo = m_mem.Ptr();
 		Unmark(pManagementInfo, divIdx);
 
 #if ENABLE_ALLOC_STATS
@@ -84,7 +83,7 @@ namespace Core::Alloc
 	template<usize Size, u8 MaxSubDivisions>
 	auto BuddyAllocator<Size, MaxSubDivisions>::GetIdx(u8* pManagementInfo, usize neededClass) noexcept -> usize
 	{
-		u8 flag = GetDivFlag(pManagementInfo, 0);
+		u8 flag = pManagementInfo[0] >> 6;
 		if (neededClass == 0)
 		{
 			return flag == FreeFlag ? 0 : usize(-1);
@@ -165,7 +164,7 @@ namespace Core::Alloc
 		while (divIdx)
 		{
 			u8 buddyFlag = GetDivFlag(pManagementInfo, divIdx & 0x1 ? divIdx + 1 : divIdx - 1);
-			ownFlag = SplitFlag | !!((ownFlag & buddyFlag) & UsedFlag) * UsedFlag;
+			ownFlag = SplitFlag | ((ownFlag & buddyFlag) & UsedFlag);
 
 			const usize layerStart2 = (1ull << Log2(divIdx + 1));
 			const usize layerStart = (layerStart2 >> 1) - 1;

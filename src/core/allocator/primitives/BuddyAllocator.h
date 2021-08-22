@@ -97,7 +97,12 @@ namespace Core::Alloc
 		 * \return Flag of the division
 		 */
 		auto GetDivFlag(u8* pManagementInfo, usize divIdx) noexcept -> u8;
-
+		/**
+		 * Get the flags for both divisions at a certain index
+		 * \param pManagementInfo Pointer to management info
+		 * \param divIdx Division index of the left child
+		 * \return Flag of the division
+		 */
 		auto GetDivFlags(u8* pManagementInfo, usize divIdx) noexcept -> Tuple<u8, u8>;
 		/**
 		 * Set the flag for the division at a certain index
