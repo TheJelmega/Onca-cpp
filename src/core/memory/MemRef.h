@@ -116,7 +116,7 @@ namespace Core
 	concept MemRefDeleter = requires(D d, MemRef<T>&& ref)
 	{
 		DefaultConstructable<D>;
-		{ D{}(StdMove(ref)) } noexcept;
+		{ D{}(Move(ref)) } noexcept;
 	};
 	
 }

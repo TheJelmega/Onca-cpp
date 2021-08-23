@@ -63,7 +63,7 @@ namespace Core::Alloc
 				alloc->GetAllocStats().GetCurStats(oldMemUse, _, oldOverhead, _);
 #endif
 
-				alloc->Deallocate(StdMove(mem));
+				alloc->Deallocate(Move(mem));
 
 #if ENABLE_ALLOC_STATS
 				usize newMemUse, newOverhead;

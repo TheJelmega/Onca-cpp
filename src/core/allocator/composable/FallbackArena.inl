@@ -5,8 +5,8 @@ namespace Core::Alloc
 {
 	template <ImplementsIAllocator MainAlloc, ImplementsIAllocator Fallback>
 	FallbackArena<MainAlloc, Fallback>::FallbackArena(MainAlloc&& main, Fallback&& fallback)
-		: m_main(StdMove(main))
-		, m_fallback(StdMove(fallback))
+		: m_main(Move(main))
+		, m_fallback(Move(fallback))
 	{
 	}
 
@@ -57,7 +57,7 @@ namespace Core::Alloc
 			m_main.GetAllocStats().GetCurStats(oldMemUse, _, oldOverhead, _);
 #endif
 
-			m_main.Deallocate(StdMove(mem));
+			m_main.Deallocate(Move(mem));
 
 #if ENABLE_ALLOC_STATS
 			usize newMemUse, newOverhead;
@@ -72,7 +72,7 @@ namespace Core::Alloc
 			m_fallback.GetAllocStats().GetCurStats(oldMemUse, _, oldOverhead, _);
 #endif
 
-			m_fallback.Deallocate(StdMove(mem));
+			m_fallback.Deallocate(Move(mem));
 
 #if ENABLE_ALLOC_STATS
 			usize newMemUse, newOverhead;

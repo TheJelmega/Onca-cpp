@@ -17,14 +17,6 @@ using f64   = double;
 using isize = ptrdiff_t;
 using usize = uintptr_t;
 
-#define UNUSED(val) ((void)(val))
-
-#define KB(x) ((x) << 10)
-#define MB(x) ((x) << 20)
-
-#define StdMove std::move
-#define StdForward std::forward
-
 template<typename T>
 using InitializerList = std::initializer_list<T>;
 

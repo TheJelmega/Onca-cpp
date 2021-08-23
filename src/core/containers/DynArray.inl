@@ -63,8 +63,8 @@ namespace Core
 
 	template <MoveConstructable T>
 	DynArray<T>::DynArray(DynArray<T>&& other) noexcept
-		: m_mem(StdMove(other.m_mem))
-		, m_size(StdMove(other.m_size))
+		: m_mem(Move(other.m_mem))
+		, m_size(Move(other.m_size))
 	{
 		other.m_size = 0;
 	}
@@ -94,7 +94,7 @@ namespace Core
 	auto DynArray<T>::operator=(DynArray<T>&& other) noexcept -> DynArray<T>&
 	{
 		Clear(true);
-		m_mem = StdMove(other.m_mem);
+		m_mem = Move(other.m_mem);
 		m_size = other.m_size;
 		other.m_size = 0;
 		return *this;
@@ -104,6 +104,7 @@ namespace Core
 	template <ForwardIterator It>
 	auto DynArray<T>::Assign(const It& begin, const It& end) noexcept -> void
 	{
+		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		if constexpr (RandomAccessIterator<It>)
 		{
 			ASSERT(begin < end, "'begin' iterator must be smaller than 'end' iterator");
@@ -120,7 +121,7 @@ namespace Core
 		else
 		{
 			for(It it = begin; it != end; ++it)
-				InsertEnd(StdMove(T{ *it }));
+				InsertEnd(Move(T{ *it }));
 		}
 	}
 	
@@ -128,6 +129,7 @@ namespace Core
 	template <MoveConstructable T>
 	auto DynArray<T>::Assign(const InitializerList<T>& il) noexcept -> void
 	{
+		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		const usize size = il.size();
 		Reserve(size);
 		if constexpr (MemCopyable<T>)
@@ -139,7 +141,7 @@ namespace Core
 		else
 		{
 			for (const T* it = il.begin(), *end = il.end(); it != end; ++it)
-				InsertEnd(StdMove(T{ *it }));
+				InsertEnd(Move(T{ *it }));
 		}
 	}
 
@@ -178,7 +180,7 @@ namespace Core
 			MemCpy(mem.Ptr(), m_mem.Ptr(), m_size * sizeof(T));
 			m_mem.Dealloc();
 		}
-		m_mem = StdMove(mem);
+		m_mem = Move(mem);
 		ASSERT(m_mem, "Failed to allocate memory");
 	}
 
@@ -240,7 +242,7 @@ namespace Core
 				MemCpy(mem.Ptr(), m_mem.Ptr(), m_size * sizeof(T));
 				m_mem.Dealloc();
 			}
-			m_mem = StdMove(mem);
+			m_mem = Move(mem);
 		}
 	}
 
@@ -248,13 +250,13 @@ namespace Core
 	auto DynArray<T>::Add(const T& val) noexcept -> void
 	{
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-		InsertEnd(StdMove(T{ val }));
+		InsertEnd(Move(T{ val }));
 	}
 
 	template <MoveConstructable T>
 	auto DynArray<T>::Add(T&& val) noexcept -> void
 	{
-		InsertEnd(StdMove(val));
+		InsertEnd(Move(val));
 	}
 
 	template <MoveConstructable T>
@@ -270,7 +272,7 @@ namespace Core
 		else
 		{
 			for (const T& val : other)
-				InsertEnd(StdMove(T{ val }));
+				InsertEnd(Move(T{ val }));
 		}
 	}
 
@@ -290,7 +292,7 @@ namespace Core
 	template <typename ...Args>
 	auto DynArray<T>::EmplaceBack(Args&&... args) noexcept -> void
 	{
-		InsertEnd(StdMove(T{ StdForward<Args>(args)... }));
+		InsertEnd(Move(T{ Forward<Args>(args)... }));
 	}
 
 	template <MoveConstructable T>
@@ -303,7 +305,7 @@ namespace Core
 	template <MoveConstructable T>
 	auto DynArray<T>::Insert(const ConstIterator& it, T&& val) noexcept -> Iterator
 	{
-		return Emplace(it, StdMove(val));
+		return Emplace(it, Move(val));
 	}
 
 	template <MoveConstructable T>
@@ -316,7 +318,7 @@ namespace Core
 		Iterator loc = PrepareInsert(offset, count);
 
 		for (T* curLoc = loc, *end = loc + count; curLoc != end; ++curLoc)
-			new (curLoc) T{ StdMove(val) };
+			new (curLoc) T{ Move(val) };
 		return loc;
 	}
 
@@ -372,7 +374,7 @@ namespace Core
 		Iterator loc = PrepareInsert(offset, other.m_size);
 
 		for (T* curIt = other.Begin(); curIt != other.End(); ++curIt, ++loc)
-			new (loc) T{ StdMove(*curIt) };
+			new (loc) T{ Move(*curIt) };
 
 		other.m_mem.Dealloc();
 		other.m_size = 0;
@@ -388,7 +390,7 @@ namespace Core
 
 		Iterator loc = PrepareInsert(offset, 1);
 		
-		new (loc) T{ StdForward<Args>(args)... };
+		new (loc) T{ Forward<Args>(args)... };
 		return loc;
 	}
 
@@ -661,7 +663,7 @@ namespace Core
 		Reserve(m_size);
 		T* loc = m_mem.Ptr() + idx;
 		//T* loc = reinterpret_cast<T*>(m_mem.GetRawHandle()) + idx;
-		new (loc) T{ StdMove(val) };
+		new (loc) T{ Move(val) };
 		return loc;
 	}
 

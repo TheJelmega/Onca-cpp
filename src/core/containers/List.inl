@@ -19,7 +19,7 @@ namespace Core
 	template <MoveConstructable T>
 	auto List<T>::Iterator::operator=(Iterator&& other) noexcept
 	{
-		m_node = StdMove(other.m_node);
+		m_node = Move(other.m_node);
 		return *this;
 	}
 
@@ -136,8 +136,8 @@ namespace Core
 
 	template <MoveConstructable T>
 	List<T>::List(List<T>&& other) noexcept
-		: m_head(StdMove(other.m_head))
-		, m_tail(StdMove(other.m_tail))
+		: m_head(Move(other.m_head))
+		, m_tail(Move(other.m_tail))
 	{
 	}
 
@@ -150,7 +150,6 @@ namespace Core
 	template <MoveConstructable T>
 	auto List<T>::operator=(const InitializerList<T>& il) noexcept -> List<T>&
 	{
-		Clear();
 		Assign(il);
 		return *this;
 	}
@@ -158,7 +157,6 @@ namespace Core
 	template <MoveConstructable T>
 	auto List<T>::operator=(const List<T>& other) noexcept -> List<T>&
 	{
-		Clear();
 		Assign(other.Begin(), other.End());
 		return *this;
 	}
@@ -167,9 +165,8 @@ namespace Core
 	auto List<T>::operator=(List<T>&& other) noexcept -> List<T>&
 	{
 		Clear();
-		m_head = StdMove(other.m_head);
-		m_tail = StdMove(other.m_tail);
-		MemClearData(other);
+		m_head = Move(other.m_head);
+		m_tail = Move(other.m_tail);
 		return *this;
 	}
 
@@ -177,31 +174,34 @@ namespace Core
 	template <ForwardIterator It>
 	auto List<T>::Assign(const It& begin, const It& end) noexcept -> void
 	{
+		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Clear();
 		for (It it = begin; it != end; ++it)
-			Add(*it);
+			Add(Move(T{ *it }));
 	}
 
 	template <MoveConstructable T>
 	auto List<T>::Assign(const InitializerList<T>& il) noexcept -> void
 	{
+		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Clear();
 		for (const T* it = il.begin(); it != il.end(); ++it)
-			Add(*it);
+			Add(Move(T{ *it }));
 	}
 
 	template <MoveConstructable T>
 	auto List<T>::Fill(usize count, const T& val) noexcept -> void
 	{
+		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Clear();
 		for (usize i = 0; i < count; ++i)
-			Add(val);
+			Add(Move(T{ val }));
 	}
 
 	template <MoveConstructable T>
 	auto List<T>::FillDefault(usize count) noexcept -> void
 	{
-		STATIC_ASSERT(IsNothrowDefaultConstructable<T>, "T needs to be nothrow default constructable");
+		STATIC_ASSERT(NoThrowDefaultConstructable<T>, "T needs to be copy constructable");
 		Clear();
 		for (usize i = 0; i < count; ++i)
 			EmplaceBack();
@@ -230,7 +230,7 @@ namespace Core
 			{
 				NodeRef next = curNode->next;
 				curNode.Dealloc();
-				curNode = StdMove(end);
+				curNode = Move(next);
 			} while (curNode);
 		}
 		// too small
@@ -265,14 +265,14 @@ namespace Core
 			{
 				NodeRef next = curNode->next;
 				curNode.Dealloc();
-				curNode = next;
+				curNode = Move(next);
 			} while (curNode);
 		}
 		// too small
 		else if (i < newSize)
 		{
 			for (; i < newSize; ++i)
-				Add(StdMove(T{}));
+				EmplaceBack();
 		}
 	}
 
@@ -280,22 +280,22 @@ namespace Core
 	auto List<T>::Add(const T& val) noexcept -> void
 	{
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-		Add(StdMove(T{ val }));
+		Add(Move(T{ val }));
 	}
 
 	template <MoveConstructable T>
 	auto List<T>::Add(T&& val) noexcept -> void
 	{
-		NodeRef node = CreateNode(StdMove(val));
+		NodeRef node = CreateNode(Move(val));
 
 		if (m_tail)
 		{
 			m_tail->next = node;
-			m_tail = StdMove(node);
+			m_tail = Move(node);
 		}
 		else
 		{
-			m_tail = m_head = StdMove(node);
+			m_tail = m_head = Move(node);
 		}
 	}
 
@@ -303,7 +303,7 @@ namespace Core
 	auto List<T>::Add(const List<T>& other) -> void
 	{
 		for (Iterator it = other.Begin(), end = other.End(); it != end; ++it)
-			Add(StdMove(T{ it.m_node->val }));
+			Add(Move(T{ it.m_node->val }));
 	}
 
 	template <MoveConstructable T>
@@ -312,7 +312,7 @@ namespace Core
 		NodeRef node = other.m_head;
 		while (node)
 		{
-			Add(StdMove(node->val));
+			Add(Move(node->val));
 			NodeRef next = node->next;
 			node.Dealloc();
 			node = next;
@@ -324,7 +324,7 @@ namespace Core
 	template <typename ... Args>
 	auto List<T>::EmplaceBack(Args&&... args) noexcept -> void
 	{
-		Add(StdMove(T{ args... }));
+		Add(Move(T{ args... }));
 	}
 
 	template <MoveConstructable T>
@@ -341,7 +341,7 @@ namespace Core
 
 		NodeRef curNode = it.m_node;
 
-		NodeRef node = CreateNode(StdMove(val));
+		NodeRef node = CreateNode(Move(val));
 
 		node->next = curNode->next;
 		curNode->next = node;
@@ -358,7 +358,7 @@ namespace Core
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Iterator curIt = it;
 		for (usize i = 0; i < count; ++i)
-			curIt = InsertAfter(curIt, StdMove(T{ val }));
+			curIt = InsertAfter(curIt, Move(T{ val }));
 		return it + 1;
 	}
 
@@ -369,7 +369,7 @@ namespace Core
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Iterator curIt = it;
 		for (It valIt = begin; valIt != end; ++valIt)
-			curIt = InsertAfter(curIt, StdMove(T{ *valIt }));
+			curIt = InsertAfter(curIt, Move(T{ *valIt }));
 		return it + 1;
 	}
 
@@ -379,7 +379,7 @@ namespace Core
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Iterator curIt = it;
 		for (const T* valIt = il.begin(), *end = il.end(); valIt != end; ++valIt)
-			curIt = InsertAfter(curIt, StdMove(T{ *valIt }));
+			curIt = InsertAfter(curIt, Move(T{ *valIt }));
 		return it + 1;
 	}
 
@@ -394,7 +394,7 @@ namespace Core
 		for (Iterator valIt = other.Begin(), end = other.End(); valIt != end; ++valIt)
 		{
 
-			curIt = InsertAfter(curIt, StdMove(T{ *valIt }));
+			curIt = InsertAfter(curIt, Move(T{ *valIt }));
 		}
 		return it + 1;
 	}
@@ -411,7 +411,7 @@ namespace Core
 		NodeRef node = other.m_head;
 		while (node)
 		{
-			curIt = InsertAfter(curIt, StdMove(node->val));
+			curIt = InsertAfter(curIt, Move(node->val));
 			NodeRef next = node->next;
 			node.Dealloc();
 			node = next;
@@ -424,19 +424,19 @@ namespace Core
 	template <typename ... Args>
 	auto List<T>::EmplaceAfter(ConstIterator& it, Args&&... args) noexcept -> Iterator
 	{
-		return InsertAfter(it, StdMove(T{ args... }));
+		return InsertAfter(it, Move(T{ args... }));
 	}
 
 	template <MoveConstructable T>
 	auto List<T>::AddFront(const T& val) noexcept -> void
 	{
-		AddFront(StdMove(T{ val }));
+		AddFront(Move(T{ val }));
 	}
 
 	template <MoveConstructable T>
 	auto List<T>::AddFront(T&& val) noexcept -> void
 	{
-		NodeRef node = CreateNode(StdMove(val));
+		NodeRef node = CreateNode(Move(val));
 		node->next = m_head;
 		m_head = node;
 	}
@@ -445,7 +445,7 @@ namespace Core
 	auto List<T>::AddFront(usize count, const T& val) noexcept -> void
 	{
 		for (usize i = 0; i < count; ++i)
-			AddFront(StdMove(T{ val }));
+			AddFront(Move(T{ val }));
 	}
 
 	template <MoveConstructable T>
@@ -453,14 +453,14 @@ namespace Core
 	auto List<T>::AddFront(const It& begin, const It& end) noexcept -> void
 	{
 		for (It it = begin; it < end; ++it)
-			AddFront(StdMove(T{ *it }));
+			AddFront(Move(T{ *it }));
 	}
 
 	template <MoveConstructable T>
 	auto List<T>::AddFront(const InitializerList<T>& il) noexcept -> void
 	{
 		for (T* it = il.begin(), end = il.end(); it < end; ++it)
-			AddFront(StdMove(T{ *it }));
+			AddFront(Move(T{ *it }));
 	}
 
 	template <MoveConstructable T>
@@ -469,10 +469,10 @@ namespace Core
 		if (other.IsEmpty())
 			return;
 
-		AddFront(StdMove(T{ *other.Begin() }));
+		AddFront(Move(T{ *other.Begin() }));
 		Iterator curIt{ m_head };
 		for (Iterator it = other.Begin() + 1, end = other.End(); it != end; ++it)
-			curIt = InsertAfter(curIt, StdMove(T{ *it }));
+			curIt = InsertAfter(curIt, Move(T{ *it }));
 	}
 
 	template <MoveConstructable T>
@@ -482,7 +482,7 @@ namespace Core
 			return;
 
 		NodeRef node = other.m_head;
-		AddFront(StdMove(node->val));
+		AddFront(Move(node->val));
 		NodeRef next = node->next;
 		node.Dealloc();
 		node = next;
@@ -490,7 +490,7 @@ namespace Core
 		Iterator curIt{ m_head };
 		while (node)
 		{
-			curIt = InsertAfter(curIt, StdMove(node->val));
+			curIt = InsertAfter(curIt, Move(node->val));
 			next = node->next;
 			node.Dealloc();
 			node = next;
@@ -502,7 +502,7 @@ namespace Core
 	template <typename ... Args>
 	auto List<T>::EmplaceFront(Args&&... args) noexcept -> void
 	{
-		AddFront(StdMove(T{ args... }));
+		AddFront(Move(T{ args... }));
 	}
 
 	template <MoveConstructable T>
@@ -642,9 +642,9 @@ namespace Core
 		}
 
 		m_head->next = NodeRef{ nullptr };
-		NodeRef head = StdMove(m_head);
-		m_head = StdMove(m_tail);
-		m_tail = StdMove(head);
+		NodeRef head = Move(m_head);
+		m_head = Move(m_tail);
+		m_tail = Move(head);
 	}
 
 
@@ -763,7 +763,7 @@ namespace Core
 		NodeRef node = m_head.Alloc()->template Allocate<Node>();
 		Node* pNode = node.Ptr();
 		new (&pNode->next) NodeRef{ nullptr };
-		new (&pNode->val) T{ StdMove(val) };
+		new (&pNode->val) T{ Move(val) };
 		return node;
 	}
 }

@@ -100,6 +100,12 @@
  */
 #define UNLIKELY [[unlikely]]
 
+#define UNUSED(val) ((void)(val))
+#define EMPTY_FOR_BODY UNUSED(0)
+
+#define KB(x) ((x) << 10)
+#define MB(x) ((x) << 20)
+
 /**
  * \def EXPORT_API
  * Defines dynamic library linkage for export

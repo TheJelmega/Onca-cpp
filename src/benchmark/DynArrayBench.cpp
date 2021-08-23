@@ -322,9 +322,9 @@ auto StdVectorMove(benchmark::State& state) -> void
 	std::vector<u32> src{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 } };
 	for (auto _ : state)
 	{
-		std::vector<u32> vec(StdMove(src));
+		std::vector<u32> vec(Move(src));
 		benchmark::DoNotOptimize(vec);
-		src = StdMove(vec);
+		src = Move(vec);
 	}
 }
 BENCHMARK(StdVectorMove);
@@ -335,9 +335,9 @@ auto DynArrayMove(benchmark::State& state) -> void
 	Core::DynArray<u32> src{ { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, mallocator };
 	for (auto _ : state)
 	{
-		Core::DynArray<u32> dynArr{ StdMove(src) };
+		Core::DynArray<u32> dynArr{ Move(src) };
 		benchmark::DoNotOptimize(dynArr);
-		src = StdMove(dynArr);
+		src = Move(dynArr);
 	}
 }
 BENCHMARK(DynArrayMove);

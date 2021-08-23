@@ -22,14 +22,14 @@ namespace Core
 
 	template <typename T, MemRefDeleter<T> D>
 	Unique<T, D>::Unique(MemRef<T>&& ref) noexcept
-		: m_mem(StdMove(ref))
+		: m_mem(Move(ref))
 	{
 	}
 
 	template <typename T, MemRefDeleter<T> D>
 	template <typename U>
 	Unique<T, D>::Unique(Unique<U, D>&& unique)
-		: m_mem(StdMove(unique.m_mem))
+		: m_mem(Move(unique.m_mem))
 	{
 	}
 
@@ -45,14 +45,14 @@ namespace Core
 	auto Unique<T, D>::operator=(Unique<U, D>&& unique) noexcept -> Unique<T, D>&
 	{
 		m_Deleter(m_mem);
-		m_mem = StdMove(unique.m_mem);
+		m_mem = Move(unique.m_mem);
 		return *this;
 	}
 
 	template <typename T, MemRefDeleter<T> D>
 	auto Unique<T, D>::Release() noexcept -> MemRef<T>
 	{
-		MemRef<T> tmp = StdMove(m_mem);
+		MemRef<T> tmp = Move(m_mem);
 		return tmp;
 	}
 
@@ -129,7 +129,7 @@ namespace Core
 	auto Unique<T, D>::CreateWitAlloc(Alloc::IAllocator& alloc, Args&&... args) noexcept -> Unique<T, D>
 	{
 		Unique<T, D> unique{ alloc.Allocate<T>() };
-		new (unique.m_mem.Ptr()) T{ StdForward<Args>(args)... };
+		new (unique.m_mem.Ptr()) T{ Forward<Args>(args)... };
 		return unique;
 	}
 }

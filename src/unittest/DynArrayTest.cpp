@@ -107,7 +107,7 @@ TEST(DynArrayTest, MovedFromOtherInit)
 	Core::Alloc::Mallocator mallocator;
 	Core::DynArray<u32> src{ { 0, 1, 2, 3, 4, 5, 6 }, mallocator };
 
-	Core::DynArray<u32> dynArr{ StdMove(src) };
+	Core::DynArray<u32> dynArr{ Move(src) };
 	ASSERT_NE(dynArr.Data(), nullptr);
 	ASSERT_EQ(dynArr.GetAllocator(), &mallocator);
 	ASSERT_EQ(dynArr.Size(), 7);
@@ -159,7 +159,7 @@ TEST(DynArrayTest, MovedFromOtherAssignOp)
 	Core::DynArray<u32> src({ 0, 1, 2, 3, 4, 5, 6 }, mallocator);
 	
 	Core::DynArray<u32> dynArr{ mallocator };
-	dynArr = StdMove(src);
+	dynArr = Move(src);
 	ASSERT_NE(dynArr.Data(), nullptr);
 	ASSERT_EQ(dynArr.GetAllocator(), &mallocator);
 	ASSERT_EQ(dynArr.Size(), 7);
@@ -368,7 +368,7 @@ TEST(DynArrayTest, AddMovedDynArr)
 	Core::Alloc::Mallocator mallocator;
 	Core::DynArray<u32> src({ 0, 1, 2, 3, 4, 5, 6 }, mallocator);
 	Core::DynArray<u32> dynArr{ mallocator };
-	dynArr.Add(StdMove(src));
+	dynArr.Add(Move(src));
 
 	ASSERT_NE(dynArr.Data(), nullptr);
 	ASSERT_EQ(dynArr.GetAllocator(), &mallocator);
@@ -512,7 +512,7 @@ TEST(DynArrayTest, InsertMovedOther)
 	Core::Alloc::Mallocator mallocator;
 	Core::DynArray<u32> src({ 40, 41, 42, 43, 44 }, mallocator);
 	Core::DynArray<u32> dynArr({ 0, 1, 2, 3, 4, 5, 6 }, mallocator);
-	dynArr.Insert(dynArr.IteratorAt(4), StdMove(src));
+	dynArr.Insert(dynArr.IteratorAt(4), Move(src));
 
 	ASSERT_NE(dynArr.Data(), nullptr);
 	ASSERT_EQ(dynArr.GetAllocator(), &mallocator);

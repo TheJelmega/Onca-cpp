@@ -29,8 +29,8 @@ namespace Core::Alloc
 
 	template<usize BlockSize, usize NumBlocks>
 	PoolAllocator<BlockSize, NumBlocks>::PoolAllocator(PoolAllocator&& other) noexcept
-		: m_mem(StdMove(other.m_mem))
-		, m_head(StdMove(other.m_head))
+		: m_mem(Move(other.m_mem))
+		, m_head(Move(other.m_head))
 	{
 	}
 

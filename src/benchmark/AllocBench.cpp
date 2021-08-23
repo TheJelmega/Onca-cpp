@@ -27,7 +27,7 @@ auto MallocatorBench(benchmark::State& state) -> void
 	for (auto _ : state)
 	{
 		auto mem = mallocator.Allocate<u8>(state.range(0));
-		mallocator.Deallocate(StdMove(mem));
+		mallocator.Deallocate(Move(mem));
 	}
 }
 BENCHMARK(MallocatorBench)
@@ -56,7 +56,7 @@ auto StackAllocatorBench(benchmark::State& state) -> void
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
-		alloc.Deallocate(StdMove(mem));
+		alloc.Deallocate(Move(mem));
 	}
 }
 BENCHMARK(StackAllocatorBench)
@@ -70,7 +70,7 @@ auto PoolAllocatorBench(benchmark::State& state) -> void
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
-		alloc.Deallocate(StdMove(mem));
+		alloc.Deallocate(Move(mem));
 	}
 }
 BENCHMARK(PoolAllocatorBench)
@@ -84,7 +84,7 @@ auto SmallBlockBitmapAllocatorBench(benchmark::State& state) -> void
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
-		alloc.Deallocate(StdMove(mem));
+		alloc.Deallocate(Move(mem));
 	}
 }
 BENCHMARK(SmallBlockBitmapAllocatorBench)
@@ -98,7 +98,7 @@ auto LargeBlockBitmapAllocatorBench(benchmark::State& state) -> void
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
-		alloc.Deallocate(StdMove(mem));
+		alloc.Deallocate(Move(mem));
 	}
 }
 BENCHMARK(LargeBlockBitmapAllocatorBench)
@@ -112,7 +112,7 @@ auto BuddyAllocatorBench(benchmark::State& state) -> void
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
-		alloc.Deallocate(StdMove(mem));
+		alloc.Deallocate(Move(mem));
 	}
 }
 BENCHMARK(BuddyAllocatorBench)
@@ -126,7 +126,7 @@ auto FreeListAllocatorBench(benchmark::State& state) -> void
 	for (auto _ : state)
 	{
 		auto mem = alloc.Allocate<u8>(state.range(0));
-		alloc.Deallocate(StdMove(mem));
+		alloc.Deallocate(Move(mem));
 	}
 }
 BENCHMARK(FreeListAllocatorBench)
@@ -182,7 +182,7 @@ auto MallocatorBenchMulti(benchmark::State& state) -> void
 		}
 		for (usize i = 0; i < count; ++i)
 		{
-			alloc.Deallocate(StdMove(refs[i].ref));
+			alloc.Deallocate(Move(refs[i].ref));
 		}
 	}
 }
@@ -226,7 +226,7 @@ auto StackAllocatorBenchMulti(benchmark::State& state) -> void
 		}
 		for (usize i = 0; i < count; ++i)
 		{
-			alloc.Deallocate(StdMove(refs[end - i].ref));
+			alloc.Deallocate(Move(refs[end - i].ref));
 		}
 	}
 }
@@ -249,7 +249,7 @@ auto PoolAllocatorBenchMulti(benchmark::State& state) -> void
 		}
 		for (usize i = 0; i < count; ++i)
 		{
-			alloc.Deallocate(StdMove(refs[i].ref));
+			alloc.Deallocate(Move(refs[i].ref));
 		}
 	}
 }
@@ -272,7 +272,7 @@ auto BitmapAllocatorBenchSmallBlockMulti(benchmark::State& state) -> void
 		}
 		for (usize i = 0; i < count; ++i)
 		{
-			alloc.Deallocate(StdMove(refs[i].ref));
+			alloc.Deallocate(Move(refs[i].ref));
 		}
 	}
 }
@@ -295,7 +295,7 @@ auto BitmapAllocatorBenchLargeBlockMulti(benchmark::State& state) -> void
 		}
 		for (usize i = 0; i < count; ++i)
 		{
-			alloc.Deallocate(StdMove(refs[i].ref));
+			alloc.Deallocate(Move(refs[i].ref));
 		}
 	}
 }
@@ -320,7 +320,7 @@ auto BuddyAllocatorBenchMulti(benchmark::State& state) -> void
 		}
 		for (usize i = 0; i < count; ++i)
 		{
-			alloc.Deallocate(StdMove(refs[i].ref));
+			alloc.Deallocate(Move(refs[i].ref));
 		}
 	}
 }
@@ -343,7 +343,7 @@ auto FreeListAllocatorBenchMulti(benchmark::State& state) -> void
 		}
 		for (usize i = 0; i < count; ++i)
 		{
-			alloc.Deallocate(StdMove(refs[i].ref));
+			alloc.Deallocate(Move(refs[i].ref));
 		}
 	}
 }

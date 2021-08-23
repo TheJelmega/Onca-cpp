@@ -6,8 +6,8 @@ namespace Core::Alloc
 	template <ImplementsIAllocator GtAlloc, ImplementsIAllocator LeAlloc>
 	SegregatorAllocator<GtAlloc, LeAlloc>::SegregatorAllocator(usize bound, GtAlloc&& gtAlloc, LeAlloc&& leAlloc)
 		: m_bound(bound)
-		, m_gtAlloc(StdMove(gtAlloc))
-		, m_leAlloc(StdMove(leAlloc))
+		, m_gtAlloc(Move(gtAlloc))
+		, m_leAlloc(Move(leAlloc))
 	{
 	}
 
@@ -27,9 +27,9 @@ namespace Core::Alloc
 		// TODO: Alloc stats
 
 		if (mem.Size() > m_bound)
-			m_gtAlloc.Deallocate(StdMove(mem));
+			m_gtAlloc.Deallocate(Move(mem));
 		else
-			m_leAlloc.Deallocate(StdMove(mem));
+			m_leAlloc.Deallocate(Move(mem));
 	}
 
 	template <ImplementsIAllocator GtAlloc, ImplementsIAllocator LeAlloc>

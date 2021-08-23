@@ -47,6 +47,13 @@ namespace Core
 	}
 
 	template <typename T>
+	auto MemRef<T>::operator=(const MemRef<T>& other) noexcept -> MemRef<T>&
+	{
+		MemCpy(*this, other);
+		return *this;
+	}
+	
+	template <typename T>
 	auto MemRef<T>::operator=(MemRef<T>&& other) noexcept -> MemRef<T>&
 	{
 		MemCpy(*this, other);
@@ -54,13 +61,6 @@ namespace Core
 		return *this;
 	}
 
-	template <typename T>
-	auto MemRef<T>::operator=(const MemRef<T>& other) noexcept -> MemRef<T>&
-	{
-		MemCpy(*this, other);
-		return *this;
-	}
-	
 	template <typename T>
 	auto MemRef<T>::Ptr() const noexcept -> T*
 	{
@@ -109,7 +109,7 @@ namespace Core
 	auto MemRef<T>::Dealloc() noexcept -> void
 	{
 		if (IsValid())
-			m_pAlloc->Deallocate(StdMove(*this));
+			m_pAlloc->Deallocate(Move(*this));
 	}
 
 	template <typename T>

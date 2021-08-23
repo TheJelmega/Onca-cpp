@@ -100,7 +100,7 @@ TEST(ListTest, MovedFromOtherInit)
 	Core::Alloc::Mallocator mallocator;
 	Core::List<u32> src{ { 0, 1, 2, 3, 4, 5, 6 }, mallocator };
 
-	Core::List<u32> list{ StdMove(src) };
+	Core::List<u32> list{ Move(src) };
 	ASSERT_NE(list.Begin(), Core::List<u32>::Iterator{});
 	ASSERT_EQ(list.GetAllocator(), &mallocator);
 	ASSERT_EQ(list.Size(), 7);
@@ -150,7 +150,7 @@ TEST(ListTest, MovedFromOtherAssignOp)
 	Core::List<u32> src({ 0, 1, 2, 3, 4, 5, 6 }, mallocator);
 
 	Core::List<u32> list{ mallocator };
-	list = StdMove(src);
+	list = Move(src);
 	ASSERT_NE(list.Begin(), Core::List<u32>::Iterator{});
 	ASSERT_EQ(list.GetAllocator(), &mallocator);
 	ASSERT_EQ(list.Size(), 7);
@@ -320,7 +320,7 @@ TEST(ListTest, AddMovedDynArr)
 	Core::Alloc::Mallocator mallocator;
 	Core::List<u32> src({ 0, 1, 2, 3, 4, 5, 6 }, mallocator);
 	Core::List<u32> list{ mallocator };
-	list.Add(StdMove(src));
+	list.Add(Move(src));
 
 	ASSERT_NE(list.Begin(), Core::List<u32>::Iterator{});
 	ASSERT_EQ(list.GetAllocator(), &mallocator);
@@ -469,7 +469,7 @@ TEST(ListTest, InsertAfterMovedOther)
 	Core::List<u32> src({ 40, 41, 42, 43, 44 }, mallocator);
 	Core::List<u32> list({ 0, 1, 2, 3, 4, 5, 6 }, mallocator);
 	Core::List<u32>::Iterator it = list.Begin() + 4;
-	list.InsertAfter(it, StdMove(src));
+	list.InsertAfter(it, Move(src));
 
 	ASSERT_NE(list.Begin(), Core::List<u32>::Iterator{});
 	ASSERT_EQ(list.GetAllocator(), &mallocator);
@@ -538,7 +538,7 @@ TEST(ListTest, AddFrontMovedDynArr)
 	Core::Alloc::Mallocator mallocator;
 	Core::List<u32> src({ 0, 1, 2, 3, 4, 5, 6 }, mallocator);
 	Core::List<u32> list{ { 42 }, mallocator };
-	list.AddFront(StdMove(src));
+	list.AddFront(Move(src));
 
 	ASSERT_NE(list.Begin(), Core::List<u32>::Iterator{});
 	ASSERT_EQ(list.GetAllocator(), &mallocator);

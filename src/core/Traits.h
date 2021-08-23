@@ -74,6 +74,12 @@ namespace Core
 	 */
 	template<typename T>
 	INL constexpr bool IsPrimitive = std::is_fundamental_v<T>;
+	/**
+	 * Is a type an lvalue reference
+	 * \tparam T Type to check
+	 */
+	template<typename T>
+	INL constexpr bool IsLValueReference = std::is_lvalue_reference_v<T>;
 
 	/**
 	 * Does an iterator have contiguous data
@@ -82,5 +88,12 @@ namespace Core
 	 */
 	template<typename T>
 	INL constexpr bool IteratorHasContiguousData = IsPointer<T>;
+
+	/**
+	 * Removes the reference of a type
+	 * \tparam T Type to remove reference from
+	 */
+	template<typename T>
+	using RemoveReference = std::remove_reference_t<T>;
 
 }
