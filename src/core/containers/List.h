@@ -28,7 +28,6 @@ namespace Core
 		{
 		public:
 			Iterator() noexcept;
-			explicit Iterator(const MemRef<Node>& node) noexcept;
 			Iterator(const Iterator&) noexcept = default;
 			Iterator(Iterator&&) noexcept = default;
 
@@ -47,7 +46,9 @@ namespace Core
 			auto operator!=(const Iterator& other) const noexcept -> bool;
 
 		private:
-			MemRef<Node> m_node;
+			explicit Iterator(const MemRef<Node>& node) noexcept;
+
+			NodeRef m_node;
 
 			friend class List<T>;
 		};

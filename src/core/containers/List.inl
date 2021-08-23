@@ -10,12 +10,6 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	List<T>::Iterator::Iterator(const NodeRef& node) noexcept
-		: m_node(node)
-	{
-	}
-
-	template <MoveConstructable T>
 	auto List<T>::Iterator::operator=(const Iterator& other) noexcept
 	{
 		m_node = other.m_node;
@@ -76,6 +70,12 @@ namespace Core
 	auto List<T>::Iterator::operator!=(const Iterator& other) const noexcept -> bool
 	{
 		return !(*this == other);
+	}
+
+	template <MoveConstructable T>
+	List<T>::Iterator::Iterator(const NodeRef& node) noexcept
+		: m_node(node)
+	{
 	}
 
 	template <MoveConstructable T>
