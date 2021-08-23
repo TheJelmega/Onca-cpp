@@ -83,6 +83,11 @@
  * Defines deprecation attribute
  */
 #define DEPRECATED(msg) [[deprecated(msg)]]
+/**
+ * \def NO_UNIQUE_ADDRESS
+ * Defines no unique address attribute
+ */
+#define NO_UNIQUE_ADDRESS [[no_unique_address]]
 
 /**
  * \def LIKELY

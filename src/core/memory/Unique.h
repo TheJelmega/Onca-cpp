@@ -62,11 +62,9 @@ namespace Core
 		auto GetDeleter() noexcept -> D;
 
 		explicit operator bool();
-
-		auto operator->() const noexcept -> const T*;
-		auto operator->() noexcept -> T*;
-		auto operator*() const noexcept -> const T&;
-		auto operator*() noexcept -> T&;
+		
+		auto operator->() const noexcept -> T*;
+		auto operator*() const noexcept -> T&;
 
 		auto operator<=>(const Unique<T>& other) const noexcept -> std::strong_ordering;
 
@@ -89,10 +87,11 @@ namespace Core
 		static auto CreateWitAlloc(Alloc::IAllocator& alloc, Args&&... args) noexcept -> Unique<T, D>;
 
 	private:
-		MemRef<T> m_mem;     ///< Managed memory
-		D         m_Deleter; ///< Deleter when memory is discarded
+		MemRef<T>         m_mem;       ///< Managed memory
+		NO_UNIQUE_ADDRESS D m_Deleter; ///< Deleter when memory is discarded
 	};
-	
+
 }
+
 
 #include "Unique.inl"

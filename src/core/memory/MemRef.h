@@ -11,6 +11,8 @@ namespace Core
 	/**
 	 * \brief Struct that encapsulates all info for an allocation
 	 * \tparam T Underlying type
+	 *
+	 * \note If both MemRefs are invalid, == or != can return invalid values, depending on the use-case, as it checks if the referenced allocators are the same
 	 */
 	// TODO: introduce pointer caching system as converting handles to pointer can be slow
 	template<typename T>
@@ -18,25 +20,23 @@ namespace Core
 	{
 	public:
 		/**
-		 * Create a 'null' MemRef with an allocator that can be used for allocations
+		 * Create a 'null' MemRef with an allocator tha888t can be used for allocations
 		 * \param[in] pAlloc Allocator to be used
 		 */
 		explicit MemRef(Alloc::IAllocator* pAlloc) noexcept;
 		MemRef(usize handle, Alloc::IAllocator* pAlloc, u8 log2Align, usize size, bool isBacking) noexcept;
-		
-		MemRef(MemRef<T>&& moved) noexcept;
-		auto operator=(MemRef<T>&& moved) noexcept -> MemRef<T>&;
 
+		MemRef(const MemRef<T>& other) noexcept;
+		MemRef(MemRef<T>&& other) noexcept;
+
+		auto operator=(const MemRef<T>& other) noexcept -> MemRef<T>&;
+		auto operator=(MemRef<T>&& other) noexcept -> MemRef<T>&;
+		
 		/**
 		 * Get the actual pointer to memory
 		 * \return Pointer to underlying memory
 		 */
-		auto Ptr() noexcept -> T*;
-		/**
-		 * Get the actual pointer to memory
-		 * \return Pointer to underlying memory
-		 */
-		auto Ptr() const noexcept -> const T*;
+		auto Ptr() const noexcept -> T*;
 		/**
 		 * Get the allocator used for the allocation
 		 * \return Allocator used for the allocation
@@ -88,6 +88,9 @@ namespace Core
 		template<typename U>
 		auto As() const noexcept -> const MemRef<U>&;
 		
+		auto operator->() const noexcept -> T*;
+		auto operator*() const noexcept -> T&;
+		
 		explicit operator bool() const noexcept;
 
 		template<typename U>
@@ -97,11 +100,11 @@ namespace Core
 
 	private:
 
-		usize              m_handle;                                  ///< Handle to allocated memory (~usize(0) == Invalid handle)
-		Alloc::IAllocator* m_pAlloc;                                  ///< Allocator used to allocate the allocation
-		u8                 m_log2Align : 7;                           ///< Log2 of alignment
-		bool               m_isBackingMem : 1;                        ///< Whether the memory backs an allocator
-		usize              m_size : (sizeof(usize) - sizeof(u8)) * 8; ///< Size of the allocation
+		usize              m_handle;                                          ///< Handle to allocated memory (~usize(0) == Invalid handle)
+		Alloc::IAllocator* m_pAlloc;                                          ///< Allocator used to allocate the allocation
+		u8                 m_log2Align    : 7;                                ///< Log2 of alignment
+		bool               m_isBackingMem : 1;                                ///< Whether the memory backs an allocator
+		usize              m_size         : (sizeof(usize) - sizeof(u8)) * 8; ///< Size of the allocation
 	};
 
 	/**

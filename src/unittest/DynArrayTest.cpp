@@ -270,7 +270,7 @@ TEST(DynArrayTest, ResizeLargerWithVal)
 {
 	Core::Alloc::Mallocator mallocator;
 	Core::DynArray<u32> dynArr{ 10, 42, mallocator };
-	dynArr.Resize(20);
+	dynArr.Resize(20, 4);
 
 	ASSERT_NE(dynArr.Data(), nullptr);
 	ASSERT_EQ(dynArr.GetAllocator(), &mallocator);
@@ -279,7 +279,7 @@ TEST(DynArrayTest, ResizeLargerWithVal)
 	EXPECT_FALSE(dynArr.IsEmpty());
 
 	ASSERT_EQ(dynArr[0], 42);
-	ASSERT_EQ(dynArr[19], 0);
+	ASSERT_EQ(dynArr[19], 4);
 }
 
 TEST(DynArrayTest, ResizeSmaller)

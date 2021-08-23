@@ -24,6 +24,8 @@ namespace Core
 	concept MoveConstructable = std::move_constructible<T>;
 	template<typename T>
 	concept CopyConstructable = std::copy_constructible<T>;
+	template<typename T>
+	concept NoThrowDefaultConstructable = IsNothrowDefaultConstructable<T>;
 
 	template<typename A, typename B>
 	concept SameAs = std::same_as<A, B>;

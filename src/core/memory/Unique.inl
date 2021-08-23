@@ -96,25 +96,13 @@ namespace Core
 	}
 
 	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::operator->() const noexcept -> const T*
+	auto Unique<T, D>::operator->() const noexcept -> T*
 	{
 		return m_mem.Ptr();
 	}
 
 	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::operator->() noexcept -> T*
-	{
-		return m_mem.Ptr();
-	}
-
-	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::operator*() const noexcept -> const T&
-	{
-		return *m_mem.Ptr();
-	}
-
-	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::operator*() noexcept -> T&
+	auto Unique<T, D>::operator*() const noexcept -> T&
 	{
 		return *m_mem.Ptr();
 	}

@@ -7,7 +7,7 @@ namespace Core
 {
 	template <typename T>
 	MemRef<T>::MemRef(Alloc::IAllocator* pAlloc) noexcept
-		: m_handle(0)
+		: m_handle(~usize(0))
 		, m_pAlloc(pAlloc)
 		, m_log2Align(0)
 		, m_isBackingMem(false)
@@ -26,34 +26,43 @@ namespace Core
 	}
 
 	template <typename T>
-	MemRef<T>::MemRef(MemRef<T>&& moved) noexcept
-		: m_handle(moved.m_handle)
-		, m_pAlloc(moved.m_pAlloc)
-		, m_log2Align(moved.m_log2Align)
-		, m_isBackingMem(moved.m_isBackingMem)
-		, m_size(moved.m_size)
+	MemRef<T>::MemRef(const MemRef<T>& other) noexcept
+		: m_handle(other.m_handle)
+		, m_pAlloc(other.m_pAlloc)
+		, m_log2Align(other.m_log2Align)
+		, m_isBackingMem(other.m_isBackingMem)
+		, m_size(other.m_size)
 	{
-		MemClearData(moved);
 	}
 
 	template <typename T>
-	auto MemRef<T>::operator=(MemRef<T>&& moved) noexcept -> MemRef<T>&
+	MemRef<T>::MemRef(MemRef<T>&& other) noexcept
+		: m_handle(other.m_handle)
+		, m_pAlloc(other.m_pAlloc)
+		, m_log2Align(other.m_log2Align)
+		, m_isBackingMem(other.m_isBackingMem)
+		, m_size(other.m_size)
 	{
-		MemCpy(*this, moved);
-		moved.m_handle = ~usize(0);
+		MemClearData(other);
+	}
+
+	template <typename T>
+	auto MemRef<T>::operator=(MemRef<T>&& other) noexcept -> MemRef<T>&
+	{
+		MemCpy(*this, other);
+		other.m_handle = ~usize(0);
 		return *this;
 	}
 
 	template <typename T>
-	auto MemRef<T>::Ptr() noexcept -> T*
+	auto MemRef<T>::operator=(const MemRef<T>& other) noexcept -> MemRef<T>&
 	{
-		if (m_pAlloc) LIKELY
-			return m_pAlloc->TranslateToPtr(*this);
-		return nullptr;
+		MemCpy(*this, other);
+		return *this;
 	}
-
+	
 	template <typename T>
-	auto MemRef<T>::Ptr() const noexcept -> const T*
+	auto MemRef<T>::Ptr() const noexcept -> T*
 	{
 		if (m_pAlloc) LIKELY
 			return m_pAlloc->TranslateToPtr(*this);
@@ -118,6 +127,17 @@ namespace Core
 	}
 
 	template <typename T>
+	auto MemRef<T>::operator->() const noexcept -> T*
+	{
+		return Ptr();
+	}
+	template <typename T>
+	auto MemRef<T>::operator*() const noexcept -> T&
+	{
+		return *Ptr();
+	}
+	
+	template <typename T>
 	MemRef<T>::operator bool() const noexcept
 	{
 		return IsValid();
@@ -128,7 +148,8 @@ namespace Core
 	auto MemRef<T>::operator==(const MemRef<U>& other) const noexcept -> bool
 	{
 		return m_pAlloc == other.m_pAlloc &&
-			m_handle == other.m_handle;
+			   m_handle == other.m_handle ||
+			   (!IsValid() && !other.IsValid());
 	}
 
 	template <typename T>

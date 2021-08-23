@@ -9,6 +9,8 @@ namespace Core
 	/**
 	 * Dynamically sized array
 	 * \tparam T Stored type
+	 *
+	 * \note Iterators are invalidated after certain container modifications
 	 */
 	template<MoveConstructable T>
 	class DynArray
@@ -151,14 +153,14 @@ namespace Core
 
 		/**
 		 * Insert an element in a certain location
-		 * \param[in] it Iterator to position to insert element at
+		 * \param[in] it Iterator to position to insert the element at
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
 		auto Insert(const ConstIterator& it, const T& val) noexcept -> Iterator;
 		/**
 		 * Insert an element in a certain location
-		 * \param[in] it Iterator to position to insert element at
+		 * \param[in] it Iterator to position to insert the element at
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
@@ -172,7 +174,7 @@ namespace Core
 		 */
 		auto Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator;
 		/**
-		 * \brief Insert an iterable range into the DynArray
+		 * Insert an iterable range into the DynArray
 		 * \tparam It Iterator type
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] begin Begin iterator
@@ -306,7 +308,6 @@ namespace Core
 		 * \return Whether the DynArray is empty
 		 */
 		auto IsEmpty() const noexcept ->  bool;
-
 		/**
 		 * Get a pointer to the DynArray's data
 		 * \return Pointer to the DynArray's data
@@ -317,6 +318,12 @@ namespace Core
 		 * \return Pointer to the DynArray's data
 		 */
 		auto Data() const noexcept -> const T*;
+
+		/**
+		 * Get the allocator used by the DynArray
+		 * \return Allocator used by the DynArray
+		 */
+		auto GetAllocator() const noexcept -> Alloc::IAllocator*;
 
 		/**
 		 * Get the first element in the DynArray
@@ -387,13 +394,6 @@ namespace Core
 		 */
 		auto REnd() const noexcept -> ConstIterator;
 
-		/**
-		 * Get the allocator used by the DynArray
-		 * \return Allocator used by the DynArray
-		 */
-		auto GetAllocator() noexcept -> Alloc::IAllocator*;
-
-
 		// Overloads for 'for ( ... : ... )'
 		auto begin() noexcept -> Iterator;
 		auto begin() const noexcept -> ConstIterator;
@@ -401,12 +401,6 @@ namespace Core
 		auto end() noexcept -> Iterator;
 		auto end() const noexcept -> ConstIterator;
 		auto cend() const noexcept -> ConstIterator;
-		auto rbegin() noexcept -> Iterator;
-		auto rbegin() const noexcept -> ConstIterator;
-		auto crbegin() const noexcept -> ConstIterator;
-		auto rend() noexcept -> Iterator;
-		auto rend() const noexcept -> ConstIterator;
-		auto crend() const noexcept -> ConstIterator;
 		
 	private:
 

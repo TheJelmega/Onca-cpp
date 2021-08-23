@@ -1,6 +1,6 @@
 #pragma once
 #include "core/allocator/IAllocator.h"
-#include "core/collections/DynArray.h"
+#include "core/containers/DynArray.h"
 #include "core/memory/Unique.h"
 
 namespace Core::Alloc

@@ -26,6 +26,7 @@
 #include "allocator/composable/FallbackArena.h"
 #include "allocator/composable/SegregatorArena.h"
 
-#include "collections/DynArray.h"
+#include "containers/DynArray.h"
+#include "containers/List.h"
 
 #include "math/MathUtils.h"
