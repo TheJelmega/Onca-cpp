@@ -477,7 +477,7 @@ namespace Core
 	{
 		if (idx < m_size) LIKELY
 			return *(m_mem.Ptr() + idx);
-		return {};
+		return NullOpt;
 	}
 
 	template <MoveConstructable T>
@@ -559,14 +559,14 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Last() noexcept -> T&
+	auto DynArray<T>::Back() noexcept -> T&
 	{
 		ASSERT(m_size, "Invalid when DynArray is empty");
 		return *(m_mem.Ptr() + m_size - 1);
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Last() const noexcept -> const T&
+	auto DynArray<T>::Back() const noexcept -> const T&
 	{
 		ASSERT(m_size, "Invalid when DynArray is empty");
 		return *(m_mem.Ptr() + m_size - 1);

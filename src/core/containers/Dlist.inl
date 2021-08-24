@@ -916,14 +916,14 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Last() noexcept -> T&
+	auto DList<T>::Back() noexcept -> T&
 	{
 		ASSERT(m_head, "Invalid when List is empty");
 		return m_tail->val;
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Last() const noexcept -> const T&
+	auto DList<T>::Back() const noexcept -> const T&
 	{
 		ASSERT(m_head, "Invalid when List is empty");
 		return m_tail->val;

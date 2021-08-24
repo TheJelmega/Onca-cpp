@@ -342,13 +342,13 @@ namespace Core
 		 * \return Last element in the DynArray
 		 * \note Only use when the DynArray is not empty
 		 */
-		auto Last() noexcept -> T&;
+		auto Back() noexcept -> T&;
 		/**
 		 * Get the last element in the DynArray
 		 * \return Last element in the DynArray
 		 * \note Only use when the DynArray is not empty
 		 */
-		auto Last() const noexcept -> const T&;
+		auto Back() const noexcept -> const T&;
 
 		/**
 		 * Get an iterator to the first element

@@ -23,6 +23,7 @@ using InitializerList = std::initializer_list<T>;
 // TODO: Custom version to allow references (no implicit rebind)
 template<typename T>
 using Optional = std::optional<T>;
+inline constexpr std::nullopt_t NullOpt{ std::nullopt_t::_Tag{} };
 
 template<typename ...T>
 using Tuple = std::tuple<T...>;
