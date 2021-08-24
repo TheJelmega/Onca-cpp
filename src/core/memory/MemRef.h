@@ -22,6 +22,10 @@ namespace Core
 		/**
 		 * Create an invalid MemRef
 		 */
+		MemRef() noexcept;
+		/**
+		 * Create an invalid MemRef
+		 */
 		MemRef(nullptr_t) noexcept;
 		/**
 		 * Create an 'invalid' MemRef with an allocator that can be used for allocations

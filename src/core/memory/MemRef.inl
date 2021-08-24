@@ -6,6 +6,16 @@
 namespace Core
 {
 	template <typename T>
+	MemRef<T>::MemRef() noexcept
+		: m_handle(~usize(0))
+		, m_pAlloc(nullptr)
+		, m_log2Align(0)
+		, m_isBackingMem(false)
+		, m_size(0)
+	{
+	}
+
+	template <typename T>
 	MemRef<T>::MemRef(nullptr_t) noexcept
 		: m_handle(~usize(0))
 		, m_pAlloc(nullptr)

@@ -28,5 +28,6 @@
 
 #include "containers/DynArray.h"
 #include "containers/List.h"
+#include "containers/DList.h"
 
 #include "math/MathUtils.h"
