@@ -46,7 +46,7 @@ namespace Core
 	}
 
 	template <typename T>
-	MemRef<T>::MemRef(const MemRef<T>& other) noexcept
+	MemRef<T>::MemRef(const MemRef& other) noexcept
 		: m_handle(other.m_handle)
 		, m_pAlloc(other.m_pAlloc)
 		, m_log2Align(other.m_log2Align)
@@ -56,7 +56,7 @@ namespace Core
 	}
 
 	template <typename T>
-	MemRef<T>::MemRef(MemRef<T>&& other) noexcept
+	MemRef<T>::MemRef(MemRef&& other) noexcept
 		: m_handle(other.m_handle)
 		, m_pAlloc(other.m_pAlloc)
 		, m_log2Align(other.m_log2Align)
@@ -75,14 +75,14 @@ namespace Core
 	}
 
 	template <typename T>
-	auto MemRef<T>::operator=(const MemRef<T>& other) noexcept -> MemRef<T>&
+	auto MemRef<T>::operator=(const MemRef& other) noexcept -> MemRef<T>&
 	{
 		MemCpy(*this, other);
 		return *this;
 	}
 	
 	template <typename T>
-	auto MemRef<T>::operator=(MemRef<T>&& other) noexcept -> MemRef<T>&
+	auto MemRef<T>::operator=(MemRef&& other) noexcept -> MemRef<T>&
 	{
 		MemCpy(*this, other);
 		other.m_handle = ~usize(0);

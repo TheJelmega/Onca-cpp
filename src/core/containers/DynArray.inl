@@ -44,7 +44,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DynArray<T>::DynArray(const DynArray<T>& other) noexcept
+	DynArray<T>::DynArray(const DynArray& other) noexcept
 		: m_mem(other.GetAllocator())
 		, m_size(0)
 	{
@@ -53,7 +53,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DynArray<T>::DynArray(const DynArray<T>& other, Alloc::IAllocator& alloc) noexcept
+	DynArray<T>::DynArray(const DynArray& other, Alloc::IAllocator& alloc) noexcept
 		: m_mem(&alloc)
 		, m_size(0)
 	{
@@ -62,7 +62,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DynArray<T>::DynArray(DynArray<T>&& other) noexcept
+	DynArray<T>::DynArray(DynArray&& other) noexcept
 		: m_mem(Move(other.m_mem))
 		, m_size(Move(other.m_size))
 	{
@@ -91,7 +91,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::operator=(DynArray<T>&& other) noexcept -> DynArray<T>&
+	auto DynArray<T>::operator=(DynArray&& other) noexcept -> DynArray<T>&
 	{
 		Clear(true);
 		m_mem = Move(other.m_mem);
@@ -260,7 +260,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Add(const DynArray<T>& other) -> void
+	auto DynArray<T>::Add(const DynArray& other) -> void
 	{
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Reserve(m_size + other.m_size);
@@ -277,7 +277,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Add(DynArray<T>&& other) -> void
+	auto DynArray<T>::Add(DynArray&& other) -> void
 	{
 		const usize idx = m_size;
 		m_size += other.m_size;
@@ -352,7 +352,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Insert(const ConstIterator& it, const DynArray<T>& other) noexcept -> Iterator
+	auto DynArray<T>::Insert(const ConstIterator& it, const DynArray& other) noexcept -> Iterator
 	{
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		const usize offset = usize(it - m_mem.Ptr());
@@ -366,7 +366,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Insert(const ConstIterator& it, DynArray<T>&& other) noexcept -> Iterator
+	auto DynArray<T>::Insert(const ConstIterator& it, DynArray&& other) noexcept -> Iterator
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");

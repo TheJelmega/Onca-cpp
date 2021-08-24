@@ -93,23 +93,23 @@ namespace Core
 		 * \brief Create a List with the contents of another List
 		 * \param[in] other List to copy
 		 */
-		List(const List<T>& other) noexcept;
+		List(const List& other) noexcept;
 		/**
 		 * \brief Create a List with the contents of another List, but with a different allocator
 		 * \param[in] other List to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit List(const List<T>& other, Alloc::IAllocator& alloc) noexcept;
+		explicit List(const List& other, Alloc::IAllocator& alloc) noexcept;
 		/**
 		 * Move another List into a new List
 		 * \param[in] other List to move from
 		 */
-		List(List<T>&& other) noexcept;
+		List(List&& other) noexcept;
 		~List() noexcept;
 
 		auto operator=(const InitializerList<T>& il) noexcept -> List<T>&;
-		auto operator=(const List<T>& other) noexcept -> List<T>&;
-		auto operator=(List<T>&& other) noexcept -> List<T>&;
+		auto operator=(const List& other) noexcept -> List<T>&;
+		auto operator=(List&& other) noexcept -> List<T>&;
 
 		/**
 		 * \brief Assign an iterable range to the List
@@ -163,12 +163,12 @@ namespace Core
 		 * Add the contents of a List to the List
 		 * \param[in] other List to add
 		 */
-		auto Add(const List<T>& other) -> void;
+		auto Add(const List& other) -> void;
 		/**
 		 * Add the contents of a List to the List
 		 * \param[in] other List to add
 		 */
-		auto Add(List<T>&& other) -> void;
+		auto Add(List&& other) -> void;
 
 		/**
 		 * Emplace an element at the back of the List
@@ -223,14 +223,14 @@ namespace Core
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto InsertAfter(const ConstIterator& it, const List<T>& other) noexcept -> Iterator;
+		auto InsertAfter(const ConstIterator& it, const List& other) noexcept -> Iterator;
 		/**
 		 * Insert a List into the List after a certain location
 		 * \param[in] it Iterator to position before the element to insert elements at
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto InsertAfter(const ConstIterator& it, List<T>&& other) noexcept -> Iterator;
+		auto InsertAfter(const ConstIterator& it, List&& other) noexcept -> Iterator;
 
 		/**
 		 * Emplace an element into the List after a certain location
@@ -280,13 +280,13 @@ namespace Core
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const List<T>& other) noexcept -> void;
+		auto AddFront(const List& other) noexcept -> void;
 		/**
 		 * Add a List into the List at the front of the List
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(List<T>&& other) noexcept -> void;
+		auto AddFront(List&& other) noexcept -> void;
 
 		/**
 		 * Emplace an element at the front of the List

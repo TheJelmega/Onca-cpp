@@ -144,7 +144,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DList<T>::DList(const DList<T>& other) noexcept
+	DList<T>::DList(const DList& other) noexcept
 		: m_head(other.GetAllocator())
 		, m_tail(nullptr)
 	{
@@ -152,7 +152,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DList<T>::DList(const DList<T>& other, Alloc::IAllocator& alloc) noexcept
+	DList<T>::DList(const DList& other, Alloc::IAllocator& alloc) noexcept
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
@@ -160,7 +160,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DList<T>::DList(DList<T>&& other) noexcept
+	DList<T>::DList(DList&& other) noexcept
 		: m_head(Move(other.m_head))
 		, m_tail(Move(other.m_tail))
 	{
@@ -180,14 +180,14 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::operator=(const DList<T>& other) noexcept -> DList<T>&
+	auto DList<T>::operator=(const DList& other) noexcept -> DList<T>&
 	{
 		Assign(other.Begin(), other.End());
 		return *this;
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::operator=(DList<T>&& other) noexcept -> DList<T>&
+	auto DList<T>::operator=(DList&& other) noexcept -> DList<T>&
 	{
 		Clear();
 		m_head = Move(other.m_head);
@@ -322,15 +322,18 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Add(const DList<T>& other) -> void
+	auto DList<T>::Add(const DList& other) -> void
 	{
 		for (Iterator it = other.Begin(), end = other.End(); it != end; ++it)
 			Add(Move(T{ *it }));
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Add(DList<T>&& other) -> void
+	auto DList<T>::Add(DList&& other) -> void
 	{
+		if (other.IsEmpty())
+			return;
+
 		if (m_head.GetAlloc() == other.GetAllocator())
 		{
 			if (m_tail)
@@ -479,14 +482,17 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, const DList<T>& other) noexcept -> Iterator
+	auto DList<T>::Insert(ConstIterator& it, const DList& other) noexcept -> Iterator
 	{
 		return Insert(it, other.Begin(), other.End());
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, DList<T>&& other) noexcept -> Iterator
+	auto DList<T>::Insert(ConstIterator& it, DList&& other) noexcept -> Iterator
 	{
+		if (other.IsEmpty())
+			return it;
+
 		NodeRef endNode = it.m_node;
 		NodeRef prev = endNode->prev;
 
@@ -642,14 +648,17 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::AddFront(const DList<T>& other) noexcept -> void
+	auto DList<T>::AddFront(const DList& other) noexcept -> void
 	{
 		AddFront(other.Begin(), other.End());
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::AddFront(DList<T>&& other) noexcept -> void
+	auto DList<T>::AddFront(DList&& other) noexcept -> void
 	{
+		if (other.IsEmpty())
+			return;
+
 		NodeRef prev;
 		NodeRef otherNode = other.m_head;
 

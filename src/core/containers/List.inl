@@ -119,7 +119,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	List<T>::List(const List<T>& other) noexcept
+	List<T>::List(const List& other) noexcept
 		: m_head(other.GetAllocator())
 		, m_tail(nullptr)
 	{
@@ -127,7 +127,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	List<T>::List(const List<T>& other, Alloc::IAllocator& alloc) noexcept
+	List<T>::List(const List& other, Alloc::IAllocator& alloc) noexcept
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
@@ -135,7 +135,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	List<T>::List(List<T>&& other) noexcept
+	List<T>::List(List&& other) noexcept
 		: m_head(Move(other.m_head))
 		, m_tail(Move(other.m_tail))
 	{
@@ -155,14 +155,14 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto List<T>::operator=(const List<T>& other) noexcept -> List<T>&
+	auto List<T>::operator=(const List& other) noexcept -> List<T>&
 	{
 		Assign(other.Begin(), other.End());
 		return *this;
 	}
 
 	template <MoveConstructable T>
-	auto List<T>::operator=(List<T>&& other) noexcept -> List<T>&
+	auto List<T>::operator=(List&& other) noexcept -> List<T>&
 	{
 		Clear();
 		m_head = Move(other.m_head);
@@ -300,22 +300,41 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto List<T>::Add(const List<T>& other) -> void
+	auto List<T>::Add(const List& other) -> void
 	{
 		for (Iterator it = other.Begin(), end = other.End(); it != end; ++it)
 			Add(Move(T{ it.m_node->val }));
 	}
 
 	template <MoveConstructable T>
-	auto List<T>::Add(List<T>&& other) -> void
+	auto List<T>::Add(List&& other) -> void
 	{
-		NodeRef node = other.m_head;
-		while (node)
+		if (other.IsEmpty())
+			return;
+
+		if (m_head.GetAlloc() == other.GetAllocator())
 		{
-			Add(Move(node->val));
-			NodeRef next = node->next;
-			node.Dealloc();
-			node = next;
+			if (m_tail)
+			{
+				m_tail->next = other.m_head;
+				m_tail = other.m_tail;
+			}
+			else
+			{
+				m_head = other.m_head;
+				m_tail = other.m_tail;
+			}
+		}
+		else
+		{
+			NodeRef node = other.m_head;
+			while (node)
+			{
+				Add(Move(node->val));
+				NodeRef next = node->next;
+				node.Dealloc();
+				node = next;
+			}
 		}
 		other.m_head = other.m_tail = nullptr;
 	}
@@ -402,7 +421,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto List<T>::InsertAfter(ConstIterator& it, const List<T>& other) noexcept -> Iterator
+	auto List<T>::InsertAfter(ConstIterator& it, const List& other) noexcept -> Iterator
 	{
 		if (other.IsEmpty())
 			return it;
@@ -411,32 +430,42 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto List<T>::InsertAfter(ConstIterator& it, List<T>&& other) noexcept -> Iterator
+	auto List<T>::InsertAfter(ConstIterator& it, List&& other) noexcept -> Iterator
 	{
 		if (other.IsEmpty())
 			return it;
 
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		NodeRef prev = it.m_node;
 		NodeRef endNode = prev->next;
 
-		NodeRef otherNOde = other.m_head;
-		while (otherNOde)
+		if (m_head.GetAlloc() == other.GetAllocator())
 		{
-			NodeRef node = CreateNode(Move(otherNOde->val));
-			prev->next = node;
-			prev = node;
-			
-			NodeRef next = otherNOde->next;
-			otherNOde.Dealloc();
-			otherNOde = next;
+			prev->next = other.m_head;
+			if (endNode)
+				other.m_tail->next = endNode;
+			else
+				m_tail = other.m_tail;
 		}
-
-		if (endNode)
-			prev->next = endNode;
 		else
-			m_tail = prev;
+		{
+			NodeRef otherNOde = other.m_head;
+			while (otherNOde)
+			{
+				NodeRef node = CreateNode(Move(otherNOde->val));
+				prev->next = node;
+				prev = node;
 
+				NodeRef next = otherNOde->next;
+				otherNOde.Dealloc();
+				otherNOde = next;
+			}
+
+			if (endNode)
+				prev->next = endNode;
+			else
+				m_tail = prev;
+		}
+		
 		other.m_head = other.m_tail = nullptr;
 		return it + 1;
 	}
@@ -485,7 +514,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto List<T>::AddFront(const List<T>& other) noexcept -> void
+	auto List<T>::AddFront(const List& other) noexcept -> void
 	{
 		if (other.IsEmpty())
 			return;
@@ -497,7 +526,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto List<T>::AddFront(List<T>&& other) noexcept -> void
+	auto List<T>::AddFront(List&& other) noexcept -> void
 	{
 		if (other.IsEmpty())
 			return;

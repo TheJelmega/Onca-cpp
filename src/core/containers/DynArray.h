@@ -57,23 +57,23 @@ namespace Core
 		 * \brief Create a DynArray with the contents of another DynArray
 		 * \param[in] other DynArray to copy
 		 */
-		DynArray(const DynArray<T>& other) noexcept;
+		DynArray(const DynArray& other) noexcept;
 		/**
 		 * \brief Create a DynArray with the contents of another DynArray, but with a different allocator
 		 * \param[in] other DynArray to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit DynArray(const DynArray<T>& other, Alloc::IAllocator& alloc) noexcept;
+		explicit DynArray(const DynArray& other, Alloc::IAllocator& alloc) noexcept;
 		/**
 		 * Move another DynArray into a new DynArray
 		 * \param[in] other DynArray to move from
 		 */
-		DynArray(DynArray<T>&& other) noexcept;
+		DynArray(DynArray&& other) noexcept;
 		~DynArray() noexcept;
 
 		auto operator=(const InitializerList<T>& il) noexcept -> DynArray<T>&;
-		auto operator=(const DynArray<T>& other) noexcept -> DynArray<T>&;
-		auto operator=(DynArray<T>&& other) noexcept -> DynArray<T>&;
+		auto operator=(const DynArray& other) noexcept -> DynArray<T>&;
+		auto operator=(DynArray&& other) noexcept -> DynArray<T>&;
 
 		/**
 		 * \brief Assign an iterable range to the DynArray
@@ -136,12 +136,12 @@ namespace Core
 		 * Add the contents of a DynArray to the DynArray
 		 * \param[in] other DynArray to add
 		 */
-		auto Add(const DynArray<T>& other) -> void;
+		auto Add(const DynArray& other) -> void;
 		/**
 		 * Add the contents of a DynArray to the DynArray
 		 * \param[in] other DynArray to add
 		 */
-		auto Add(DynArray<T>&& other) -> void;
+		auto Add(DynArray&& other) -> void;
 
 		/**
 		 * Emplace an element at the back of the DynArray

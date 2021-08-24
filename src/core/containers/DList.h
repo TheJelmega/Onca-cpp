@@ -96,13 +96,13 @@ namespace Core
 		 * \brief Create a DList with the contents of another DList
 		 * \param[in] other DList to copy
 		 */
-		DList(const DList<T>& other) noexcept;
+		DList(const DList& other) noexcept;
 		/**
 		 * \brief Create a DList with the contents of another DList, but with a different allocator
 		 * \param[in] other DList to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit DList(const DList<T>& other, Alloc::IAllocator& alloc) noexcept;
+		explicit DList(const DList& other, Alloc::IAllocator& alloc) noexcept;
 		/**
 		 * Move another DList into a new DList
 		 * \param[in] other DList to move from
@@ -166,12 +166,12 @@ namespace Core
 		 * Add the contents of a DList to the DList
 		 * \param[in] other DList to add
 		 */
-		auto Add(const DList<T>& other) -> void;
+		auto Add(const DList& other) -> void;
 		/**
 		 * Add the contents of a DList to the DList
 		 * \param[in] other DList to add
 		 */
-		auto Add(DList<T>&& other) -> void;
+		auto Add(DList&& other) -> void;
 
 		/**
 		 * Emplace an element at the back of the DList
@@ -226,14 +226,14 @@ namespace Core
 		 * \param[in] other DList to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, const DList<T>& other) noexcept -> Iterator;
+		auto Insert(const ConstIterator& it, const DList& other) noexcept -> Iterator;
 		/**
 		 * Insert a DList into the DList before a certain location
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] other DList to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, DList<T>&& other) noexcept -> Iterator;
+		auto Insert(const ConstIterator& it, DList&& other) noexcept -> Iterator;
 
 		/**
 		 * Emplace an element into the DList before a certain location
@@ -283,13 +283,13 @@ namespace Core
 		 * \param[in] other DList to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const DList<T>& other) noexcept -> void;
+		auto AddFront(const DList& other) noexcept -> void;
 		/**
 		 * Add a DList into the DList at the front of the DList
 		 * \param[in] other DList to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(DList<T>&& other) noexcept -> void;
+		auto AddFront(DList&& other) noexcept -> void;
 
 		/**
 		 * Emplace an element at the front of the DList

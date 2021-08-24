@@ -18,15 +18,15 @@ namespace Core
 		template<typename U>
 		explicit Unique(Unique<U, D>&& unique);
 
-		Unique(Unique<T, D>&&) noexcept = default;
-		Unique(const Unique<T, D>&) = delete;
+		Unique(Unique&&) noexcept = default;
+		Unique(const Unique&) = delete;
 
 		auto operator=(nullptr_t) noexcept -> Unique<T, D>&;
 		template<typename U>
 		auto operator=(Unique<U, D>&& unique) noexcept -> Unique<T, D>&;
 		
-		auto operator=(Unique<T, D>&&) noexcept -> Unique<T, D>& = default;
-		auto operator=(const Unique<T, D>&) -> Unique<T, D>& = delete;
+		auto operator=(Unique&&) noexcept -> Unique<T, D>& = default;
+		auto operator=(const Unique&) -> Unique<T, D>& = delete;
 
 		/**
 		 * \brief Release control of the underlying MemRef and return it

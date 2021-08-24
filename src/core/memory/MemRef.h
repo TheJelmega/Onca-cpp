@@ -34,12 +34,12 @@ namespace Core
 		explicit MemRef(Alloc::IAllocator* pAlloc) noexcept;
 		MemRef(usize handle, Alloc::IAllocator* pAlloc, u8 log2Align, usize size, bool isBacking) noexcept;
 
-		MemRef(const MemRef<T>& other) noexcept;
-		MemRef(MemRef<T>&& other) noexcept;
+		MemRef(const MemRef& other) noexcept;
+		MemRef(MemRef&& other) noexcept;
 
 		auto operator=(nullptr_t) noexcept -> MemRef<T>&;
-		auto operator=(const MemRef<T>& other) noexcept -> MemRef<T>&;
-		auto operator=(MemRef<T>&& other) noexcept -> MemRef<T>&;
+		auto operator=(const MemRef& other) noexcept -> MemRef<T>&;
+		auto operator=(MemRef&& other) noexcept -> MemRef<T>&;
 		
 		/**
 		 * Get the actual pointer to memory
