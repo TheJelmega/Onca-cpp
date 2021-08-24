@@ -60,7 +60,7 @@ namespace Core::Alloc
 			}
 		}
 
-		return MemRef<u8>{ nullptr };
+		return nullptr;
 	}
 
 	template<usize BlockSize, usize NumBlocks>

@@ -33,7 +33,7 @@ namespace Core::Alloc
 		const usize padding = diff == 0 ? 0 : align - diff;
 
 		if (m_offset + padding + size > m_mem.Size()) UNLIKELY
-			return MemRef<u8>{ nullptr };
+			return nullptr;
 		
 		usize handle = m_offset;
 		m_offset += size;

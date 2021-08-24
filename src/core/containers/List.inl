@@ -259,7 +259,7 @@ namespace Core
 		if (it != end)
 		{
 			m_tail = last.m_node;
-			m_tail->next = NodeRef{ nullptr };
+			m_tail->next = nullptr;
 			NodeRef curNode = it.m_node;
 			do
 			{
@@ -317,7 +317,7 @@ namespace Core
 			node.Dealloc();
 			node = next;
 		}
-		other.m_head = other.m_tail = NodeRef{ nullptr };
+		other.m_head = other.m_tail = nullptr;
 	}
 
 	template <MoveConstructable T>
@@ -356,9 +356,20 @@ namespace Core
 	auto List<T>::InsertAfter(ConstIterator& it, usize count, const T& val) noexcept -> Iterator
 	{
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-		Iterator curIt = it;
+		NodeRef node = it.m_node;
+		NodeRef end = node->next;
 		for (usize i = 0; i < count; ++i)
-			curIt = InsertAfter(curIt, Move(T{ val }));
+		{
+			NodeRef next = CreateNode(Move(T{ val }));
+			node->next = next;
+			node = next;
+		}
+
+		if (end)
+			node->next = end;
+		else
+			m_tail = node;
+		
 		return it + 1;
 	}
 
@@ -367,20 +378,27 @@ namespace Core
 	auto List<T>::InsertAfter(ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator
 	{
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-		Iterator curIt = it;
+		NodeRef node = it.m_node;
+		NodeRef endNode = node->next;
 		for (It valIt = begin; valIt != end; ++valIt)
-			curIt = InsertAfter(curIt, Move(T{ *valIt }));
+		{
+			NodeRef next = CreateNode(Move(T{ *valIt }));
+			node->next = next;
+			node = next;
+		}
+
+		if (endNode)
+			node->next = endNode;
+		else
+			m_tail = node;
+
 		return it + 1;
 	}
 
 	template <MoveConstructable T>
 	auto List<T>::InsertAfter(ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-		Iterator curIt = it;
-		for (const T* valIt = il.begin(), *end = il.end(); valIt != end; ++valIt)
-			curIt = InsertAfter(curIt, Move(T{ *valIt }));
-		return it + 1;
+		return InsertAfter(it, il.begin(), il.end());
 	}
 
 	template <MoveConstructable T>
@@ -389,14 +407,7 @@ namespace Core
 		if (other.IsEmpty())
 			return it;
 
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-		Iterator curIt = it;
-		for (Iterator valIt = other.Begin(), end = other.End(); valIt != end; ++valIt)
-		{
-
-			curIt = InsertAfter(curIt, Move(T{ *valIt }));
-		}
-		return it + 1;
+		return InsertAfter(it, other.Begin(), other.End());
 	}
 
 	template <MoveConstructable T>
@@ -406,17 +417,27 @@ namespace Core
 			return it;
 
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-		Iterator curIt = it;
+		NodeRef prev = it.m_node;
+		NodeRef endNode = prev->next;
 
-		NodeRef node = other.m_head;
-		while (node)
+		NodeRef otherNOde = other.m_head;
+		while (otherNOde)
 		{
-			curIt = InsertAfter(curIt, Move(node->val));
-			NodeRef next = node->next;
-			node.Dealloc();
-			node = next;
+			NodeRef node = CreateNode(Move(otherNOde->val));
+			prev->next = node;
+			prev = node;
+			
+			NodeRef next = otherNOde->next;
+			otherNOde.Dealloc();
+			otherNOde = next;
 		}
-		other.m_head = other.m_tail = NodeRef{ nullptr };
+
+		if (endNode)
+			prev->next = endNode;
+		else
+			m_tail = prev;
+
+		other.m_head = other.m_tail = nullptr;
 		return it + 1;
 	}
 
@@ -512,7 +533,7 @@ namespace Core
 			return;
 
 		NodeRef node = m_head;
-		Alloc::IAllocator* pAlloc = m_head.Alloc();
+		Alloc::IAllocator* pAlloc = m_head.GetAlloc();
 		while (node)
 		{
 			node->val.~T();
@@ -531,11 +552,11 @@ namespace Core
 		NodeRef next = node->next;
 		if (!next)
 		{
-			m_head->val.~T();
-			Alloc::IAllocator* pAlloc = m_head.Alloc();
-			m_head.Dealloc();
-			MemClearData(m_tail);
+			Alloc::IAllocator* pAlloc = m_head.GetAlloc();
 			m_head = NodeRef{ pAlloc };
+			m_tail = nullptr;
+			node->val.~T();
+			node.Dealloc();
 		}
 		else 
 		{
@@ -547,7 +568,7 @@ namespace Core
 
 			next->val.~T();
 			next.Dealloc();
-			node->next = NodeRef{ nullptr };
+			node->next = nullptr;
 			m_tail = node;
 		}
 	}
@@ -564,11 +585,11 @@ namespace Core
 		}
 		else
 		{
-			Alloc::IAllocator* pAlloc = m_head.Alloc();
+			Alloc::IAllocator* pAlloc = m_head.GetAlloc();
 			m_head->val.~T();
 			m_head.Dealloc();
 			m_head = NodeRef{ pAlloc };
-			m_tail = NodeRef{ nullptr };
+			m_tail = nullptr;
 		}
 	}
 
@@ -641,7 +662,7 @@ namespace Core
 			next = tmp;
 		}
 
-		m_head->next = NodeRef{ nullptr };
+		m_head->next = nullptr;
 		NodeRef head = Move(m_head);
 		m_head = Move(m_tail);
 		m_tail = Move(head);
@@ -666,7 +687,7 @@ namespace Core
 	template <MoveConstructable T>
 	auto List<T>::GetAllocator() const noexcept -> Alloc::IAllocator*
 	{
-		return m_head.Alloc();
+		return m_head.GetAlloc();
 	}
 
 	template <MoveConstructable T>
@@ -760,7 +781,7 @@ namespace Core
 	template <MoveConstructable T>
 	auto List<T>::CreateNode(T&& val) noexcept -> NodeRef
 	{
-		NodeRef node = m_head.Alloc()->template Allocate<Node>();
+		NodeRef node = m_head.GetAlloc()->template Allocate<Node>();
 		Node* pNode = node.Ptr();
 		new (&pNode->next) NodeRef{ nullptr };
 		new (&pNode->val) T{ Move(val) };

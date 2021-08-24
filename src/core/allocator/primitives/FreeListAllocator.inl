@@ -24,7 +24,7 @@ namespace Core::Alloc
 	{
 		const usize loc = AllocFirst(size, align, isBacking);
 		if (loc == usize(-1))
-			return MemRef<u8>{ nullptr };
+			return nullptr;
 		return { loc, this, Log2(align), size, isBacking };
 	}
 

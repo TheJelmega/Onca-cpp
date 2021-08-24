@@ -6,6 +6,16 @@
 namespace Core
 {
 	template <typename T>
+	MemRef<T>::MemRef(nullptr_t) noexcept
+		: m_handle(~usize(0))
+		, m_pAlloc(nullptr)
+		, m_log2Align(0)
+		, m_isBackingMem(false)
+		, m_size(0)
+	{
+	}
+
+	template <typename T>
 	MemRef<T>::MemRef(Alloc::IAllocator* pAlloc) noexcept
 		: m_handle(~usize(0))
 		, m_pAlloc(pAlloc)
@@ -47,6 +57,14 @@ namespace Core
 	}
 
 	template <typename T>
+	auto MemRef<T>::operator=(nullptr_t) noexcept -> MemRef<T>&
+	{
+		MemClearData(*this);
+		m_handle = ~usize(0);
+		return *this;
+	}
+
+	template <typename T>
 	auto MemRef<T>::operator=(const MemRef<T>& other) noexcept -> MemRef<T>&
 	{
 		MemCpy(*this, other);
@@ -70,7 +88,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto MemRef<T>::Alloc() const noexcept -> Alloc::IAllocator*
+	auto MemRef<T>::GetAlloc() const noexcept -> Alloc::IAllocator*
 	{
 		return m_pAlloc;
 	}

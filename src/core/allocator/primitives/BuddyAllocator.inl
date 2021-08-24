@@ -26,13 +26,13 @@ namespace Core::Alloc
 
 		u8* pManagementInfo = m_mem.Ptr();
 		if (pManagementInfo[0] & 0x80) UNLIKELY
-			return MemRef<u8>{ nullptr };
+			return nullptr;
 
 		const auto [sizeClass, sizeClassBlockSize] = CalculateSizeClassAndBlockSize(size);
 
 		const usize divIdx = GetIdx(pManagementInfo, sizeClass);
 		if (divIdx == usize(-1))
-			return MemRef<u8>{ nullptr };
+			return nullptr;
 
 		const usize offset = divIdx + 1 - (1ull << Log2(divIdx + 1));
 		const usize memOffset = offset * sizeClassBlockSize;

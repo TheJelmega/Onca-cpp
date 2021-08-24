@@ -24,7 +24,7 @@ namespace Core::Alloc
 	template <typename T>
 	auto IAllocator::Owns(const MemRef<T>& ref) noexcept -> bool
 	{
-		return OwnsInternal(ref.Alloc());
+		return OwnsInternal(ref.GetAlloc());
 	}
 
 	template <typename T>

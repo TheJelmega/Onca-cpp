@@ -20,7 +20,11 @@ namespace Core
 	{
 	public:
 		/**
-		 * Create a 'null' MemRef with an allocator tha888t can be used for allocations
+		 * Create an invalid MemRef
+		 */
+		MemRef(nullptr_t) noexcept;
+		/**
+		 * Create an 'invalid' MemRef with an allocator that can be used for allocations
 		 * \param[in] pAlloc Allocator to be used
 		 */
 		explicit MemRef(Alloc::IAllocator* pAlloc) noexcept;
@@ -29,6 +33,7 @@ namespace Core
 		MemRef(const MemRef<T>& other) noexcept;
 		MemRef(MemRef<T>&& other) noexcept;
 
+		auto operator=(nullptr_t) noexcept -> MemRef<T>&;
 		auto operator=(const MemRef<T>& other) noexcept -> MemRef<T>&;
 		auto operator=(MemRef<T>&& other) noexcept -> MemRef<T>&;
 		
@@ -41,7 +46,7 @@ namespace Core
 		 * Get the allocator used for the allocation
 		 * \return Allocator used for the allocation
 		 */
-		auto Alloc() const noexcept -> Alloc::IAllocator*;
+		auto GetAlloc() const noexcept -> Alloc::IAllocator*;
 		/**
 		 * Get the alignment of the allocation
 		 * \return Alignment of the allocation

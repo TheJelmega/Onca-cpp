@@ -21,7 +21,7 @@ namespace Core::Alloc
 		UNUSED(align);
 
 		if (m_offset + size > Size) UNLIKELY
-			return MemRef<u8>{ nullptr };
+			return nullptr;
 
 		const usize mask = align - 1;
 		const usize diff = size & mask;

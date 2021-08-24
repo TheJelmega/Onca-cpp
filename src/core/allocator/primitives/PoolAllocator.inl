@@ -54,7 +54,7 @@ namespace Core::Alloc
 
 			// In case we run out of space when updating the head
 			if (handle >= m_mem.Size()) UNLIKELY
-				return MemRef<u8>{ nullptr };
+				return nullptr;
 
 			next = *reinterpret_cast<usize*>(pMem + handle);
 		}

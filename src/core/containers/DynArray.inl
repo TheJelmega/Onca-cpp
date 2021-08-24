@@ -174,7 +174,7 @@ namespace Core
 		while (cap < newCap)
 			cap = (cap << 1) - (cap >> 1);
 
-		MemRef<T> mem = m_mem.Alloc()->template Allocate<T>(cap * sizeof(T));
+		MemRef<T> mem = m_mem.GetAlloc()->template Allocate<T>(cap * sizeof(T));
 		if (m_mem.IsValid())
 		{
 			MemCpy(mem.Ptr(), m_mem.Ptr(), m_size * sizeof(T));
@@ -236,7 +236,7 @@ namespace Core
 		usize cap = Capacity();
 		if (cap > m_size)
 		{
-			MemRef<T> mem = m_mem.Alloc()->template Allocate<T>(m_size * sizeof(T));
+			MemRef<T> mem = m_mem.GetAlloc()->template Allocate<T>(m_size * sizeof(T));
 			if (m_mem.IsValid())
 			{
 				MemCpy(mem.Ptr(), m_mem.Ptr(), m_size * sizeof(T));
@@ -400,7 +400,7 @@ namespace Core
 		m_size = 0;
 		if (clearMemory && m_mem)
 		{
-			Alloc::IAllocator* pAlloc = m_mem.Alloc();
+			Alloc::IAllocator* pAlloc = m_mem.GetAlloc();
 			m_mem.Dealloc();
 			m_mem = MemRef<T>(pAlloc);
 		}
@@ -541,7 +541,7 @@ namespace Core
 	template <MoveConstructable T>
 	auto DynArray<T>::GetAllocator() const noexcept -> Alloc::IAllocator*
 	{
-		return m_mem.Alloc();
+		return m_mem.GetAlloc();
 	}
 
 	template <MoveConstructable T>
