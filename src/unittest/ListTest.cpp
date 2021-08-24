@@ -31,7 +31,7 @@ TEST(ListTest, ValueInit)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 42);
-	ASSERT_EQ(list.Last(), 42);
+	ASSERT_EQ(list.Back(), 42);
 }
 
 TEST(ListTest, IteratorInit)
@@ -47,7 +47,7 @@ TEST(ListTest, IteratorInit)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, InitializerListInit)
@@ -60,7 +60,7 @@ TEST(ListTest, InitializerListInit)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, FromOtherInit)
@@ -75,7 +75,7 @@ TEST(ListTest, FromOtherInit)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, FromOtherWithAllocInit)
@@ -92,7 +92,7 @@ TEST(ListTest, FromOtherWithAllocInit)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, MovedFromOtherInit)
@@ -107,7 +107,7 @@ TEST(ListTest, MovedFromOtherInit)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 
 	ASSERT_EQ(src.Begin(), Core::List<u32>::Iterator{});
 	EXPECT_TRUE(src.IsEmpty());
@@ -125,7 +125,7 @@ TEST(ListTest, InitializerListAssignOp)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, FromOtherAssignOp)
@@ -141,7 +141,7 @@ TEST(ListTest, FromOtherAssignOp)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, MovedFromOtherAssignOp)
@@ -157,7 +157,7 @@ TEST(ListTest, MovedFromOtherAssignOp)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 
 	ASSERT_EQ(src.Begin(), Core::List<u32>::Iterator{});
 	EXPECT_TRUE(src.IsEmpty());
@@ -175,7 +175,7 @@ TEST(ListTest, InitializerListAssign)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, IteratorAssign)
@@ -192,7 +192,7 @@ TEST(ListTest, IteratorAssign)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, Fill)
@@ -207,7 +207,7 @@ TEST(ListTest, Fill)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 42);
-	ASSERT_EQ(list.Last(), 42);
+	ASSERT_EQ(list.Back(), 42);
 }
 
 TEST(ListTest, FillDefault)
@@ -222,7 +222,7 @@ TEST(ListTest, FillDefault)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 0);
+	ASSERT_EQ(list.Back(), 0);
 }
 
 TEST(ListTest, ResizeLarger)
@@ -237,7 +237,7 @@ TEST(ListTest, ResizeLarger)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 42);
-	ASSERT_EQ(list.Last(), 0);
+	ASSERT_EQ(list.Back(), 0);
 }
 
 TEST(ListTest, ResizeLargerWithVal)
@@ -252,7 +252,7 @@ TEST(ListTest, ResizeLargerWithVal)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 42);
-	ASSERT_EQ(list.Last(), 0);
+	ASSERT_EQ(list.Back(), 0);
 }
 
 TEST(ListTest, ResizeSmaller)
@@ -267,7 +267,7 @@ TEST(ListTest, ResizeSmaller)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 42);
-	ASSERT_EQ(list.Last(), 42);
+	ASSERT_EQ(list.Back(), 42);
 }
 
 TEST(ListTest, AddVal)
@@ -312,7 +312,7 @@ TEST(ListTest, AddDynArr)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, AddMovedDynArr)
@@ -331,7 +331,7 @@ TEST(ListTest, AddMovedDynArr)
 	EXPECT_TRUE(src.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, EmplaceBack)
@@ -364,7 +364,7 @@ TEST(ListTest, InsertAfterVal)
 	ASSERT_EQ(list.Front(), 0);
 	ASSERT_EQ(*it++, 4);
 	ASSERT_EQ(*it, 42);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, InsertAfterMovedVal)
@@ -382,7 +382,7 @@ TEST(ListTest, InsertAfterMovedVal)
 	ASSERT_EQ(list.Front(), 0);
 	ASSERT_EQ(*it++, 4);
 	ASSERT_EQ(*it, 42);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, InsertAfterValWithCount)
@@ -401,7 +401,7 @@ TEST(ListTest, InsertAfterValWithCount)
 	ASSERT_EQ(*it++, 4);
 	ASSERT_EQ(*it, 42);
 	ASSERT_EQ(*(it + 4), 42);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, InsertAfterIterators)
@@ -421,7 +421,7 @@ TEST(ListTest, InsertAfterIterators)
 	ASSERT_EQ(*it++, 4);
 	ASSERT_EQ(*it, 40);
 	ASSERT_EQ(*(it + 4), 44);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, InsertAfterInitializerList)
@@ -440,7 +440,7 @@ TEST(ListTest, InsertAfterInitializerList)
 	ASSERT_EQ(*it++, 4);
 	ASSERT_EQ(*it, 40);
 	ASSERT_EQ(*(it + 4), 44);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, InsertAfterOther)
@@ -460,7 +460,7 @@ TEST(ListTest, InsertAfterOther)
 	ASSERT_EQ(*it++, 4);
 	ASSERT_EQ(*it, 40);
 	ASSERT_EQ(*(it + 4), 44);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, InsertAfterMovedOther)
@@ -483,7 +483,7 @@ TEST(ListTest, InsertAfterMovedOther)
 	ASSERT_EQ(*it++, 4);
 	ASSERT_EQ(*it, 40);
 	ASSERT_EQ(*(it + 4), 44);
-	ASSERT_EQ(list.Last(), 6);
+	ASSERT_EQ(list.Back(), 6);
 }
 
 TEST(ListTest, AddFrontVal)
@@ -499,7 +499,7 @@ TEST(ListTest, AddFrontVal)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 42);
-	ASSERT_EQ(list.Last(), 1);
+	ASSERT_EQ(list.Back(), 1);
 }
 
 TEST(ListTest, AddFrontMovedVal)
@@ -514,7 +514,7 @@ TEST(ListTest, AddFrontMovedVal)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 42);
-	ASSERT_EQ(list.Last(), 1);
+	ASSERT_EQ(list.Back(), 1);
 }
 
 TEST(ListTest, AddFrontDynArr)
@@ -530,7 +530,7 @@ TEST(ListTest, AddFrontDynArr)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 42);
+	ASSERT_EQ(list.Back(), 42);
 }
 
 TEST(ListTest, AddFrontMovedDynArr)
@@ -549,7 +549,7 @@ TEST(ListTest, AddFrontMovedDynArr)
 	EXPECT_TRUE(src.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 0);
-	ASSERT_EQ(list.Last(), 42);
+	ASSERT_EQ(list.Back(), 42);
 }
 
 TEST(ListTest, EmplacFrontBack)
@@ -564,7 +564,7 @@ TEST(ListTest, EmplacFrontBack)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 42);
-	ASSERT_EQ(list.Last(), 1);
+	ASSERT_EQ(list.Back(), 1);
 }
 
 TEST(ListTest, Pop)
@@ -579,7 +579,7 @@ TEST(ListTest, Pop)
 	EXPECT_FALSE(list.IsEmpty());
 }
 
-TEST(ListTest, PopLastElem)
+TEST(ListTest, PopBackElem)
 {
 	Core::Alloc::Mallocator mallocator;
 	Core::List<u32> list{ { 1 }, mallocator };
@@ -603,7 +603,7 @@ TEST(ListTest, PopFront)
 	EXPECT_FALSE(list.IsEmpty());
 }
 
-TEST(ListTest, PopFrontLastElem)
+TEST(ListTest, PopFrontBackElem)
 {
 	Core::Alloc::Mallocator mallocator;
 	Core::List<u32> list{ { 1 }, mallocator };
@@ -681,5 +681,5 @@ TEST(ListTest, Reverse)
 	EXPECT_FALSE(list.IsEmpty());
 
 	ASSERT_EQ(list.Front(), 9);
-	ASSERT_EQ(list.Last(), 0);
+	ASSERT_EQ(list.Back(), 0);
 }
