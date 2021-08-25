@@ -50,7 +50,7 @@ namespace Core
 
 			NodeRef m_node;
 
-			friend class List<T>;
+			friend class List;
 		};
 		using ConstIterator = const Iterator;
 

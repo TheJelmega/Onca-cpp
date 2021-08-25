@@ -105,4 +105,20 @@ namespace Core
 	concept ContiguousIterator = 
 		RandomAccessIterator<T> &&
 		IteratorHasContiguousData<T>;
+
+	template<typename T, typename U>
+	concept Hasher =
+		DefaultConstructable<T> &&
+		requires(U u)
+	{
+		{ T{}(u) } noexcept -> SameAs<u64>;
+	};
+
+	template<typename T, typename A, typename B>
+	concept Comparator =
+		DefaultConstructable<T> &&
+		requires(A a, B b)
+	{
+		{ T{}(a, b) } noexcept -> SameAs<bool>;
+	};
 }
