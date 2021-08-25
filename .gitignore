@@ -34,7 +34,8 @@
 /.build
 /git_excluded
 /third-party
-/binf
+/bin
+/bin-int
 /doxygen
 /tools/*/*.zip
 

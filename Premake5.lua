@@ -58,6 +58,7 @@ project "Core"
     
     files { "src/core/**.h", "src/core/**.inl", "src/core/**.cpp" }
     location ".build/Engine/Core"
+    objdir "bin-int/Core"
     
 project "Start"
     kind "ConsoleApp"
@@ -65,6 +66,7 @@ project "Start"
 
     files { "src/start/**.h", "src/start/**.inl", "src/start/**.cpp" }
     location ".build/Engine/Start"
+    objdir "bin-int/Start"
 
     links { "Core" }
     dependson { "Core" }
@@ -75,6 +77,7 @@ project "Unittest"
 
     files { "src/unittest/**.h", "src/unittest/**.inl", "src/unittest/**.cpp" }
     location ".build/Engine/Unittest"
+    objdir "bin-int/Unittest"
 
     includedirs { "third-party/googletest/googletest/include" }
 
@@ -99,6 +102,7 @@ project "Benchmark"
 
     files { "src/benchmark/**.h", "src/benchmark/**.inl", "src/benchmark/**.cpp" }
     location ".build/Engine/Benchmark"
+    objdir "bin-int/Benchmark"
 
     includedirs { "third-party/googlebench/include" }
 
