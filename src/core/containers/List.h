@@ -65,21 +65,21 @@ namespace Core
 		 * \param count Number of elements
 		 * \param alloc Allcoator the container shoud use
 		 */
-		explicit List(usize count, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
+		explicit List(usize count, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires NoThrowDefaultConstructable<T>;
 		/**
 		 * Create a List filled with a number of elements
 		 * \param count Number of elements
 		 * \param val Value of elements
 		 * \param alloc Allcoator the container shoud use
 		 */
-		explicit List(usize count, const T& val, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
+		explicit List(usize count, const T& val, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;;
 
 		/**
 		 * Create a List from an initializer list
 		 * \param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the containter should use
 		 */
-		explicit List(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
+		explicit List(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
 		/**
 		 * Create a List from an iterable range
 		 * \tparam It Iterator type
@@ -88,18 +88,18 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit List(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
+		explicit List(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
 		/**
 		 * \brief Create a List with the contents of another List
 		 * \param[in] other List to copy
 		 */
-		List(const List& other) noexcept;
+		List(const List& other) noexcept requires CopyConstructable<T>;
 		/**
 		 * \brief Create a List with the contents of another List, but with a different allocator
 		 * \param[in] other List to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit List(const List& other, Alloc::IAllocator& alloc) noexcept;
+		explicit List(const List& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>;
 		/**
 		 * Move another List into a new List
 		 * \param[in] other List to move from
@@ -107,8 +107,8 @@ namespace Core
 		List(List&& other) noexcept;
 		~List() noexcept;
 
-		auto operator=(const InitializerList<T>& il) noexcept -> List<T>&;
-		auto operator=(const List& other) noexcept -> List<T>&;
+		auto operator=(const InitializerList<T>& il) noexcept -> List<T>& requires CopyConstructable<T>;
+		auto operator=(const List& other) noexcept -> List<T>& requires CopyConstructable<T>;
 		auto operator=(List&& other) noexcept -> List<T>&;
 
 		/**
@@ -118,42 +118,42 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		auto Assign(const It& begin, const It& end) noexcept -> void;
+		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>;
 		/**
 		 * Assign a linked list to the List
 		 * \param[in] il Initializer list with elements
 		 */
-		auto Assign(const InitializerList<T>& il) noexcept -> void;
+		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>;
 
 		/**
 		 * Fill the List with a number of elements
 		 * \param[in] count Number of elements to fill
 		 * \param[in] val Value to fill elements with
 		 */
-		auto Fill(usize count, const T& val) noexcept -> void;
+		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>;
 		/**
 		 * Fill the List with a number of elements with a default value (via placement new)
 		 * \param[in] count Number of elements to fill
 		 */
-		auto FillDefault(usize count) noexcept -> void;
+		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>;
 
 		/**
 		 * Resize the List and fill missing elements if needed
 		 * \param[in] newSize New size of the DynArray
 		 * \param[in] val Value to fill missing elements with
 		 */
-		auto Resize(usize newSize, const T& val) noexcept -> void;
+		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>;
 		/**
 		 * Resize the List and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the DynArray
 		 */
-		auto Resize(usize newSize) noexcept -> void;
+		auto Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructable<T>;
 
 		/**
 		 * Add an element to the List
 		 * \param[in] val Element to add
 		 */
-		auto Add(const T& val) noexcept -> void;
+		auto Add(const T& val) noexcept -> void requires CopyConstructable<T>;
 		/**
 		 * Add an element to the List
 		 * \param[in] val Element to add
@@ -163,7 +163,7 @@ namespace Core
 		 * Add the contents of a List to the List
 		 * \param[in] other List to add
 		 */
-		auto Add(const List& other) -> void;
+		auto Add(const List& other) -> void requires CopyConstructable<T>;
 		/**
 		 * Add the contents of a List to the List
 		 * \param[in] other List to add
@@ -176,6 +176,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename ...Args>
+			requires IsConstructableWith<T, Args...>
 		auto EmplaceBack(Args&&... args) noexcept -> void;
 
 		/**
@@ -184,7 +185,7 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto InsertAfter(const ConstIterator& it, const T& val) noexcept -> Iterator;
+		auto InsertAfter(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
 		/**
 		 * Insert an element after a certain location
 		 * \param[in] it Iterator to position before the element to insert the element at
@@ -199,7 +200,7 @@ namespace Core
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		auto InsertAfter(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator;
+		auto InsertAfter(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
 		/**
 		 * Insert an iterable range into the List after a certain location
 		 * \tparam It Iterator type
@@ -209,21 +210,21 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		auto InsertAfter(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator;
+		auto InsertAfter(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>;
 		/**
 		 * Insert an initializer list into the List after a certain location
 		 * \param[in] it Iterator to position before the element to insert elements at
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto InsertAfter(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator;
+		auto InsertAfter(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>;
 		/**
 		 * Insert a List into the List after a certain location
 		 * \param[in] it Iterator to position before the element to insert elements at
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto InsertAfter(const ConstIterator& it, const List& other) noexcept -> Iterator;
+		auto InsertAfter(const ConstIterator& it, const List& other) noexcept -> Iterator requires CopyConstructable<T>;
 		/**
 		 * Insert a List into the List after a certain location
 		 * \param[in] it Iterator to position before the element to insert elements at
@@ -239,6 +240,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename ...Args>
+			requires IsConstructableWith<T, Args...>
 		auto EmplaceAfter(const ConstIterator& it, Args&&... args) noexcept -> Iterator;
 
 		/**
@@ -246,7 +248,7 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto AddFront(const T& val) noexcept -> void;
+		auto AddFront(const T& val) noexcept -> void requires CopyConstructable<T>;
 		/**
 		 * Add an element at the front of the List
 		 * \param[in] val Element to insert
@@ -259,7 +261,7 @@ namespace Core
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		auto AddFront(usize count, const T& val) noexcept -> void;
+		auto AddFront(usize count, const T& val) noexcept -> void requires CopyConstructable<T>;
 		/**
 		 * Add an iterable range at the front of the List
 		 * \tparam It Iterator type
@@ -268,19 +270,19 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		auto AddFront(const It& begin, const It& end) noexcept -> void;
+		auto AddFront(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>;
 		/**
 		 * Add an initializer list at the front of the List
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const InitializerList<T>& il) noexcept -> void;
+		auto AddFront(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>;
 		/**
 		 * Add a List into the List at the front of the List
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const List& other) noexcept -> void;
+		auto AddFront(const List& other) noexcept -> void requires CopyConstructable<T>;
 		/**
 		 * Add a List into the List at the front of the List
 		 * \param[in] other List to insert
@@ -294,6 +296,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename ...Args>
+			requires IsConstructableWith<T, Args...>
 		auto EmplaceFront(Args&&... args) noexcept -> void;
 
 		/**

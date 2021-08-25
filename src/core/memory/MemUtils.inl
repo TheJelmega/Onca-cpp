@@ -11,8 +11,16 @@ namespace Core
 		memcpy(dst, src, numBytes);
 	}
 
+	inline auto MemCpy(MemRef<u8>& dst, const MemRef<u8>& src, usize numBytes) noexcept -> void
+	{
+		ASSERT(dst != src, "Destination and source need to be different, use MemMove instead");
+		numBytes = Min(numBytes, src.Size());
+		numBytes = Min(numBytes, dst.Size());
+		MemCpy(dst.Ptr(), src.Ptr(), numBytes);
+	}
+
 	inline auto MemCpy(MemRef<u8>& dst, usize dstOffset, const MemRef<u8>& src, usize srcOffset,
-		usize numBytes) noexcept -> void
+	                   usize numBytes) noexcept -> void
 	{
 		ASSERT(dst != src, "Destination and source need to be different, use MemMove instead");
 		ASSERT(dstOffset < dst.Size(), "Destination offset out of bounds");

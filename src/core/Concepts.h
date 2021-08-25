@@ -38,6 +38,12 @@ namespace Core
 		PrimitiveType<T> ||
 		TriviallyCopyable<T>;
 
+	template<typename T, typename... Args>
+	concept IsConstructableWith = requires (Args... args)
+	{
+		{ T{ args... } } noexcept;
+	};
+
 	template<typename A, typename B = A>
 	concept EqualComparable = requires(A a, B b)
 	{

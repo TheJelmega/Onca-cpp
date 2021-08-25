@@ -19,7 +19,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DynArray<T>::DynArray(usize count, const T& val, Alloc::IAllocator& alloc) noexcept
+	DynArray<T>::DynArray(usize count, const T& val, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_mem(&alloc)
 		, m_size(0)
 	{
@@ -27,7 +27,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DynArray<T>::DynArray(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept
+	DynArray<T>::DynArray(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_mem(&alloc)
 		, m_size(0)
 	{
@@ -36,7 +36,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <ForwardIterator It>
-	DynArray<T>::DynArray(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept
+	DynArray<T>::DynArray(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_mem(&alloc)
 		, m_size(0)
 	{
@@ -44,7 +44,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DynArray<T>::DynArray(const DynArray& other) noexcept
+	DynArray<T>::DynArray(const DynArray& other) noexcept requires CopyConstructable<T>
 		: m_mem(other.GetAllocator())
 		, m_size(0)
 	{
@@ -53,7 +53,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DynArray<T>::DynArray(const DynArray& other, Alloc::IAllocator& alloc) noexcept
+	DynArray<T>::DynArray(const DynArray& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_mem(&alloc)
 		, m_size(0)
 	{
@@ -70,20 +70,31 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
+	DynArray<T>::DynArray(DynArray&& other, Alloc::IAllocator& alloc) noexcept
+		: m_mem(&alloc)
+		, m_size(other.m_size)
+	{
+		Reserve(m_size);
+		MemCpy(m_mem, other.m_mem, m_size * sizeof(T));
+		other.m_mem.Dealloc();
+		other.m_mem = nullptr;
+	}
+
+	template <MoveConstructable T>
 	DynArray<T>::~DynArray() noexcept
 	{
 		Clear(true);
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::operator=(const InitializerList<T>& il) noexcept -> DynArray<T>&
+	auto DynArray<T>::operator=(const InitializerList<T>& il) noexcept -> DynArray<T>& requires CopyConstructable<T>
 	{
 		Assign(il);
 		return *this;
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::operator=(const DynArray<T>& other) noexcept -> DynArray<T>&
+	auto DynArray<T>::operator=(const DynArray<T>& other) noexcept -> DynArray<T>& requires CopyConstructable<T>
 	{
 		Reserve(other.m_size);
 		Assign(other.Begin(), other.End());
@@ -102,9 +113,8 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <ForwardIterator It>
-	auto DynArray<T>::Assign(const It& begin, const It& end) noexcept -> void
+	auto DynArray<T>::Assign(const It& begin, const It& end) noexcept -> void  requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		if constexpr (RandomAccessIterator<It>)
 		{
 			ASSERT(begin < end, "'begin' iterator must be smaller than 'end' iterator");
@@ -127,9 +137,8 @@ namespace Core
 	
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Assign(const InitializerList<T>& il) noexcept -> void
+	auto DynArray<T>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		const usize size = il.size();
 		Reserve(size);
 		if constexpr (MemCopyable<T>)
@@ -146,7 +155,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Fill(usize count, const T& val) noexcept -> void
+	auto DynArray<T>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>
 	{
 		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Clear();
@@ -154,9 +163,8 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::FillDefault(usize count) noexcept -> void
+	auto DynArray<T>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>
 	{
-		STATIC_ASSERT(NoThrowDefaultConstructable<T>, "T needs to be nothrow default constructable");
 		Clear();
 		Resize(count);
 	}
@@ -185,7 +193,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Resize(usize newSize, const T& val) noexcept -> void
+	auto DynArray<T>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>
 	{
 		if (newSize < m_size)
 		{
@@ -204,9 +212,8 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Resize(usize newSize) noexcept -> void
+	auto DynArray<T>::Resize(usize newSize) noexcept -> void  requires NoThrowDefaultConstructable<T>
 	{
-		STATIC_ASSERT(NoThrowDefaultConstructable<T>, "T needs to be nothrow default constructable");
 		if (newSize < m_size)
 		{
 			T* pBegin = m_mem.Ptr();
@@ -247,9 +254,8 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Add(const T& val) noexcept -> void
+	auto DynArray<T>::Add(const T& val) noexcept -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		InsertEnd(Move(T{ val }));
 	}
 
@@ -260,9 +266,8 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Add(const DynArray& other) -> void
+	auto DynArray<T>::Add(const DynArray& other) -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Reserve(m_size + other.m_size);
 		if constexpr (MemCopyable<T>)
 		{
@@ -290,15 +295,15 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ...Args>
+		requires IsConstructableWith<T, Args...>
 	auto DynArray<T>::EmplaceBack(Args&&... args) noexcept -> void
 	{
 		InsertEnd(Move(T{ Forward<Args>(args)... }));
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Insert(const ConstIterator& it, const T& val) noexcept -> Iterator
+	auto DynArray<T>::Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		return Emplace(it, val);
 	}
 
@@ -309,9 +314,8 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator
+	auto DynArray<T>::Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
 
@@ -324,9 +328,8 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <ForwardIterator It>
-	auto DynArray<T>::Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator
+	auto DynArray<T>::Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
 		
@@ -339,7 +342,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator
+	auto DynArray<T>::Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
@@ -352,9 +355,8 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DynArray<T>::Insert(const ConstIterator& it, const DynArray& other) noexcept -> Iterator
+	auto DynArray<T>::Insert(const ConstIterator& it, const DynArray& other) noexcept -> Iterator requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
 
@@ -383,6 +385,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
+		requires IsConstructableWith<T, Args...>
 	auto DynArray<T>::Emplace(const ConstIterator& it, Args&&... args) noexcept -> Iterator
 	{
 		const usize offset = usize(it - m_mem.Ptr());

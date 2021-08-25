@@ -14,6 +14,14 @@ namespace Core
 	/**
 	 * Copy a region of memory from one location to another
 	 * \param[in] dst Destination MemRef
+	 * \param[in] src Source MemRef
+	 * \param[in] numBytes Number of bytes to copy
+	 * \note Regions cannot overlap
+	 */
+	auto MemCpy(MemRef<u8>& dst, const MemRef<u8>& src, usize numBytes) noexcept -> void;
+	/**
+	 * Copy a region of memory from one location to another
+	 * \param[in] dst Destination MemRef
 	 * \param[in] dstOffset Offset in destination MemRef
 	 * \param[in] src Source MemRef
 	 * \param[in] srcOffset Offset in source MemRef

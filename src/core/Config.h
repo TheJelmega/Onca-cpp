@@ -163,3 +163,5 @@
 #else
 #	define CORE_API IMPORT_API
 #endif
+
+#define FORCE_ARRAY_RUNTIME_ASSERT 0

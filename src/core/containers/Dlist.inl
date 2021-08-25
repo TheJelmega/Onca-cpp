@@ -111,7 +111,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DList<T>::DList(usize count, Alloc::IAllocator& alloc) noexcept
+	DList<T>::DList(usize count, Alloc::IAllocator& alloc) noexcept requires NoThrowDefaultConstructable<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
@@ -119,7 +119,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DList<T>::DList(usize count, const T& val, Alloc::IAllocator& alloc) noexcept
+	DList<T>::DList(usize count, const T& val, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
@@ -127,7 +127,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DList<T>::DList(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept
+	DList<T>::DList(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
@@ -136,7 +136,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <ForwardIterator It>
-	DList<T>::DList(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept
+	DList<T>::DList(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
@@ -144,7 +144,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DList<T>::DList(const DList& other) noexcept
+	DList<T>::DList(const DList& other) noexcept requires CopyConstructable<T>
 		: m_head(other.GetAllocator())
 		, m_tail(nullptr)
 	{
@@ -152,7 +152,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	DList<T>::DList(const DList& other, Alloc::IAllocator& alloc) noexcept
+	DList<T>::DList(const DList& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
@@ -173,14 +173,14 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::operator=(const InitializerList<T>& il) noexcept -> DList<T>&
+	auto DList<T>::operator=(const InitializerList<T>& il) noexcept -> DList<T>& requires CopyConstructable<T>
 	{
 		Assign(il);
 		return *this;
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::operator=(const DList& other) noexcept -> DList<T>&
+	auto DList<T>::operator=(const DList& other) noexcept -> DList<T>& requires CopyConstructable<T>
 	{
 		Assign(other.Begin(), other.End());
 		return *this;
@@ -197,46 +197,40 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <ForwardIterator It>
-	auto DList<T>::Assign(const It& begin, const It& end) noexcept -> void
+	auto DList<T>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Clear();
 		for (It it = begin; it != end; ++it)
 			Add(Move(T{ *it }));
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Assign(const InitializerList<T>& il) noexcept -> void
+	auto DList<T>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Clear();
 		for (const T* it = il.begin(); it != il.end(); ++it)
 			Add(Move(T{ *it }));
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Fill(usize count, const T& val) noexcept -> void
+	auto DList<T>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Clear();
 		for (usize i = 0; i < count; ++i)
 			Add(Move(T{ val }));
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::FillDefault(usize count) noexcept -> void
+	auto DList<T>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>
 	{
-		STATIC_ASSERT(NoThrowDefaultConstructable<T>, "T needs to be copy constructable");
 		Clear();
 		for (usize i = 0; i < count; ++i)
 			EmplaceBack();
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Resize(usize newSize, const T& val) noexcept -> void
+	auto DList<T>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-
 		Iterator it{ m_head };
 		Iterator end;
 		usize i = 0;
@@ -266,10 +260,8 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Resize(usize newSize) noexcept -> void
+	auto DList<T>::Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-
 		Iterator it{ m_head };
 		Iterator end;
 		usize i = 0;
@@ -299,7 +291,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Add(const T& val) noexcept -> void
+	auto DList<T>::Add(const T& val) noexcept -> void requires CopyConstructable<T>
 	{
 		Add(std::move(T{ val }));
 	}
@@ -322,7 +314,7 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Add(const DList& other) -> void
+	auto DList<T>::Add(const DList& other) -> void requires CopyConstructable<T>
 	{
 		for (Iterator it = other.Begin(), end = other.End(); it != end; ++it)
 			Add(Move(T{ *it }));
@@ -364,14 +356,14 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
+		requires IsConstructableWith<T, Args...>
 	auto DList<T>::EmplaceBack(Args&&... args) noexcept -> void
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		Add(Move(T{ args... }));
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, const T& val) noexcept -> Iterator
+	auto DList<T>::Insert(ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>
 	{
 		return Insert(it, Move(T{ val }));
 	}
@@ -400,9 +392,8 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, usize count, const T& val) noexcept -> Iterator
+	auto DList<T>::Insert(ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		NodeRef next = it.m_node;
 		NodeRef prev = next->prev;
 
@@ -434,9 +425,8 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <ForwardIterator It>
-	auto DList<T>::Insert(ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator
+	auto DList<T>::Insert(ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		NodeRef endNode = it.m_node;
 		NodeRef prev = endNode->prev;
 
@@ -476,13 +466,13 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator
+	auto DList<T>::Insert(ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>
 	{
 		return Insert(it, il.begin(), il.end());
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, const DList& other) noexcept -> Iterator
+	auto DList<T>::Insert(ConstIterator& it, const DList& other) noexcept -> Iterator requires CopyConstructable<T>
 	{
 		return Insert(it, other.Begin(), other.End());
 	}
@@ -564,15 +554,15 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
+		requires IsConstructableWith<T, Args...>
 	auto DList<T>::Emplace(ConstIterator& it, Args&&... args) noexcept -> Iterator
 	{
 		return Insert(it, Move(T{ args... }));
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::AddFront(const T& val) noexcept -> void
+	auto DList<T>::AddFront(const T& val) noexcept -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		AddFront(Move(T{ val }));
 	}
 
@@ -589,10 +579,8 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::AddFront(usize count, const T& val) noexcept -> void
+	auto DList<T>::AddFront(usize count, const T& val) noexcept -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
-
 		NodeRef prev;
 		for (usize i = 0; i < count; ++i)
 		{
@@ -613,9 +601,8 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <ForwardIterator It>
-	auto DList<T>::AddFront(const It& begin, const It& end) noexcept -> void
+	auto DList<T>::AddFront(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>
 	{
-		STATIC_ASSERT(CopyConstructable<T>, "T needs to be copy constructable");
 		if (begin == end)
 			return;
 
@@ -642,13 +629,13 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::AddFront(const InitializerList<T>& il) noexcept -> void
+	auto DList<T>::AddFront(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>
 	{
 		AddFront(il.begin(), il.end());
 	}
 
 	template <MoveConstructable T>
-	auto DList<T>::AddFront(const DList& other) noexcept -> void
+	auto DList<T>::AddFront(const DList& other) noexcept -> void requires CopyConstructable<T>
 	{
 		AddFront(other.Begin(), other.End());
 	}
@@ -709,6 +696,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
+		requires IsConstructableWith<T, Args...>
 	auto DList<T>::EmplaceFront(Args&&... args) noexcept -> void
 	{
 		AddFront(Move(T{ args... }));
