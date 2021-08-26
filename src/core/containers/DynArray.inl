@@ -295,7 +295,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ...Args>
-		requires IsConstructableWith<T, Args...>
+		requires ConstructableFrom<T, Args...>
 	auto DynArray<T>::EmplaceBack(Args&&... args) noexcept -> void
 	{
 		InsertEnd(Move(T{ Forward<Args>(args)... }));
@@ -385,7 +385,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
-		requires IsConstructableWith<T, Args...>
+		requires ConstructableFrom<T, Args...>
 	auto DynArray<T>::Emplace(const ConstIterator& it, Args&&... args) noexcept -> Iterator
 	{
 		const usize offset = usize(it - m_mem.Ptr());

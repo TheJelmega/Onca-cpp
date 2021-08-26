@@ -39,7 +39,7 @@ namespace Core
 		TriviallyCopyable<T>;
 
 	template<typename T, typename... Args>
-	concept IsConstructableWith = requires (Args... args)
+	concept ConstructableFrom = requires (Args... args)
 	{
 		{ T{ args... } } noexcept;
 	};

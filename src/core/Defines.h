@@ -1,7 +1,6 @@
 #pragma once
-#include <atomic>
-#include <optional>
 #include <stdint.h>
+#include <optional>
 #include <tuple>
 
 using i8    = int8_t;
@@ -27,5 +26,5 @@ inline constexpr std::nullopt_t NullOpt{ std::nullopt_t::_Tag{} };
 
 template<typename ...T>
 using Tuple = std::tuple<T...>;
-template<typename T, usize N>
-using Array = std::array<T, N>;
+
+template<usize... Idx>

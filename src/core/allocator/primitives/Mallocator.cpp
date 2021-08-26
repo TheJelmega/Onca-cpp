@@ -1,8 +1,6 @@
 #include "Mallocator.h"
 #include <cstdlib>
 
-#pragma optimize("", off)
-
 namespace Core::Alloc
 {
 	Mallocator::~Mallocator() noexcept

@@ -5,22 +5,8 @@ namespace Core
 {
 	template <MoveConstructable T>
 	DList<T>::Iterator::Iterator() noexcept
-		: m_node(nullptr)
+		: m_node()
 	{
-	}
-
-	template <MoveConstructable T>
-	auto DList<T>::Iterator::operator=(const Iterator& other) noexcept
-	{
-		m_node = other.m_node;
-		return *this;
-	}
-
-	template <MoveConstructable T>
-	auto DList<T>::Iterator::operator=(Iterator&& other) noexcept
-	{
-		m_node = Move(other.m_node);
-		return *this;
 	}
 
 	template <MoveConstructable T>
@@ -356,7 +342,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
-		requires IsConstructableWith<T, Args...>
+		requires ConstructableFrom<T, Args...>
 	auto DList<T>::EmplaceBack(Args&&... args) noexcept -> void
 	{
 		Add(Move(T{ args... }));
@@ -554,7 +540,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
-		requires IsConstructableWith<T, Args...>
+		requires ConstructableFrom<T, Args...>
 	auto DList<T>::Emplace(ConstIterator& it, Args&&... args) noexcept -> Iterator
 	{
 		return Insert(it, Move(T{ args... }));
@@ -696,7 +682,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
-		requires IsConstructableWith<T, Args...>
+		requires ConstructableFrom<T, Args...>
 	auto DList<T>::EmplaceFront(Args&&... args) noexcept -> void
 	{
 		AddFront(Move(T{ args... }));

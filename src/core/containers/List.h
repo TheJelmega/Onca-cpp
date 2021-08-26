@@ -28,11 +28,6 @@ namespace Core
 		{
 		public:
 			Iterator() noexcept;
-			Iterator(const Iterator&) noexcept = default;
-			Iterator(Iterator&&) noexcept = default;
-
-			auto operator=(const Iterator& other) noexcept;
-			auto operator=(Iterator&& other) noexcept;
 
 			auto operator++() noexcept -> Iterator;
 			auto operator++(int) noexcept -> Iterator;
@@ -176,7 +171,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename ...Args>
-			requires IsConstructableWith<T, Args...>
+			requires ConstructableFrom<T, Args...>
 		auto EmplaceBack(Args&&... args) noexcept -> void;
 
 		/**
@@ -240,7 +235,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename ...Args>
-			requires IsConstructableWith<T, Args...>
+			requires ConstructableFrom<T, Args...>
 		auto EmplaceAfter(const ConstIterator& it, Args&&... args) noexcept -> Iterator;
 
 		/**
@@ -296,7 +291,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename ...Args>
-			requires IsConstructableWith<T, Args...>
+			requires ConstructableFrom<T, Args...>
 		auto EmplaceFront(Args&&... args) noexcept -> void;
 
 		/**

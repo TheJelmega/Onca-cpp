@@ -155,7 +155,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename ...Args>
-			requires IsConstructableWith<T, Args...>
+			requires ConstructableFrom<T, Args...>
 		auto EmplaceBack(Args&&... args) noexcept -> void;
 
 		/**
@@ -219,7 +219,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename ...Args>
-			requires IsConstructableWith<T, Args...>
+			requires ConstructableFrom<T, Args...>
 		auto Emplace(const ConstIterator& it, Args&&... args) noexcept -> Iterator;
 		
 		/**

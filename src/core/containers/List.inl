@@ -5,22 +5,8 @@ namespace Core
 {
 	template <MoveConstructable T>
 	List<T>::Iterator::Iterator() noexcept
-		: m_node(nullptr)
+		: m_node()
 	{
-	}
-
-	template <MoveConstructable T>
-	auto List<T>::Iterator::operator=(const Iterator& other) noexcept
-	{
-		m_node = other.m_node;
-		return *this;
-	}
-
-	template <MoveConstructable T>
-	auto List<T>::Iterator::operator=(Iterator&& other) noexcept
-	{
-		m_node = Move(other.m_node);
-		return *this;
 	}
 
 	template <MoveConstructable T>
@@ -334,7 +320,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
-		requires IsConstructableWith<T, Args...>
+		requires ConstructableFrom<T, Args...>
 	auto List<T>::EmplaceBack(Args&&... args) noexcept -> void
 	{
 		Add(Move(T{ args... }));
@@ -463,7 +449,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
-		requires IsConstructableWith<T, Args...>
+		requires ConstructableFrom<T, Args...>
 	auto List<T>::EmplaceAfter(ConstIterator& it, Args&&... args) noexcept -> Iterator
 	{
 		return InsertAfter(it, Move(T{ args... }));
@@ -542,7 +528,7 @@ namespace Core
 
 	template <MoveConstructable T>
 	template <typename ... Args>
-		requires IsConstructableWith<T, Args...>
+		requires ConstructableFrom<T, Args...>
 	auto List<T>::EmplaceFront(Args&&... args) noexcept -> void
 	{
 		AddFront(Move(T{ args... }));

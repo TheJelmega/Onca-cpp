@@ -4,6 +4,15 @@
 
 namespace Core
 {
+	struct Empty
+	{};
+
+	template<usize Idx, typename T>
+	struct TupleElementHelper;
+
+	template<usize Idx, typename T>
+	using TupleElement = typename TupleElementHelper<Idx, T>::Type;
+
 	template<typename T>
 	struct DefaultDeleter
 	{

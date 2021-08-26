@@ -5,9 +5,9 @@
 #include "Concepts.h"
 #include "Endianess.h"
 #include "Assert.h"
-#include "Utils.h"
 #include "Atomic.h"
 
+#include "utils/Utils.h"
 #include "memory/MemUtils.h"
 #include "memory/MemRef.h"
 #include "memory/Unique.h"

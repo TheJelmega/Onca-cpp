@@ -2,7 +2,7 @@
 #include "MathUtils.h"
 
 #ifdef __INTELLISENSE__
-#pragma diag_suppress 438 // supress bpgus "expected a ''" due to concepts
+#pragma diag_suppress 438 // supress bogus "expected a ''" due to concepts
 #endif
 
 namespace Core

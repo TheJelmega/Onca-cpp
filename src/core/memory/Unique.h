@@ -1,9 +1,9 @@
 #pragma once
 #include "MemRef.h"
-#include "core/Utils.h"
+#include "core/utils/Utils.h"
 
 #ifdef __INTELLISENSE__
-#pragma diag_suppress 438 // supress bpgus "expected a ''" due to concepts
+#pragma diag_suppress 438 // supress bogus "expected a ''" due to concepts
 #endif
 
 namespace Core
