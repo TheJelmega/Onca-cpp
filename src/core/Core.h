@@ -8,6 +8,8 @@
 #include "Atomic.h"
 
 #include "utils/Utils.h"
+#include "utils/Pair.h"
+
 #include "memory/MemUtils.h"
 #include "memory/MemRef.h"
 #include "memory/Unique.h"

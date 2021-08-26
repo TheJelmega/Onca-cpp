@@ -27,4 +27,7 @@ inline constexpr std::nullopt_t NullOpt{ std::nullopt_t::_Tag{} };
 template<typename ...T>
 using Tuple = std::tuple<T...>;
 
-template<usize... Idx>
+template<usize... Idx>
+using IndexSequence = std::index_sequence<Idx...>;
+template<typename... Args>
+using IndexSequenceFor = std::index_sequence_for<Args...>;

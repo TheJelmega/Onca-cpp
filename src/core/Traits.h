@@ -96,4 +96,8 @@ namespace Core
 	template<typename T>
 	using RemoveReference = std::remove_reference_t<T>;
 
+
+	template<bool C, typename T, typename U>
+	using Conditional = std::conditional_t<C, T, U>;
+
 }
