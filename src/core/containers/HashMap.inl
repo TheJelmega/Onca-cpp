@@ -75,21 +75,14 @@ namespace Core
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(Alloc::IAllocator& alloc) noexcept
-		: m_buckets(&alloc)
-		, m_size(0)
-		, m_maxLoadFactor(1.0f)
+		: HashMap(0, H{}, C{}, alloc)
 	{
-		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(usize minBuckets, Alloc::IAllocator& alloc) noexcept
-		: m_buckets(&alloc)
-		, m_size(0)
-		, m_maxLoadFactor(1.0f)
+		: HashMap(minBuckets, H{}, C{}, alloc)
 	{
-		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
-		Rehash(minBuckets);
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
@@ -108,28 +101,15 @@ namespace Core
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const InitializerList<Pair<K, V>>& il, Alloc::IAllocator& alloc) noexcept
 		requires CopyConstructable<K> && CopyConstructable<V>
-		: m_buckets(&alloc)
-		, m_size(0)
-		, m_maxLoadFactor(1.0f)
+		: HashMap(il, 0, H{}, C{}, alloc)
 	{
-		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
-		Reserve(il.size());
-		for (const Pair<K, V>* it = il.begin(); it < il.end(); ++it)
-			Insert(Move(Pair{ *it }));
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const InitializerList<Pair<K, V>>& il, usize minBuckets, Alloc::IAllocator& alloc) noexcept
 		requires CopyConstructable<K> && CopyConstructable<V>
-		: m_buckets(&alloc)
-		, m_size(0)
-		, m_maxLoadFactor(1.0f)
+		: HashMap(il, minBuckets, H{}, C{}, alloc)
 	{
-		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
-		minBuckets = Max(minBuckets, Ceil(il.size() / m_maxLoadFactor));
-		Rehash(minBuckets);
-		for (const Pair<K, V>* it = il.begin(); it < il.end(); ++it)
-			Insert(Move(Pair{ *it }));
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
@@ -152,33 +132,16 @@ namespace Core
 	template <ForwardIterator It>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept
 		requires CopyConstructable<K> && CopyConstructable<V>
-		: m_buckets(&alloc)
-		, m_size(0)
-		, m_maxLoadFactor(1.0f)
+		: HashMap(begin, end, 0, H{}, C{}, alloc)
 	{
-		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
-		if constexpr (ContiguousIterator<It>)
-			Reserve(Ceil((end - begin) / m_maxLoadFactor));
-
-		for (It it = begin; it < end; ++it)
-			Insert(Move(Pair{ *it }));
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
 	template <ForwardIterator It>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const It& begin, const It& end, usize minBuckets, Alloc::IAllocator& alloc) noexcept
 		requires CopyConstructable<K> && CopyConstructable<V>
-		: m_buckets(&alloc)
-		, m_size(0)
-		, m_maxLoadFactor(1.0f)
+		: HashMap(begin, end, minBuckets, H{}, C{}, alloc)
 	{
-		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
-		if constexpr (ContiguousIterator<It>)
-			minBuckets = Max(minBuckets, Ceil((end - begin) / m_maxLoadFactor));
-		Rehash(minBuckets);
-		
-		for (It it = begin; it < end; ++it)
-			Insert(Move(Pair{ *it }));
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
@@ -203,15 +166,8 @@ namespace Core
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const HashMap& other) noexcept requires CopyConstructable<K> &&
 		CopyConstructable<V>
-		: m_buckets(other.GetAllocator())
-		, m_size(other.m_size)
-		, m_maxLoadFactor(other.m_maxLoadFactor)
-		, m_hash(other.m_hash)
-		, m_comp(other.m_comp)
+		: HashMap(other, other.GetAllocator())
 	{
-		Rehash(other.BucketCount());
-		for (Iterator it = other.Begin(), end = other.End(); it != end; ++it)
-			Insert(*it);
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
@@ -418,7 +374,7 @@ namespace Core
 	{
 		Reserve(m_size + 1);
 		Pair<K, V>pair{ args... };
-		u64 hash = m_hash(pair.first);
+		u64 hash = m_hash(pair.first); 
 		return InsertNode<true>(CreateNode(hash, Move(pair)));
 	}
 
