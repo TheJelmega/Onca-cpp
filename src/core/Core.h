@@ -33,11 +33,15 @@
 #include "containers/List.h"
 #include "containers/DList.h"
 #include "containers/HashMap.h"
+#include "containers/HashSet.h"
 
 namespace Core
 {
-	template<MoveConstructable K, MoveConstructable V, Hasher<K> Hash, Comparator<K, K> Comp>
-	using HashMultiMap = HashMap<K, V, Hash, Comp, true>;
+	template<Movable K, Movable V, Hasher<K> H, Comparator<K, K> C>
+	using HashMultiMap = HashMap<K, V, H, C, true>;
+
+	template<Movable K, Hasher<K> H, Comparator<K, K> C>
+	using HashMultiSet = HashSet<K, H, C, true>;
 }
 
 #include "math/MathUtils.h"

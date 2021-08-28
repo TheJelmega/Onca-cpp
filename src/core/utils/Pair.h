@@ -42,7 +42,7 @@ namespace Core
 		 */
 		template<typename U0, typename U1>
 			requires ConstructableFrom<T0, U0>&& ConstructableFrom<T1, U1>
-		constexpr explicit Pair(const Pair<U0, U1>& other) noexcept;
+		constexpr Pair(const Pair<U0, U1>& other) noexcept;
 		/**
 		 * Convert a Pair to this Pair
 		 * \tparam U0 First type
@@ -51,7 +51,7 @@ namespace Core
 		 */
 		template<typename U0, typename U1>
 			requires ConstructableFrom<T0, U0>&& ConstructableFrom<T1, U1>
-		constexpr explicit Pair(Pair<U0, U1>&& other) noexcept;
+		constexpr Pair(Pair<U0, U1>&& other) noexcept;
 
 		/**
 		 * Create a pair with each value constructed from a tuple

@@ -428,12 +428,12 @@ namespace Core
 		 * Get the maximum load factor before rehashing
 		 * \return Maximum load factor before rehashing
 		 */
-		auto MaxLoadFactor() const noexcept -> usize;
+		auto MaxLoadFactor() const noexcept -> f32;
 		/**
 		 * Set the maximum load factor before rehashing
 		 * \param[in] ml Maximum load factor before rehashing
 		 */
-		auto SetMaxLoadFactor(usize ml) noexcept -> void;
+		auto SetMaxLoadFactor(f32 ml) noexcept -> void;
 
 		/**
 		 * Get the allocator used by the HashMap

@@ -166,7 +166,7 @@ namespace Core
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const HashMap& other) noexcept requires CopyConstructable<K> &&
 		CopyConstructable<V>
-		: HashMap(other, other.GetAllocator())
+		: HashMap(other, *other.GetAllocator())
 	{
 	}
 
@@ -638,13 +638,13 @@ namespace Core
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::MaxLoadFactor() const noexcept -> usize
+	auto HashMap<K, V, H, C, IsMultiMap>::MaxLoadFactor() const noexcept -> f32
 	{
 		return m_maxLoadFactor;
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::SetMaxLoadFactor(usize ml) noexcept -> void
+	auto HashMap<K, V, H, C, IsMultiMap>::SetMaxLoadFactor(f32 ml) noexcept -> void
 	{
 		m_maxLoadFactor = ml;
 		Rehash(m_size / m_maxLoadFactor);
