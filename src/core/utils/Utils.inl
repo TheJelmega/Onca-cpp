@@ -10,6 +10,18 @@ namespace Core
 		ref.Dealloc();
 	}
 
+	template <typename T> requires EqualComparable<T, T>
+	auto DefaultComparator<T>::operator()(const T& t0, const T& t1) const noexcept -> bool
+	{
+		return t0 == t1;
+	}
+
+	template <typename T>
+	auto Hash<T>::operator()(const T& t) const noexcept -> u64
+	{
+		return usize(t);
+	}
+
 	template<typename T>
 	NO_DISCARD("") constexpr auto Move(T&& moved) noexcept -> RemoveReference<T>&&
 	{

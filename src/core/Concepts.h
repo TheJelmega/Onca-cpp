@@ -27,6 +27,12 @@ namespace Core
 	template<typename T>
 	concept NoThrowDefaultConstructable = IsNothrowDefaultConstructable<T>;
 
+	template<typename T>
+	concept MoveAssignable = std::is_move_assignable_v<T>;
+
+	template<typename T>
+	concept Movable = MoveConstructable<T> && MoveAssignable<T>;
+
 	template<typename A, typename B>
 	concept SameAs = std::same_as<A, B>;
 
@@ -111,7 +117,7 @@ namespace Core
 		DefaultConstructable<T> &&
 		requires(U u)
 	{
-		{ T{}(u) } noexcept -> SameAs<u64>;
+		{ static_cast<const T>(T{})(u) } noexcept -> SameAs<u64>;
 	};
 
 	template<typename T, typename A, typename B>
@@ -119,6 +125,6 @@ namespace Core
 		DefaultConstructable<T> &&
 		requires(A a, B b)
 	{
-		{ T{}(a, b) } noexcept -> SameAs<bool>;
+		{ static_cast<const T>(T{})(a, b) } noexcept -> SameAs<bool>;
 	};
 }

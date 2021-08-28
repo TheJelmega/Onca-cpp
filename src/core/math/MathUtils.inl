@@ -19,6 +19,13 @@ namespace Core
 		return a > b ? a : b;
 	}
 
+	template <FloatingPoint T>
+	constexpr auto Ceil(T t) noexcept -> u64
+	{
+		u64 trunc = u64(t);
+		return trunc + u64(trunc < t);
+	}
+
 	constexpr auto IsPowOf2(u64 val) noexcept -> bool
 	{
 		return !(val & (val - 1));

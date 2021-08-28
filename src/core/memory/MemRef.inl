@@ -64,6 +64,7 @@ namespace Core
 		, m_size(other.m_size)
 	{
 		MemClearData(other);
+		other.m_handle = ~usize(0);
 	}
 
 	template <typename T>
@@ -85,6 +86,7 @@ namespace Core
 	auto MemRef<T>::operator=(MemRef&& other) noexcept -> MemRef<T>&
 	{
 		MemCpy(*this, other);
+		MemClearData(other);
 		other.m_handle = ~usize(0);
 		return *this;
 	}

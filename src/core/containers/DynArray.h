@@ -223,7 +223,7 @@ namespace Core
 		auto Emplace(const ConstIterator& it, Args&&... args) noexcept -> Iterator;
 		
 		/**
-		 * Clear the contents of the DynArray, possible also deallocate the memory
+		 * Clear the contents of the DynArray, possibly also deallocate the memory
 		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
 		auto Clear(bool clearMemory = false) noexcept -> void;

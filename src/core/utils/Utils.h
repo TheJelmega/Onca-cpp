@@ -19,6 +19,22 @@ namespace Core
 		auto operator()(MemRef<T>&& ref) noexcept -> void;
 	};
 
+	template<typename T>
+		requires EqualComparable<T, T>
+	struct DefaultComparator
+	{
+		auto operator()(const T& t0, const T& t1) const noexcept -> bool;
+	};
+
+
+
+	template<typename T>
+	struct Hash
+	{
+		auto operator()(const T& t) const noexcept -> u64;
+	};
+
+
 	// Reimplementation since we cannot do function aliases
 	/**
 	 * Move a value

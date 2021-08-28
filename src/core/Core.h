@@ -32,5 +32,12 @@
 #include "containers/DynArray.h"
 #include "containers/List.h"
 #include "containers/DList.h"
+#include "containers/HashMap.h"
+
+namespace Core
+{
+	template<MoveConstructable K, MoveConstructable V, Hasher<K> Hash, Comparator<K, K> Comp>
+	using HashMultiMap = HashMap<K, V, Hash, Comp, true>;
+}
 
 #include "math/MathUtils.h"

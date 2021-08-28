@@ -27,6 +27,10 @@ namespace Core
 	template<GreaterComparable T>
 	constexpr auto Max(T a, T b) noexcept -> T;
 
+	// TODO, return type based on fp type
+	template<FloatingPoint T>
+	constexpr auto Ceil(T t) noexcept -> u64;
+
 	constexpr auto IsPowOf2(u64 val) noexcept -> bool;
 	constexpr auto Log2(u64 val) noexcept -> u8;
 	constexpr auto Log2(u32 val) noexcept -> u8;
