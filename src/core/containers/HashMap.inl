@@ -423,7 +423,7 @@ namespace Core
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, Comparator<K, K> C, bool IsMultiMap>
-	template <typename ... Args> requires ConstructableFrom<K, Args...>
+	template <typename ... Args> requires ConstructableFrom<V, Args...>
 	auto HashMap<K, V, H, C, IsMultiMap>::TryEmplace(const K& key, Args&&... args) noexcept -> Pair<Iterator, bool>
 	{
 		Reserve(m_size + 1);

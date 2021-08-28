@@ -242,7 +242,7 @@ namespace Core
 		 * \return A pair with the iterator to the inserted element and a bool if the insertion was successful
 		 */
 		template<typename ...Args>
-			requires ConstructableFrom<K, Args...>
+			requires ConstructableFrom<V, Args...>
 		auto TryEmplace(const K& key, Args&&... args) noexcept -> Pair<Iterator, bool>;
 
 		/**
