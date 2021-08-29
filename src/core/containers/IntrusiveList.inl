@@ -32,13 +32,13 @@ namespace Core
 	template <typename Owner>
 	auto IntrusiveListNode<Owner>::Get() noexcept -> Owner*
 	{
-		return reinterpret_cast<Owner*>(this - m_offset);
+		return reinterpret_cast<Owner*>((u8*)this - m_offset);
 	}
 
 	template <typename Owner>
 	auto IntrusiveListNode<Owner>::Get() const noexcept -> const Owner*
 	{
-		return reinterpret_cast<Owner*>(this - m_offset);
+		return reinterpret_cast<Owner*>((u8*)this - m_offset);
 	}
 
 	template <typename T>
@@ -122,29 +122,15 @@ namespace Core
 		, m_pTail(nullptr)
 	{
 	}
-
-	template <typename T>
-	IntrusiveList<T>::IntrusiveList(const IntrusiveList& other) noexcept
-		: m_pHead(other.m_pHead)
-		, m_pTail(other.m_pTail)
-	{
-	}
-
+	
 	template <typename T>
 	IntrusiveList<T>::IntrusiveList(IntrusiveList&& other) noexcept
 		: m_pHead(other.m_pHead)
 		, m_pTail(other.m_pTail)
 	{
+		other.m_pHead == other.m_pTail;
 	}
-
-	template <typename T>
-	auto IntrusiveList<T>::operator=(const IntrusiveList& other) noexcept -> IntrusiveList<T>&
-	{
-		m_pHead = other.m_pHead;
-		m_pTail = other.m_pTail;
-		return *this;
-	}
-
+	
 	template <typename T>
 	auto IntrusiveList<T>::operator=(IntrusiveList&& other) noexcept -> IntrusiveList<T>&
 	{
@@ -164,6 +150,16 @@ namespace Core
 	template <typename T>
 	auto IntrusiveList<T>::Add(IntrusiveList&& other) -> void
 	{
+		if (!other.m_pHead)
+			return;
+
+		if (!m_pHead)
+		{
+			m_pHead = other.m_pHead;
+			m_pTail = other.m_pTail;
+			return;
+		}
+
 		m_pTail->m_pNext = other.m_pHead;
 		m_pTail = other.m_pHead;
 		other.m_pHead = other.m_pTail = nullptr;
@@ -207,6 +203,16 @@ namespace Core
 	template <typename T>
 	auto IntrusiveList<T>::AddFront(IntrusiveList&& other) noexcept -> void
 	{
+		if (!other.m_pHead)
+			return;
+
+		if (!m_pHead)
+		{
+			m_pHead = other.m_pHead;
+			m_pTail = other.m_pTail;
+			return;
+		}
+
 		other.m_pTail->m_pNext = m_pHead;
 		m_pTail = other.m_pHead;
 

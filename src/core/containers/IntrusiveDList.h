@@ -4,7 +4,7 @@
 namespace Core
 {
 	template<typename T>
-	class IntrusiveList;
+	class IntrusiveDList;
 
 	/**
 	 * Node in a intrusive linked list
@@ -12,29 +12,30 @@ namespace Core
 	 * \note This should not be used by any struct/class that can be relocated by memory defragmentation
 	 */
 	template<typename Owner>
-	class IntrusiveListNode
+	class IntrusiveDListNode
 	{
 	public:
 		/**
 		 * Create an intrusive list node
 		 * \param memberOffset Offset to Owner type (use OffsetOf<>());
 		 */
-		explicit IntrusiveListNode(usize memberOffset) noexcept;
-		IntrusiveListNode(const IntrusiveListNode&) noexcept = default;
-		IntrusiveListNode(IntrusiveListNode&&) noexcept = default;
+		explicit IntrusiveDListNode(usize memberOffset) noexcept;
+		IntrusiveDListNode(const IntrusiveDListNode&) noexcept = default;
+		IntrusiveDListNode(IntrusiveDListNode&&) noexcept = default;
 
-		auto operator=(const IntrusiveListNode& other) noexcept -> IntrusiveListNode&;
-		auto operator=(IntrusiveListNode&& other) noexcept -> IntrusiveListNode&;
+		auto operator=(const IntrusiveDListNode& other) noexcept -> IntrusiveDListNode&;
+		auto operator=(IntrusiveDListNode&& other) noexcept -> IntrusiveDListNode&;
 
 		auto Get() noexcept -> Owner*;
 		auto Get() const noexcept -> const Owner*;
 
 	private:
-		IntrusiveListNode* m_pNext;  ///< Pointer to next node
+		IntrusiveDListNode* m_pPrev; ///< Pointer to prev node
+		IntrusiveDListNode* m_pNext;  ///< Pointer to next node
 		usize  m_offset; ///< Offset to Owner
 
-		friend class IntrusiveList<Owner>;
-		friend class IntrusiveList<Owner>::Iterator;
+		friend class IntrusiveDList<Owner>;
+		friend class IntrusiveDList<Owner>::Iterator;
 	};
 
 
@@ -44,7 +45,7 @@ namespace Core
 	 * \note This should not be used by any struct/class that can be relocated by memory defragmentation
 	 */
 	template<typename T>
-	class IntrusiveList
+	class IntrusiveDList
 	{
 	public:
 
@@ -61,42 +62,46 @@ namespace Core
 			auto operator++() noexcept -> Iterator;
 			auto operator++(int) noexcept -> Iterator;
 
+			auto operator--() noexcept -> Iterator;
+			auto operator--(int) noexcept -> Iterator;
+
 			auto operator->() const noexcept -> T*;
 			auto operator*() const noexcept -> T&;
 
 			auto operator+(usize count) const noexcept -> Iterator;
+			auto operator-(usize count) const noexcept -> Iterator;
 
 			auto operator==(const Iterator& other) const noexcept -> bool;
 			auto operator!=(const Iterator& other) const noexcept -> bool;
 
 		private:
-			Iterator(IntrusiveListNode<T>* pNode);
+			Iterator(IntrusiveDListNode<T>* pNode);
 
-			IntrusiveListNode<T>* m_pNode;
+			IntrusiveDListNode<T>* m_pNode;
 		};
 		using ConstIterator = const Iterator;
 
 	public:
-		IntrusiveList() noexcept;
+		IntrusiveDList() noexcept;
 		
 		/**
-		 * Move another IntrusiveList into a new IntrusiveList
-		 * \param[in] other IntrusiveList to move from
+		 * Move another IntrusiveDList into a new IntrusiveDList
+		 * \param[in] other IntrusiveDList to move from
 		 */
-		IntrusiveList(IntrusiveList&& other) noexcept;
+		IntrusiveDList(IntrusiveDList&& other) noexcept;
 		
-		auto operator=(IntrusiveList&& other) noexcept -> IntrusiveList<T>&;
-		
+		auto operator=(IntrusiveDList&& other) noexcept -> IntrusiveDList<T>&;
+
 		/**
-		 * Add an element to the IntrusiveList
+		 * Add an element to the IntrusiveDList
 		 * \param[in] val Element to add
 		 */
-		auto Add(IntrusiveListNode<T>& val) noexcept -> void;
+		auto Add(IntrusiveDListNode<T>& val) noexcept -> void;
 		/**
-		 * Add the contents of a IntrusiveList to the IntrusiveList
-		 * \param[in] other IntrusiveList to add
+		 * Add the contents of a IntrusiveDList to the IntrusiveDList
+		 * \param[in] other IntrusiveDList to add
 		 */
-		auto Add(IntrusiveList&& other) -> void;
+		auto Add(IntrusiveDList&& other) -> void;
 
 		/**
 		 * Insert an element after a certain location
@@ -104,45 +109,45 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto InsertAfter(Iterator& it, IntrusiveListNode<T>& val) noexcept -> Iterator;
+		auto Insert(Iterator& it, IntrusiveDListNode<T>& val) noexcept -> Iterator;
 		/**
-		 * Insert a IntrusiveList into the IntrusiveList after a certain location
+		 * Insert a IntrusiveDList into the IntrusiveDList after a certain location
 		 * \param[in] it Iterator to position before the element to insert elements at
-		 * \param[in] other IntrusiveList to insert
+		 * \param[in] other IntrusiveDList to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto InsertAfter(Iterator& it, IntrusiveList&& other) noexcept -> Iterator;
+		auto Insert(Iterator& it, IntrusiveDList&& other) noexcept -> Iterator;
 
 		/**
-		 * Add an element at the front of the IntrusiveList
+		 * Add an element at the front of the IntrusiveDList
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto AddFront(IntrusiveListNode<T>& val) noexcept -> void;
+		auto AddFront(IntrusiveDListNode<T>& val) noexcept -> void;
 		/**
-		 * Add a IntrusiveList into the IntrusiveList at the front of the IntrusiveList
-		 * \param[in] other IntrusiveList to insert
+		 * Add a IntrusiveDList into the IntrusiveDList at the front of the IntrusiveDList
+		 * \param[in] other IntrusiveDList to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(IntrusiveList&& other) noexcept -> void;
+		auto AddFront(IntrusiveDList&& other) noexcept -> void;
 
 		/**
-		 * Clear the contents of the IntrusiveList
+		 * Clear the contents of the IntrusiveDList
 		 */
 		auto Clear() noexcept -> void;
 		/**
-		 * Remove the last element from the IntrusiveList
+		 * Remove the last element from the IntrusiveDList
 		 */
 		auto Pop() noexcept -> void;
 		/**
-		 * Remove the first element from the IntrusiveList
+		 * Remove the first element from the IntrusiveDList
 		 */
 		auto PopFront() noexcept -> void;
 		/**
-		 * Erase an element from the IntrusiveList
+		 * Erase an element from the IntrusiveDList
 		 * \param[in] it Iterator to element before the element to erase
 		 */
-		auto EraseAfter(Iterator& it) noexcept -> void;
+		auto Erase(Iterator& it) noexcept -> void;
 
 		/**
 		 * Reverse the elements in the list
@@ -151,38 +156,38 @@ namespace Core
 		auto Reverse() noexcept -> void;
 
 		/**
-		 * Get the size of the IntrusiveList
-		 * \return Size of the IntrusiveList
+		 * Get the size of the IntrusiveDList
+		 * \return Size of the IntrusiveDList
 		 */
 		auto Size() const noexcept -> usize;
 		/**
-		 * Check if the IntrusiveList is empty
-		 * \return Whether the IntrusiveList is empty
+		 * Check if the IntrusiveDList is empty
+		 * \return Whether the IntrusiveDList is empty
 		 */
 		auto IsEmpty() const noexcept ->  bool;
 
 		/**
-		 * Get the first element in the IntrusiveList
-		 * \return First element in the IntrusiveList
-		 * \note Only use when the IntrusiveList is not empty
+		 * Get the first element in the IntrusiveDList
+		 * \return First element in the IntrusiveDList
+		 * \note Only use when the IntrusiveDList is not empty
 		 */
 		auto Front() noexcept -> T&;
 		/**
-		 * Get the first element in the IntrusiveList
-		 * \return First element in the IntrusiveList
-		 * \note Only use when the IntrusiveList is not empty
+		 * Get the first element in the IntrusiveDList
+		 * \return First element in the IntrusiveDList
+		 * \note Only use when the IntrusiveDList is not empty
 		 */
 		auto Front() const noexcept -> const T&;
 		/**
-		 * Get the last element in the IntrusiveList
-		 * \return Last element in the IntrusiveList
-		 * \note Only use when the IntrusiveList is not empty
+		 * Get the last element in the IntrusiveDList
+		 * \return Last element in the IntrusiveDList
+		 * \note Only use when the IntrusiveDList is not empty
 		 */
 		auto Back() noexcept -> T&;
 		/**
-		 * Get the last element in the IntrusiveList
-		 * \return Last element in the IntrusiveList
-		 * \note Only use when the IntrusiveList is not empty
+		 * Get the last element in the IntrusiveDList
+		 * \return Last element in the IntrusiveDList
+		 * \note Only use when the IntrusiveDList is not empty
 		 */
 		auto Back() const noexcept -> const T&;
 
@@ -217,11 +222,11 @@ namespace Core
 		auto cend() const noexcept -> ConstIterator;
 
 	private:
-		IntrusiveListNode<T>* m_pHead;
-		IntrusiveListNode<T>* m_pTail;
+		IntrusiveDListNode<T>* m_pHead;
+		IntrusiveDListNode<T>* m_pTail;
 	};
 
-	
+
 }
 
-#include "IntrusiveList.inl"
+#include "IntrusiveDList.inl"
