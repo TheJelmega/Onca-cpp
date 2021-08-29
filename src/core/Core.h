@@ -31,6 +31,7 @@
 #include "containers/Array.h"
 #include "containers/DynArray.h"
 #include "containers/List.h"
+#include "containers/IntrusiveList.h"
 #include "containers/DList.h"
 #include "containers/HashMap.h"
 #include "containers/HashSet.h"

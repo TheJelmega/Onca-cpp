@@ -46,10 +46,6 @@
 
 #endif
 
-#ifndef EXPORT
-#	define EXPORT 0
-#endif
-
 #ifdef PLATFORM_WINDOWS
 #	define PLATFORM_LINUX 0
 #elif PLATFORM_LINUX

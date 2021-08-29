@@ -40,7 +40,7 @@ namespace Core
 		STATIC_ASSERT(!IsLValueReference<T>, "Bad forward call");
 		return static_cast<T&&>(arg);
 	}
-
+	
 	template <ForwardIterator T>
 	auto CountElems(const T& begin, const T& end) noexcept -> usize
 	{
