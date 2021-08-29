@@ -30,7 +30,7 @@ namespace Core
 		auto Get() const noexcept -> const Owner*;
 
 	private:
-		Owner* m_pNext;  ///< Pointer to next node
+		IntrusiveListNode* m_pNext;  ///< Pointer to next node
 		usize  m_offset; ///< Offset to Owner
 
 		friend class IntrusiveList<Owner>;
