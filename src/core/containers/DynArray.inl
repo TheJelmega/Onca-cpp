@@ -1,5 +1,6 @@
 #pragma once
 #include "DynArray.h"
+#include "core/utils/Algo.h"
 
 namespace Core
 {
@@ -75,7 +76,10 @@ namespace Core
 		, m_size(other.m_size)
 	{
 		Reserve(m_size);
-		MemCpy(m_mem, other.m_mem, m_size * sizeof(T));
+		if constexpr (MemCopyable<T>)
+			MemCpy(m_mem.Ptr(), other.m_mem.Ptr(), m_size * sizeof(T));
+		else
+			Algo::Move(other.m_mem.Ptr(), m_mem.Ptr(), m_size);
 		other.m_mem.Dealloc();
 		other.m_mem = nullptr;
 	}
@@ -96,7 +100,6 @@ namespace Core
 	template <MoveConstructable T>
 	auto DynArray<T>::operator=(const DynArray<T>& other) noexcept -> DynArray<T>& requires CopyConstructable<T>
 	{
-		Reserve(other.m_size);
 		Assign(other.Begin(), other.End());
 		return *this;
 	}
@@ -115,6 +118,7 @@ namespace Core
 	template <ForwardIterator It>
 	auto DynArray<T>::Assign(const It& begin, const It& end) noexcept -> void  requires CopyConstructable<T>
 	{
+		Clear();
 		if constexpr (RandomAccessIterator<It>)
 		{
 			ASSERT(begin < end, "'begin' iterator must be smaller than 'end' iterator");
@@ -139,12 +143,13 @@ namespace Core
 	template <MoveConstructable T>
 	auto DynArray<T>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>
 	{
+		Clear();
 		const usize size = il.size();
 		Reserve(size);
 		if constexpr (MemCopyable<T>)
 		{
 			T* pBegin = m_mem.Ptr();
-			MemCpy(pBegin, il.begin(), size * sizeof(T));
+			Algo::Copy(il.begin(), pBegin, size);
 			m_size = size;
 		}
 		else
@@ -185,7 +190,7 @@ namespace Core
 		MemRef<T> mem = m_mem.GetAlloc()->template Allocate<T>(cap * sizeof(T));
 		if (m_mem.IsValid())
 		{
-			MemCpy(mem.Ptr(), m_mem.Ptr(), m_size * sizeof(T));
+			Algo::Move(m_mem.Ptr(), mem.Ptr(), m_size);
 			m_mem.Dealloc();
 		}
 		m_mem = Move(mem);
@@ -226,7 +231,7 @@ namespace Core
 			T* pBegin = m_mem.Ptr();
 			if constexpr (IsPrimitive<T>)
 			{
-				MemClear(pBegin, (newSize - m_size) * sizeof(T));
+				MemClear(pBegin + m_size, (newSize - m_size) * sizeof(T));
 			}
 			else
 			{
@@ -246,7 +251,10 @@ namespace Core
 			MemRef<T> mem = m_mem.GetAlloc()->template Allocate<T>(m_size * sizeof(T));
 			if (m_mem.IsValid())
 			{
-				MemCpy(mem.Ptr(), m_mem.Ptr(), m_size * sizeof(T));
+				if (MemCopyable<T>)
+					MemCpy(mem.Ptr(), m_mem.Ptr(), m_size * sizeof(T));
+				else
+					Algo::Copy(m_mem.Ptr(), mem.Ptr(), m_size);
 				m_mem.Dealloc();
 			}
 			m_mem = Move(mem);
@@ -271,7 +279,7 @@ namespace Core
 		Reserve(m_size + other.m_size);
 		if constexpr (MemCopyable<T>)
 		{
-			MemCpy(m_mem.Ptr() + m_size, other.m_mem.Ptr(), other.m_size);
+			Algo::Move(other.m_mem.Ptr(), m_mem.Ptr() + m_size, other.m_size);
 			m_size += other.m_size;
 		}
 		else
@@ -288,7 +296,7 @@ namespace Core
 		m_size += other.m_size;
 		Reserve(m_size);
 
-		MemCpy(m_mem.Ptr() + idx, other.m_mem.Ptr(), other.Size() * sizeof(T));
+		Algo::Move(other.m_mem.Ptr(), m_mem.Ptr() + idx, other.Size());
 		other.m_mem.Dealloc();
 		other.m_size = 0;
 	}
@@ -665,7 +673,6 @@ namespace Core
 		const usize idx = m_size++;
 		Reserve(m_size);
 		T* loc = m_mem.Ptr() + idx;
-		//T* loc = reinterpret_cast<T*>(m_mem.GetRawHandle()) + idx;
 		new (loc) T{ Move(val) };
 		return loc;
 	}
@@ -677,11 +684,13 @@ namespace Core
 		m_size += count;
 
 		Reserve(m_size);
-		Iterator loc = m_mem.Ptr() + offset;
+		Iterator from = m_mem.Ptr() + offset;
 
-		if (offset != endIdx)
-			MemMove(loc + count, loc, (endIdx - offset) * sizeof(T));
+		if (offset == endIdx)
+			return from;
 
-		return loc;
+		Iterator to = from + count;
+		Algo::Move(from, to, endIdx - offset);
+		return from;
 	}
 }

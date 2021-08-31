@@ -30,7 +30,7 @@ namespace Core
 	 * \tparam B Second type
 	 */
 	template<typename A, typename B>
-	INL constexpr bool IsSameAs = std::is_same_v<A, B>;
+	INL constexpr bool IsSame = std::is_same_v<A, B>;
 
 	/**
 	 * Is a type an integral
@@ -43,13 +43,13 @@ namespace Core
 	 * \tparam T Type to check
 	 */
 	template<typename T>
-	INL constexpr  bool IsFloastingPoint = std::is_floating_point_v<T>;
+	INL constexpr  bool IsFloatingPoint = std::is_floating_point_v<T>;
 	/**
 	 * Is a type a boolean
 	 * \tparam T Type to check
 	 */
 	template<typename T>
-	INL constexpr bool IsBoolean = IsSameAs<T, bool>;
+	INL constexpr bool IsBoolean = IsSame<T, bool>;
 	/**
 	 * Is a type an pointer
 	 * \tparam T Type to check
@@ -90,11 +90,25 @@ namespace Core
 	INL constexpr bool IteratorHasContiguousData = IsPointer<T>;
 
 	/**
-	 * Removes the reference of a type
+	 * Removes the reference from a type
 	 * \tparam T Type to remove reference from
 	 */
 	template<typename T>
 	using RemoveReference = std::remove_reference_t<T>;
+
+	/**
+	 * Removes 'const' from a type
+	 * \tparam T Type to remove 'const' from
+	 */
+	template<typename T>
+	using RemoveConst = std::remove_const_t<T>;
+
+	/**
+	 * \brief Decay a type into its base type
+	 * \tparam T Type to decay
+	 */
+	template<typename T>
+	using Decay = std::decay_t<T>;
 
 
 	template<bool C, typename T, typename U>

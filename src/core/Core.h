@@ -9,6 +9,7 @@
 
 #include "utils/Utils.h"
 #include "utils/Pair.h"
+#include "utils/Algo.h"
 
 #include "memory/MemUtils.h"
 #include "memory/MemRef.h"

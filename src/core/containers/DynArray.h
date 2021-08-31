@@ -54,12 +54,12 @@ namespace Core
 		template<ForwardIterator It>
 		explicit DynArray(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
 		/**
-		 * \brief Create a DynArray with the contents of another DynArray
+		 * Create a DynArray with the contents of another DynArray
 		 * \param[in] other DynArray to copy
 		 */
 		DynArray(const DynArray& other) noexcept requires CopyConstructable<T>;
 		/**
-		 * \brief Create a DynArray with the contents of another DynArray, but with a different allocator
+		 * Create a DynArray with the contents of another DynArray, but with a different allocator
 		 * \param[in] other DynArray to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
@@ -82,7 +82,7 @@ namespace Core
 		auto operator=(DynArray&& other) noexcept -> DynArray<T>&;
 
 		/**
-		 * \brief Assign an iterable range to the DynArray
+		 * Assign an iterable range to the DynArray
 		 * \tparam It Iterator type
 		 * \param[in] begin Begin iterator
 		 * \param[in] end End iterator
@@ -203,14 +203,14 @@ namespace Core
 		 * \param[in] other DynArray to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, const DynArray<T>& other) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, const DynArray& other) noexcept -> Iterator requires CopyConstructable<T>;
 		/**
 		 * Insert a DynArray into the DynArray
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] other DynArray to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, DynArray<T>&& other) noexcept -> Iterator;
+		auto Insert(const ConstIterator& it, DynArray&& other) noexcept -> Iterator;
 
 		/**
 		 * Emplace an element into the DynArray
@@ -267,7 +267,7 @@ namespace Core
 		auto Find(const U& value) const noexcept -> ConstIterator;
 		
 		/**
-		 * \brief Get the element at an index
+		 * Get the element at an index
 		 * \param[in] idx Index of element
 		 * \return Optional with value
 		 * \note Will return an empty optional when index is out of bounds
@@ -287,14 +287,14 @@ namespace Core
 		auto IteratorAt(usize idx) const noexcept -> ConstIterator;
 		
 		/**
-		 * \brief Get the element at an index
+		 * Get the element at an index
 		 * \param[in] idx Index of element
 		 * \return Element at index
 		 * \note Only use when certain the index is not out of bounds
 		 */
 		auto operator[](usize idx) noexcept -> T&;
 		/**
-		 * \brief Get the element at an index
+		 * Get the element at an index
 		 * \param[in] idx Index of element
 		 * \return Element at index
 		 * \note Only use when certain the index is not out of bounds

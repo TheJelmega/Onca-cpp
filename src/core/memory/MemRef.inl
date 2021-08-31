@@ -94,7 +94,7 @@ namespace Core
 	template <typename T>
 	auto MemRef<T>::Ptr() const noexcept -> T*
 	{
-		if (m_pAlloc) LIKELY
+		if (IsValid()) LIKELY
 			return m_pAlloc->TranslateToPtr(*this);
 		return nullptr;
 	}
