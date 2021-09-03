@@ -35,7 +35,6 @@ namespace Core::Algo
 	auto Move(InIt from, OutIt to, usize size) noexcept -> void
 	{
 		STATIC_ASSERT((IsSame<Decay<decltype(*from)>, Decay<decltype(*to)>>), "Iterators should have the same underlying type");
-
 		for (usize i = 0; i < size; ++i)
 			*to++ = Core::Move(*from++);
 	}

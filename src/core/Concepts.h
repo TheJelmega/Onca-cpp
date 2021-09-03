@@ -71,17 +71,17 @@ namespace Core
 	template<typename It>
 	concept ForwardIterator = requires(It a, It b)
 	{
-		{ ++a            } noexcept;
-		{ *a             } noexcept;
-		{ a != b         } noexcept;
+		{ ++a    } noexcept;
+		{ *a     } noexcept;
+		{ a != b } noexcept;
 	};
 
 	template<typename It>
 	concept ReverseIterator = requires(It a, It b)
 	{
-		{ --a            } noexcept;
-		{ *a             } noexcept;
-		{ a != b         } noexcept;
+		{ --a    } noexcept;
+		{ *a     } noexcept;
+		{ a != b } noexcept;
 	};
 
 	template<typename T>

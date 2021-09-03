@@ -11,27 +11,28 @@ namespace Core
 		memcpy(dst, src, numBytes);
 	}
 
-	inline auto MemCpy(MemRef<u8>& dst, const MemRef<u8>& src, usize numBytes) noexcept -> void
+	template <typename T>
+	auto MemCpy(MemRef<T>& dst, const MemRef<T>& src, usize numElems) noexcept -> void
 	{
 		ASSERT(dst != src, "Destination and source need to be different, use MemMove instead");
-		numBytes = Min(numBytes, src.Size());
-		numBytes = Min(numBytes, dst.Size());
-		MemCpy(dst.Ptr(), src.Ptr(), numBytes);
+		numElems = Min(numElems, src.Size());
+		numElems = Min(numElems, dst.Size());
+		MemCpy(dst.Ptr(), src.Ptr(), numElems * sizeof(T));
 	}
 
-	inline auto MemCpy(MemRef<u8>& dst, usize dstOffset, const MemRef<u8>& src, usize srcOffset,
-	                   usize numBytes) noexcept -> void
+	template <typename T>
+	auto MemCpy(MemRef<T>& dst, usize dstOffset, const MemRef<T>& src, usize srcOffset, usize numElems) noexcept -> void
 	{
 		ASSERT(dst != src, "Destination and source need to be different, use MemMove instead");
 		ASSERT(dstOffset < dst.Size(), "Destination offset out of bounds");
 		ASSERT(srcOffset < src.Size(), "Destination offset out of bounds");
 
 		const usize maxDstLen = dst.Size() - dstOffset;
-		numBytes = Min(numBytes, maxDstLen);
+		numElems = Min(numElems, maxDstLen);
 		const usize maxSrcLen = src.Size() - srcOffset;
-		numBytes = Min(numBytes, maxSrcLen);
+		numElems = Min(numElems, maxSrcLen);
 
-		MemCpy(dst.Ptr() + dstOffset, src.Ptr() + srcOffset, numBytes);
+		MemCpy(dst.Ptr() + dstOffset, src.Ptr() + srcOffset, numElems * sizeof(T));
 	}
 
 	template <typename T>

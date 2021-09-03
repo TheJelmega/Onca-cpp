@@ -13,22 +13,26 @@ namespace Core
 	auto MemCpy(void* dst, const void* src, usize numBytes) noexcept -> void;
 	/**
 	 * Copy a region of memory from one location to another
+	 * \tparam T Type of MemRef
 	 * \param[in] dst Destination MemRef
 	 * \param[in] src Source MemRef
-	 * \param[in] numBytes Number of bytes to copy
+	 * \param[in] numElems Number of elements to copy
 	 * \note Regions cannot overlap
 	 */
-	auto MemCpy(MemRef<u8>& dst, const MemRef<u8>& src, usize numBytes) noexcept -> void;
+	template <typename T>
+	auto MemCpy(MemRef<T>& dst, const MemRef<T>& src, usize numElems) noexcept -> void;
 	/**
 	 * Copy a region of memory from one location to another
+	 * \tparam T Type of MemRef
 	 * \param[in] dst Destination MemRef
 	 * \param[in] dstOffset Offset in destination MemRef
 	 * \param[in] src Source MemRef
 	 * \param[in] srcOffset Offset in source MemRef
-	 * \param[in] numBytes Number of bytes to copy
+	 * \param[in] numElems Number of elements to copy
 	 * \note Regions cannot overlap
 	 */
-	auto MemCpy(MemRef<u8>& dst, usize dstOffset, const MemRef<u8>& src, usize srcOffset, usize numBytes) noexcept -> void;
+	template <typename T>
+	auto MemCpy(MemRef<T>& dst, usize dstOffset, const MemRef<T>& src, usize srcOffset, usize numElems) noexcept -> void;
 	/**
 	 * Copy the contents from one element to another
 	 * \tparam T Type to copy
@@ -49,10 +53,10 @@ namespace Core
 	 * \param mem MemRef to move memory in
 	 * \param[in] dst Destination offset
 	 * \param[in] src Source offset
-	 * \param[in] numBytes Number of bytes to copy
+	 * \param[in] numElems Number of elements to copy
 	 */
 	template<typename T>
-	auto MemMove(MemRef<T>& mem, usize dst, usize src, usize numBytes) noexcept -> void;
+	auto MemMove(MemRef<T>& mem, usize dst, usize src, usize numElems) noexcept -> void;
 	/**
 	 * Set the value of a region of memory to 'val'
 	 * \param[in] ptr Pointer to memory
@@ -70,7 +74,7 @@ namespace Core
 	/**
 	 * Clear a region of memory (set to 0)
 	 * \param[in] ptr Pointer to memory
-	 * \param[in] numBytes Number of bytes to clear
+	 * \param[in] numBytes Number of numElems to clear
 	 */
 	auto MemClear(void* ptr, usize numBytes) noexcept -> void;
 	/**

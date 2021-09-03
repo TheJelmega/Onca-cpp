@@ -77,7 +77,7 @@ namespace Core
 	{
 		Reserve(m_size);
 		if constexpr (MemCopyable<T>)
-			MemCpy(m_mem.Ptr(), other.m_mem.Ptr(), m_size * sizeof(T));
+			MemCpy(m_mem.Ptr(), other.m_mem.Ptr(), m_size);
 		else
 			Algo::Move(other.m_mem.Ptr(), m_mem.Ptr(), m_size);
 		other.m_mem.Dealloc();
@@ -129,7 +129,7 @@ namespace Core
 		{
 			const usize size = usize(end - begin);
 			T* pBegin = m_mem.Ptr();
-			MemCpy(pBegin, &*begin, size * sizeof(T));
+			MemCpy(pBegin, &*begin, size);
 			m_size = size; 
 		}
 		else
@@ -252,7 +252,7 @@ namespace Core
 			if (m_mem.IsValid())
 			{
 				if (MemCopyable<T>)
-					MemCpy(mem.Ptr(), m_mem.Ptr(), m_size * sizeof(T));
+					MemCpy(mem.Ptr(), m_mem.Ptr(), m_size);
 				else
 					Algo::Copy(m_mem.Ptr(), mem.Ptr(), m_size);
 				m_mem.Dealloc();

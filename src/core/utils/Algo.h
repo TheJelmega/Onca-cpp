@@ -10,6 +10,7 @@ namespace Core::Algo
 	 * \param[in] from Iterator to copy from
 	 * \param[in] to Iterator to copy to
 	 * \param[in] size Number of elements to copy
+	 * \note Ranges should not overlap
 	 */
 	template<ForwardIterator InIt, ForwardIterator OutIt>
 	auto Copy(InIt from, OutIt to, usize size) noexcept -> void;
@@ -32,6 +33,7 @@ namespace Core::Algo
 	 * \param[in] from Iterator to start moving from
 	 * \param[in] to Iterator to move to
 	 * \param[in] size Number of elements to move
+	 * \note Ranges should not overlap
 	 */
 	template<ForwardIterator InIt, ForwardIterator OutIt>
 	auto Move(InIt from, OutIt to, usize size) noexcept -> void;
