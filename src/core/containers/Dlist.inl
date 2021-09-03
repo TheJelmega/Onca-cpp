@@ -72,6 +72,22 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
+	auto DList<T>::Iterator::operator+=(usize count) noexcept -> Iterator&
+	{
+		for (usize i = 0; i < count; ++i)
+			operator++();
+		return *this;
+	}
+
+	template <MoveConstructable T>
+	auto DList<T>::Iterator::operator-=(usize count) noexcept -> Iterator&
+	{
+		for (usize i = 0; i < count; ++i)
+			operator--();
+		return *this;
+	}
+
+	template <MoveConstructable T>
 	auto DList<T>::Iterator::operator==(const Iterator& other) const noexcept -> bool
 	{
 		return m_node == other.m_node;

@@ -16,8 +16,8 @@ namespace Core::Algo
 	auto Copy(InIt from, OutIt to, usize size) noexcept -> void;
 	/**
 	 * Copy a range of elements from an iterator to another iterator
-	 * \tparam InIt Forward iterator
-	 * \tparam OutIt Forward iterator
+	 * \tparam InIt Random access iterator
+	 * \tparam OutIt Random access iterator
 	 * \param[in] from Iterator to copy from
 	 * \param[in] to Iterator to copy to
 	 * \param[in] size Number of elements to copy

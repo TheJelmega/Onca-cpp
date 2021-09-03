@@ -69,17 +69,21 @@ namespace Core
 	};
 
 	template<typename It>
-	concept ForwardIterator = requires(It a, It b)
+	concept ForwardIterator = requires(It a, It b, usize n)
 	{
 		{ ++a    } noexcept;
+		{ a += n } noexcept;
+		{ a + n  } noexcept;
 		{ *a     } noexcept;
 		{ a != b } noexcept;
 	};
 
 	template<typename It>
-	concept ReverseIterator = requires(It a, It b)
+	concept ReverseIterator = requires(It a, It b, usize n)
 	{
 		{ --a    } noexcept;
+		{ a -= n } noexcept;
+		{ a - n  } noexcept;
 		{ *a     } noexcept;
 		{ a != b } noexcept;
 	};
@@ -94,10 +98,6 @@ namespace Core
 		BidirectionalIterator<T> &&
 		requires(T a, T b, usize n)
 	{
-		{ a += n } noexcept;
-		{ a +  n } noexcept;
-		{ a -= n } noexcept;
-		{ a -  n } noexcept;
 		{ a -  b } noexcept -> SameAs<isize>;
 		{ a <  b } noexcept;
 		{ a <= b } noexcept;

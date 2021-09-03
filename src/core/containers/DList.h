@@ -40,6 +40,9 @@ namespace Core
 			auto operator+(usize count) const noexcept -> Iterator;
 			auto operator-(usize count) const noexcept -> Iterator;
 
+			auto operator+=(usize count) noexcept -> Iterator&;
+			auto operator-=(usize count) noexcept -> Iterator&;
+
 			auto operator==(const Iterator& other) const noexcept -> bool;
 			auto operator!=(const Iterator& other) const noexcept -> bool;
 

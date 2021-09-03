@@ -99,6 +99,14 @@ namespace Core
 	}
 
 	template <typename T>
+	auto IntrusiveList<T>::Iterator::operator+=(usize count) noexcept -> Iterator&
+	{
+		for (usize i = 0; i < count; ++i)
+			operator++();
+		return *this;
+	}
+
+	template <typename T>
 	auto IntrusiveList<T>::Iterator::operator==(const Iterator& other) const noexcept -> bool
 	{
 		return m_pNode == other.m_pNode;
