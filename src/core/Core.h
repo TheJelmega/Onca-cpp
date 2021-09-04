@@ -41,10 +41,10 @@
 
 namespace Core
 {
-	template<Movable K, Movable V, Hasher<K> H, Comparator<K> C>
+	template<Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C>
 	using HashMultiMap = HashMap<K, V, H, C, true>;
 
-	template<Movable K, Hasher<K> H, Comparator<K> C>
+	template<Movable K, Hasher<K> H, EqualsComparator<K> C>
 	using HashMultiSet = HashSet<K, H, C, true>;
 }
 

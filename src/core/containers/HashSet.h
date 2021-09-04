@@ -19,7 +19,7 @@ namespace Core
 	 *
 	 * \note Hash function are expected to have a high amount of randomness, especially in lower bits, since the Hashmap relies on a power of 2 to distribute values
 	 */
-	template<Movable K, Hasher<K> H = Hash<K>, Comparator<K, K> C = DefaultComparator<K>, bool IsMultiMap = false>
+	template<Movable K, Hasher<K> H = Hash<K>, EqualsComparator<K, K> C = DefaultComparator<K>, bool IsMultiMap = false>
 	class HashSet
 	{
 	private:
@@ -197,7 +197,7 @@ namespace Core
 		 * \tparam C2 Comparator type of other
 		 * \param[in] other DynArray to merge
 		 */
-		template<Hasher H2, Comparator C2>
+		template<Hasher H2, EqualsComparator C2>
 		auto Merge(HashMap<K, Empty, H2, C2>& other) noexcept -> void;
 
 		/**

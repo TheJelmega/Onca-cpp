@@ -121,7 +121,7 @@ namespace Core
 	};
 
 	template<typename T, typename A, typename B = A>
-	concept Comparator =
+	concept EqualsComparator =
 		DefaultConstructable<T> &&
 		requires(A a, B b)
 	{
