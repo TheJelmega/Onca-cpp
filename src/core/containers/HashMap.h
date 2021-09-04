@@ -16,7 +16,7 @@ namespace Core
 	 *
 	 * \note Hash function are expected to have a high amount of randomness, especially in lower bits, since the Hashmap relies on a power of 2 to distribute values
 	 */
-	template<Movable K, Movable V, Hasher<K> H = Hash<K>, Comparator<K, K> C = DefaultComparator<K>, bool IsMultiMap = false>
+	template<Movable K, Movable V, Hasher<K> H = Hash<K>, Comparator<K> C = DefaultComparator<K>, bool IsMultiMap = false>
 	class HashMap
 	{
 	private:

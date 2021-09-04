@@ -120,7 +120,7 @@ namespace Core
 		{ static_cast<const T>(T{})(u) } noexcept -> SameAs<u64>;
 	};
 
-	template<typename T, typename A, typename B>
+	template<typename T, typename A, typename B = A>
 	concept Comparator =
 		DefaultConstructable<T> &&
 		requires(A a, B b)
