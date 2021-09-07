@@ -21,7 +21,7 @@ namespace Core
 		 * \param first First value
 		 * \param second Second value
 		 */
-		constexpr explicit Pair(const T0& first, const T1& second) noexcept requires CopyConstructable<T0>&& CopyConstructable<T1>;
+		constexpr Pair(const T0& first, const T1& second) noexcept requires CopyConstructable<T0>&& CopyConstructable<T1>;
 
 		/**
 		 * Create a Pair with 2 moved values

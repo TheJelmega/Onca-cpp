@@ -21,12 +21,17 @@ namespace Core
 
 	template<typename T>
 		requires EqualComparable<T, T>
-	struct DefaultComparator
+	struct DefaultEqualComparator
 	{
 		auto operator()(const T& t0, const T& t1) const noexcept -> bool;
 	};
 
-
+	template<typename T>
+		requires OrderedComparable<T>
+	struct DefaultComparator
+	{
+		auto operator()(const T& t0, const T& t1) const noexcept -> i8;
+	};
 
 	template<typename T>
 	struct Hash
@@ -66,6 +71,9 @@ namespace Core
 
 	template<ForwardIterator T>
 	auto CountElems(const T& begin, const T& end) noexcept -> usize;
+
+	template<MoveAssignable T>
+	auto Swap(T& a, T& b) noexcept -> void;
 }
 
 #include "Utils.inl"

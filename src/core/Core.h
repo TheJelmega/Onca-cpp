@@ -38,6 +38,7 @@
 #include "containers/IntrusiveDList.h"
 #include "containers/HashMap.h"
 #include "containers/HashSet.h"
+#include "containers/RedBlackTree.h"
 
 namespace Core
 {

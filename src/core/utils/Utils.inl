@@ -11,9 +11,17 @@ namespace Core
 	}
 
 	template <typename T> requires EqualComparable<T, T>
-	auto DefaultComparator<T>::operator()(const T& t0, const T& t1) const noexcept -> bool
+	auto DefaultEqualComparator<T>::operator()(const T& t0, const T& t1) const noexcept -> bool
 	{
 		return t0 == t1;
+	}
+
+	template <typename T> requires OrderedComparable<T>
+	auto DefaultComparator<T>::operator()(const T& t0, const T& t1) const noexcept -> i8
+	{
+		if (t0 < t1) return -1;
+		if (t0 > t1) return 1;
+		return 0;
 	}
 
 	template <typename T>
@@ -48,5 +56,13 @@ namespace Core
 		for (T it = begin; it != end; ++it)
 			++cnt;
 		return cnt;
+	}
+
+	template <MoveAssignable T>
+	auto Swap(T& a, T& b) noexcept -> void
+	{
+		T tmp = Move(a);
+		a = Move(b);
+		b = Move(tmp);
 	}
 }

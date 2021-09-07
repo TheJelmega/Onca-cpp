@@ -68,6 +68,15 @@ namespace Core
 		{ a > b } noexcept;
 	};
 
+	template<typename A, typename B = A>
+	concept OrderedComparable = requires(A a, B b)
+	{
+		{ a < b  } noexcept;
+		{ a <= b } noexcept;
+		{ a > b  } noexcept;
+		{ a >= b } noexcept;
+	};
+
 	template<typename It>
 	concept ForwardIterator = requires(It a, It b, usize n)
 	{
@@ -126,5 +135,13 @@ namespace Core
 		requires(A a, B b)
 	{
 		{ static_cast<const T>(T{})(a, b) } noexcept -> SameAs<bool>;
+	};
+
+	template<typename T, typename A, typename B = A>
+	concept Comparator =
+		DefaultConstructable<T> &&
+		requires(A a, B b)
+	{
+		{ static_cast<const T>(T{})(a, b) } noexcept -> SameAs<i8>;
 	};
 }
