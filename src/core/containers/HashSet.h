@@ -3,7 +3,7 @@
 #include "core/memory/MemRef.h"
 #include "core/allocator/GlobalAlloc.h"
 #include "core/utils/Utils.h"
-#include "core/containers/HashMap.h"
+#include "core/containers/HashSet.h"
 #include "core/utils/Pair.h"
 
 namespace Core
@@ -14,7 +14,7 @@ namespace Core
 	 * \tparam K Key type
 	 * \tparam H Hasher type
 	 * \tparam C Comparator type
-	 * \tparam IsMultiMap Whether the HashMap is a MultiMap or not
+	 * \tparam IsMultiMap Whether the HashSet is a MultiMap or not
 	 *
 	 * \note Hash function are expected to have a high amount of randomness, especially in lower bits, since the Hashmap relies on a power of 2 to distribute values
 	 */
@@ -23,7 +23,7 @@ namespace Core
 	{
 	private:
 
-		using Map = HashMap<K, Empty, H, C, IsMultiMap>;
+		using Map = HashSet<K, Empty, H, C, IsMultiMap>;
 
 	public:
 		class Iterator
@@ -129,24 +129,24 @@ namespace Core
 		explicit HashSet(const It& begin, const It& end, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
 
 		/**
-		 * \brief Create a HashMap with the contents of another HashMap
-		 * \param[in] other HashMap to copy
+		 * \brief Create a HashSet with the contents of another HashSet
+		 * \param[in] other HashSet to copy
 		 */
 		HashSet(const HashSet& other) noexcept requires CopyConstructable<K>;
 		/**
-		 * \brief Create a HashMap with the contents of another HashMap, but with a different allocator
-		 * \param[in] other HashMap to copy
+		 * \brief Create a HashSet with the contents of another HashSet, but with a different allocator
+		 * \param[in] other HashSet to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
 		HashSet(const HashSet& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>;
 		/**
-		 * Move another HashMap into a new HashMap
-		 * \param[in] other HashMap to move from
+		 * Move another HashSet into a new HashSet
+		 * \param[in] other HashSet to move from
 		 */
 		HashSet(HashSet&& other) noexcept;
 		/**
-		 * Move another HashMap into a new HashMap, but with a different allocator
-		 * \param[in] other HashMap to move from
+		 * Move another HashSet into a new HashSet, but with a different allocator
+		 * \param[in] other HashSet to move from
 		 * \param[in] alloc Allocator the container should use
 		 */
 		HashSet(HashSet&& other, Alloc::IAllocator& alloc) noexcept;
@@ -156,7 +156,7 @@ namespace Core
 		auto operator=(HashSet&& other) noexcept -> HashSet;
 
 		/**
-		 * Rehash the HashMap to have a minimum number of buckets
+		 * Rehash the HashSet to have a minimum number of buckets
 		 * \param[in] count Minimum number of buckets to rehash to
 		 */
 		auto Rehash(usize count) noexcept -> void;
@@ -190,8 +190,8 @@ namespace Core
 			auto Emplace(Args&&... args) noexcept -> Pair<ConstIterator, bool>;
 
 		/**
-		 * \brief Merge another HashMap into this hashmap
-		 * Merging 2 HashMaps will move all key-value pairs, where the key does not exist in the HashMap, all other values will remain in the other HashMap
+		 * \brief Merge another HashSet into this hashmap
+		 * Merging 2 HashSets will move all key-value pairs, where the key does not exist in the HashSet, all other values will remain in the other HashSet
 		 * \tparam H2 Hasher type of other
 		 * \tparam C2 Comparator type of other
 		 * \param[in] other DynArray to merge
@@ -200,19 +200,19 @@ namespace Core
 		auto Merge(HashSet<K, H2, C2>& other) noexcept -> void;
 
 		/**
-		 * Clear the contents of the HashMap, possibly also deallocate the memory
+		 * Clear the contents of the HashSet, possibly also deallocate the memory
 		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
 		auto Clear(bool clearMemory = false) noexcept -> void;
 
 		/**
-		 * Erase an element from the HashMap
+		 * Erase an element from the HashSet
 		 * \param[in] it Iterator to element to erase
 		 * \return Iterator after erased element
 		 */
 		auto Erase(ConstIterator& it) noexcept -> Iterator;
 		/**
-		 * Erase an element from the HashMap
+		 * Erase an element from the HashSet
 		 * \param[in] key Key to value to remove
 		 * \return Number of elements removed
 		 */
@@ -251,16 +251,16 @@ namespace Core
 		auto FindRange(const K2& key) const noexcept -> Pair<ConstIterator, ConstIterator>;
 
 		/**
-		 * Check if the HashMap contains a key
+		 * Check if the HashSet contains a key
 		 * \param[in] key Key to find
-		 * \return Whether the HashMap contains the key
+		 * \return Whether the HashSet contains the key
 		 */
 		auto Contains(const K& key) const noexcept -> bool;
 		/**
-		 * Check if the HashMap contains a key
+		 * Check if the HashSet contains a key
 		 * \tparam K2 Type of a value that can be compared to K
 		 * \param[in] key Key to find
-		 * \return Whether the HashMap contains the key
+		 * \return Whether the HashSet contains the key
 		 * \note This function is slower than using a key of the Key type, as a linear search needs to be done
 		 */
 		template<EqualComparable<K> K2>
@@ -283,13 +283,13 @@ namespace Core
 		auto Count(const K2& key) const noexcept -> usize;
 
 		/**
-		 * Get the size of the HashMap
-		 * \return Size of the HashMap
+		 * Get the size of the HashSet
+		 * \return Size of the HashSet
 		 */
 		auto Size() const noexcept -> usize;
 		/**
-		 * Check if the HashMap is empty
-		 * \return Whether the HashMap is empty
+		 * Check if the HashSet is empty
+		 * \return Whether the HashSet is empty
 		 */
 		auto IsEmpty() const noexcept -> bool;
 
@@ -312,8 +312,8 @@ namespace Core
 		auto BucketIdx(const K& key) const noexcept -> usize;
 
 		/**
-		 * Get the current load factor of the HashMap
-		 * \return Current load factor of the HashMap
+		 * Get the current load factor of the HashSet
+		 * \return Current load factor of the HashSet
 		 */
 		auto LoadFactor() const noexcept -> f32;
 		/**
@@ -328,21 +328,21 @@ namespace Core
 		auto SetMaxLoadFactor(f32 ml) noexcept -> void;
 
 		/**
-		 * Get the allocator used by the HashMap
-		 * \return Allocator used by the HashMap
+		 * Get the allocator used by the HashSet
+		 * \return Allocator used by the HashSet
 		 */
 		auto GetAllocator() const noexcept -> Alloc::IAllocator*;
 		
 		/**
-		 * Get the first element in the HashMap
-		 * \return First element in the HashMap
-		 * \note Only use when the HashMap is not empty
+		 * Get the first element in the HashSet
+		 * \return First element in the HashSet
+		 * \note Only use when the HashSet is not empty
 		 */
 		auto Front() const noexcept -> const K&;
 		/**
-		 * Get the last element in the HashMap
-		 * \return Last element in the HashMap
-		 * \note Only use when the HashMap is not empty
+		 * Get the last element in the HashSet
+		 * \return Last element in the HashSet
+		 * \note Only use when the HashSet is not empty
 		 */
 		auto Back() const noexcept -> const K&;
 		

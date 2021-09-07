@@ -22,7 +22,6 @@ namespace Core
 		/**
 		 * Create a DynArray with an allocator
 		 * \param[in] alloc Allocator the container should use
-		 * \note No allocation happens
 		 */
 		explicit DynArray(Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
 		/**
