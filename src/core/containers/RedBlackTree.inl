@@ -206,9 +206,26 @@ namespace Core
 	}
 
 	template <Movable T, Comparator<T> C>
+	RedBlackTree<T, C>::RedBlackTree(C comp, Alloc::IAllocator& alloc) noexcept
+		: m_root(&alloc)
+		, m_size(0)
+		, m_comp(Move(comp))
+	{
+	}
+
+	template <Movable T, Comparator<T> C>
 	RedBlackTree<T, C>::RedBlackTree(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_root(&alloc)
 		, m_size(0)
+	{
+		Assign(il.begin(), il.end());
+	}
+
+	template <Movable T, Comparator<T> C>
+	RedBlackTree<T, C>::RedBlackTree(const InitializerList<T>& il, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+		: m_root(&alloc)
+		, m_size(0)
+		, m_comp(Move(comp))
 	{
 		Assign(il.begin(), il.end());
 	}
@@ -218,6 +235,16 @@ namespace Core
 	RedBlackTree<T, C>::RedBlackTree(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_root(&alloc)
 		, m_size(0)
+	{
+		Assign(begin, end);
+	}
+
+	template <Movable T, Comparator<T> C>
+	template <ForwardIterator It>
+	RedBlackTree<T, C>::RedBlackTree(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+		: m_root(&alloc)
+		, m_size(0)
+		, m_comp(Move(comp))
 	{
 		Assign(begin, end);
 	}
@@ -288,19 +315,19 @@ namespace Core
 	}
 
 	template <Movable T, Comparator<T> C>
-	auto RedBlackTree<T, C>::Insert(const T& value) noexcept -> Pair<bool, Iterator> requires CopyConstructable<T>
+	auto RedBlackTree<T, C>::Insert(const T& value) noexcept -> Pair<Iterator, bool> requires CopyConstructable<T>
 	{
 		return Insert(T{ value });
 	}
 
 	template <Movable T, Comparator<T> C>
-	auto RedBlackTree<T, C>::Insert(T&& value) noexcept -> Pair<bool, Iterator>
+	auto RedBlackTree<T, C>::Insert(T&& value) noexcept -> Pair<Iterator, bool>
 	{
 		if (!m_root)
 		{
 			m_root = CreateNode(Move(value));
 			++m_size;
-			return { true, Iterator{ m_root } };
+			return { Iterator{ m_root }, true  };
 		}
 
 		// Find the predecessor
@@ -309,7 +336,7 @@ namespace Core
 		{
 			i8 res = m_comp(value, node->value);
 			if (res == 0)
-				return { false, Iterator{ node } };
+				return { Iterator{ node }, false };
 
 			if (res < 0)
 			{
@@ -352,7 +379,7 @@ namespace Core
 		RebalanceInsert(node, dir);
 		++m_size;
 
-		return { true, Iterator{ node } };
+		return { Iterator{ node }, trye };
 	}
 
 	template <Movable T, Comparator<T> C>

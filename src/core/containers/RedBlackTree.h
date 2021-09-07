@@ -85,6 +85,12 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		explicit RedBlackTree(Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
+		/**
+		 * Create a RedBlackTree with an allocator
+		 * \param[in] comp Comparator to compare keys with
+		 * \param[in] alloc Allocator the container should use
+		 */
+		explicit RedBlackTree(C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
 
 		/**
 		 * Create a RedBlackTree from an initializer list
@@ -92,6 +98,12 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		explicit RedBlackTree(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		/**
+		 * Create a RedBlackTree from an initializer list
+		 * \param[in] il Initializer list with elements
+		 * \param[in] alloc Allocator the container should use
+		 */
+		explicit RedBlackTree(const InitializerList<T>& il, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
 		/**
 		 * Create a RedBlackTree from an iterable range
 		 * \tparam It Iterator type
@@ -101,6 +113,15 @@ namespace Core
 		 */
 		template<ForwardIterator It>
 		explicit RedBlackTree(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		/**
+		 * Create a RedBlackTree from an iterable range
+		 * \tparam It Iterator type
+		 * \param[in] begin Begin iterator
+		 * \param[in] end End iterator
+		 * \param[in] alloc Allocator the container should use
+		 */
+		template<ForwardIterator It>
+		explicit RedBlackTree(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
 		/**
 		 * Create a RedBlackTree with the contents of another RedBlackTree
 		 * \param[in] other RedBlackTree to copy
@@ -147,13 +168,13 @@ namespace Core
 		 * \param[in] value Value to insert
 		 * \return A pair with the iterator to the inserted element and a bool, where true means the element was inserted
 		 */
-		auto Insert(const T& value) noexcept -> Pair<bool, Iterator> requires CopyConstructable<T>;
+		auto Insert(const T& value) noexcept -> Pair<Iterator, bool> requires CopyConstructable<T>;
 		/**
 		 * Insert a value in the RedBlackTree
 		 * \param[in] value Value to insert
 		 * \return A pair with the iterator to the inserted element and a bool, where true means the element was inserted
 		 */
-		auto Insert(T&& value) noexcept -> Pair<bool, Iterator>;
+		auto Insert(T&& value) noexcept -> Pair<Iterator, bool>;
 
 		/**
 		 * \brief Merge another RedBlackTree into this RedBlackTree
