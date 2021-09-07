@@ -23,7 +23,7 @@ namespace Core
 	{
 	private:
 
-		using Map = HashSet<K, Empty, H, C, IsMultiMap>;
+		using Map = HashMap<K, Empty, H, C, IsMultiMap>;
 
 	public:
 		class Iterator
