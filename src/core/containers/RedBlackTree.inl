@@ -379,7 +379,7 @@ namespace Core
 		RebalanceInsert(node, dir);
 		++m_size;
 
-		return { Iterator{ node }, trye };
+		return { Iterator{ node }, true };
 	}
 
 	template <Movable T, Comparator<T> C>
