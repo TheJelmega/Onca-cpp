@@ -214,9 +214,9 @@ namespace Core
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
 	template <Hasher H2, EqualsComparator C2>
-	auto HashSet<K, H, C, IsMultiMap>::Merge(HashMap<K, Empty, H2, C2>& other) noexcept -> void
+	auto HashSet<K, H, C, IsMultiMap>::Merge(HashSet<K, H2, C2>& other) noexcept -> void
 	{
-		Merge(other);
+		m_hashMap.Merge(other.m_hashMap);
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>

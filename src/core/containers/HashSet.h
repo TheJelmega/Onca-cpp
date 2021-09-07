@@ -12,7 +12,6 @@ namespace Core
 	/**
 	 * A bucketed hash map
 	 * \tparam K Key type
-	 * \tparam V Value type
 	 * \tparam H Hasher type
 	 * \tparam C Comparator type
 	 * \tparam IsMultiMap Whether the HashMap is a MultiMap or not
@@ -198,7 +197,7 @@ namespace Core
 		 * \param[in] other DynArray to merge
 		 */
 		template<Hasher H2, EqualsComparator C2>
-		auto Merge(HashMap<K, Empty, H2, C2>& other) noexcept -> void;
+		auto Merge(HashSet<K, H2, C2>& other) noexcept -> void;
 
 		/**
 		 * Clear the contents of the HashMap, possibly also deallocate the memory
