@@ -10,15 +10,28 @@ namespace Core
 
 	namespace Detail
 	{
+		/**
+		 * Color of a red-black tree node
+		 */
 		enum class RedBlackTreeColor : u8
 		{
 			Black,
 			Red,
 		};
 
-		template<typename T, bool StoreMultiple>
+		template<Movable T, Comparator<T> C, bool AllowMultiple>
+		class RedBlackTreeIterator;
+
+		/**
+		 * Node of a red black tree
+		 * \tparam T Underlying type
+		 * \tparam C Comparator
+		 * \tparam StoreMultiple Whether to allow multiple values to be store
+		 */
+		template<Movable T, Comparator<T> C, bool StoreMultiple>
 		struct RedBlackTreeNode
 		{
+		private:
 			T value;
 			RedBlackTreeColor color;
 			MemRef<RedBlackTreeNode> parent;
@@ -32,11 +45,15 @@ namespace Core
 				};
 				MemRef<RedBlackTreeNode> children[2];
 			};
+			
+			friend class RedBlackTree<T, C, StoreMultiple>;
+			friend class RedBlackTreeIterator<T, C, StoreMultiple>;
 		};
 
-		template<typename T>
-		struct RedBlackTreeNode<T, true>
+		template<Movable T, Comparator<T> C>
+		struct RedBlackTreeNode<T, C, true>
 		{
+		private:
 			DynArray<T> value;
 			RedBlackTreeColor color;
 			MemRef<RedBlackTreeNode> parent;
@@ -50,13 +67,22 @@ namespace Core
 				};
 				MemRef<RedBlackTreeNode> children[2];
 			};
+			
+			friend class RedBlackTree<T, C, true>;
+			friend class RedBlackTreeIterator<T, C, true>;
 		};
 
+		/**
+		* An iterator for a red-black tree
+		* \tparam T Underlying type
+		* \tparam C Comparator
+		* \tparam AllowMultiple Whether to allow multiple values per node
+		*/
 		template<Movable T, Comparator<T> C, bool AllowMultiple>
-		struct RedBlackTreeIterator
+		class RedBlackTreeIterator
 		{
 		private:
-			using NodeRef = MemRef<RedBlackTreeNode<T, AllowMultiple>>;
+			using NodeRef = MemRef<RedBlackTreeNode<T, C, AllowMultiple>>;
 
 		public:
 			RedBlackTreeIterator() noexcept;
@@ -94,6 +120,12 @@ namespace Core
 		};
 	}
 
+	/**
+	 * A red-black tree
+	 * \tparam T Underlying type
+	 * \tparam C Comparator
+	 * \tparam AllowMultiple Whether to allow multiple values per node
+	 */
 	template<Movable T, Comparator<T> C, bool AllowMultiple>
 	class RedBlackTree
 	{
@@ -104,7 +136,7 @@ namespace Core
 			Right,
 		};
 
-		using Node = Detail::RedBlackTreeNode<T, AllowMultiple>;
+		using Node = Detail::RedBlackTreeNode<T, C, AllowMultiple>;
 		using NodeRef = MemRef<Node>;
 
 	public:

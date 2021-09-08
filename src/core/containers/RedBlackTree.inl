@@ -450,6 +450,19 @@ namespace Core
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Erase(ConstIterator& it) noexcept -> Iterator
 	{
+		if constexpr (AllowMultiple)
+		{
+			DynArray<T>& value = it.m_node->value;
+			usize size = value.Size();
+			if (size > 0)
+			{
+				value.Erase(value.IteratorAt(it.m_Idx));
+				if (it.m_Idx == size)
+					++it;
+				return it;
+			}
+		}
+
 		return EraseInternal<true>(it);
 	}
 
