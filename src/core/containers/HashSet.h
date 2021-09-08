@@ -53,18 +53,18 @@ namespace Core
 
 	public:
 		/**
-		 * Create a hashmap
+		 * Create a HashSet
 		 * \param[in]alloc Allocator the container should use
 		 */
 		explicit HashSet(Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
 		/**
-		 * Create a hashmap
+		 * Create a HashSet
 		 * \param[in] minBuckets Minimum number of buckets to create
 		 * \param[in] alloc Allocator the container should use
 		 */
 		explicit HashSet(usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
 		/**
-		 * Create a hashmap
+		 * Create a HashSet
 		 * \param[in] minBuckets Minimum number of buckets to create
 		 * \param[in] hasher Hasher to hash keys with
 		 * \param[in] comp Comparator to compare keys with
@@ -73,20 +73,20 @@ namespace Core
 		explicit HashSet(usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
 
 		/**
-		 * Create a hashmap
+		 * Create a HashSet
 		 * param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the container should use
 		 */
 		explicit HashSet(const InitializerList<K>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
 		/**
-		 * Create a hashmap
+		 * Create a HashSet
 		 * \param[in] il Initializer list with elements
 		 * \param[in] minBuckets Minimum number of buckets to create
 		 * \param[in] alloc Allocator the container should use
 		 */
 		explicit HashSet(const InitializerList<K>& il, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
 		/**
-		 * Create a hashmap
+		 * Create a HashSet
 		 * \param[in] il Initializer list with elements
 		 * \param[in] minBuckets Minimum number of buckets to create
 		 * \param[in] il Initializer list with elements
@@ -97,7 +97,7 @@ namespace Core
 		explicit HashSet(const InitializerList<K>& il, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
 
 		/**
-		 * Create a hashmap
+		 * Create a HashSet
 		 * \tparam It Iterator type
 		 * \param[in] begin Begin iterator
 		 * \param[in] end End iterator
@@ -106,7 +106,7 @@ namespace Core
 		template<ForwardIterator It>
 		explicit HashSet(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
 		/**
-		 * Create a hashmap
+		 * Create a HashSet
 		 * \tparam It Iterator type
 		 * \param[in] begin Begin iterator
 		 * \param[in] end End iterator
@@ -116,7 +116,7 @@ namespace Core
 		template<ForwardIterator It>
 		explicit HashSet(const It& begin, const It& end, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
 		/**
-		 * Create a hashmap
+		 * Create a HashSet
 		 * \tparam It Iterator type
 		 * \param[in] begin Begin iterator
 		 * \param[in] end End iterator
@@ -167,20 +167,20 @@ namespace Core
 		auto Reserve(usize count) noexcept -> void;
 		
 		/**
-		 * Insert a key-value pair into the hashmap, override value if it already exists
+		 * Insert a key-value pair into the HashSet, override value if it already exists
 		 * \param[in] key Key to insert
 		 * \return A pair with the iterator to the inserted element and a bool, telling if the insertion was successful (i.e. if the key didn't exist yet
 		 */
 		auto Insert(const K& key) noexcept -> Pair<ConstIterator, bool> requires CopyConstructable<K>;
 		/**
-		 * Insert a key-value pair into the hashmap, override value if it already exists
+		 * Insert a key-value pair into the HashSet, override value if it already exists
 		 * \param[in] key Key to insert
 		 * \return A pair with the iterator to the inserted element and a bool, telling if the insertion was successful
 		 */
 		auto Insert(K&& key) noexcept -> Pair<ConstIterator, bool>;
 
 		/**
-		 * Emplace a key-value pair into the hashmap
+		 * Emplace a key-value pair into the HashSet
 		 * \tparam Args Type of arguments
 		 * \param[in] args Arguments
 		 * \return A pair with the iterator to the inserted element and a bool telling if the insertion was successful
@@ -190,7 +190,7 @@ namespace Core
 			auto Emplace(Args&&... args) noexcept -> Pair<ConstIterator, bool>;
 
 		/**
-		 * \brief Merge another HashSet into this hashmap
+		 * \brief Merge another HashSet into this HashSet
 		 * Merging 2 HashSets will move all key-value pairs, where the key does not exist in the HashSet, all other values will remain in the other HashSet
 		 * \tparam H2 Hasher type of other
 		 * \tparam C2 Comparator type of other
@@ -294,8 +294,8 @@ namespace Core
 		auto IsEmpty() const noexcept -> bool;
 
 		/**
-		 * Get the number of buckets in the hashmap
-		 * \return Number of buckets in the hashmap
+		 * Get the number of buckets in the HashSet
+		 * \return Number of buckets in the HashSet
 		 */
 		auto BucketCount() const noexcept -> usize;
 		/**
@@ -366,7 +366,7 @@ namespace Core
 
 	private:
 
-		Map m_hashMap; ///< Underlying hashmap
+		Map m_hashMap; ///< Underlying HashSet
 	};
 }
 
