@@ -473,12 +473,12 @@ namespace Core
 	}
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
-	auto RedBlackTree<T, C, AllowMultiple>::Find(const T& key) noexcept -> Iterator
+	auto RedBlackTree<T, C, AllowMultiple>::Find(const T& value) noexcept -> Iterator
 	{
 		NodeRef node = m_root;
 		while (node)
 		{
-			i8 res = Compare(key, node);
+			i8 res = Compare(value, node);
 			if (res == 0)
 				return Iterator{ node };
 
@@ -491,12 +491,12 @@ namespace Core
 	}
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
-	auto RedBlackTree<T, C, AllowMultiple>::Find(const T& key) const noexcept -> ConstIterator
+	auto RedBlackTree<T, C, AllowMultiple>::Find(const T& value) const noexcept -> ConstIterator
 	{
 		NodeRef node = m_root;
 		while (node)
 		{
-			i8 res = Compare(key, node);
+			i8 res = Compare(value, node);
 			if (res == 0)
 				return Iterator{ node };
 
@@ -510,25 +510,25 @@ namespace Core
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
 	template <OrderedComparable<T> T2>
-	auto RedBlackTree<T, C, AllowMultiple>::Find(const T2& key) noexcept -> Iterator
+	auto RedBlackTree<T, C, AllowMultiple>::Find(const T2& value) noexcept -> Iterator
 	{
 		NodeRef node = m_root;
 		while (node)
 		{
 			if constexpr (AllowMultiple)
 			{
-				if (key < node->value[0])
+				if (value < node->value[0])
 					node = node->left;
-				else if (key > node->value[0])
+				else if (value > node->value[0])
 					node = node->right;
 				else
 					return Iterator{ node };
 			}
 			else
 			{
-				if (key < node->value)
+				if (value < node->value)
 					node = node->left;
-				else if (key > node->value)
+				else if (value > node->value)
 					node = node->right;
 				else
 					return Iterator{ node };
@@ -539,25 +539,25 @@ namespace Core
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
 	template <OrderedComparable<T> T2>
-	auto RedBlackTree<T, C, AllowMultiple>::Find(const T2& key) const noexcept -> ConstIterator
+	auto RedBlackTree<T, C, AllowMultiple>::Find(const T2& value) const noexcept -> ConstIterator
 	{
 		NodeRef node = m_root;
 		while (node)
 		{
 			if constexpr (AllowMultiple)
 			{
-				if (key < node->value[0])
+				if (value < node->value[0])
 					node = node->left;
-				else if (key > node->value[0])
+				else if (value > node->value[0])
 					node = node->right;
 				else
 					return Iterator{ node };
 			}
 			else
 			{
-				if (key < node->value)
+				if (value < node->value)
 					node = node->left;
-				else if (key > node->value)
+				else if (value > node->value)
 					node = node->right;
 				else
 					return Iterator{ node };
@@ -567,16 +567,111 @@ namespace Core
 	}
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
-	auto RedBlackTree<T, C, AllowMultiple>::Contains(const T& key) const noexcept -> bool
+	auto RedBlackTree<T, C, AllowMultiple>::FindRange(const T& val) noexcept -> Pair<Iterator, Iterator>
 	{
-		return !!Find(key).m_node;
+		Iterator it = Find(val);
+		if constexpr (AllowMultiple)
+		{
+			return { it, it + 1 };
+		}
+		else
+		{
+			usize size = it.m_node->value.Size();
+			return { it, it + size };
+		}
+	}
+
+	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	auto RedBlackTree<T, C, AllowMultiple>::FindRange(const T& val) const noexcept -> Pair<ConstIterator, ConstIterator>
+	{
+		Iterator it = Find(val);
+		if constexpr (AllowMultiple)
+		{
+			return { it, it + 1 };
+		}
+		else
+		{
+			usize size = it.m_node->value.Size();
+			return { it, it + size };
+		}
+	}
+
+	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <EqualComparable<T> T2>
+	auto RedBlackTree<T, C, AllowMultiple>::FindRange(const T2& val) noexcept -> Pair<Iterator, Iterator>
+	{
+		Iterator it = Find(val);
+		if constexpr (AllowMultiple)
+		{
+			return { it, it + 1 };
+		}
+		else
+		{
+			usize size = it.m_node->value.Size();
+			return { it, it + size };
+		}
+	}
+
+	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <EqualComparable<T> T2>
+	auto RedBlackTree<T, C, AllowMultiple>::FindRange(const T2& val) const noexcept -> Pair<ConstIterator, ConstIterator>
+	{
+		Iterator it = Find(val);
+		if constexpr (AllowMultiple)
+		{
+			return { it, it + 1 };
+		}
+		else
+		{
+			usize size = it.m_node->value.Size();
+			return { it, it + size };
+		}
+	}
+
+	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	auto RedBlackTree<T, C, AllowMultiple>::Contains(const T& value) const noexcept -> bool
+	{
+		return !!Find(value).m_node;
 	}
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
 	template <OrderedComparable<T> T2>
-	auto RedBlackTree<T, C, AllowMultiple>::Contains(const T2& key) const noexcept -> bool
+	auto RedBlackTree<T, C, AllowMultiple>::Contains(const T2& value) const noexcept -> bool
 	{
-		return !!Find(key).m_node;
+		return !!Find(value).m_node;
+	}
+
+	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	auto RedBlackTree<T, C, AllowMultiple>::Count(const T& value) const noexcept -> usize
+	{
+		Iterator it = Find(value);
+		if constexpr (AllowMultiple)
+		{
+			return usize(!!it.m_node);
+		}
+		else
+		{
+			if (!it.m_node)
+				return 0;
+			return it.m_node->value.Size();
+		}
+	}
+
+	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <EqualComparable<T> T2>
+	auto RedBlackTree<T, C, AllowMultiple>::Count(const T2& value) const noexcept -> usize
+	{
+		Iterator it = Find(value);
+		if constexpr (AllowMultiple)
+		{
+			return usize(!!it.m_node);
+		}
+		else
+		{
+			if (!it.m_node)
+				return 0;
+			return it.m_node->value.Size();
+		}
 	}
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>

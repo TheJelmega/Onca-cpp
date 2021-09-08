@@ -267,51 +267,98 @@ namespace Core
 		auto Erase(const T& value) noexcept -> Iterator;
 
 		/**
-		 * Get an iterator to the elements with a key
-		 * \param[in] key Key to find
-		 * \return Iterator to the found element (first element in case of a MultiMap), or to end when the key wasn't found
+		 * Get an iterator to the elements with a value
+		 * \param[in] value Value to find
+		 * \return Iterator to the found element (first element in case of a MultiMap), or to end when the value wasn't found
 		 */
-		auto Find(const T& key) noexcept -> Iterator;
+		auto Find(const T& value) noexcept -> Iterator;
 		/**
-		 * Get an iterator to the elements with a key
-		 * \param[in] key Key to find
-		 * \return Iterator to the found element (first element in case of a MultiMap), or to end when the key wasn't found
+		 * Get an iterator to the elements with a value
+		 * \param[in] value Value to find
+		 * \return Iterator to the found element (first element in case of a MultiMap), or to end when the value wasn't found
 		 */
-		auto Find(const T& key) const noexcept -> ConstIterator;
+		auto Find(const T& value) const noexcept -> ConstIterator;
 		/**
-		 * Get an iterator to the elements with a key
+		 * Get an iterator to the elements with a value
 		 * \tparam T2 Type of a value that can be compared to K
-		 * \param[in] key Key to find
-		 * \return Iterator to the found element (first element in case of a MultiMap), or to end when the key wasn't found
-		 * \note This function is slower when the the key isn't convertible to the key type, as a linear search needs to be done
+		 * \param[in] value Value to find
+		 * \return Iterator to the found element (first element in case of a MultiMap), or to end when the value wasn't found
+		 * \note This function is slower when the the value isn't convertible to the value type, as a linear search needs to be done
 		 */
 		template<OrderedComparable<T> T2>
-		auto Find(const T2& key) noexcept -> Iterator;
+		auto Find(const T2& value) noexcept -> Iterator;
 		/**
-		 * Get an iterator to the elements with a key
+		 * Get an iterator to the elements with a value
 		 * \tparam T2 Type of a value that can be compared to K
-		 * \param[in] key Key to find
-		 * \return Iterator to the found element (first element in case of a MultiMap), or to end when the key wasn't found
-		 * \note This function is slower when the the key isn't convertible to the key type, as a linear search needs to be done
+		 * \param[in] value Value to find
+		 * \return Iterator to the found element (first element in case of a MultiMap), or to end when the value wasn't found
+		 * \note This function is slower when the the value isn't convertible to the value type, as a linear search needs to be done
 		 */
 		template<OrderedComparable<T> T2>
-		auto Find(const T2& key) const noexcept -> ConstIterator;
+		auto Find(const T2& value) const noexcept -> ConstIterator;
 
 		/**
-		 * Check if the RedBlackTree contains a key
-		 * \param[in] key Key to find
-		 * \return Whether the RedBlackTree contains the key
+		 * Find a range of values where the keys match a given value
+		 * \param[in] value Value to find
+		 * \return Pair of iterator, representing the begin and end of the found range
 		 */
-		auto Contains(const T& key) const noexcept -> bool;
+		auto FindRange(const T& value) noexcept -> Pair<Iterator, Iterator>;
 		/**
-		 * Check if the RedBlackTree contains a key
+		 * Find a range of values where the keys match a given value
+		 * \param[in] value Value to find
+		 * \return Pair of iterator, representing the begin and end of the found range
+		 */
+		auto FindRange(const T& value) const noexcept -> Pair<ConstIterator, ConstIterator>;
+		/**
+		 * Find a range of values where the keys match a given value
 		 * \tparam T2 Type of a value that can be compared to K
-		 * \param[in] key Key to find
-		 * \return Whether the RedBlackTree contains the key
-		 * \note This function is slower than using a key of the Key type, as a linear search needs to be done
+		 * \param[in] value Value to find
+		 * \return Pair of iterator, representing the begin and end of the found range
+		 * \note This function is slower than using a value of the Value type, as a linear search needs to be done
+		 */
+		template<EqualComparable<T> T2>
+		auto FindRange(const T2& value) noexcept -> Pair<Iterator, Iterator>;
+		/**
+		 * Find a range of values where the keys match a given value
+		 * \tparam T2 Type of a value that can be compared to K
+		 * \param[in] value Value to find
+		 * \return Pair of iterator, representing the begin and end of the found range
+		 * \note This function is slower than using a value of the Value type, as a linear search needs to be done
+		 */
+		template<EqualComparable<T> T2>
+		auto FindRange(const T2& value) const noexcept -> Pair<ConstIterator, ConstIterator>;
+
+		/**
+		 * Check if the RedBlackTree contains a value
+		 * \param[in] value Value to find
+		 * \return Whether the RedBlackTree contains the value
+		 */
+		auto Contains(const T& value) const noexcept -> bool;
+		/**
+		 * Check if the RedBlackTree contains a value
+		 * \tparam T2 Type of a value that can be compared to K
+		 * \param[in] value Value to find
+		 * \return Whether the RedBlackTree contains the value
+		 * \note This function is slower than using a value of the Value type, as a linear search needs to be done
 		 */
 		template<OrderedComparable<T> T2>
-		auto Contains(const T2& key) const noexcept -> bool;
+		auto Contains(const T2& value) const noexcept -> bool;
+
+		/**
+		 * \brief Count the number of elements that use a certain value
+		 * \param[in] value Value of the element
+		 * \return Number of elements with the value
+		 */
+		auto Count(const T& value) const noexcept -> usize;
+		/**
+		 * \brief Count the number of elements that use a certain value
+		 * \tparam K2 Type of a value that can be compared to K
+		 * \param[in] value Value of the element
+		 * \return Number of elements with the value
+		 * \note This function is slower than using a value of the Value type, as a linear search needs to be done
+		 */
+		template<EqualComparable<T> T2>
+		auto Count(const T2& value) const noexcept -> usize;
 
 		/**
 		 * Get the size of the RedBlackTree
