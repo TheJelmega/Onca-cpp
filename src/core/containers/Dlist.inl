@@ -10,6 +10,18 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
+	auto DList<T>::Iterator::operator->() const noexcept -> T*
+	{
+		return &m_node->val;
+	}
+
+	template <MoveConstructable T>
+	auto DList<T>::Iterator::operator*() const noexcept -> T&
+	{
+		return m_node->val;
+	}
+
+	template <MoveConstructable T>
 	auto DList<T>::Iterator::operator++() noexcept -> Iterator
 	{
 		if (m_node)
@@ -39,18 +51,6 @@ namespace Core
 		Iterator it{ m_node };
 		operator--();
 		return it;
-	}
-
-	template <MoveConstructable T>
-	auto DList<T>::Iterator::operator->() const noexcept -> T*
-	{
-		return &m_node->val;
-	}
-
-	template <MoveConstructable T>
-	auto DList<T>::Iterator::operator*() const noexcept -> T&
-	{
-		return m_node->val;
 	}
 
 	template <MoveConstructable T>

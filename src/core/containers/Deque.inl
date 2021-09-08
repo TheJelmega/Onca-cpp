@@ -5,7 +5,7 @@ namespace Core
 {
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Iterator::Iterator()
-		: m_blockOffset(0)
+		: m_blockIdx(0)
 		, m_idx(0)
 	{
 	}
@@ -13,7 +13,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Iterator::Iterator(const Iterator& other) noexcept
 		: m_blocks(other.m_blocks)
-		, m_blockOffset(other.m_blockOffset)
+		, m_blockIdx(other.m_blockIdx)
 		, m_idx(other.m_idx)
 	{
 	}
@@ -21,7 +21,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Iterator::Iterator(Iterator&& other) noexcept
 		: m_blocks(Move(other.m_blocks))
-		, m_blockOffset(other.m_blockOffset)
+		, m_blockIdx(other.m_blockIdx)
 		, m_idx(other.m_idx)
 	{
 	}
@@ -30,7 +30,7 @@ namespace Core
 	auto Deque<T, BlockSize>::Iterator::operator=(const Iterator& other) noexcept
 	{
 		m_blocks = other.m_blocks;
-		m_blockOffset = other.m_blockOffset;
+		m_blockIdx = other.m_blockIdx;
 		m_idx = other.m_idx;
 		return *this;
 	}
@@ -39,9 +39,21 @@ namespace Core
 	auto Deque<T, BlockSize>::Iterator::operator=(Iterator&& other) noexcept -> Iterator&
 	{
 		m_blocks = Move(other.m_blocks);
-		m_blockOffset = other.m_blockOffset;
+		m_blockIdx = other.m_blockIdx;
 		m_idx = other.m_idx;
 		return *this;
+	}
+
+	template <typename T, usize BlockSize>
+	auto Deque<T, BlockSize>::Iterator::operator->() const noexcept -> T*
+	{
+		return (m_blocks.Ptr() + m_blockIdx)->Ptr() + m_idx;
+	}
+
+	template <typename T, usize BlockSize>
+	auto Deque<T, BlockSize>::Iterator::operator*() const noexcept -> T&
+	{
+		return *((m_blocks.Ptr() + m_blockIdx)->Ptr() + m_idx);
 	}
 
 	template <typename T, usize BlockSize>
@@ -51,7 +63,7 @@ namespace Core
 		if (m_idx == BlockSize)
 		{
 			m_idx = 0;
-			++m_blockOffset;
+			++m_blockIdx;
 		}
 		return *this;
 	}
@@ -70,7 +82,7 @@ namespace Core
 		if (m_idx == 0)
 		{
 			m_idx = BlockSize - 1;
-			--m_blockOffset;
+			--m_blockIdx;
 		}
 		else
 		{
@@ -88,22 +100,10 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Iterator::operator->() const noexcept -> T*
-	{
-		return (m_blocks.Ptr() + m_blockOffset)->Ptr() + m_idx;
-	}
-
-	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Iterator::operator*() const noexcept -> T&
-	{
-		return *((m_blocks.Ptr() + m_blockOffset)->Ptr() + m_idx);
-	}
-
-	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Iterator::operator+(usize count) const noexcept -> Iterator
 	{
 		usize idx = m_idx + count;
-		usize offset = m_blockOffset + idx / BlockSize;
+		usize offset = m_blockIdx + idx / BlockSize;
 		idx &= Mask;
 		return Iterator{ m_blocks, offset, idx };
 	}
@@ -111,7 +111,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Iterator::operator-(usize count) const noexcept -> Iterator
 	{
-		usize actIdx = m_blockOffset * BlockSize + m_idx;
+		usize actIdx = m_blockIdx * BlockSize + m_idx;
 		if (actIdx < count)
 			return Iterator{ m_blocks, 0, 0 };
 		actIdx -= count;
@@ -123,8 +123,8 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Iterator::operator-(const Iterator& it) const noexcept -> isize
 	{
-		usize actIdx = m_blockOffset * BlockSize + m_idx;
-		usize otherIdx = it.m_blockOffset * BlockSize + it.m_idx;
+		usize actIdx = m_blockIdx * BlockSize + m_idx;
+		usize otherIdx = it.m_blockIdx * BlockSize + it.m_idx;
 		ASSERT(actIdx > otherIdx, "Iterator subtraction is in the wrong order");
 		return actIdx - otherIdx;
 	}
@@ -133,7 +133,7 @@ namespace Core
 	auto Deque<T, BlockSize>::Iterator::operator+=(usize count) noexcept -> Iterator&
 	{
 		m_idx = m_idx + count;
-		m_blockOffset = m_blockOffset + m_idx / BlockSize;
+		m_blockIdx = m_blockIdx + m_idx / BlockSize;
 		m_idx &= Mask;
 		return *this;
 	}
@@ -141,21 +141,21 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Iterator::operator-=(usize count) noexcept -> Iterator&
 	{
-		usize actIdx = m_blockOffset * BlockSize + m_idx;
+		usize actIdx = m_blockIdx * BlockSize + m_idx;
 		if (actIdx < count)
 		{
-			m_blockOffset = m_idx = 0;
+			m_blockIdx = m_idx = 0;
 		}
 		actIdx -= count;
 		m_idx = actIdx & Mask;
-		m_blockOffset = actIdx / BlockSize;
+		m_blockIdx = actIdx / BlockSize;
 		return *this;
 	}
 
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Iterator::operator==(const Iterator& other) const noexcept -> bool
 	{
-		return m_blockOffset == other.m_blockOffset && m_idx == other.m_idx && m_blocks == other.m_blocks;
+		return m_blockIdx == other.m_blockIdx && m_idx == other.m_idx && m_blocks == other.m_blocks;
 	}
 
 	template <typename T, usize BlockSize>
@@ -170,8 +170,8 @@ namespace Core
 		if (m_blocks != other.m_blocks)
 			return std::partial_ordering::unordered;
 
-		usize actIdx = m_blockOffset * BlockSize + m_idx;
-		usize otherIdx = other.m_blockOffset * BlockSize + other.m_idx;
+		usize actIdx = m_blockIdx * BlockSize + m_idx;
+		usize otherIdx = other.m_blockIdx * BlockSize + other.m_idx;
 
 		if (actIdx == otherIdx) return std::strong_ordering::equal;
 		if (actIdx < otherIdx) return std::strong_ordering::less;
@@ -181,7 +181,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Iterator::operator[](usize idx) noexcept -> T&
 	{
-		usize actIdx = m_blockOffset * BlockSize + m_idx + idx;
+		usize actIdx = m_blockIdx * BlockSize + m_idx + idx;
 		usize offset = actIdx / BlockSize;
 		usize blockIdx = actIdx & Mask;
 		return (m_blocks.Ptr() + offset)->Ptr() + blockIdx;
@@ -190,7 +190,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Iterator::operator[](usize idx) const noexcept -> const T&
 	{
-		usize actIdx = m_blockOffset * BlockSize + m_idx + idx;
+		usize actIdx = m_blockIdx * BlockSize + m_idx + idx;
 		usize offset = actIdx / BlockSize;
 		usize blockIdx = actIdx & Mask;
 		return (m_blocks.Ptr() + offset)->Ptr() + blockIdx;
@@ -199,7 +199,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Iterator::Iterator(const MemRef<MemRef<T>>& blocks, usize blockOffset, usize idx) noexcept
 		: m_blocks(blocks)
-		, m_blockOffset(blockOffset)
+		, m_blockIdx(blockOffset)
 		, m_idx(idx)
 	{
 	}
@@ -207,7 +207,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Deque(Alloc::IAllocator& alloc) noexcept
 		: m_blocks(&alloc)
-		, m_initialOffset(0)
+		, m_initialIdx(0)
 		, m_size(0)
 	{
 	}
@@ -215,7 +215,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Deque(usize count, Alloc::IAllocator& alloc) noexcept requires DefaultConstructable<T>
 		: m_blocks(&alloc)
-		, m_initialOffset(0)
+		, m_initialIdx(0)
 		, m_size(0)
 	{
 		FillDefault(count);
@@ -224,7 +224,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Deque(usize count, const T& val, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_blocks(&alloc)
-		, m_initialOffset(0)
+		, m_initialIdx(0)
 		, m_size(0)
 	{
 		Fill(count, val);
@@ -233,7 +233,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Deque(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_blocks(&alloc)
-		, m_initialOffset(0)
+		, m_initialIdx(0)
 		, m_size(0)
 	{
 		Assign(il);
@@ -243,7 +243,7 @@ namespace Core
 	template <ForwardIterator It>
 	Deque<T, BlockSize>::Deque(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_blocks(&alloc)
-		, m_initialOffset(0)
+		, m_initialIdx(0)
 		, m_size(0)
 	{
 		Assign(begin, end);
@@ -252,7 +252,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Deque(const Deque& other) noexcept requires CopyConstructable<T>
 		: m_blocks(other.GetAllocator())
-		, m_initialOffset(0)
+		, m_initialIdx(0)
 		, m_size(0)
 	{
 		Assign(other.Begin(), other.End());
@@ -262,7 +262,7 @@ namespace Core
 	template <usize B>
 	Deque<T, BlockSize>::Deque(const Deque<T, B>& other) noexcept requires CopyConstructable<T>
 		: m_blocks(other.GetAllocator())
-		, m_initialOffset(0)
+		, m_initialIdx(0)
 		, m_size(0)
 	{
 		Assign(other.Begin(), other.End());
@@ -272,7 +272,7 @@ namespace Core
 	template <usize B>
 	Deque<T, BlockSize>::Deque(const Deque<T, B>& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
 		: m_blocks(&alloc)
-		, m_initialOffset(0)
+		, m_initialIdx(0)
 		, m_size(0)
 	{
 		Assign(other.Begin(), other.End());
@@ -281,20 +281,20 @@ namespace Core
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Deque(Deque&& other) noexcept
 		: m_blocks(Move(other.m_blocks))
-		, m_initialOffset(other.m_initialOffset)
+		, m_initialIdx(other.m_initialIdx)
 		, m_size(other.m_size)
 	{
-		other.m_size = other.m_initialOffset = 0;
+		other.m_size = other.m_initialIdx = 0;
 	}
 
 	template <typename T, usize BlockSize>
 	template <usize B>
 	Deque<T, BlockSize>::Deque(Deque<T, B>&& other, Alloc::IAllocator& alloc) noexcept
 		: m_blocks(&alloc)
-		, m_initialOffset(other.m_initialOffset)
+		, m_initialIdx(other.m_initialIdx)
 		, m_size(other.m_size)
 	{
-		usize size = m_size + m_initialOffset;
+		usize size = m_size + m_initialIdx;
 		usize blocksNeeded = (size + Mask) / BlockSize;
 		MemRef<T>* pBlocks = AddBackBlocks(blocksNeeded);
 		MemRef<T>* pOtherBlocks = other.m_blocks.Ptr();
@@ -305,7 +305,7 @@ namespace Core
 			otherBlock.Dealloc();
 		}
 		other.m_blocks.Dealloc();
-		other.m_initialOffset = other.m_size = 0;
+		other.m_initialIdx = other.m_size = 0;
 	}
 
 	template <typename T, usize BlockSize>
@@ -340,9 +340,9 @@ namespace Core
 	auto Deque<T, BlockSize>::operator=(Deque&& other) noexcept -> Deque<T>&
 	{
 		m_blocks = Move(other.m_blocks);
-		m_initialOffset = other.m_initialOffset;
+		m_initialIdx = other.m_initialIdx;
 		m_size = other.m_size;
-		other.m_initialOffset = other.m_size = 0;
+		other.m_initialIdx = other.m_size = 0;
 		return *this;
 	}
 
@@ -452,14 +452,14 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::PushFront(T&& val) noexcept -> void
 	{
-		if (m_initialOffset == 0)
+		if (m_initialIdx == 0)
 		{
 			AddFrontBlocks(1);
-			m_initialOffset = BlockSize;
+			m_initialIdx = BlockSize;
 		}
 
-		--m_initialOffset;
-		new (m_blocks.Ptr()->Ptr() + m_initialOffset) T{ Move(val) };
+		--m_initialIdx;
+		new (m_blocks.Ptr()->Ptr() + m_initialIdx) T{ Move(val) };
 		++m_size;
 	}
 
@@ -478,7 +478,7 @@ namespace Core
 		for (usize i = 0; i < other.m_size; ++i)
 			PushFront(*other.GetElemAddr(other.m_size - i - 1));
 		other.m_blocks.Dealloc();
-		other.m_initialOffset = other.m_size = 0;
+		other.m_initialIdx = other.m_size = 0;
 	}
 
 	template <typename T, usize BlockSize>
@@ -520,7 +520,7 @@ namespace Core
 		for (usize i = 0; i < other.m_size; ++i)
 			Push(Move(*other.GetElemAddr(i)));
 		other.m_blocks.Dealloc();
-		other.m_initialOffset = other.m_size = 0;
+		other.m_initialIdx = other.m_size = 0;
 	}
 
 	template <typename T, usize BlockSize>
@@ -539,7 +539,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Insert(ConstIterator& it, T&& val) noexcept -> Iterator
 	{
-		usize itIdx = it.m_blockOffset * BlockSize + it.m_idx - m_initialOffset;
+		usize itIdx = it.m_blockIdx * BlockSize + it.m_idx - m_initialIdx;
 		PrepareInsert(itIdx, 1);
 		new (GetElemAddr(itIdx)) T{ Move(val) };
 		++m_size;
@@ -549,7 +549,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Insert(ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>
 	{
-		usize itIdx = it.m_blockOffset * BlockSize + it.m_idx - m_initialOffset;
+		usize itIdx = it.m_blockIdx * BlockSize + it.m_idx - m_initialIdx;
 		PrepareInsert(itIdx, count);
 		for (usize i = 0; i < count; ++i)
 			new (GetElemAddr(itIdx + i)) T{ Move(val) };
@@ -582,19 +582,19 @@ namespace Core
 	template <usize B>
 	auto Deque<T, BlockSize>::Insert(ConstIterator& it, Deque<T, B>&& other) noexcept -> Iterator
 	{
-		usize itIdx = it.m_blockOffset * BlockSize + it.m_idx - m_initialOffset;
+		usize itIdx = it.m_blockIdx * BlockSize + it.m_idx - m_initialIdx;
 		PrepareInsert(itIdx, other.m_size);
 		usize i = itIdx;
 		for (Iterator valIt = other.Begin(), end = other.End(); valIt != end; ++valIt, ++i)
 			new (GetElemAddr(i)) T{ Move(*valIt) };
 		m_size += other.m_size;
 
-		usize otherBlocks = (other.m_initialOffset + other.m_size + B - 1) / B;
+		usize otherBlocks = (other.m_initialIdx + other.m_size + B - 1) / B;
 		MemRef<T>* pOtherBegin = other.m_blocks.Ptr();
 		for (i = 0; i < otherBlocks; ++i)
 			(pOtherBegin + i)->Dealloc();
 		other.m_blocks.Dealloc();
-		other.m_initialOffset = other.m_size = 0;
+		other.m_initialIdx = other.m_size = 0;
 
 		return IteratorAt(itIdx);
 	}
@@ -618,7 +618,7 @@ namespace Core
 			return;
 		}
 
-		usize usedBlocks = (m_initialOffset + m_size + Mask) / BlockSize;
+		usize usedBlocks = (m_initialIdx + m_size + Mask) / BlockSize;
 		MemRef<T>* pBegin = m_blocks.Ptr();
 		for (usize i = 0; i < usedBlocks; ++i)
 			(pBegin + i)->Dealloc();
@@ -632,16 +632,16 @@ namespace Core
 	auto Deque<T, BlockSize>::PopFront() noexcept -> void
 	{
 		GetElemAddr(0)->~T();
-		if (m_initialOffset == BlockSize - 1)
+		if (m_initialIdx == BlockSize - 1)
 		{
 			m_blocks->Dealloc();
-			const usize numBlocks = (m_initialOffset + m_size + Mask) / BlockSize - 1;
+			const usize numBlocks = (m_initialIdx + m_size + Mask) / BlockSize - 1;
 			MemMove(m_blocks, 0, 1, numBlocks * sizeof(MemRef<T>));
-			m_initialOffset = 0;
+			m_initialIdx = 0;
 		}
 		else
 		{
-			++m_initialOffset;
+			++m_initialIdx;
 		}
 		--m_size;
 	}
@@ -650,10 +650,10 @@ namespace Core
 	auto Deque<T, BlockSize>::Pop() noexcept -> void
 	{
 		GetElemAddr(m_size - 1)->~T();
-		usize endIdx = (m_initialOffset + m_size) & Mask;
+		usize endIdx = (m_initialIdx + m_size) & Mask;
 		if (endIdx == 0)
 		{
-			usize endBlock = (m_initialOffset + m_size) / BlockSize;
+			usize endBlock = (m_initialIdx + m_size) / BlockSize;
 			(m_blocks.Ptr() + endBlock)->Dealloc();
 		}
 		--m_size;
@@ -668,7 +668,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Erase(const Iterator& it, usize count) noexcept -> void
 	{
-		usize itIdx = it.m_blockOffset * BlockSize + it.m_idx - m_initialOffset;
+		usize itIdx = it.m_blockIdx * BlockSize + it.m_idx - m_initialIdx;
 		usize center = itIdx + count / 2;
 		usize halfSize = m_size / 2;
 
@@ -684,7 +684,7 @@ namespace Core
 			// TODO
 			if (offset)
 			{
-				usize usedBlocks = (m_initialOffset + m_size + Mask) / BlockSize;
+				usize usedBlocks = (m_initialIdx + m_size + Mask) / BlockSize;
 				MemRef<T>* pEnd = m_blocks.Ptr() - usedBlocks;
 				for (usize i = 0; i < offset; ++i)
 					(pEnd - i - 1)->Dealloc();
@@ -702,11 +702,11 @@ namespace Core
 				MemRef<T>* pBegin = m_blocks.Ptr();
 				for (usize i = 0; i < offset; ++i)
 					(pBegin + i)->Dealloc();
-				usize usedBlocks = (m_initialOffset + m_size + Mask) / BlockSize;
+				usize usedBlocks = (m_initialIdx + m_size + Mask) / BlockSize;
 				MemMove(pBegin, pBegin + offset, usedBlocks - offset);
 			}
 
-			m_initialOffset = index;
+			m_initialIdx = index;
 		}
 		m_size -= count;
 	}
@@ -801,14 +801,14 @@ namespace Core
 	auto Deque<T, BlockSize>::Front() noexcept -> T&
 	{
 		ASSERT(m_size, "Invalid when Deque is empty");
-		return *(*m_blocks.Ptr() + m_initialOffset);
+		return *(*m_blocks.Ptr() + m_initialIdx);
 	}
 
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Front() const noexcept -> const T&
 	{
 		ASSERT(m_size, "Invalid when Deque is empty");
-		return *(*m_blocks.Ptr() + m_initialOffset);
+		return *(*m_blocks.Ptr() + m_initialIdx);
 	}
 
 	template <typename T, usize BlockSize>
@@ -828,13 +828,13 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Begin() noexcept -> Iterator
 	{
-		return Iterator{ m_blocks, 0, m_initialOffset };
+		return Iterator{ m_blocks, 0, m_initialIdx };
 	}
 
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::Begin() const noexcept -> ConstIterator
 	{
-		return Iterator{ m_blocks, 0, m_initialOffset };
+		return Iterator{ m_blocks, 0, m_initialIdx };
 	}
 
 	template <typename T, usize BlockSize>
@@ -914,7 +914,7 @@ namespace Core
 	template <typename T, usize BlockSize>
 	auto Deque<T, BlockSize>::GetElemOffsetIdx(usize idx) const noexcept -> Pair<usize, usize>
 	{
-		usize actIdx = m_initialOffset + idx;
+		usize actIdx = m_initialIdx + idx;
 		return Pair{ actIdx / BlockSize, actIdx & Mask };
 	}
 
@@ -936,7 +936,7 @@ namespace Core
 	{
 		ReserveBase<true>(numBlocks);
 		Alloc::IAllocator* pAlloc = m_blocks.GetAlloc();
-		usize usedBlocks = (m_initialOffset + m_size + Mask) / BlockSize;
+		usize usedBlocks = (m_initialIdx + m_size + Mask) / BlockSize;
 		MemRef<T>* pEnd = m_blocks.Ptr() + usedBlocks;
 		for (usize i = 0; i < numBlocks; ++i)
 			*(pEnd + i) = pAlloc->Allocate<T>(BlockByteSize);
@@ -957,7 +957,7 @@ namespace Core
 	auto Deque<T, BlockSize>::ReserveBase(usize numAdditionalBlocks) noexcept -> MemRef<T>*
 	{
 		usize curBlocks = m_blocks.Size() / sizeof(MemRef<T>);
- 		usize usedBlocks = (m_initialOffset + m_size + Mask) / BlockSize;
+ 		usize usedBlocks = (m_initialIdx + m_size + Mask) / BlockSize;
 		usize neededBlocks = usedBlocks + numAdditionalBlocks;
 
 		if (neededBlocks <= curBlocks)
@@ -1001,7 +1001,7 @@ namespace Core
 		usize halfSize = m_size / 2;
 		if (idx > halfSize)
 		{
-			const usize actEndIdx = m_initialOffset + m_size;
+			const usize actEndIdx = m_initialIdx + m_size;
 			const usize lastBlock = (actEndIdx + Mask) / BlockSize;
 			const usize usedBlocks = (actEndIdx + moveOffset + Mask) / BlockSize;
 			const usize neededBlocks = usedBlocks - lastBlock;
@@ -1012,18 +1012,18 @@ namespace Core
 		}
 		else
 		{
-			const usize actEndIdx = m_initialOffset + m_size;
+			const usize actEndIdx = m_initialIdx + m_size;
 			const usize lastBlock = (actEndIdx + Mask) / BlockSize;
 			const usize usedBlocks = (actEndIdx + moveOffset + Mask) / BlockSize;
 			const usize neededBlocks = usedBlocks - lastBlock;
 			AddFrontBlocks(neededBlocks);
 
-			const usize oldOffset = neededBlocks * BlockSize + m_initialOffset;
+			const usize oldOffset = neededBlocks * BlockSize + m_initialIdx;
 			const usize offset = moveOffset & Mask;
-			if (offset > m_initialOffset)
-				m_initialOffset = (BlockSize + m_initialOffset - offset);
+			if (offset > m_initialIdx)
+				m_initialIdx = (BlockSize + m_initialIdx - offset);
 			else
-				m_initialOffset -= offset;
+				m_initialIdx -= offset;
 			
 			const usize copySize = idx;
 			Algo::Move(IteratorAtInternal(oldOffset + idx + moveOffset), IteratorAtInternal(idx), copySize);
@@ -1034,7 +1034,7 @@ namespace Core
 	template <ForwardIterator It>
 	auto Deque<T, BlockSize>::InsertIts(ConstIterator& it, usize count, const It& begin, const It& end) noexcept -> Iterator
 	{
-		usize idx = it.m_blockOffset * BlockSize + it.m_idx - m_initialOffset;
+		usize idx = it.m_blockIdx * BlockSize + it.m_idx - m_initialIdx;
 		PrepareInsert(idx, count);
 		usize tmp = idx;
 		for (It valIt = begin; valIt != end; ++valIt, ++tmp)

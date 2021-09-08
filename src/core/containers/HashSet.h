@@ -15,7 +15,6 @@ namespace Core
 	 * \tparam H Hasher type
 	 * \tparam C Comparator type
 	 * \tparam IsMultiMap Whether the HashSet is a MultiMap or not
-	 *
 	 * \note Hash function are expected to have a high amount of randomness, especially in lower bits, since the Hashmap relies on a power of 2 to distribute values
 	 */
 	template<Movable K, Hasher<K> H = Hash<K>, EqualsComparator<K, K> C = DefaultEqualComparator<K>, bool IsMultiMap = false>
@@ -26,18 +25,23 @@ namespace Core
 		using Map = HashMap<K, Empty, H, C, IsMultiMap>;
 
 	public:
+		/**
+		 * HashSet iterator
+		 */
 		class Iterator
 		{
 		public:
 			Iterator() noexcept = default;
 
-			auto operator++() noexcept -> Iterator;
-			auto operator++(int) noexcept -> Iterator;
-
 			auto operator->() const noexcept -> const K*;
 			auto operator*() const noexcept -> const K&;
 
+			auto operator++() noexcept -> Iterator;
+			auto operator++(int) noexcept -> Iterator;
+
 			auto operator+(usize count) const noexcept -> Iterator;
+
+			auto operator+=(usize count) noexcept -> Iterator&;
 
 			auto operator==(const Iterator& other) const noexcept -> bool;
 			auto operator!=(const Iterator& other) const noexcept -> bool;
@@ -45,7 +49,7 @@ namespace Core
 		private:
 			Iterator(const typename Map::Iterator& it) noexcept;
 
-			typename Map::Iterator m_it;
+			typename Map::Iterator m_it; ///< Underlying iterator
 
 			friend class HashSet;
 		};
@@ -368,6 +372,9 @@ namespace Core
 
 		Map m_hashMap; ///< Underlying HashSet
 	};
+
+	template<Movable K, Hasher<K> H, EqualsComparator<K> C>
+	using HashMultiSet = HashSet<K, H, C, true>;
 }
 
 #include "HashSet.inl"

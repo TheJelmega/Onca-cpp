@@ -10,6 +10,18 @@ namespace Core
 	}
 
 	template <MoveConstructable T>
+	auto List<T>::Iterator::operator->() const noexcept -> T*
+	{
+		return &m_node->val;
+	}
+
+	template <MoveConstructable T>
+	auto List<T>::Iterator::operator*() const noexcept -> T&
+	{
+		return m_node->val;
+	}
+
+	template <MoveConstructable T>
 	auto List<T>::Iterator::operator++() noexcept -> Iterator
 	{
 		if (m_node)
@@ -23,18 +35,6 @@ namespace Core
 		Iterator tmp{ *this };
 		operator++();
 		return tmp;
-	}
-
-	template <MoveConstructable T>
-	auto List<T>::Iterator::operator->() const noexcept -> T*
-	{
-		return &m_node->val;
-	}
-
-	template <MoveConstructable T>
-	auto List<T>::Iterator::operator*() const noexcept -> T&
-	{
-		return m_node->val;
 	}
 
 	template <MoveConstructable T>

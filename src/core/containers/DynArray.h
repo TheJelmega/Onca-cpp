@@ -9,7 +9,6 @@ namespace Core
 	/**
 	 * Dynamically sized array
 	 * \tparam T Stored type
-	 *
 	 * \note Iterators are invalidated after certain container modifications
 	 */
 	template<MoveConstructable T>
@@ -414,7 +413,7 @@ namespace Core
 		auto InsertEnd(T&& val) noexcept -> Iterator;
 		auto PrepareInsert(usize offset, usize count) noexcept -> Iterator;
 		
-		MemRef<T> m_mem; ///< Managed memory
+		MemRef<T> m_mem;  ///< Managed memory
 		usize     m_size; ///< Size of the DynArray
 	};
 

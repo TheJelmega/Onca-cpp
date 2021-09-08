@@ -6,7 +6,7 @@
 namespace Core
 {
 	/**
-	 * Doubly linked DList
+	 * Doubly linked List
 	 * \tparam T Stored type
 	 */
 	template<MoveConstructable T>
@@ -14,28 +14,35 @@ namespace Core
 	{
 	private:
 
+		/**
+		 * List node
+		 */
 		struct Node
 		{
-			MemRef<Node> next;
-			MemRef<Node> prev;
-			T val;
+			MemRef<Node> prev; ///< Reference to previous node
+			MemRef<Node> next; ///< Reference to next node
+			T            val;  ///< Value
 		};
 		using NodeRef = MemRef<Node>;
 
 	public:
 
+		/**
+		 * DList iterator
+		 */
 		class Iterator
 		{
 		public:
 			Iterator() noexcept;
 
-			auto operator++() noexcept -> Iterator;
-			auto operator++(int) noexcept -> Iterator;
-			auto operator--() noexcept -> Iterator;
-			auto operator--(int) noexcept -> Iterator;
-
 			auto operator->() const noexcept -> T*;
 			auto operator*() const noexcept -> T&;
+
+			auto operator++() noexcept -> Iterator;
+			auto operator++(int) noexcept -> Iterator;
+
+			auto operator--() noexcept -> Iterator;
+			auto operator--(int) noexcept -> Iterator;
 
 			auto operator+(usize count) const noexcept -> Iterator;
 			auto operator-(usize count) const noexcept -> Iterator;
@@ -49,7 +56,7 @@ namespace Core
 		private:
 			explicit Iterator(const MemRef<Node>& node) noexcept;
 
-			NodeRef m_node;
+			NodeRef m_node; ///< Current node
 
 			friend class DList;
 		};
@@ -58,20 +65,20 @@ namespace Core
 	public:
 		/**
 		 * Create a DList with an allocator
-		 * \param alloc Allocator the container should use
+		 * \param[in]  alloc Allocator the container should use
 		 */
 		explicit DList(Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
 		/**
 		 * Create a DList with a number of elements with a default value (via placement new)
-		 * \param count Number of elements
-		 * \param alloc Allcoator the container shoud use
+		 * \param[in]  count Number of elements
+		 * \param[in]  alloc Allcoator the container shoud use
 		 */
 		explicit DList(usize count, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires NoThrowDefaultConstructable<T>;
 		/**
 		 * Create a DList filled with a number of elements
-		 * \param count Number of elements
-		 * \param val Value of elements
-		 * \param alloc Allcoator the container shoud use
+		 * \param[in]  count Number of elements
+		 * \param[in]  val Value of elements
+		 * \param[in]  alloc Allcoator the container shoud use
 		 */
 		explicit DList(usize count, const T& val, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
 
@@ -408,14 +415,13 @@ namespace Core
 		auto cend() const noexcept -> ConstIterator;
 
 	private:
-
 		/**
 		 * Create an empty node
 		 */
 		auto CreateNode(T&& val) noexcept -> NodeRef;
 
-		MemRef<Node> m_head;
-		MemRef<Node> m_tail;
+		MemRef<Node> m_head; ///< Head of the list
+		MemRef<Node> m_tail; ///< Tail of the list
 	};
 }
 

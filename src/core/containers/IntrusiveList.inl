@@ -62,14 +62,6 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::Iterator::operator++() noexcept -> Iterator
-	{
-		if (m_pNode)
-			m_pNode = m_pNode->m_pNext;
-		return *this;
-	}
-
-	template <typename T>
 	auto IntrusiveList<T>::Iterator::operator++(int) noexcept -> Iterator
 	{
 		Iterator it{ m_pNode };
@@ -81,6 +73,14 @@ namespace Core
 	auto IntrusiveList<T>::Iterator::operator->() const noexcept -> T*
 	{
 		return m_pNode->Get();
+	}
+
+	template <typename T>
+	auto IntrusiveList<T>::Iterator::operator++() noexcept -> Iterator
+	{
+		if (m_pNode)
+			m_pNode = m_pNode->m_pNext;
+		return *this;
 	}
 
 	template <typename T>

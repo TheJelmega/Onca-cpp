@@ -5,7 +5,6 @@
 
 namespace Core
 {
-
 	/**
 	 * A bucketed hash map
 	 * \tparam K Key type
@@ -13,34 +12,42 @@ namespace Core
 	 * \tparam H Hasher type
 	 * \tparam C Comparator type
 	 * \tparam IsMultiMap Whether the HashMap is a MultiMap or not
-	 *
 	 * \note Hash function are expected to have a high amount of randomness, especially in lower bits, since the Hashmap relies on a power of 2 to distribute values
 	 */
 	template<Movable K, Movable V, Hasher<K> H = Hash<K>, EqualsComparator<K> C = DefaultEqualComparator<K>, bool IsMultiMap = false>
 	class HashMap
 	{
 	private:
+		/**
+		 * HashMap node
+		 */
 		struct Node
 		{
-			MemRef<Node> next;
-			u64          hash;
-			Pair<K, V>   pair;
+			MemRef<Node> next; ///< Reference to next node in the bucket
+			u64          hash; ///< Hash of the key
+			Pair<K, V>   pair; ///< Key-value pair
 		};
 		using NodeRef = MemRef<Node>;
 
 	public:
+
+		/**
+		 * HashMap iterator
+		 */
 		class Iterator
 		{
 		public:
 			Iterator() noexcept = default;
 
-			auto operator++() noexcept -> Iterator;
-			auto operator++(int) noexcept -> Iterator;
-
 			auto operator->() const noexcept -> Pair<K, V>*;
 			auto operator*() const noexcept -> Pair<K, V>&;
 
+			auto operator++() noexcept -> Iterator;
+			auto operator++(int) noexcept -> Iterator;
+
 			auto operator+(usize count) const noexcept -> Iterator;
+
+			auto operator+=(usize count) noexcept -> Iterator&;
 
 			auto operator==(const Iterator & other) const noexcept -> bool;
 			auto operator!=(const Iterator & other) const noexcept -> bool;
@@ -500,15 +507,15 @@ namespace Core
 
 		/**
 		 * Create a new node
-		 * \param hash Hash of the node
-		 * \param pair Pair of the node
+		 * \param[in]  hash Hash of the node
+		 * \param[in]  pair Pair of the node
 		 * \return New node
 		 */
 		auto CreateNode(u64 hash, Pair<K, V>&& pair) noexcept -> NodeRef;
 		/**
 		 * Insert a node into the HashMap
 		 * \tparam AllowOverride Allow overriding of a value
-		 * \param node Node to insert
+		 * \param[in]  node Node to insert
 		 * \return A pair with the iterator to the inserted element and a bool, where true means the element was inserted and false if the element was overriden
 		 */
 		template<bool AllowOverride>
@@ -516,7 +523,7 @@ namespace Core
 
 		/**
 		 * Remove a node out of the HashMap
-		 * \param node Node to remove
+		 * \param[in]  node Node to remove
 		 */
 		auto RemoveNode(NodeRef node) noexcept -> void;
 
@@ -578,6 +585,9 @@ namespace Core
 		NO_UNIQUE_ADDRESS H m_hash;          ///< Hasher for keys
 		NO_UNIQUE_ADDRESS C m_comp;          ///< Comparator for keys
 	};
+
+	template<Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C>
+	using HashMultiMap = HashMap<K, V, H, C, true>;
 }
 
 #include "HashMap.inl"

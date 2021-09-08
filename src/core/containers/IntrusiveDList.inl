@@ -63,6 +63,18 @@ namespace Core
 	}
 
 	template <typename T>
+	auto IntrusiveDList<T>::Iterator::operator->() const noexcept -> T*
+	{
+		return &m_pNode->Get();
+	}
+
+	template <typename T>
+	auto IntrusiveDList<T>::Iterator::operator*() const noexcept -> T&
+	{
+		return m_pNode->Get();
+	}
+
+	template <typename T>
 	auto IntrusiveDList<T>::Iterator::operator++() noexcept -> Iterator
 	{
 		if (m_pNode)
@@ -92,18 +104,6 @@ namespace Core
 		Iterator it{ m_pNode };
 		operator--();
 		return it;
-	}
-
-	template <typename T>
-	auto IntrusiveDList<T>::Iterator::operator->() const noexcept -> T*
-	{
-		return &m_pNode->Get();
-	}
-
-	template <typename T>
-	auto IntrusiveDList<T>::Iterator::operator*() const noexcept -> T&
-	{
-		return m_pNode->Get();
 	}
 
 	template <typename T>

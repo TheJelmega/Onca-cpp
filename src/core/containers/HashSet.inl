@@ -4,6 +4,18 @@
 namespace Core
 {
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
+	auto HashSet<K, H, C, IsMultiMap>::Iterator::operator->() const noexcept -> const K*
+	{
+		return &m_it->first;
+	}
+
+	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
+	auto HashSet<K, H, C, IsMultiMap>::Iterator::operator*() const noexcept -> const K&
+	{
+		return m_it->first;
+	}
+
+	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
 	auto HashSet<K, H, C, IsMultiMap>::Iterator::operator++() noexcept -> Iterator
 	{
 		++m_it;
@@ -19,24 +31,20 @@ namespace Core
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::Iterator::operator->() const noexcept -> const K*
-	{
-		return &m_it->first;
-	}
-
-	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::Iterator::operator*() const noexcept -> const K&
-	{
-		return m_it->first;
-	}
-
-	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
 	auto HashSet<K, H, C, IsMultiMap>::Iterator::operator+(usize count) const noexcept -> Iterator
 	{
 		Iterator it{ m_it };
 		for (usize i = 0; i < count; ++i)
 			++it;
 		return it;
+	}
+
+	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
+	auto HashSet<K, H, C, IsMultiMap>::Iterator::operator+=(usize count) noexcept -> Iterator&
+	{
+		for (usize i = 0; i < count; ++i)
+			operator++();
+		return *this;
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>

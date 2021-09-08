@@ -17,7 +17,7 @@ namespace Core
 	public:
 		/**
 		 * Create an intrusive list node
-		 * \param memberOffset Offset to Owner type (use OffsetOf<>());
+		 * \param[in]  memberOffset Offset to Owner type (use OffsetOf<>());
 		 */
 		explicit IntrusiveDListNode(usize memberOffset) noexcept;
 		IntrusiveDListNode(const IntrusiveDListNode&) noexcept = default;
@@ -32,7 +32,7 @@ namespace Core
 	private:
 		IntrusiveDListNode* m_pPrev; ///< Pointer to prev node
 		IntrusiveDListNode* m_pNext;  ///< Pointer to next node
-		usize  m_offset; ///< Offset to Owner
+		usize               m_offset; ///< Offset to Owner
 
 		friend class IntrusiveDList<Owner>;
 		friend class IntrusiveDList<Owner>::Iterator;
@@ -49,6 +49,9 @@ namespace Core
 	{
 	public:
 
+		/**
+		 * Intrusive list node
+		 */
 		class Iterator
 		{
 		public:
@@ -59,14 +62,14 @@ namespace Core
 			auto operator=(const Iterator& other) noexcept;
 			auto operator=(Iterator&& other) noexcept;
 
+			auto operator->() const noexcept -> T*;
+			auto operator*() const noexcept -> T&;
+
 			auto operator++() noexcept -> Iterator;
 			auto operator++(int) noexcept -> Iterator;
 
 			auto operator--() noexcept -> Iterator;
 			auto operator--(int) noexcept -> Iterator;
-
-			auto operator->() const noexcept -> T*;
-			auto operator*() const noexcept -> T&;
 
 			auto operator+(usize count) const noexcept -> Iterator;
 			auto operator-(usize count) const noexcept -> Iterator;
@@ -80,7 +83,7 @@ namespace Core
 		private:
 			Iterator(IntrusiveDListNode<T>* pNode);
 
-			IntrusiveDListNode<T>* m_pNode;
+			IntrusiveDListNode<T>* m_pNode; ///< Current node
 		};
 		using ConstIterator = const Iterator;
 
@@ -225,8 +228,8 @@ namespace Core
 		auto cend() const noexcept -> ConstIterator;
 
 	private:
-		IntrusiveDListNode<T>* m_pHead;
-		IntrusiveDListNode<T>* m_pTail;
+		IntrusiveDListNode<T>* m_pHead; ///< Head of the list
+		IntrusiveDListNode<T>* m_pTail; ///< Tail of the list
 	};
 
 

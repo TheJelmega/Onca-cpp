@@ -17,6 +17,10 @@ namespace Core
 	{
 		STATIC_ASSERT(IsPowOf2(BlockSize), "BlockSize needs to be a power of 2");
 	public:
+
+		/**
+		 * Deque iterator
+		 */
 		class Iterator
 		{
 		public:
@@ -27,13 +31,14 @@ namespace Core
 			auto operator=(const Iterator& other) noexcept;
 			auto operator=(Iterator&& other) noexcept -> Iterator&;
 
-			auto operator++() noexcept -> Iterator;
-			auto operator++(int) noexcept -> Iterator;
-			auto operator--() noexcept -> Iterator;
-			auto operator--(int) noexcept -> Iterator;
-
 			auto operator->() const noexcept -> T*;
 			auto operator*() const noexcept -> T&;
+
+			auto operator++() noexcept -> Iterator;
+			auto operator++(int) noexcept -> Iterator;
+
+			auto operator--() noexcept -> Iterator;
+			auto operator--(int) noexcept -> Iterator;
 
 			auto operator+(usize count) const noexcept -> Iterator;
 			auto operator-(usize count) const noexcept -> Iterator;
@@ -52,9 +57,9 @@ namespace Core
 		private:
 			Iterator(const MemRef<MemRef<T>>& blocks, usize blockOffset, usize idx) noexcept;
 
-			MemRef<MemRef<T>> m_blocks;
-			usize m_blockOffset;
-			usize m_idx;
+			MemRef<MemRef<T>> m_blocks;   ///< Deque blocks
+			usize             m_blockIdx; ///< Index of block
+			usize             m_idx;      ///< Index in block
 
 			friend class Deque;
 		};
@@ -488,48 +493,48 @@ namespace Core
 		auto cend() const noexcept -> ConstIterator;
 
 	private:
-		static constexpr usize Mask = BlockSize - 1;                  ///< Mask to mask out index bits
+		static constexpr usize Mask          = BlockSize - 1;         ///< Mask to mask out index bits
 		static constexpr usize BlockByteSize = BlockSize * sizeof(T); ///< Size of a block in bytes
 
-		MemRef<MemRef<T>> m_blocks;        ///< Array of blocks
-		usize             m_initialOffset; ///< Starting offset in the first block
-		usize             m_size;          ///< Size of the deck
+		MemRef<MemRef<T>> m_blocks;     ///< Array of blocks
+		usize             m_initialIdx; ///< Starting index in the first block
+		usize             m_size;       ///< Size of the deck
 
 		/**
 		 * Get the block offset and index of the element
-		 * \param idx Index of the element
+		 * \param[in] idx Index of the element
 		 * \return Pair with the block offset and index of the element
 		 */
 		auto GetElemOffsetIdx(usize idx) const noexcept -> Pair<usize, usize>;
 		/**
 		 * Get the address of an element
-		 * \param idx Index of the element
+		 * \param[in] idx Index of the element
 		 * \return Address of the element
 		 */
 		auto GetElemAddr(usize idx) const noexcept -> T*;
 		/**
 		 * Get the address of an element
-		 * \param pBegin Address to first base elem containing the first block
-		 * \param idx Index of the element
+		 * \param[in] pBegin Address to first base elem containing the first block
+		 * \param[in] idx Index of the element
 		 * \return Address of the element
 		 */
 		auto GetElemAddr(MemRef<T>* pBegin, usize idx) const noexcept -> T*;
 		
 		/**
 		 * Add a number of blocks at the back of the current blocks
-		 * \param numBlocks Number of block to add
+		 * \param[in] numBlocks Number of block to add
 		 */
 		auto AddBackBlocks(usize numBlocks) noexcept -> void;
 		/**
 		 * Add a number of blocks on the front of the current blocks
-		 * \param numBlocks Number of block to add
+		 * \param[in] numBlocks Number of block to add
 		 */
 		auto AddFrontBlocks(usize numBlocks) noexcept -> void;
 
 		/**
 		 * Add space for a number of blocks in the base array
 		 * \tparam AtBack Whether the allocation needs to be after the current block, false if it need to be in front
-		 * \param numAdditionalBlocks Number of blocks to reserve space for
+		 * \param[in]  numAdditionalBlocks Number of blocks to reserve space for
 		 * \return Pointer to the first new element in the base array
 		 */
 		template<bool AtBack>
@@ -537,17 +542,17 @@ namespace Core
 
 		/**
 		 * Prepare the Deque to insert a number of elements
-		 * \param idx Index to insert element at
-		 * \param moveOffset Number of elements to reserve space for
+		 * \param[in] idx Index to insert element at
+		 * \param[in] moveOffset Number of elements to reserve space for
 		 */
 		auto PrepareInsert(usize idx, usize moveOffset) noexcept -> void;
 		/**
 		 * Insert a range of elements into the Deque
 		 * \tparam It Forward iterator
-		 * \param it Iterator to insert at
-		 * \param count Number of elements to insert
-		 * \param begin Iterator to the first elem tot insert
-		 * \param end Iterator past the last element to insert
+		 * \param[in]  it Iterator to insert at
+		 * \param[in]  count Number of elements to insert
+		 * \param[in]  begin Iterator to the first elem tot insert
+		 * \param[in]  end Iterator past the last element to insert
 		 * \return Iterator to first reserved place
 		 */
 		template<ForwardIterator It>

@@ -4,6 +4,18 @@
 namespace Core
 {
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
+	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator->() const noexcept -> Pair<K, V>*
+	{
+		return &m_node->pair;
+	}
+
+	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
+	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator*() const noexcept -> Pair<K, V>&
+	{
+		return m_node->pair;
+	}
+
+	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator++() noexcept -> Iterator
 	{
 		if (m_node->next)
@@ -33,24 +45,20 @@ namespace Core
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator->() const noexcept -> Pair<K, V>*
-	{
-		return &m_node->pair;
-	}
-
-	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator*() const noexcept -> Pair<K, V>&
-	{
-		return m_node->pair;
-	}
-
-	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator+(usize count) const noexcept -> Iterator
 	{
 		Iterator it{ m_buckets, m_bucketIdx, m_node };
 		for (usize i = 0; i < count; ++i)
 			++it;
 		return it;
+	}
+
+	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
+	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator+=(usize count) noexcept -> Iterator&
+	{
+		for (usize i = 0; i < count; ++i)
+			operator++();
+		return *this;
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
