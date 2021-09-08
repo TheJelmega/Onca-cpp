@@ -1,82 +1,114 @@
 #pragma once
-#include "RedBlackTree.h"
 #include "core/MinInclude.h"
 #include "core/allocator/IAllocator.h"
 #include "core/utils/Pair.h"
 
 namespace Core
 {
+	template<Movable T, Comparator<T> C = DefaultComparator<T>, bool AllowMultiple = false>
+	class RedBlackTree;
 
-	template<Movable T, Comparator<T> C = DefaultComparator<T>>
+	namespace Detail
+	{
+		enum class RedBlackTreeColor : u8
+		{
+			Black,
+			Red,
+		};
+
+		template<typename T, bool StoreMultiple>
+		struct RedBlackTreeNode
+		{
+			T value;
+			RedBlackTreeColor color;
+			MemRef<RedBlackTreeNode> parent;
+
+			union
+			{
+				struct
+				{
+					MemRef<RedBlackTreeNode> left;
+					MemRef<RedBlackTreeNode> right;
+				};
+				MemRef<RedBlackTreeNode> children[2];
+			};
+		};
+
+		template<typename T>
+		struct RedBlackTreeNode<T, true>
+		{
+			DynArray<T> value;
+			RedBlackTreeColor color;
+			MemRef<RedBlackTreeNode> parent;
+
+			union
+			{
+				struct
+				{
+					MemRef<RedBlackTreeNode> left;
+					MemRef<RedBlackTreeNode> right;
+				};
+				MemRef<RedBlackTreeNode> children[2];
+			};
+		};
+
+		template<Movable T, Comparator<T> C, bool AllowMultiple>
+		struct RedBlackTreeIterator
+		{
+		private:
+			using NodeRef = MemRef<RedBlackTreeNode<T, AllowMultiple>>;
+
+		public:
+			RedBlackTreeIterator() noexcept;
+			RedBlackTreeIterator(const RedBlackTreeIterator& other) noexcept;
+			RedBlackTreeIterator(RedBlackTreeIterator&& other) noexcept;
+
+			auto operator=(const RedBlackTreeIterator& other) noexcept;
+			auto operator=(RedBlackTreeIterator&& other) noexcept;
+
+			auto operator*() const noexcept -> T&;
+			auto operator->() const noexcept -> T*;
+
+			auto operator++() noexcept -> RedBlackTreeIterator&;
+			auto operator++(int) noexcept -> RedBlackTreeIterator;
+
+			auto operator--() noexcept -> RedBlackTreeIterator&;
+			auto operator--(int) noexcept -> RedBlackTreeIterator;
+
+			auto operator+(usize count) const noexcept -> RedBlackTreeIterator;
+			auto operator-(usize count) const noexcept -> RedBlackTreeIterator;
+
+			auto operator+=(usize count) noexcept -> RedBlackTreeIterator&;
+			auto operator-=(usize count) noexcept -> RedBlackTreeIterator&;
+
+			auto operator==(const RedBlackTreeIterator& other) const noexcept -> bool;
+			auto operator!=(const RedBlackTreeIterator& other) const noexcept -> bool;
+
+		private:
+			explicit RedBlackTreeIterator(const NodeRef& node, usize idx = 0);
+
+			NodeRef m_node;
+			usize m_Idx;
+
+			friend class Core::RedBlackTree<T, C, AllowMultiple>;
+		};
+	}
+
+	template<Movable T, Comparator<T> C, bool AllowMultiple>
 	class RedBlackTree
 	{
 	private:
-		enum class Color : u8
-		{
-			Red,
-			Black,
-		};
-
 		enum class RotateDir : u8
 		{
 			Left,
 			Right,
 		};
 
-		struct Node
-		{
-			T value;
-			Color color;
-			MemRef<Node> parent;
-
-			union
-			{
-				struct
-				{
-					MemRef<Node> left;
-					MemRef<Node> right;
-				};
-				MemRef<Node> children[2];
-			};
-		};
+		using Node = Detail::RedBlackTreeNode<T, AllowMultiple>;
 		using NodeRef = MemRef<Node>;
 
 	public:
-		class Iterator
-		{
-		public:
-			Iterator();
-			Iterator(const Iterator& other) noexcept;
-			Iterator(Iterator&& other) noexcept;
-
-			auto operator=(const Iterator& other) noexcept;
-			auto operator=(Iterator&& other) noexcept;
-
-			auto operator*() const noexcept -> T&;
-			auto operator->() const noexcept -> T*;
-
-			auto operator++() noexcept -> Iterator&;
-			auto operator++(int) noexcept -> Iterator;
-
-			auto operator--() noexcept -> Iterator&;
-			auto operator--(int) noexcept -> Iterator;
-
-			auto operator+(usize count) const noexcept -> Iterator;
-			auto operator-(usize count) const noexcept -> Iterator;
-
-			auto operator+=(usize count) noexcept -> Iterator&;
-			auto operator-=(usize count) noexcept -> Iterator&;
-
-			auto operator==(const Iterator& other) const noexcept -> bool;
-			auto operator!=(const Iterator& other) const noexcept -> bool;
-
-		private:
-			explicit Iterator(const NodeRef& node);
-
-			NodeRef m_node;
-
-			friend class RedBlackTree;
-		};
+		using Iterator = Detail::RedBlackTreeIterator<T, C, AllowMultiple>;
 		using ConstIterator = const Iterator;
 
 	public:
@@ -377,6 +409,14 @@ namespace Core
 		 * \return Last node
 		 */
 		auto GetLastNode() const noexcept -> NodeRef;
+
+		/**
+		 * Compare the value in a NodeRef with a value
+		 * \param node Node to compare
+		 * \param val Value to compare with
+		 * \return -1 if less, 1 if greater, and otherwise 0
+		 */
+		auto Compare(const T& val, const NodeRef& node) const noexcept -> i8;
 
 		NodeRef             m_root; ///< Root node
 		usize               m_size; ///< Size
