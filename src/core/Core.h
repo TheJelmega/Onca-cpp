@@ -31,6 +31,7 @@
 
 #include "containers/Array.h"
 #include "containers/DynArray.h"
+#include "containers/InplaceDynArray.h"
 #include "containers/Deque.h"
 #include "containers/List.h"
 #include "containers/IntrusiveList.h"
