@@ -9,7 +9,7 @@ namespace Core
 	 * Doubly linked List
 	 * \tparam T Stored type
 	 */
-	template<MoveConstructable T>
+	template<MoveConstructible T>
 	class DList
 	{
 	private:
@@ -73,21 +73,21 @@ namespace Core
 		 * \param[in]  count Number of elements
 		 * \param[in]  alloc Allcoator the container shoud use
 		 */
-		explicit DList(usize count, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires NoThrowDefaultConstructable<T>;
+		explicit DList(usize count, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires NoThrowDefaultConstructible<T>;
 		/**
 		 * Create a DList filled with a number of elements
 		 * \param[in]  count Number of elements
 		 * \param[in]  val Value of elements
 		 * \param[in]  alloc Allcoator the container shoud use
 		 */
-		explicit DList(usize count, const T& val, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit DList(usize count, const T& val, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 
 		/**
 		 * Create a DList from an initializer list
 		 * \param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the containter should use
 		 */
-		explicit DList(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit DList(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a DList from an iterable range
 		 * \tparam It Iterator type
@@ -96,18 +96,18 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit DList(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit DList(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * \brief Create a DList with the contents of another DList
 		 * \param[in] other DList to copy
 		 */
-		DList(const DList& other) noexcept requires CopyConstructable<T>;
+		DList(const DList& other) noexcept requires CopyConstructible<T>;
 		/**
 		 * \brief Create a DList with the contents of another DList, but with a different allocator
 		 * \param[in] other DList to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit DList(const DList& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>;
+		explicit DList(const DList& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Move another DList into a new DList
 		 * \param[in] other DList to move from
@@ -115,8 +115,8 @@ namespace Core
 		DList(DList<T>&& other) noexcept;
 		~DList() noexcept;
 
-		auto operator=(const InitializerList<T>& il) noexcept -> DList<T>& requires CopyConstructable<T>;
-		auto operator=(const DList<T>& other) noexcept -> DList<T>& requires CopyConstructable<T>;
+		auto operator=(const InitializerList<T>& il) noexcept -> DList<T>& requires CopyConstructible<T>;
+		auto operator=(const DList<T>& other) noexcept -> DList<T>& requires CopyConstructible<T>;
 		auto operator=(DList<T>&& other) noexcept -> DList<T>&;
 
 		/**
@@ -126,42 +126,42 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>;
+		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the DList
 		 * \param[in] il Initializer list with elements
 		 */
-		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>;
+		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
 
 		/**
 		 * Fill the DList with a number of elements
 		 * \param[in] count Number of elements to fill
 		 * \param[in] val Value to fill elements with
 		 */
-		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Fill the DList with a number of elements with a default value (via placement new)
 		 * \param[in] count Number of elements to fill
 		 */
-		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>;
+		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Resize the DList and fill missing elements if needed
 		 * \param[in] newSize New size of the DynArray
 		 * \param[in] val Value to fill missing elements with
 		 */
-		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Resize the DList and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the DynArray
 		 */
-		auto Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructable<T>;
+		auto Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Add an element to the DList
 		 * \param[in] val Element to add
 		 */
-		auto Add(const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto Add(const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an element to the DList
 		 * \param[in] val Element to add
@@ -171,7 +171,7 @@ namespace Core
 		 * Add the contents of a DList to the DList
 		 * \param[in] other DList to add
 		 */
-		auto Add(const DList& other) -> void requires CopyConstructable<T>;
+		auto Add(const DList& other) -> void requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a DList to the DList
 		 * \param[in] other DList to add
@@ -193,7 +193,7 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an element before a certain location
 		 * \param[in] it Iterator to position to insert the element at
@@ -208,7 +208,7 @@ namespace Core
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		auto Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an iterable range into the DList before a certain location
 		 * \tparam It Iterator type
@@ -218,21 +218,21 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		auto Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an initializer list into the DList before a certain location
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a DList into the DList before a certain location
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] other DList to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, const DList& other) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, const DList& other) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a DList into the DList before a certain location
 		 * \param[in] it Iterator to position to insert elements at
@@ -256,7 +256,7 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto AddFront(const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an element at the front of the DList
 		 * \param[in] val Element to insert
@@ -269,7 +269,7 @@ namespace Core
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		auto AddFront(usize count, const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an iterable range at the front of the DList
 		 * \tparam It Iterator type
@@ -278,19 +278,19 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		auto AddFront(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an initializer list at the front of the DList
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add a DList into the DList at the front of the DList
 		 * \param[in] other DList to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const DList& other) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(const DList& other) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add a DList into the DList at the front of the DList
 		 * \param[in] other DList to insert

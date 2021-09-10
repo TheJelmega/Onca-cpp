@@ -89,14 +89,14 @@ namespace Core
 		 * param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit HashMap(const InitializerList<Pair<K, V>>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K> && CopyConstructable<V>;
+		explicit HashMap(const InitializerList<Pair<K, V>>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K> && CopyConstructible<V>;
 		/**
 		 * Create a HashMap
 		 * \param[in] il Initializer list with elements
 		 * \param[in] minBuckets Minimum number of buckets to create
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit HashMap(const InitializerList<Pair<K, V>>& il, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		explicit HashMap(const InitializerList<Pair<K, V>>& il, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Create a HashMap
 		 * \param[in] il Initializer list with elements
@@ -106,7 +106,7 @@ namespace Core
 		 * \param[in] comp Comparator to compare keys with
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit HashMap(const InitializerList<Pair<K, V>>& il, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		explicit HashMap(const InitializerList<Pair<K, V>>& il, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 
 		/**
 		 * Create a HashMap
@@ -116,7 +116,7 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit HashMap(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		explicit HashMap(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Create a HashMap
 		 * \tparam It Iterator type
@@ -126,7 +126,7 @@ namespace Core
 		 * \param[in]alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit HashMap(const It& begin, const It& end, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		explicit HashMap(const It& begin, const It& end, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Create a HashMap
 		 * \tparam It Iterator type
@@ -138,19 +138,19 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit HashMap(const It& begin, const It& end, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		explicit HashMap(const It& begin, const It& end, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 
 		/**
 		 * \brief Create a HashMap with the contents of another HashMap
 		 * \param[in] other HashMap to copy
 		 */
-		HashMap(const HashMap& other) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		HashMap(const HashMap& other) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * \brief Create a HashMap with the contents of another HashMap, but with a different allocator
 		 * \param[in] other HashMap to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		HashMap(const HashMap& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		HashMap(const HashMap& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Move another HashMap into a new HashMap
 		 * \param[in] other HashMap to move from
@@ -164,8 +164,8 @@ namespace Core
 		HashMap(HashMap&& other, Alloc::IAllocator& alloc) noexcept;
 		~HashMap();
 
-		auto operator=(const InitializerList<Pair<K, V>>& il) noexcept -> HashMap requires CopyConstructable<K>&& CopyConstructable<V>;
-		auto operator=(const HashMap& other) noexcept -> HashMap requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto operator=(const InitializerList<Pair<K, V>>& il) noexcept -> HashMap requires CopyConstructible<K>&& CopyConstructible<V>;
+		auto operator=(const HashMap& other) noexcept -> HashMap requires CopyConstructible<K>&& CopyConstructible<V>;
 		auto operator=(HashMap&& other) noexcept -> HashMap;
 
 		/**
@@ -184,7 +184,7 @@ namespace Core
 		 * \param[in] pair Key-value pair to insert
 		 * \return A pair with the iterator to the inserted element and a bool, where true means the element was inserted and false if the element was overriden
 		 */
-		auto Insert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto Insert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Insert a key-value pair into the HashMap, override value if it already exists
 		 * \param[in] pair Key-value pair to insert
@@ -197,7 +197,7 @@ namespace Core
 		 * \param[in] val Value to insert
 		 * \return A pair with the iterator to the inserted element and a bool, where true means the element was inserted and false if the element was overriden
 		 */
-		auto Insert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto Insert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Insert a key-value pair into the HashMap, override value if it already exists
 		 * \param[in] key Key to insert
@@ -210,7 +210,7 @@ namespace Core
 		 * \param[in] pair Key-value pair to insert
 		 * \return A pair with the iterator to the inserted element and a bool if the insertion was successful
 		 */
-		auto TryInsert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto TryInsert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Try to insert a key-value pair into the HashMap
 		 * \param[in] pair Key-value pair to insert
@@ -223,7 +223,7 @@ namespace Core
 		 * \param[in] val Value to insert
 		 * \return A pair with the iterator to the inserted element and a bool if the insertion was successful
 		 */
-		auto TryInsert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto TryInsert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Try to insert a key-value pair into the HashMap
 		 * \param[in] key Key to insert

@@ -15,13 +15,13 @@ namespace Core
 		/**
 		 * Create an empty Pair
 		 */
-		constexpr Pair() noexcept requires NoThrowDefaultConstructable<T0>&& NoThrowDefaultConstructable<T1>;
+		constexpr Pair() noexcept requires NoThrowDefaultConstructible<T0>&& NoThrowDefaultConstructible<T1>;
 		/**
 		 * Create a Pair with 2 values
 		 * \param first First value
 		 * \param second Second value
 		 */
-		constexpr Pair(const T0& first, const T1& second) noexcept requires CopyConstructable<T0>&& CopyConstructable<T1>;
+		constexpr Pair(const T0& first, const T1& second) noexcept requires CopyConstructible<T0>&& CopyConstructible<T1>;
 
 		/**
 		 * Create a Pair with 2 moved values

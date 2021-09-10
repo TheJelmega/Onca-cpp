@@ -108,21 +108,21 @@ namespace Core
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const InitializerList<Pair<K, V>>& il, Alloc::IAllocator& alloc) noexcept
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 		: HashMap(il, 0, H{}, C{}, alloc)
 	{
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const InitializerList<Pair<K, V>>& il, usize minBuckets, Alloc::IAllocator& alloc) noexcept
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 		: HashMap(il, minBuckets, H{}, C{}, alloc)
 	{
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const InitializerList<Pair<K, V>>& il, usize minBuckets, H hasher,	C comp, Alloc::IAllocator& alloc) noexcept
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 		: m_buckets(&alloc)
 		, m_size(0)
 		, m_maxLoadFactor(1.0f)
@@ -139,7 +139,7 @@ namespace Core
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	template <ForwardIterator It>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 		: HashMap(begin, end, 0, H{}, C{}, alloc)
 	{
 	}
@@ -147,7 +147,7 @@ namespace Core
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	template <ForwardIterator It>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const It& begin, const It& end, usize minBuckets, Alloc::IAllocator& alloc) noexcept
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 		: HashMap(begin, end, minBuckets, H{}, C{}, alloc)
 	{
 	}
@@ -155,7 +155,7 @@ namespace Core
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	template <ForwardIterator It>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const It& begin, const It& end, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc) noexcept
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 		: m_buckets(&alloc)
 		, m_size(0)
 		, m_maxLoadFactor(1.0f)
@@ -172,15 +172,15 @@ namespace Core
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	HashMap<K, V, H, C, IsMultiMap>::HashMap(const HashMap& other) noexcept requires CopyConstructable<K> &&
-		CopyConstructable<V>
+	HashMap<K, V, H, C, IsMultiMap>::HashMap(const HashMap& other) noexcept requires CopyConstructible<K> &&
+		CopyConstructible<V>
 		: HashMap(other, *other.GetAllocator())
 	{
 	}
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const HashMap& other, Alloc::IAllocator& alloc) noexcept requires
-		CopyConstructable<K> && CopyConstructable<V>
+		CopyConstructible<K> && CopyConstructible<V>
 		: m_buckets(&alloc)
 		, m_size(other.m_size)
 		, m_maxLoadFactor(other.m_maxLoadFactor)
@@ -226,7 +226,7 @@ namespace Core
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::operator=(const InitializerList<Pair<K, V>>& il) noexcept -> HashMap
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 	{
 		ClearInternal<true>(false);
 		Reserve(il.size());
@@ -237,7 +237,7 @@ namespace Core
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::operator=(const HashMap& other) noexcept -> HashMap requires
-		CopyConstructable<K> && CopyConstructable<V>
+		CopyConstructible<K> && CopyConstructible<V>
 	{
 		ClearInternal<true>(false);
 		m_maxLoadFactor = other.m_maxLoadFactor;
@@ -310,7 +310,7 @@ namespace Core
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Insert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires
-		CopyConstructable<K> && CopyConstructable<V>
+		CopyConstructible<K> && CopyConstructible<V>
 	{
 		Reserve(m_size + 1);
 		u64 hash = m_hash(pair.first);
@@ -327,7 +327,7 @@ namespace Core
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Insert(const K& key, const V& val) noexcept -> Pair<Iterator, bool>
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 	{
 		Reserve(m_size + 1);
 		u64 hash = m_hash(key);
@@ -344,7 +344,7 @@ namespace Core
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::TryInsert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool>
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 	{
 		Reserve(m_size + 1);
 		u64 hash = m_hash(pair.first);
@@ -361,7 +361,7 @@ namespace Core
 
 	template <Movable K, Movable V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::TryInsert(const K& key, const V& val) noexcept -> Pair<Iterator, bool>
-		requires CopyConstructable<K> && CopyConstructable<V>
+		requires CopyConstructible<K> && CopyConstructible<V>
 	{
 		Reserve(m_size + 1);
 		u64 hash = m_hash(key);

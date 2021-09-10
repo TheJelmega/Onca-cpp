@@ -6,49 +6,49 @@
 
 namespace Core
 {
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr InplaceDynArray<T, Cap>::InplaceDynArray() noexcept
 		: m_size(0)
 	{
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(usize count) noexcept requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(usize count) noexcept requires CopyConstructible<T>
 		: m_size(0)
 	{
 		FillDefault(count);
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(usize count, const T& val) noexcept requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(usize count, const T& val) noexcept requires CopyConstructible<T>
 		: m_size(0)
 	{
 		Fill(count, val);
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(const InitializerList<T>& il) noexcept requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(const InitializerList<T>& il) noexcept requires CopyConstructible<T>
 		: m_size(0)
 	{
 		Assign(il);
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	template <ForwardIterator It>
-	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(const It& begin, const It& end) noexcept requires CopyConstructable<T>
+	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(const It& begin, const It& end) noexcept requires CopyConstructible<T>
 		: m_size(0)
 	{
 		Assign(begin, end);
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(const InplaceDynArray& other) noexcept requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(const InplaceDynArray& other) noexcept requires CopyConstructible<T>
 		: m_size(0)
 	{
 		Assign(other.Begin(), other.End());
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(InplaceDynArray&& other) noexcept
 		: m_size(other.m_size)
 	{
@@ -56,27 +56,27 @@ namespace Core
 		other.m_size = 0;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr InplaceDynArray<T, Cap>::~InplaceDynArray() noexcept
 	{
 		Clear();
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::operator=(const InitializerList<T>& il) noexcept -> InplaceDynArray& requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::operator=(const InitializerList<T>& il) noexcept -> InplaceDynArray& requires CopyConstructible<T>
 	{
 		Assign(il);
 		return *this;
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::operator=(const InplaceDynArray& other) noexcept -> InplaceDynArray& requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::operator=(const InplaceDynArray& other) noexcept -> InplaceDynArray& requires CopyConstructible<T>
 	{
 		Assign(other.Begin(), other.End());
 		return *this;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::operator=(InplaceDynArray&& other) noexcept -> InplaceDynArray&
 	{
 		Clear();
@@ -86,9 +86,9 @@ namespace Core
 		return *this;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	template <ForwardIterator It>
-	constexpr auto InplaceDynArray<T, Cap>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>
+	constexpr auto InplaceDynArray<T, Cap>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear();
 		for (It it = begin; it != end; ++it)
@@ -99,8 +99,8 @@ namespace Core
 		}
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear();
 		ASSERT(il.size() <= Cap, "ImplaceDynArray has not enough capacity to store the initializer list");
@@ -111,8 +111,8 @@ namespace Core
 		}
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear();
 		ASSERT(count <= Cap, "ImplaceDynArray has not enough capacity to store the initializer list");
@@ -123,8 +123,8 @@ namespace Core
 		}
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>
 	{
 		Clear();
 		ASSERT(count <= Cap, "ImplaceDynArray has not enough capacity to store the initializer list");
@@ -135,8 +135,8 @@ namespace Core
 		}
 	}
 	
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		ASSERT(newSize <= Cap, "Trying to resize InplaceDynArray to a size larger than its capacity");
 		if (newSize < m_size)
@@ -155,8 +155,8 @@ namespace Core
 		m_size = newSize;
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructible<T>
 	{
 		ASSERT(newSize <= Cap, "Trying to resize InplaceDynArray to a size larger than its capacity");
 		if (newSize < m_size)
@@ -175,13 +175,13 @@ namespace Core
 		m_size = newSize;
 	}
 	
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Add(const T& val) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Add(const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		Add(T{ val });
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Add(T&& val) noexcept -> void
 	{
 		ASSERT(m_size < Cap, "ImplaceDynArray has not enough capacity to store another element");
@@ -189,15 +189,15 @@ namespace Core
 		++m_size;
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Add(const InplaceDynArray& other) -> void requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Add(const InplaceDynArray& other) -> void requires CopyConstructible<T>
 	{
 		ASSERT(m_size + other.m_size <= Cap, "ImplaceDynArray has not enough capacity to add another InplaceDynArray");
 		for (const T* it = other.Begin(), *end = other.End(); it != end; ++it)
 			Add(T{ *it });
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Add(InplaceDynArray&& other) -> void
 	{
 		ASSERT(m_size + other.m_size <= Cap, "ImplaceDynArray has not enough capacity to add another InplaceDynArray");
@@ -206,20 +206,20 @@ namespace Core
 		other.m_size = 0;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	template <typename ... Args> requires ConstructableFrom<T, Args...>
 	constexpr auto InplaceDynArray<T, Cap>::EmplaceBack(Args&&... args) noexcept -> void
 	{
 		Add(T{ args... });
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		return Insert(it, T{ val });
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, T&& val) noexcept -> Iterator
 	{
 		ASSERT(m_size < Cap, "ImplaceDynArray has not enough capacity to insert an element");
@@ -230,8 +230,8 @@ namespace Core
 		return m_data + idx;
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		ASSERT(m_size + count <= Cap, "ImplaceDynArray has not enough capacity to insert an elements");
 		usize idx = usize(it - m_data);
@@ -243,9 +243,9 @@ namespace Core
 
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	template <ForwardIterator It>
-	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>
+	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		usize count = CountElems(begin, end);
 		ASSERT(m_size + count <= Cap, "ImplaceDynArray has not enough capacity to insert an elements");
@@ -259,8 +259,8 @@ namespace Core
 		return m_data + idx;
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		usize count = il.size();
 		ASSERT(m_size + count <= Cap, "ImplaceDynArray has not enough capacity to insert an elements");
@@ -274,8 +274,8 @@ namespace Core
 		return m_data + idx;
 	}
 
-	template <MoveConstructable T, usize Cap>
-	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, const InplaceDynArray& other) noexcept -> Iterator requires CopyConstructable<T>
+	template <MoveConstructible T, usize Cap>
+	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, const InplaceDynArray& other) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		usize count = other.m_size;
 		ASSERT(m_size + count <= Cap, "ImplaceDynArray has not enough capacity to insert an elements");
@@ -289,7 +289,7 @@ namespace Core
 		return m_data + idx;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Insert(const ConstIterator& it, InplaceDynArray&& other) noexcept -> Iterator
 	{
 		usize count = other.m_size;
@@ -305,14 +305,14 @@ namespace Core
 		return m_data + idx;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	template <typename ... Args> requires ConstructableFrom<T, Args...>
 		constexpr auto InplaceDynArray<T, Cap>::Emplace(const ConstIterator& it, Args&&... args) noexcept -> Iterator
 	{
 		return Insert(it, T{ args... });
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Clear() noexcept -> void
 	{
 		for (usize i = 0; i < m_size; ++i)
@@ -320,20 +320,20 @@ namespace Core
 		m_size = 0;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Pop() noexcept -> void
 	{
 		ASSERT(m_size, "Cannot pop from an empty DynArray");
 		m_data[--m_size].~T();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Erase(const Iterator& it) noexcept -> void
 	{
 		Erase(it, 1);
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Erase(const Iterator& it, usize count) noexcept -> void
 	{
 		const usize idx = usize(it - m_data);
@@ -346,13 +346,13 @@ namespace Core
 		m_size -= count;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Erase(const Iterator& begin, const Iterator& end) noexcept -> void
 	{
 		Erase(begin, usize(end - begin));
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	template <EqualComparable<T> U>
 	constexpr auto InplaceDynArray<T, Cap>::Find(const U& value) noexcept -> Iterator
 	{
@@ -364,7 +364,7 @@ namespace Core
 		return nullptr;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	template <EqualComparable<T> U>
 	constexpr auto InplaceDynArray<T, Cap>::Find(const U& value) const noexcept -> ConstIterator
 	{
@@ -376,7 +376,7 @@ namespace Core
 		return nullptr;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::At(usize idx) const noexcept -> Optional<T>
 	{
 		if (idx >= m_size)
@@ -384,171 +384,171 @@ namespace Core
 		return m_data[idx];
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::IteratorAt(usize idx) noexcept -> Iterator
 	{
 		FREQ_ASSERT(idx < m_size, "Index out of range");
 		return m_data + idx;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::IteratorAt(usize idx) const noexcept -> ConstIterator
 	{
 		FREQ_ASSERT(idx < m_size, "Index out of range");
 		return m_data + idx;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::operator[](usize idx) noexcept -> T&
 	{
 		FREQ_ASSERT(idx < m_size, "Index out of range");
 		return m_data[idx];
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::operator[](usize idx) const noexcept -> const T&
 	{
 		FREQ_ASSERT(idx < m_size, "Index out of range");
 		return m_data[idx];
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Capacity() const noexcept -> usize
 	{
 		return Cap;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Size() const noexcept -> usize
 	{
 		return m_size;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::IsEmpty() const noexcept -> bool
 	{
 		return m_size == 0;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Data() noexcept -> T*
 	{
 		return m_data;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Data() const noexcept -> const T*
 	{
 		return m_data;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Front() noexcept -> T&
 	{
 		ASSERT(m_size, "Invalid when InplaceDynArray is empty");
 		return m_data[0];
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Front() const noexcept -> const T&
 	{
 		ASSERT(m_size, "Invalid when InplaceDynArray is empty");
 		return m_data[0];
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Back() noexcept -> T&
 	{
 		ASSERT(m_size, "Invalid when InplaceDynArray is empty");
 		return m_data[m_size - 1];
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Back() const noexcept -> const T&
 	{
 		ASSERT(m_size, "Invalid when InplaceDynArray is empty");
 		return m_data[m_size - 1];
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Begin() noexcept -> Iterator
 	{
 		return m_data;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::Begin() const noexcept -> ConstIterator
 	{
 		return m_data;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::End() noexcept -> Iterator
 	{
 		return m_data + m_size;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::End() const noexcept -> ConstIterator
 	{
 		return m_data + m_size;
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::RBegin() noexcept -> Iterator
 	{
 		return End();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::RBegin() const noexcept -> ConstIterator
 	{
 		return End();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::REnd() noexcept -> Iterator
 	{
 		return Begin();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::REnd() const noexcept -> ConstIterator
 	{
 		return Begin();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::begin() noexcept -> Iterator
 	{
 		return Begin();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::begin() const noexcept -> ConstIterator
 	{
 		return Begin();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::cbegin() const noexcept -> ConstIterator
 	{
 		return Begin();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::end() noexcept -> Iterator
 	{
 		return End();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::end() const noexcept -> ConstIterator
 	{
 		return End();
 	}
 
-	template <MoveConstructable T, usize Cap>
+	template <MoveConstructible T, usize Cap>
 	constexpr auto InplaceDynArray<T, Cap>::cend() const noexcept -> ConstIterator
 	{
 		return End();

@@ -4,15 +4,15 @@
 namespace Core
 {
 	template <typename T0, typename T1>
-	constexpr Pair<T0, T1>::Pair() noexcept requires NoThrowDefaultConstructable<T0>&& NoThrowDefaultConstructable<T1>
+	constexpr Pair<T0, T1>::Pair() noexcept requires NoThrowDefaultConstructible<T0>&& NoThrowDefaultConstructible<T1>
 		: first()
 		, second()
 	{
 	}
 
 	template <typename T0, typename T1>
-	constexpr Pair<T0, T1>::Pair(const T0& first, const T1& second) noexcept requires CopyConstructable<T0> &&
-		CopyConstructable<T1>
+	constexpr Pair<T0, T1>::Pair(const T0& first, const T1& second) noexcept requires CopyConstructible<T0> &&
+		CopyConstructible<T1>
 		: first(first)
 		, second(second)
 	{

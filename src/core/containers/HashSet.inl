@@ -87,20 +87,20 @@ namespace Core
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
-	HashSet<K, H, C, IsMultiMap>::HashSet(const InitializerList<K>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	HashSet<K, H, C, IsMultiMap>::HashSet(const InitializerList<K>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: HashSet(il, 0, H{}, C{}, alloc)
 	{
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
-	HashSet<K, H, C, IsMultiMap>::HashSet(const InitializerList<K>& il, usize minBuckets, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	HashSet<K, H, C, IsMultiMap>::HashSet(const InitializerList<K>& il, usize minBuckets, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: HashSet(il, minBuckets, H{}, C{}, alloc)
 	{
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
 	HashSet<K, H, C, IsMultiMap>::HashSet(const InitializerList<K>& il, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc) noexcept
-		requires CopyConstructable<K>
+		requires CopyConstructible<K>
 		: m_hashMap(minBuckets, Move(hasher), Move(comp), alloc)
 	{
 		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
@@ -112,14 +112,14 @@ namespace Core
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
 	template <ForwardIterator It>
-	HashSet<K, H, C, IsMultiMap>::HashSet(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	HashSet<K, H, C, IsMultiMap>::HashSet(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: HashSet(begin, end, 0, H{}, C{}, alloc)
 	{
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
 	template <ForwardIterator It>
-	HashSet<K, H, C, IsMultiMap>::HashSet(const It& begin, const It& end, usize minBuckets, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	HashSet<K, H, C, IsMultiMap>::HashSet(const It& begin, const It& end, usize minBuckets, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: HashSet(begin, end, minBuckets, H{}, C{}, alloc)
 	{
 	}
@@ -127,7 +127,7 @@ namespace Core
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
 	template <ForwardIterator It>
 	HashSet<K, H, C, IsMultiMap>::HashSet(const It& begin, const It& end, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc) noexcept
-		requires CopyConstructable<K>
+		requires CopyConstructible<K>
 		: m_hashMap(minBuckets, Move(hasher), Move(comp), alloc)
 	{
 		ASSERT(&alloc, "No allocator supplied to a HashSet/HashMultiSet");
@@ -139,13 +139,13 @@ namespace Core
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
-	HashSet<K, H, C, IsMultiMap>::HashSet(const HashSet& other) noexcept requires CopyConstructable<K>
+	HashSet<K, H, C, IsMultiMap>::HashSet(const HashSet& other) noexcept requires CopyConstructible<K>
 		: m_hashMap(other.m_hashMap)
 	{
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
-	HashSet<K, H, C, IsMultiMap>::HashSet(const HashSet& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	HashSet<K, H, C, IsMultiMap>::HashSet(const HashSet& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: m_hashMap(other.m_hashMap, alloc)
 	{
 	}
@@ -163,7 +163,7 @@ namespace Core
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::operator=(const InitializerList<K>& il) noexcept -> HashSet requires CopyConstructable<K>
+	auto HashSet<K, H, C, IsMultiMap>::operator=(const InitializerList<K>& il) noexcept -> HashSet requires CopyConstructible<K>
 	{
 		m_hashMap.Clear();
 		m_hashMap.Reserve(il.size());
@@ -173,7 +173,7 @@ namespace Core
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::operator=(const HashSet& other) noexcept -> HashSet requires CopyConstructable<K>
+	auto HashSet<K, H, C, IsMultiMap>::operator=(const HashSet& other) noexcept -> HashSet requires CopyConstructible<K>
 	{
 		m_hashMap = other.m_hashMap;
 		return *this;
@@ -199,7 +199,7 @@ namespace Core
 	}
 
 	template <Movable K, Hasher<K> H, EqualsComparator<K, K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::Insert(const K& key) noexcept -> Pair<ConstIterator, bool> requires CopyConstructable<K>
+	auto HashSet<K, H, C, IsMultiMap>::Insert(const K& key) noexcept -> Pair<ConstIterator, bool> requires CopyConstructible<K>
 	{
 		auto [it, success] = m_hashMap.TryInsert(key, Empty{});
 		return Pair{ Iterator{ it }, success };

@@ -81,14 +81,14 @@ namespace Core
 		 * param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit HashSet(const InitializerList<K>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit HashSet(const InitializerList<K>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 		/**
 		 * Create a HashSet
 		 * \param[in] il Initializer list with elements
 		 * \param[in] minBuckets Minimum number of buckets to create
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit HashSet(const InitializerList<K>& il, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit HashSet(const InitializerList<K>& il, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 		/**
 		 * Create a HashSet
 		 * \param[in] il Initializer list with elements
@@ -98,7 +98,7 @@ namespace Core
 		 * \param[in] comp Comparator to compare keys with
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit HashSet(const InitializerList<K>& il, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit HashSet(const InitializerList<K>& il, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 
 		/**
 		 * Create a HashSet
@@ -108,7 +108,7 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit HashSet(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit HashSet(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 		/**
 		 * Create a HashSet
 		 * \tparam It Iterator type
@@ -118,7 +118,7 @@ namespace Core
 		 * \param[in]alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit HashSet(const It& begin, const It& end, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit HashSet(const It& begin, const It& end, usize minBuckets, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 		/**
 		 * Create a HashSet
 		 * \tparam It Iterator type
@@ -130,19 +130,19 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit HashSet(const It& begin, const It& end, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit HashSet(const It& begin, const It& end, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 
 		/**
 		 * \brief Create a HashSet with the contents of another HashSet
 		 * \param[in] other HashSet to copy
 		 */
-		HashSet(const HashSet& other) noexcept requires CopyConstructable<K>;
+		HashSet(const HashSet& other) noexcept requires CopyConstructible<K>;
 		/**
 		 * \brief Create a HashSet with the contents of another HashSet, but with a different allocator
 		 * \param[in] other HashSet to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		HashSet(const HashSet& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>;
+		HashSet(const HashSet& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>;
 		/**
 		 * Move another HashSet into a new HashSet
 		 * \param[in] other HashSet to move from
@@ -155,8 +155,8 @@ namespace Core
 		 */
 		HashSet(HashSet&& other, Alloc::IAllocator& alloc) noexcept;
 
-		auto operator=(const InitializerList<K>& il) noexcept -> HashSet requires CopyConstructable<K>;
-		auto operator=(const HashSet& other) noexcept -> HashSet requires CopyConstructable<K>;
+		auto operator=(const InitializerList<K>& il) noexcept -> HashSet requires CopyConstructible<K>;
+		auto operator=(const HashSet& other) noexcept -> HashSet requires CopyConstructible<K>;
 		auto operator=(HashSet&& other) noexcept -> HashSet;
 
 		/**
@@ -175,7 +175,7 @@ namespace Core
 		 * \param[in] key Key to insert
 		 * \return A pair with the iterator to the inserted element and a bool, telling if the insertion was successful (i.e. if the key didn't exist yet
 		 */
-		auto Insert(const K& key) noexcept -> Pair<ConstIterator, bool> requires CopyConstructable<K>;
+		auto Insert(const K& key) noexcept -> Pair<ConstIterator, bool> requires CopyConstructible<K>;
 		/**
 		 * Insert a key-value pair into the HashSet, override value if it already exists
 		 * \param[in] key Key to insert

@@ -213,7 +213,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	Deque<T, BlockSize>::Deque(usize count, Alloc::IAllocator& alloc) noexcept requires DefaultConstructable<T>
+	Deque<T, BlockSize>::Deque(usize count, Alloc::IAllocator& alloc) noexcept requires DefaultConstructible<T>
 		: m_blocks(&alloc)
 		, m_initialIdx(0)
 		, m_size(0)
@@ -222,7 +222,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	Deque<T, BlockSize>::Deque(usize count, const T& val, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	Deque<T, BlockSize>::Deque(usize count, const T& val, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_blocks(&alloc)
 		, m_initialIdx(0)
 		, m_size(0)
@@ -231,7 +231,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	Deque<T, BlockSize>::Deque(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	Deque<T, BlockSize>::Deque(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_blocks(&alloc)
 		, m_initialIdx(0)
 		, m_size(0)
@@ -241,7 +241,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <ForwardIterator It>
-	Deque<T, BlockSize>::Deque(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	Deque<T, BlockSize>::Deque(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_blocks(&alloc)
 		, m_initialIdx(0)
 		, m_size(0)
@@ -250,7 +250,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	Deque<T, BlockSize>::Deque(const Deque& other) noexcept requires CopyConstructable<T>
+	Deque<T, BlockSize>::Deque(const Deque& other) noexcept requires CopyConstructible<T>
 		: m_blocks(other.GetAllocator())
 		, m_initialIdx(0)
 		, m_size(0)
@@ -260,7 +260,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	Deque<T, BlockSize>::Deque(const Deque<T, B>& other) noexcept requires CopyConstructable<T>
+	Deque<T, BlockSize>::Deque(const Deque<T, B>& other) noexcept requires CopyConstructible<T>
 		: m_blocks(other.GetAllocator())
 		, m_initialIdx(0)
 		, m_size(0)
@@ -270,7 +270,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	Deque<T, BlockSize>::Deque(const Deque<T, B>& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	Deque<T, BlockSize>::Deque(const Deque<T, B>& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_blocks(&alloc)
 		, m_initialIdx(0)
 		, m_size(0)
@@ -315,14 +315,14 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::operator=(const InitializerList<T>& il) noexcept -> Deque<T>& requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::operator=(const InitializerList<T>& il) noexcept -> Deque<T>& requires CopyConstructible<T>
 	{
 		Assign(il);
 		return *this;
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::operator=(const Deque& other) noexcept -> Deque<T>& requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::operator=(const Deque& other) noexcept -> Deque<T>& requires CopyConstructible<T>
 	{
 		Assign(other.Begin(), other.End());
 		return *this;
@@ -330,7 +330,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	auto Deque<T, BlockSize>::operator=(const Deque<T, B>& other) noexcept -> Deque<T>& requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::operator=(const Deque<T, B>& other) noexcept -> Deque<T>& requires CopyConstructible<T>
 	{
 		Assign(other.Begin(), other.End()); 
 		return *this;
@@ -348,7 +348,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <ForwardIterator It>
-	auto Deque<T, BlockSize>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear(false);
 		if constexpr (ContiguousIterator<T> && MemCopyable<T>)
@@ -372,7 +372,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear(false);
 		if constexpr (ContiguousIterator<T> && MemCopyable<T>)
@@ -395,7 +395,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear();
 		for (usize i = 0; i < count; ++i)
@@ -403,7 +403,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>
+	auto Deque<T, BlockSize>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>
 	{
 		Clear();
 		for (usize i = 0; i < count; ++i)
@@ -411,7 +411,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		if (newSize < m_size)
 		{
@@ -427,7 +427,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructable<T>
+	auto Deque<T, BlockSize>::Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructible<T>
 	{
 		if (newSize < m_size)
 		{
@@ -444,7 +444,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::PushFront(const T& val) noexcept -> void requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::PushFront(const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		PushFront(T{ val });
 	}
@@ -465,7 +465,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	auto Deque<T, BlockSize>::PushFront(const Deque<T, B>& other) -> void requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::PushFront(const Deque<T, B>& other) -> void requires CopyConstructible<T>
 	{
 		for (usize i = 0; i < other.m_size; ++i)
 			PushFront(other[other.m_size - i - 1]);
@@ -489,7 +489,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Push(const T& val) noexcept -> void requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Push(const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		Push(T{ val });
 	}
@@ -507,7 +507,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	auto Deque<T, BlockSize>::Push(const Deque<T, B>& other) -> void requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Push(const Deque<T, B>& other) -> void requires CopyConstructible<T>
 	{
 		for (Iterator it = other.Begin(), end = other.End(); it != end; ++it)
 			Push(T{ *it });
@@ -531,7 +531,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Insert(ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Insert(ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		return Insert(it, T{ val });
 	}
@@ -547,7 +547,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Insert(ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Insert(ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		usize itIdx = it.m_blockIdx * BlockSize + it.m_idx - m_initialIdx;
 		PrepareInsert(itIdx, count);
@@ -559,21 +559,21 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <ForwardIterator It>
-	auto Deque<T, BlockSize>::Insert(ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Insert(ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		usize count = CountElems(begin, end);
 		return InsertIts(it, count, begin, end);
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Insert(ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Insert(ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		return InsertIts(it, il.size(), il.begin(), il.end());
 	}
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	auto Deque<T, BlockSize>::Insert(ConstIterator& it, const Deque<T, B>& other) noexcept -> Iterator requires CopyConstructable<T>
+	auto Deque<T, BlockSize>::Insert(ConstIterator& it, const Deque<T, B>& other) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		return InsertIts(it, other.m_size, other.Begin(), other.End());
 	}

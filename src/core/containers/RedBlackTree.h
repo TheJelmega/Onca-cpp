@@ -161,13 +161,13 @@ namespace Core
 		 * \param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit RedBlackTree(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit RedBlackTree(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a RedBlackTree from an initializer list
 		 * \param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit RedBlackTree(const InitializerList<T>& il, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit RedBlackTree(const InitializerList<T>& il, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a RedBlackTree from an iterable range
 		 * \tparam It Iterator type
@@ -176,7 +176,7 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit RedBlackTree(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit RedBlackTree(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a RedBlackTree from an iterable range
 		 * \tparam It Iterator type
@@ -185,7 +185,7 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit RedBlackTree(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit RedBlackTree(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a RedBlackTree with the contents of another RedBlackTree
 		 * \param[in] other RedBlackTree to copy
@@ -220,19 +220,19 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>;
+		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the RedBlackTree
 		 * \param[in] il Initializer list with elements
 		 */
-		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>;
+		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
 
 		/**
 		 * Insert a value in the RedBlackTree
 		 * \param[in] value Value to insert
 		 * \return A pair with the iterator to the inserted element and a bool, where true means the element was inserted
 		 */
-		auto Insert(const T& value) noexcept -> Pair<Iterator, bool> requires CopyConstructable<T>;
+		auto Insert(const T& value) noexcept -> Pair<Iterator, bool> requires CopyConstructible<T>;
 		/**
 		 * Insert a value in the RedBlackTree
 		 * \param[in] value Value to insert

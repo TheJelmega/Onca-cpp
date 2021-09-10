@@ -77,20 +77,20 @@ namespace Core
 		 * \param[in] count Number of elements to create
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit Deque(usize count, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires DefaultConstructable<T>;
+		explicit Deque(usize count, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires DefaultConstructible<T>;
 		/**
 		 * Create a Deque filled with a number of elements
 		 * \param[in] count Number of elements to create
 		 * \param[in] val Value of elements
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit Deque(usize count, const T& val, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit Deque(usize count, const T& val, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a Deque from an initializer list
 		 * \param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the containter should use
 		 */
-		explicit Deque(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit Deque(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a Deque from an iterable range
 		 * \tparam It Iterator type
@@ -99,19 +99,19 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit Deque(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit Deque(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a Deque with the contents of another Deque
 		 * \param[in] other Deque to copy
 		 */
-		Deque(const Deque& other) noexcept requires CopyConstructable<T>;
+		Deque(const Deque& other) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a Deque with the contents of another Deque
 		 * \tparam B Block size of other deque
 		 * \param[in] other Deque to copy
 		 */
 		template<usize B>
-		Deque(const Deque<T, B>& other) noexcept requires CopyConstructable<T>;
+		Deque(const Deque<T, B>& other) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a Deque with the contents of another Deque, but with a different allocator
 		 * \tparam B Block size of other deque
@@ -119,7 +119,7 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<usize B>
-		explicit Deque(const Deque<T, B>& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>;
+		explicit Deque(const Deque<T, B>& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Move another Deque into a new Deque
 		 * \param[in] other Deque to move from
@@ -135,10 +135,10 @@ namespace Core
 		Deque(Deque<T, B>&& other, Alloc::IAllocator& alloc) noexcept;
 		~Deque() noexcept;
 
-		auto operator=(const InitializerList<T>& il) noexcept -> Deque<T>& requires CopyConstructable<T>;
-		auto operator=(const Deque& other) noexcept -> Deque<T>& requires CopyConstructable<T>;
+		auto operator=(const InitializerList<T>& il) noexcept -> Deque<T>& requires CopyConstructible<T>;
+		auto operator=(const Deque& other) noexcept -> Deque<T>& requires CopyConstructible<T>;
 		template<usize B>
-		auto operator=(const Deque<T, B>& other) noexcept -> Deque<T>& requires CopyConstructable<T>;
+		auto operator=(const Deque<T, B>& other) noexcept -> Deque<T>& requires CopyConstructible<T>;
 		auto operator=(Deque&& other) noexcept -> Deque<T>&;
 
 		/**
@@ -148,42 +148,42 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>;
+		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the Deque
 		 * \param[in] il Initializer list with elements
 		 */
-		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>;
+		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
 
 		/**
 		 * Fill the Deque with a number of elements
 		 * \param[in] count Number of elements to fill
 		 * \param[in] val Value to fill elements with
 		 */
-		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Fill the Deque with a number of elements with a default value (via placement new)
 		 * \param[in] count Number of elements to fill
 		 */
-		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>;
+		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>;
 		
 		/**
 		 * Resize the Deque and fill missing elements if needed
 		 * \param[in] newSize New size of the Deque
 		 * \param[in] val Value to fill missing elements with
 		 */
-		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Resize the Deque and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the Deque
 		 */
-		auto Resize(usize newSize) noexcept -> void  requires NoThrowDefaultConstructable<T>;
+		auto Resize(usize newSize) noexcept -> void  requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Add an element to the front of the Deque
 		 * \param[in] val Element to add
 		 */
-		auto PushFront(const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto PushFront(const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an element to the front of the Deque
 		 * \param[in] val Element to add
@@ -195,7 +195,7 @@ namespace Core
 		 * \param[in] other Deque to add
 		 */
 		template<usize B>
-		auto PushFront(const Deque<T, B>& other) -> void requires CopyConstructable<T>;
+		auto PushFront(const Deque<T, B>& other) -> void requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a Deque to the front of the Deque
 		 * \tparam B Block size of other deque
@@ -217,7 +217,7 @@ namespace Core
 		 * Add an element to the Deque
 		 * \param[in] val Element to add
 		 */
-		auto Push(const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto Push(const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an element to the Deque
 		 * \param[in] val Element to add
@@ -229,7 +229,7 @@ namespace Core
 		 * \param[in] other Deque to add
 		 */
 		template<usize B>
-		auto Push(const Deque<T, B>& other) -> void requires CopyConstructable<T>;
+		auto Push(const Deque<T, B>& other) -> void requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a Deque to the Deque
 		 * \tparam B Block size of other deque
@@ -253,7 +253,7 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an element in a certain location
 		 * \param[in] it Iterator to position to insert the element at
@@ -268,7 +268,7 @@ namespace Core
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		auto Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an iterable range into the Deque
 		 * \tparam It Iterator type
@@ -278,14 +278,14 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		auto Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an initializer list into the Deque
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a Deque into the Deque
 		 * \tparam B Block size of other deque
@@ -294,7 +294,7 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<usize B>
-		auto Insert(const ConstIterator& it, const Deque<T, B>& other) noexcept -> Iterator requires CopyConstructable<T>;
+		auto Insert(const ConstIterator& it, const Deque<T, B>& other) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a Deque into the Deque
 		 * \tparam B Block size of other deque

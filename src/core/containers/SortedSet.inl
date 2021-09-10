@@ -94,39 +94,39 @@ namespace Core
 	}
 
 	template <Movable K, Comparator<K, K> C, bool IsMultiSet>
-	SortedSet<K, C, IsMultiSet>::SortedSet(const InitializerList<K>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	SortedSet<K, C, IsMultiSet>::SortedSet(const InitializerList<K>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: m_tree(il, alloc)
 	{
 	}
 
 	template <Movable K, Comparator<K, K> C, bool IsMultiSet>
-	SortedSet<K, C, IsMultiSet>::SortedSet(const InitializerList<K>& il, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	SortedSet<K, C, IsMultiSet>::SortedSet(const InitializerList<K>& il, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: m_tree(il, Move(comp), alloc)
 	{
 	}
 
 	template <Movable K, Comparator<K, K> C, bool IsMultiSet>
 	template <ForwardIterator It>
-	SortedSet<K, C, IsMultiSet>::SortedSet(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	SortedSet<K, C, IsMultiSet>::SortedSet(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: m_tree(begin, end, alloc)
 	{
 	}
 
 	template <Movable K, Comparator<K, K> C, bool IsMultiSet>
 	template <ForwardIterator It>
-	SortedSet<K, C, IsMultiSet>::SortedSet(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	SortedSet<K, C, IsMultiSet>::SortedSet(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: m_tree(begin, end, Move(comp), alloc)
 	{
 	}
 
 	template <Movable K, Comparator<K, K> C, bool IsMultiSet>
-	SortedSet<K, C, IsMultiSet>::SortedSet(const SortedSet& other) noexcept requires CopyConstructable<K>
+	SortedSet<K, C, IsMultiSet>::SortedSet(const SortedSet& other) noexcept requires CopyConstructible<K>
 		: m_tree(other.m_tree)
 	{
 	}
 
 	template <Movable K, Comparator<K, K> C, bool IsMultiSet>
-	SortedSet<K, C, IsMultiSet>::SortedSet(const SortedSet& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>
+	SortedSet<K, C, IsMultiSet>::SortedSet(const SortedSet& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>
 		: m_tree(other.m_tree, alloc)
 	{
 	}
@@ -144,14 +144,14 @@ namespace Core
 	}
 
 	template <Movable K, Comparator<K, K> C, bool IsMultiSet>
-	auto SortedSet<K, C, IsMultiSet>::operator=(const InitializerList<K>& il) noexcept -> SortedSet requires CopyConstructable<K>
+	auto SortedSet<K, C, IsMultiSet>::operator=(const InitializerList<K>& il) noexcept -> SortedSet requires CopyConstructible<K>
 	{
 		m_tree = il;
 		return *this;
 	}
 
 	template <Movable K, Comparator<K, K> C, bool IsMultiSet>
-	auto SortedSet<K, C, IsMultiSet>::operator=(const SortedSet& other) noexcept -> SortedSet requires CopyConstructable<K>
+	auto SortedSet<K, C, IsMultiSet>::operator=(const SortedSet& other) noexcept -> SortedSet requires CopyConstructible<K>
 	{
 		m_tree = other.m_tree;
 		return *this;
@@ -165,7 +165,7 @@ namespace Core
 	}
 	
 	template <Movable K, Comparator<K, K> C, bool IsMultiSet>
-	auto SortedSet<K, C, IsMultiSet>::Insert(const K& key) noexcept -> Pair<ConstIterator, bool> requires CopyConstructable<K>
+	auto SortedSet<K, C, IsMultiSet>::Insert(const K& key) noexcept -> Pair<ConstIterator, bool> requires CopyConstructible<K>
 	{
 		auto [it, res] = m_tree.Insert(key);
 		return { { it }, res };

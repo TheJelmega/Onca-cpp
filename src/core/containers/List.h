@@ -10,7 +10,7 @@ namespace Core
 	 * Linked List
 	 * \tparam T Stored type
 	 */
-	template<MoveConstructable T>
+	template<MoveConstructible T>
 	class List
 	{
 	private:
@@ -67,21 +67,21 @@ namespace Core
 		 * \param[in]  count Number of elements
 		 * \param[in]  alloc Allcoator the container shoud use
 		 */
-		explicit List(usize count, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires NoThrowDefaultConstructable<T>;
+		explicit List(usize count, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires NoThrowDefaultConstructible<T>;
 		/**
 		 * Create a List filled with a number of elements
 		 * \param[in]  count Number of elements
 		 * \param[in]  val Value of elements
 		 * \param[in]  alloc Allcoator the container shoud use
 		 */
-		explicit List(usize count, const T& val, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;;
+		explicit List(usize count, const T& val, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;;
 
 		/**
 		 * Create a List from an initializer list
 		 * \param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the containter should use
 		 */
-		explicit List(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit List(const InitializerList<T>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a List from an iterable range
 		 * \tparam It Iterator type
@@ -90,18 +90,18 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit List(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<T>;
+		explicit List(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * \brief Create a List with the contents of another List
 		 * \param[in] other List to copy
 		 */
-		List(const List& other) noexcept requires CopyConstructable<T>;
+		List(const List& other) noexcept requires CopyConstructible<T>;
 		/**
 		 * \brief Create a List with the contents of another List, but with a different allocator
 		 * \param[in] other List to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit List(const List& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>;
+		explicit List(const List& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>;
 		/**
 		 * Move another List into a new List
 		 * \param[in] other List to move from
@@ -109,8 +109,8 @@ namespace Core
 		List(List&& other) noexcept;
 		~List() noexcept;
 
-		auto operator=(const InitializerList<T>& il) noexcept -> List<T>& requires CopyConstructable<T>;
-		auto operator=(const List& other) noexcept -> List<T>& requires CopyConstructable<T>;
+		auto operator=(const InitializerList<T>& il) noexcept -> List<T>& requires CopyConstructible<T>;
+		auto operator=(const List& other) noexcept -> List<T>& requires CopyConstructible<T>;
 		auto operator=(List&& other) noexcept -> List<T>&;
 
 		/**
@@ -120,42 +120,42 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>;
+		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the List
 		 * \param[in] il Initializer list with elements
 		 */
-		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>;
+		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
 
 		/**
 		 * Fill the List with a number of elements
 		 * \param[in] count Number of elements to fill
 		 * \param[in] val Value to fill elements with
 		 */
-		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Fill the List with a number of elements with a default value (via placement new)
 		 * \param[in] count Number of elements to fill
 		 */
-		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>;
+		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Resize the List and fill missing elements if needed
 		 * \param[in] newSize New size of the DynArray
 		 * \param[in] val Value to fill missing elements with
 		 */
-		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Resize the List and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the DynArray
 		 */
-		auto Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructable<T>;
+		auto Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Add an element to the List
 		 * \param[in] val Element to add
 		 */
-		auto Add(const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto Add(const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an element to the List
 		 * \param[in] val Element to add
@@ -165,7 +165,7 @@ namespace Core
 		 * Add the contents of a List to the List
 		 * \param[in] other List to add
 		 */
-		auto Add(const List& other) -> void requires CopyConstructable<T>;
+		auto Add(const List& other) -> void requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a List to the List
 		 * \param[in] other List to add
@@ -187,7 +187,7 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto InsertAfter(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
+		auto InsertAfter(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an element after a certain location
 		 * \param[in] it Iterator to position before the element to insert the element at
@@ -202,7 +202,7 @@ namespace Core
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		auto InsertAfter(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
+		auto InsertAfter(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an iterable range into the List after a certain location
 		 * \tparam It Iterator type
@@ -212,21 +212,21 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		auto InsertAfter(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>;
+		auto InsertAfter(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an initializer list into the List after a certain location
 		 * \param[in] it Iterator to position before the element to insert elements at
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto InsertAfter(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>;
+		auto InsertAfter(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a List into the List after a certain location
 		 * \param[in] it Iterator to position before the element to insert elements at
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto InsertAfter(const ConstIterator& it, const List& other) noexcept -> Iterator requires CopyConstructable<T>;
+		auto InsertAfter(const ConstIterator& it, const List& other) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a List into the List after a certain location
 		 * \param[in] it Iterator to position before the element to insert elements at
@@ -250,7 +250,7 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto AddFront(const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an element at the front of the List
 		 * \param[in] val Element to insert
@@ -263,7 +263,7 @@ namespace Core
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		auto AddFront(usize count, const T& val) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an iterable range at the front of the List
 		 * \tparam It Iterator type
@@ -272,19 +272,19 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		auto AddFront(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an initializer list at the front of the List
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add a List into the List at the front of the List
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const List& other) noexcept -> void requires CopyConstructable<T>;
+		auto AddFront(const List& other) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add a List into the List at the front of the List
 		 * \param[in] other List to insert

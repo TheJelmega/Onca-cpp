@@ -237,7 +237,7 @@ namespace Core
 	}
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
-	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_root(&alloc)
 		, m_size(0)
 	{
@@ -245,7 +245,7 @@ namespace Core
 	}
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
-	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const InitializerList<T>& il, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const InitializerList<T>& il, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_root(&alloc)
 		, m_size(0)
 		, m_comp(Move(comp))
@@ -255,7 +255,7 @@ namespace Core
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
 	template <ForwardIterator It>
-	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_root(&alloc)
 		, m_size(0)
 	{
@@ -264,7 +264,7 @@ namespace Core
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
 	template <ForwardIterator It>
-	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_root(&alloc)
 		, m_size(0)
 		, m_comp(Move(comp))
@@ -324,7 +324,7 @@ namespace Core
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
 	template<ForwardIterator It>
-	auto RedBlackTree<T, C, AllowMultiple>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>
+	auto RedBlackTree<T, C, AllowMultiple>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear();
 		for (It it = begin; it != end; ++it)
@@ -332,13 +332,13 @@ namespace Core
 	}
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
-	auto RedBlackTree<T, C, AllowMultiple>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>
+	auto RedBlackTree<T, C, AllowMultiple>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>
 	{
 		Assign(il.begin(), il.end());
 	}
 
 	template <Movable T, Comparator<T> C, bool AllowMultiple>
-	auto RedBlackTree<T, C, AllowMultiple>::Insert(const T& value) noexcept -> Pair<Iterator, bool> requires CopyConstructable<T>
+	auto RedBlackTree<T, C, AllowMultiple>::Insert(const T& value) noexcept -> Pair<Iterator, bool> requires CopyConstructible<T>
 	{
 		return Insert(T{ value });
 	}

@@ -10,7 +10,7 @@ namespace Core
 	 * \tparam Cap Capacity (max number of elements)
 	 * \note Iterators are invalidated after certain container modifications
 	 */
-	template<MoveConstructable T, usize Cap>
+	template<MoveConstructible T, usize Cap>
 	class InplaceDynArray
 	{
 	public:
@@ -26,18 +26,18 @@ namespace Core
 		 * \param[in] count Number of elements to create
 		 * \param[in] val Value of elements
 		 */
-		constexpr explicit InplaceDynArray(usize count) noexcept requires CopyConstructable<T>;
+		constexpr explicit InplaceDynArray(usize count) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a InplaceDynArray filled with a number of elements
 		 * \param[in] count Number of elements to create
 		 * \param[in] val Value of elements
 		 */
-		constexpr explicit InplaceDynArray(usize count, const T& val) noexcept requires CopyConstructable<T>;
+		constexpr explicit InplaceDynArray(usize count, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a InplaceDynArray from an initializer list
 		 * \param[in] il Initializer list with elements
 		 */
-		constexpr explicit InplaceDynArray(const InitializerList<T>& il) noexcept requires CopyConstructable<T>;
+		constexpr explicit InplaceDynArray(const InitializerList<T>& il) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a InplaceDynArray from an iterable range
 		 * \tparam It Iterator type
@@ -45,12 +45,12 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		constexpr explicit InplaceDynArray(const It& begin, const It& end) noexcept requires CopyConstructable<T>;
+		constexpr explicit InplaceDynArray(const It& begin, const It& end) noexcept requires CopyConstructible<T>;
 		/**
 		 * Create a InplaceDynArray with the contents of another InplaceDynArray
 		 * \param[in] other InplaceDynArray to copy
 		 */
-		constexpr InplaceDynArray(const InplaceDynArray& other) noexcept requires CopyConstructable<T>;
+		constexpr InplaceDynArray(const InplaceDynArray& other) noexcept requires CopyConstructible<T>;
 		/**
 		 * Move another InplaceDynArray into a new InplaceDynArray
 		 * \param[in] other InplaceDynArray to move from
@@ -58,8 +58,8 @@ namespace Core
 		constexpr InplaceDynArray(InplaceDynArray&& other) noexcept;
 		constexpr ~InplaceDynArray() noexcept;
 
-		constexpr auto operator=(const InitializerList<T>& il) noexcept -> InplaceDynArray& requires CopyConstructable<T>;
-		constexpr auto operator=(const InplaceDynArray& other) noexcept -> InplaceDynArray& requires CopyConstructable<T>;
+		constexpr auto operator=(const InitializerList<T>& il) noexcept -> InplaceDynArray& requires CopyConstructible<T>;
+		constexpr auto operator=(const InplaceDynArray& other) noexcept -> InplaceDynArray& requires CopyConstructible<T>;
 		constexpr auto operator=(InplaceDynArray&& other) noexcept -> InplaceDynArray&;
 
 		/**
@@ -69,42 +69,42 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		constexpr auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>;
+		constexpr auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the InplaceDynArray
 		 * \param[in] il Initializer list with elements
 		 */
-		constexpr auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>;
+		constexpr auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
 
 		/**
 		 * Fill the InplaceDynArray with a number of elements
 		 * \param[in] count Number of elements to fill
 		 * \param[in] val Value to fill elements with
 		 */
-		constexpr auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>;
+		constexpr auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Fill the InplaceDynArray with a number of elements with a default value (via placement new)
 		 * \param[in] count Number of elements to fill
 		 */
-		constexpr auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>;
+		constexpr auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>;
 		
 		/**
 		 * Resize the InplaceDynArray and fill missing elements if needed
 		 * \param[in] newSize New size of the InplaceDynArray
 		 * \param[in] val Value to fill missing elements with
 		 */
-		constexpr auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>;
+		constexpr auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Resize the InplaceDynArray and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the InplaceDynArray
 		 */
-		constexpr auto Resize(usize newSize) noexcept -> void  requires NoThrowDefaultConstructable<T>;
+		constexpr auto Resize(usize newSize) noexcept -> void  requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Add an element to the InplaceDynArray
 		 * \param[in] val Element to add
 		 */
-		constexpr auto Add(const T& val) noexcept -> void requires CopyConstructable<T>;
+		constexpr auto Add(const T& val) noexcept -> void requires CopyConstructible<T>;
 		/**
 		 * Add an element to the InplaceDynArray
 		 * \param[in] val Element to add
@@ -114,7 +114,7 @@ namespace Core
 		 * Add the contents of a InplaceDynArray to the InplaceDynArray
 		 * \param[in] other InplaceDynArray to add
 		 */
-		constexpr auto Add(const InplaceDynArray& other) -> void requires CopyConstructable<T>;
+		constexpr auto Add(const InplaceDynArray& other) -> void requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a InplaceDynArray to the InplaceDynArray
 		 * \param[in] other InplaceDynArray to add
@@ -136,7 +136,7 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		constexpr auto Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
+		constexpr auto Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an element in a certain location
 		 * \param[in] it Iterator to position to insert the element at
@@ -151,7 +151,7 @@ namespace Core
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		constexpr auto Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>;
+		constexpr auto Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an iterable range into the InplaceDynArray
 		 * \tparam It Iterator type
@@ -161,21 +161,21 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		constexpr auto Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>;
+		constexpr auto Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an initializer list into the InplaceDynArray
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		constexpr auto Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>;
+		constexpr auto Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a InplaceDynArray into the InplaceDynArray
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] other InplaceDynArray to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		constexpr auto Insert(const ConstIterator& it, const InplaceDynArray& other) noexcept -> Iterator requires CopyConstructable<T>;
+		constexpr auto Insert(const ConstIterator& it, const InplaceDynArray& other) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a InplaceDynArray into the InplaceDynArray
 		 * \param[in] it Iterator to position to insert elements at

@@ -100,43 +100,43 @@ namespace Core
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	SortedMap<K, V, C, IsMultiMap>::SortedMap(const InitializerList<Pair<K, V>>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K> &&
-		CopyConstructable<V>
+	SortedMap<K, V, C, IsMultiMap>::SortedMap(const InitializerList<Pair<K, V>>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K> &&
+		CopyConstructible<V>
 		: m_tree(il, alloc)
 	{
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	SortedMap<K, V, C, IsMultiMap>::SortedMap(const InitializerList<Pair<K, V>>& il, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K> &&
-		CopyConstructable<V>
+	SortedMap<K, V, C, IsMultiMap>::SortedMap(const InitializerList<Pair<K, V>>& il, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K> &&
+		CopyConstructible<V>
 		: m_tree(il, KeyValueComparator{ Move(comp) }, alloc)
 	{
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
 	template <ForwardIterator It>
-	SortedMap<K, V, C, IsMultiMap>::SortedMap(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K> &&
-		CopyConstructable<V>
+	SortedMap<K, V, C, IsMultiMap>::SortedMap(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K> &&
+		CopyConstructible<V>
 		: m_tree(begin, end, alloc)
 	{
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
 	template <ForwardIterator It>
-	SortedMap<K, V, C, IsMultiMap>::SortedMap(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K> &&
-		CopyConstructable<V>
+	SortedMap<K, V, C, IsMultiMap>::SortedMap(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K> &&
+		CopyConstructible<V>
 		: m_tree(begin, end, KeyValueComparator{ Move(comp) }, alloc)
 	{
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	SortedMap<K, V, C, IsMultiMap>::SortedMap(const SortedMap& other) noexcept requires CopyConstructable<K> && CopyConstructable<V>
+	SortedMap<K, V, C, IsMultiMap>::SortedMap(const SortedMap& other) noexcept requires CopyConstructible<K> && CopyConstructible<V>
 		: m_tree(other.m_tree)
 	{
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	SortedMap<K, V, C, IsMultiMap>::SortedMap(const SortedMap& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K> && CopyConstructable<V>
+	SortedMap<K, V, C, IsMultiMap>::SortedMap(const SortedMap& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K> && CopyConstructible<V>
 		: m_tree(other.m_tree, alloc)
 	{
 	}
@@ -154,15 +154,15 @@ namespace Core
 	}
 	
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	auto SortedMap<K, V, C, IsMultiMap>::operator=(const InitializerList<Pair<K, V>>& il) noexcept -> SortedMap requires CopyConstructable<K> &&
-		CopyConstructable<V>
+	auto SortedMap<K, V, C, IsMultiMap>::operator=(const InitializerList<Pair<K, V>>& il) noexcept -> SortedMap requires CopyConstructible<K> &&
+		CopyConstructible<V>
 	{
 		m_tree = il;
 		return *this;
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	auto SortedMap<K, V, C, IsMultiMap>::operator=(const SortedMap& other) noexcept -> SortedMap requires CopyConstructable<K> && CopyConstructable<V>
+	auto SortedMap<K, V, C, IsMultiMap>::operator=(const SortedMap& other) noexcept -> SortedMap requires CopyConstructible<K> && CopyConstructible<V>
 	{
 		m_tree = other.m_tree;
 		return *this;
@@ -176,7 +176,7 @@ namespace Core
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	auto SortedMap<K, V, C, IsMultiMap>::Insert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K> && CopyConstructable<V>
+	auto SortedMap<K, V, C, IsMultiMap>::Insert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K> && CopyConstructible<V>
 	{
 		typename RBTree::Iterator it = m_tree.Find(pair);
 		if (it != m_tree.End())
@@ -200,7 +200,7 @@ namespace Core
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	auto SortedMap<K, V, C, IsMultiMap>::Insert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K> && CopyConstructable<V>
+	auto SortedMap<K, V, C, IsMultiMap>::Insert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K> && CopyConstructible<V>
 	{
 		Pair pair{ key, val };
 		typename RBTree::Iterator it = m_tree.Find(pair);
@@ -226,7 +226,7 @@ namespace Core
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	auto SortedMap<K, V, C, IsMultiMap>::TryInsert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K> && CopyConstructable<V>
+	auto SortedMap<K, V, C, IsMultiMap>::TryInsert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K> && CopyConstructible<V>
 	{
 		return { Insert(pair) };
 	}
@@ -238,8 +238,8 @@ namespace Core
 	}
 
 	template <Movable K, Movable V, Comparator<K> C, bool IsMultiMap>
-	auto SortedMap<K, V, C, IsMultiMap>::TryInsert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K> &&
-		CopyConstructable<V>
+	auto SortedMap<K, V, C, IsMultiMap>::TryInsert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K> &&
+		CopyConstructible<V>
 	{
 		return { Insert({ key, val }) };
 	}

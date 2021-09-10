@@ -3,25 +3,25 @@
 
 namespace Core
 {
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	DList<T>::Iterator::Iterator() noexcept
 		: m_node()
 	{
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator->() const noexcept -> T*
 	{
 		return &m_node->val;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator*() const noexcept -> T&
 	{
 		return m_node->val;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator++() noexcept -> Iterator
 	{
 		if (m_node)
@@ -29,7 +29,7 @@ namespace Core
 		return *this;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator++(int) noexcept -> Iterator
 	{
 		Iterator it{ m_node };
@@ -37,7 +37,7 @@ namespace Core
 		return it;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator--() noexcept -> Iterator
 	{
 		if (m_node)
@@ -45,7 +45,7 @@ namespace Core
 		return *this;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator--(int) noexcept -> Iterator
 	{
 		Iterator it{ m_node };
@@ -53,7 +53,7 @@ namespace Core
 		return it;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator+(usize count) const noexcept -> Iterator
 	{
 		Iterator it{ m_node };
@@ -62,7 +62,7 @@ namespace Core
 		return it;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator-(usize count) const noexcept -> Iterator
 	{
 		Iterator it{ m_node };
@@ -71,7 +71,7 @@ namespace Core
 		return it;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator+=(usize count) noexcept -> Iterator&
 	{
 		for (usize i = 0; i < count; ++i)
@@ -79,7 +79,7 @@ namespace Core
 		return *this;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator-=(usize count) noexcept -> Iterator&
 	{
 		for (usize i = 0; i < count; ++i)
@@ -87,108 +87,108 @@ namespace Core
 		return *this;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator==(const Iterator& other) const noexcept -> bool
 	{
 		return m_node == other.m_node;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Iterator::operator!=(const Iterator& other) const noexcept -> bool
 	{
 		return !(*this == other);
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	DList<T>::Iterator::Iterator(const MemRef<Node>& node) noexcept
 		: m_node(node)
 	{
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	DList<T>::DList(Alloc::IAllocator& alloc) noexcept
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
 	}
 
-	template <MoveConstructable T>
-	DList<T>::DList(usize count, Alloc::IAllocator& alloc) noexcept requires NoThrowDefaultConstructable<T>
+	template <MoveConstructible T>
+	DList<T>::DList(usize count, Alloc::IAllocator& alloc) noexcept requires NoThrowDefaultConstructible<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
 		FillDefault(count);
 	}
 
-	template <MoveConstructable T>
-	DList<T>::DList(usize count, const T& val, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	template <MoveConstructible T>
+	DList<T>::DList(usize count, const T& val, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
 		Fill(count, val);
 	}
 
-	template <MoveConstructable T>
-	DList<T>::DList(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	template <MoveConstructible T>
+	DList<T>::DList(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
 		Assign(il);
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	template <ForwardIterator It>
-	DList<T>::DList(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	DList<T>::DList(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
 		Assign(begin, end);
 	}
 
-	template <MoveConstructable T>
-	DList<T>::DList(const DList& other) noexcept requires CopyConstructable<T>
+	template <MoveConstructible T>
+	DList<T>::DList(const DList& other) noexcept requires CopyConstructible<T>
 		: m_head(other.GetAllocator())
 		, m_tail(nullptr)
 	{
 		Assign(other.Begin(), other.End());
 	}
 
-	template <MoveConstructable T>
-	DList<T>::DList(const DList& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<T>
+	template <MoveConstructible T>
+	DList<T>::DList(const DList& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_head(&alloc)
 		, m_tail(nullptr)
 	{
 		Assign(other.Begin(), other.End());
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	DList<T>::DList(DList&& other) noexcept
 		: m_head(Move(other.m_head))
 		, m_tail(Move(other.m_tail))
 	{
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	DList<T>::~DList() noexcept
 	{
 		Clear();
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::operator=(const InitializerList<T>& il) noexcept -> DList<T>& requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::operator=(const InitializerList<T>& il) noexcept -> DList<T>& requires CopyConstructible<T>
 	{
 		Assign(il);
 		return *this;
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::operator=(const DList& other) noexcept -> DList<T>& requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::operator=(const DList& other) noexcept -> DList<T>& requires CopyConstructible<T>
 	{
 		Assign(other.Begin(), other.End());
 		return *this;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::operator=(DList&& other) noexcept -> DList<T>&
 	{
 		Clear();
@@ -197,41 +197,41 @@ namespace Core
 		return *this;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	template <ForwardIterator It>
-	auto DList<T>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>
+	auto DList<T>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear();
 		for (It it = begin; it != end; ++it)
 			Add(Move(T{ *it }));
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear();
 		for (const T* it = il.begin(); it != il.end(); ++it)
 			Add(Move(T{ *it }));
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		Clear();
 		for (usize i = 0; i < count; ++i)
 			Add(Move(T{ val }));
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>
 	{
 		Clear();
 		for (usize i = 0; i < count; ++i)
 			EmplaceBack();
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		Iterator it{ m_head };
 		Iterator end;
@@ -261,8 +261,8 @@ namespace Core
 		}
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructible<T>
 	{
 		Iterator it{ m_head };
 		Iterator end;
@@ -292,13 +292,13 @@ namespace Core
 		}
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Add(const T& val) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Add(const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		Add(std::move(T{ val }));
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Add(T&& val) noexcept -> void
 	{
 		NodeRef node = CreateNode(Move(val));
@@ -315,14 +315,14 @@ namespace Core
 		}
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Add(const DList& other) -> void requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Add(const DList& other) -> void requires CopyConstructible<T>
 	{
 		for (Iterator it = other.Begin(), end = other.End(); it != end; ++it)
 			Add(Move(T{ *it }));
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Add(DList&& other) -> void
 	{
 		if (other.IsEmpty())
@@ -356,7 +356,7 @@ namespace Core
 		other.m_head = other.m_tail = nullptr;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	template <typename ... Args>
 		requires ConstructableFrom<T, Args...>
 	auto DList<T>::EmplaceBack(Args&&... args) noexcept -> void
@@ -364,13 +364,13 @@ namespace Core
 		Add(Move(T{ args... }));
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Insert(ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		return Insert(it, Move(T{ val }));
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Insert(ConstIterator& it, T&& val) noexcept -> Iterator
 	{
 		NodeRef next = it.m_node;
@@ -393,8 +393,8 @@ namespace Core
 		return Iterator{ node };
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Insert(ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		NodeRef next = it.m_node;
 		NodeRef prev = next->prev;
@@ -425,9 +425,9 @@ namespace Core
 		return Iterator{ firstNode };
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	template <ForwardIterator It>
-	auto DList<T>::Insert(ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructable<T>
+	auto DList<T>::Insert(ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		NodeRef endNode = it.m_node;
 		NodeRef prev = endNode->prev;
@@ -467,19 +467,19 @@ namespace Core
 		return Iterator{ firstNode };
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Insert(ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		return Insert(it, il.begin(), il.end());
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::Insert(ConstIterator& it, const DList& other) noexcept -> Iterator requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::Insert(ConstIterator& it, const DList& other) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		return Insert(it, other.Begin(), other.End());
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Insert(ConstIterator& it, DList&& other) noexcept -> Iterator
 	{
 		if (other.IsEmpty())
@@ -554,7 +554,7 @@ namespace Core
 		return Iterator{ firstNode };
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	template <typename ... Args>
 		requires ConstructableFrom<T, Args...>
 	auto DList<T>::Emplace(ConstIterator& it, Args&&... args) noexcept -> Iterator
@@ -562,13 +562,13 @@ namespace Core
 		return Insert(it, Move(T{ args... }));
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::AddFront(const T& val) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::AddFront(const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		AddFront(Move(T{ val }));
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::AddFront(T&& val) noexcept -> void
 	{
 		NodeRef node = CreateNode(Move(val));
@@ -580,8 +580,8 @@ namespace Core
 		m_head = node;
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::AddFront(usize count, const T& val) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::AddFront(usize count, const T& val) noexcept -> void requires CopyConstructible<T>
 	{
 		NodeRef prev;
 		for (usize i = 0; i < count; ++i)
@@ -601,9 +601,9 @@ namespace Core
 		m_head = prev;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	template <ForwardIterator It>
-	auto DList<T>::AddFront(const It& begin, const It& end) noexcept -> void requires CopyConstructable<T>
+	auto DList<T>::AddFront(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>
 	{
 		if (begin == end)
 			return;
@@ -630,19 +630,19 @@ namespace Core
 		m_head = firstNode;
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::AddFront(const InitializerList<T>& il) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::AddFront(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>
 	{
 		AddFront(il.begin(), il.end());
 	}
 
-	template <MoveConstructable T>
-	auto DList<T>::AddFront(const DList& other) noexcept -> void requires CopyConstructable<T>
+	template <MoveConstructible T>
+	auto DList<T>::AddFront(const DList& other) noexcept -> void requires CopyConstructible<T>
 	{
 		AddFront(other.Begin(), other.End());
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::AddFront(DList&& other) noexcept -> void
 	{
 		if (other.IsEmpty())
@@ -696,7 +696,7 @@ namespace Core
 		other.m_head = other.m_tail = nullptr;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	template <typename ... Args>
 		requires ConstructableFrom<T, Args...>
 	auto DList<T>::EmplaceFront(Args&&... args) noexcept -> void
@@ -704,7 +704,7 @@ namespace Core
 		AddFront(Move(T{ args... }));
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Clear() noexcept -> void
 	{
 		NodeRef node = m_head;
@@ -720,7 +720,7 @@ namespace Core
 		m_tail = nullptr;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Pop() noexcept -> void
 	{
 		if (!m_tail)
@@ -743,7 +743,7 @@ namespace Core
 		node.Dealloc();
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::PopFront() noexcept -> void
 	{
 		if (!m_head)
@@ -766,13 +766,13 @@ namespace Core
 		node.Dealloc();
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Erase(const Iterator& it) noexcept -> void
 	{
 		Erase(it, 1);
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Erase(const Iterator& it, usize count) noexcept -> void
 	{
 		Alloc::IAllocator* pAlloc = m_head.GetAlloc();
@@ -813,7 +813,7 @@ namespace Core
 		}
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Erase(const Iterator& begin, const Iterator& end) noexcept -> void
 	{
 		Alloc::IAllocator* pAlloc = m_head.GetAlloc();
@@ -854,7 +854,7 @@ namespace Core
 		}
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Reverse() noexcept -> void
 	{
 		NodeRef node = m_head;
@@ -870,7 +870,7 @@ namespace Core
 		m_tail = Move(node);
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Size() const noexcept -> usize
 	{
 		usize size = 0;
@@ -879,107 +879,107 @@ namespace Core
 		return size;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::IsEmpty() const noexcept -> bool
 	{
 		return !m_head;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::GetAllocator() const noexcept -> Alloc::IAllocator*
 	{
 		return m_head.GetAlloc();
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Front() noexcept -> T&
 	{
 		ASSERT(m_head, "Invalid when List is empty");
 		return m_head->val;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Front() const noexcept -> const T&
 	{
 		ASSERT(m_head, "Invalid when List is empty");
 		return m_head->val;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Back() noexcept -> T&
 	{
 		ASSERT(m_head, "Invalid when List is empty");
 		return m_tail->val;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Back() const noexcept -> const T&
 	{
 		ASSERT(m_head, "Invalid when List is empty");
 		return m_tail->val;
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Begin() noexcept -> Iterator
 	{
 		return Iterator{ m_head };
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::Begin() const noexcept -> ConstIterator
 	{
 		return Iterator{ m_head };
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::End() noexcept -> Iterator
 	{
 		return Iterator{};
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::End() const noexcept -> ConstIterator
 	{
 		return Iterator{};
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::begin() noexcept -> Iterator
 	{
 		return Begin();
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::begin() const noexcept -> ConstIterator
 	{
 		return Begin();
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::cbegin() const noexcept -> ConstIterator
 	{
 		return Begin();
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::end() noexcept -> Iterator
 	{
 		return End();
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::end() const noexcept -> ConstIterator
 	{
 		return End();
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::cend() const noexcept -> ConstIterator
 	{
 		return End();
 	}
 
-	template <MoveConstructable T>
+	template <MoveConstructible T>
 	auto DList<T>::CreateNode(T&& val) noexcept -> NodeRef
 	{
 		NodeRef node = m_head.GetAlloc()->template Allocate<Node>();

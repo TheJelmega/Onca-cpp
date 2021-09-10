@@ -124,7 +124,7 @@ namespace Core
 	template<typename D, typename T>
 	concept MemRefDeleter = requires(D d, MemRef<T>&& ref)
 	{
-		DefaultConstructable<D>;
+		DefaultConstructible<D>;
 		{ D{}(Move(ref)) } noexcept;
 	};
 	

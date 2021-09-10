@@ -71,7 +71,7 @@ namespace Core
 		 * param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit SortedSet(const InitializerList<K>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit SortedSet(const InitializerList<K>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 		/**
 		 * Create a SortedSet
 		 * \param[in] il Initializer list with elements
@@ -81,7 +81,7 @@ namespace Core
 		 * \param[in] comp Comparator to compare keys with
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit SortedSet(const InitializerList<K>& il, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit SortedSet(const InitializerList<K>& il, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 
 		/**
 		 * Create a SortedSet
@@ -91,7 +91,7 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit SortedSet(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit SortedSet(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 		/**
 		 * Create a SortedSet
 		 * \tparam It Iterator type
@@ -101,19 +101,19 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit SortedSet(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>;
+		explicit SortedSet(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>;
 
 		/**
 		 * \brief Create a SortedSet with the contents of another SortedSet
 		 * \param[in] other SortedSet to copy
 		 */
-		SortedSet(const SortedSet& other) noexcept requires CopyConstructable<K>;
+		SortedSet(const SortedSet& other) noexcept requires CopyConstructible<K>;
 		/**
 		 * \brief Create a SortedSet with the contents of another SortedSet, but with a different allocator
 		 * \param[in] other SortedSet to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		SortedSet(const SortedSet& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>;
+		SortedSet(const SortedSet& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>;
 		/**
 		 * Move another SortedSet into a new SortedSet
 		 * \param[in] other SortedSet to move from
@@ -126,8 +126,8 @@ namespace Core
 		 */
 		SortedSet(SortedSet&& other, Alloc::IAllocator& alloc) noexcept;
 
-		auto operator=(const InitializerList<K>& il) noexcept -> SortedSet requires CopyConstructable<K>;
-		auto operator=(const SortedSet& other) noexcept -> SortedSet requires CopyConstructable<K>;
+		auto operator=(const InitializerList<K>& il) noexcept -> SortedSet requires CopyConstructible<K>;
+		auto operator=(const SortedSet& other) noexcept -> SortedSet requires CopyConstructible<K>;
 		auto operator=(SortedSet&& other) noexcept -> SortedSet;
 
 		/**
@@ -135,7 +135,7 @@ namespace Core
 		 * \param[in] key Key to insert
 		 * \return A pair with the iterator to the inserted element and a bool, telling if the insertion was successful (i.e. if the key didn't exist yet
 		 */
-		auto Insert(const K& key) noexcept -> Pair<ConstIterator, bool> requires CopyConstructable<K>;
+		auto Insert(const K& key) noexcept -> Pair<ConstIterator, bool> requires CopyConstructible<K>;
 		/**
 		 * Insert a key-value pair into the SortedSet, override value if it already exists
 		 * \param[in] key Key to insert

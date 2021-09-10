@@ -12,7 +12,7 @@ namespace Core::Alloc
 	template<typename T>
 	concept ExtendableAlloc =
 		ImplementsIAllocator<T> &&
-		MoveConstructable<T> &&
+		MoveConstructible<T> &&
 		requires(IAllocator* pAlloc)
 	{
 		{ T{ pAlloc } } noexcept;

@@ -19,19 +19,19 @@ namespace Core
 	concept TriviallyCopyable = std::is_trivially_copyable_v<T>;
 
 	template<typename T>
-	concept DefaultConstructable = std::default_initializable<T>;
+	concept DefaultConstructible = std::default_initializable<T>;
 	template<typename T>
-	concept MoveConstructable = std::move_constructible<T>;
+	concept MoveConstructible = std::move_constructible<T>;
 	template<typename T>
-	concept CopyConstructable = std::copy_constructible<T>;
+	concept CopyConstructible = std::copy_constructible<T>;
 	template<typename T>
-	concept NoThrowDefaultConstructable = IsNothrowDefaultConstructable<T>;
+	concept NoThrowDefaultConstructible = IsNothrowDefaultConstructable<T>;
 
 	template<typename T>
 	concept MoveAssignable = std::is_move_assignable_v<T>;
 
 	template<typename T>
-	concept Movable = MoveConstructable<T> && MoveAssignable<T>;
+	concept Movable = MoveConstructible<T> && MoveAssignable<T>;
 
 	template<typename A, typename B>
 	concept SameAs = std::same_as<A, B>;
@@ -123,7 +123,7 @@ namespace Core
 
 	template<typename T, typename U>
 	concept Hasher =
-		DefaultConstructable<T> &&
+		DefaultConstructible<T> &&
 		requires(U u)
 	{
 		{ static_cast<const T>(T{})(u) } noexcept -> SameAs<u64>;
@@ -131,7 +131,7 @@ namespace Core
 
 	template<typename T, typename A, typename B = A>
 	concept EqualsComparator =
-		DefaultConstructable<T> &&
+		DefaultConstructible<T> &&
 		requires(A a, B b)
 	{
 		{ static_cast<const T>(T{})(a, b) } noexcept -> SameAs<bool>;
@@ -139,7 +139,7 @@ namespace Core
 
 	template<typename T, typename A, typename B = A>
 	concept Comparator =
-		DefaultConstructable<T> &&
+		DefaultConstructible<T> &&
 		requires(A a, B b)
 	{
 		{ static_cast<const T>(T{})(a, b) } noexcept -> SameAs<i8>;

@@ -79,14 +79,14 @@ namespace Core
 		 * param[in] il Initializer list with elements
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit SortedMap(const InitializerList<Pair<K, V>>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		explicit SortedMap(const InitializerList<Pair<K, V>>& il, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Create a SortedMap
 		 * \param[in] il Initializer list with elements
 		 * \param[in] comp Comparator to compare keys with
 		 * \param[in] alloc Allocator the container should use
 		 */
-		explicit SortedMap(const InitializerList<Pair<K, V>>& il, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		explicit SortedMap(const InitializerList<Pair<K, V>>& il, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 
 		/**
 		 * Create a SortedMap
@@ -96,7 +96,7 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit SortedMap(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		explicit SortedMap(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Create a SortedMap
 		 * \tparam It Iterator type
@@ -106,19 +106,19 @@ namespace Core
 		 * \param[in] alloc Allocator the container should use
 		 */
 		template<ForwardIterator It>
-		explicit SortedMap(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		explicit SortedMap(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 
 		/**
 		 * \brief Create a SortedMap with the contents of another SortedMap
 		 * \param[in] other SortedMap to copy
 		 */
-		SortedMap(const SortedMap& other) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		SortedMap(const SortedMap& other) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * \brief Create a SortedMap with the contents of another SortedMap, but with a different allocator
 		 * \param[in] other SortedMap to copy
 		 * \param[in] alloc Allocator the container should use
 		 */
-		SortedMap(const SortedMap& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructable<K>&& CopyConstructable<V>;
+		SortedMap(const SortedMap& other, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Move another SortedMap into a new SortedMap
 		 * \param[in] other SortedMap to move from
@@ -131,8 +131,8 @@ namespace Core
 		 */
 		SortedMap(SortedMap&& other, Alloc::IAllocator& alloc) noexcept;
 
-		auto operator=(const InitializerList<Pair<K, V>>& il) noexcept -> SortedMap requires CopyConstructable<K>&& CopyConstructable<V>;
-		auto operator=(const SortedMap& other) noexcept -> SortedMap requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto operator=(const InitializerList<Pair<K, V>>& il) noexcept -> SortedMap requires CopyConstructible<K>&& CopyConstructible<V>;
+		auto operator=(const SortedMap& other) noexcept -> SortedMap requires CopyConstructible<K>&& CopyConstructible<V>;
 		auto operator=(SortedMap&& other) noexcept -> SortedMap;
 
 		/**
@@ -140,7 +140,7 @@ namespace Core
 		 * \param[in] pair Key-value pair to insert
 		 * \return A pair with the iterator to the inserted element and a bool, where true means the element was inserted and false if the element was overriden
 		 */
-		auto Insert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto Insert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Insert a key-value pair into the SortedMap, override value if it already exists
 		 * \param[in] pair Key-value pair to insert
@@ -153,7 +153,7 @@ namespace Core
 		 * \param[in] val Value to insert
 		 * \return A pair with the iterator to the inserted element and a bool, where true means the element was inserted and false if the element was overriden
 		 */
-		auto Insert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto Insert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Insert a key-value pair into the SortedMap, override value if it already exists
 		 * \param[in] key Key to insert
@@ -166,7 +166,7 @@ namespace Core
 		 * \param[in] pair Key-value pair to insert
 		 * \return A pair with the iterator to the inserted element and a bool if the insertion was successful
 		 */
-		auto TryInsert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto TryInsert(const Pair<K, V>& pair) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Try to insert a key-value pair into the SortedMap
 		 * \param[in] pair Key-value pair to insert
@@ -179,7 +179,7 @@ namespace Core
 		 * \param[in] val Value to insert
 		 * \return A pair with the iterator to the inserted element and a bool if the insertion was successful
 		 */
-		auto TryInsert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructable<K>&& CopyConstructable<V>;
+		auto TryInsert(const K& key, const V& val) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K>&& CopyConstructible<V>;
 		/**
 		 * Try to insert a key-value pair into the SortedMap
 		 * \param[in] key Key to insert
