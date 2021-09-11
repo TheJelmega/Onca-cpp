@@ -14,6 +14,8 @@ namespace Core
 	concept FloatingPoint = std::floating_point<T>;
 	template<typename T>
 	concept PrimitiveType = std::is_fundamental_v<T>;
+	template<typename T>
+	concept EnumType = std::is_enum_v<T>;
 
 	template<typename T>
 	concept TriviallyCopyable = std::is_trivially_copyable_v<T>;

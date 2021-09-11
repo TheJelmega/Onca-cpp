@@ -102,6 +102,8 @@
 #define KB(x) ((x) << 10)
 #define MB(x) ((x) << 20)
 
+#define BIT(x) (1 << (x))
+
 /**
  * \def EXPORT_API
  * Defines dynamic library linkage for export

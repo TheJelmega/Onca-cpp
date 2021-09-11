@@ -114,4 +114,7 @@ namespace Core
 	template<bool C, typename T, typename U>
 	using Conditional = std::conditional_t<C, T, U>;
 
+	template<typename T>
+	using UnderlyingType = std::underlying_type_t<T>;
+
 }
