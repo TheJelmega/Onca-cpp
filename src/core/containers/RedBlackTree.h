@@ -5,7 +5,7 @@
 
 namespace Core
 {
-	template<Movable T, Comparator<T> C = DefaultComparator<T>, bool AllowMultiple = false>
+	template<typename T, Comparator<T> C = DefaultComparator<T>, bool AllowMultiple = false>
 	class RedBlackTree;
 
 	namespace Detail
@@ -19,7 +19,7 @@ namespace Core
 			Red,
 		};
 
-		template<Movable T, Comparator<T> C, bool AllowMultiple>
+		template<typename T, Comparator<T> C, bool AllowMultiple>
 		class RedBlackTreeIterator;
 
 		/**
@@ -28,7 +28,7 @@ namespace Core
 		 * \tparam C Comparator
 		 * \tparam StoreMultiple Whether to allow multiple values to be store
 		 */
-		template<Movable T, Comparator<T> C, bool StoreMultiple>
+		template<typename T, Comparator<T> C, bool StoreMultiple>
 		struct RedBlackTreeNode
 		{
 		private:
@@ -50,7 +50,7 @@ namespace Core
 			friend class RedBlackTreeIterator<T, C, StoreMultiple>;
 		};
 
-		template<Movable T, Comparator<T> C>
+		template<typename T, Comparator<T> C>
 		struct RedBlackTreeNode<T, C, true>
 		{
 		private:
@@ -78,7 +78,7 @@ namespace Core
 		* \tparam C Comparator
 		* \tparam AllowMultiple Whether to allow multiple values per node
 		*/
-		template<Movable T, Comparator<T> C, bool AllowMultiple>
+		template<typename T, Comparator<T> C, bool AllowMultiple>
 		class RedBlackTreeIterator
 		{
 		private:
@@ -122,13 +122,15 @@ namespace Core
 
 	/**
 	 * A red-black tree
-	 * \tparam T Underlying type
+	 * \tparam T Underlying type (needs to conform to Core::Movable)
 	 * \tparam C Comparator
 	 * \tparam AllowMultiple Whether to allow multiple values per node
 	 */
-	template<Movable T, Comparator<T> C, bool AllowMultiple>
+	template<typename T, Comparator<T> C, bool AllowMultiple>
 	class RedBlackTree
 	{
+		// static assert to get around incomplete type issues when a class can return a RedBlackTree of itself
+		STATIC_ASSERT(Movable<T>, "Type needs to be movable to be used in a RedBlackTree");
 	private:
 		enum class RotateDir : u8
 		{

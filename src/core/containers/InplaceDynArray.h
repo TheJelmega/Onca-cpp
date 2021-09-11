@@ -6,13 +6,15 @@ namespace Core
 
 	/**
 	 * Inplace dynamically sized array (Memory is on stack)
-	 * \tparam T Stored type
+	 * \tparam T Stored type (needs to conform to Core::Movable)
 	 * \tparam Cap Capacity (max number of elements)
 	 * \note Iterators are invalidated after certain container modifications
 	 */
-	template<MoveConstructible T, usize Cap>
+	template<typename T, usize Cap>
 	class InplaceDynArray
 	{
+		// static assert to get around incomplete type issues when a class can return a InplaceDynArray of itself
+		STATIC_ASSERT(Movable<T>, "Type needs to be movable to be used in an InplaceDynArray");
 	public:
 		using Iterator = T*;
 		using ConstIterator = const T*;

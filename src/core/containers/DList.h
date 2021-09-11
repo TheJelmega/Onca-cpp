@@ -7,11 +7,13 @@ namespace Core
 {
 	/**
 	 * Doubly linked List
-	 * \tparam T Stored type
+	 * \tparam T Stored type (needs to conform to Core::Movable)
 	 */
-	template<MoveConstructible T>
+	template<typename T>
 	class DList
 	{
+		// static assert to get around incomplete type issues when a class can return a DList of itself
+		STATIC_ASSERT(Movable<T>, "Type needs to be movable to be used in a DList");
 	private:
 
 		/**

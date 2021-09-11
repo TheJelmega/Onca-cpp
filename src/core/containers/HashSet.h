@@ -11,15 +11,17 @@ namespace Core
 
 	/**
 	 * A bucketed hash map
-	 * \tparam K Key type
+	 * \tparam K Key type (needs to conform to Core::Movable)
 	 * \tparam H Hasher type
 	 * \tparam C Comparator type
 	 * \tparam IsMultiMap Whether the HashSet is a MultiMap or not
 	 * \note Hash function are expected to have a high amount of randomness, especially in lower bits, since the Hashmap relies on a power of 2 to distribute values
 	 */
-	template<Movable K, Hasher<K> H = Hash<K>, EqualsComparator<K, K> C = DefaultEqualComparator<K>, bool IsMultiMap = false>
+	template<typename K, Hasher<K> H = Hash<K>, EqualsComparator<K, K> C = DefaultEqualComparator<K>, bool IsMultiMap = false>
 	class HashSet
 	{
+		// static assert to get around incomplete type issues when a class can return a HashSet of itself
+		STATIC_ASSERT(Movable<K>, "Type needs to be movable to be used in n HashSet");
 	private:
 
 		using Map = HashMap<K, Empty, H, C, IsMultiMap>;

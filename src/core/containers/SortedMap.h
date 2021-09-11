@@ -7,17 +7,20 @@
 namespace Core
 {
 	/**
-	 * A bucketed hash map
-	 * \tparam K Key type
-	 * \tparam V Value type
+	 * A sorted map
+	 * \tparam K Key type (needs to conform to Core::Movable)
+	 * \tparam V Value type (needs to conform to Core::Movable)
 	 * \tparam C Comparator type
 	 * \tparam IsMultiMap Whether the SortedMap is a MultiMap or not
 	 *
 	 * \note Hash function are expected to have a high amount of randomness, especially in lower bits, since the Hashmap relies on a power of 2 to distribute values
 	 */
-	template<Movable K, Movable V, Comparator<K> C = DefaultComparator<K>, bool IsMultiMap = false>
+	template<typename K, typename V, Comparator<K> C = DefaultComparator<K>, bool IsMultiMap = false>
 	class SortedMap
 	{
+		// static assert to get around incomplete type issues when a class can return a SortedMap of itself
+		STATIC_ASSERT(Movable<K>, "Key type needs to be movable to be used in a SortedMap");
+		STATIC_ASSERT(Movable<V>, "Value type needs to be movable to be used in a SortedMap");
 	private:
 		struct KeyValueComparator
 		{

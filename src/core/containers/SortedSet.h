@@ -11,12 +11,14 @@ namespace Core
 
 	/**
 	 * A sorted hash set
-	 * \tparam K Key type
+	 * \tparam K Key type (needs to conform to Core::Movable)
 	 * \tparam C Comparator type
 	 */
-	template<Movable K, Comparator<K, K> C = DefaultComparator<K>, bool IsMultiSet = false>
+	template<typename K, Comparator<K, K> C = DefaultComparator<K>, bool IsMultiSet = false>
 	class SortedSet
 	{
+		// static assert to get around incomplete type issues when a class can return a SortedSet of itself
+		STATIC_ASSERT(Movable<K>, "Type needs to be movable to be used in a SortedSet");
 	private:
 		using RBTree = RedBlackTree<K, C>;
 

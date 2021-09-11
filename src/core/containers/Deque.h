@@ -8,13 +8,15 @@ namespace Core
 
 	/**
 	 * A double-ended queue
-	 * \tparam T Underlying types
+	 * \tparam T Underlying type (needs to conform to Core::Movable)
 	 * \tparam BlockSize Size of a block allocated by the Deque
 	 */
 	// TODO: Balance MemRefs in base array to be centered (less moving on PushFront)
 	template<typename T, usize BlockSize = 8>
 	class Deque
 	{
+		// static assert to get around incomplete type issues when a class can return a Deque of itself
+		STATIC_ASSERT(Movable<T>, "Type needs to be movable to be used in a Deque");
 		STATIC_ASSERT(IsPowOf2(BlockSize), "BlockSize needs to be a power of 2");
 	public:
 

@@ -8,12 +8,14 @@ namespace Core
 
 	/**
 	 * Dynamically sized array
-	 * \tparam T Stored type
+	 * \tparam T Stored type (needs to conform to Core::Movable)
 	 * \note Iterators are invalidated after certain container modifications
 	 */
-	template<MoveConstructible T>
+	template<typename T>
 	class DynArray
 	{
+		// static assert to get around incomplete type issues when a class can return a DynArray of itself
+		STATIC_ASSERT(Movable<T>, "Type needs to be move constructable to be used in a DynArray");
 	public:
 		using Iterator = T*;
 		using ConstIterator = const T*;

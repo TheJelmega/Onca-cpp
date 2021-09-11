@@ -7,16 +7,19 @@ namespace Core
 {
 	/**
 	 * A bucketed hash map
-	 * \tparam K Key type
-	 * \tparam V Value type
+	 * \tparam K Key type (needs to conform to Core::Movable)
+	 * \tparam V Value type (needs to conform to Core::Movable)
 	 * \tparam H Hasher type
 	 * \tparam C Comparator type
 	 * \tparam IsMultiMap Whether the HashMap is a MultiMap or not
 	 * \note Hash function are expected to have a high amount of randomness, especially in lower bits, since the Hashmap relies on a power of 2 to distribute values
 	 */
-	template<Movable K, Movable V, Hasher<K> H = Hash<K>, EqualsComparator<K> C = DefaultEqualComparator<K>, bool IsMultiMap = false>
+	template<typename K, typename V, Hasher<K> H = Hash<K>, EqualsComparator<K> C = DefaultEqualComparator<K>, bool IsMultiMap = false>
 	class HashMap
 	{
+		// static assert to get around incomplete type issues when a class can return a HashMap of itself
+		STATIC_ASSERT(Movable<K>, "Key type needs to be movable to be used in a HashMap");
+		STATIC_ASSERT(Movable<V>, "Value type needs to be movable to be used in a HashMap");
 	private:
 		/**
 		 * HashMap node

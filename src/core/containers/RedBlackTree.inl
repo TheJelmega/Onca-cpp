@@ -5,39 +5,39 @@ namespace Core
 {
 	namespace Detail
 	{
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		RedBlackTreeIterator<T, C, AllowMultiple>::RedBlackTreeIterator() noexcept
 			: m_node()
 		{
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		RedBlackTreeIterator<T, C, AllowMultiple>::RedBlackTreeIterator(const RedBlackTreeIterator& other) noexcept
 			: m_node(other.m_node)
 		{
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		RedBlackTreeIterator<T, C, AllowMultiple>::RedBlackTreeIterator(RedBlackTreeIterator&& other) noexcept
 			: m_node(Move(other.m_node))
 		{
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator=(const RedBlackTreeIterator& other) noexcept
 		{
 			m_node = other.m_node;
 			return *this;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator=(RedBlackTreeIterator&& other) noexcept
 		{
 			m_node = Move(other.m_node);
 			return *this;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator*() const noexcept -> T&
 		{
 			if constexpr (AllowMultiple)
@@ -46,7 +46,7 @@ namespace Core
 				return m_node->value;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator->() const noexcept -> T*
 		{
 			if constexpr (AllowMultiple)
@@ -55,7 +55,7 @@ namespace Core
 				return &m_node->value;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator++() noexcept -> RedBlackTreeIterator&
 		{
 			if constexpr (AllowMultiple)
@@ -107,7 +107,7 @@ namespace Core
 			return *this;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator++(int) noexcept -> RedBlackTreeIterator
 		{
 			RedBlackTreeIterator it{ m_node };
@@ -115,7 +115,7 @@ namespace Core
 			return it;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator--() noexcept -> RedBlackTreeIterator&
 		{
 			if constexpr (AllowMultiple)
@@ -159,7 +159,7 @@ namespace Core
 			return *this;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator--(int) noexcept -> RedBlackTreeIterator
 		{
 			RedBlackTreeIterator it{ m_node };
@@ -167,7 +167,7 @@ namespace Core
 			return it;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator+(usize count) const noexcept -> RedBlackTreeIterator
 		{
 			RedBlackTreeIterator it{ m_node };
@@ -176,7 +176,7 @@ namespace Core
 			return it;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator-(usize count) const noexcept -> RedBlackTreeIterator
 		{
 			RedBlackTreeIterator it{ m_node };
@@ -185,7 +185,7 @@ namespace Core
 			return it;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator+=(usize count) noexcept -> RedBlackTreeIterator&
 		{
 			for (usize i = 0; i < count; ++i)
@@ -193,7 +193,7 @@ namespace Core
 			return *this;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator-=(usize count) noexcept -> RedBlackTreeIterator&
 		{
 			for (usize i = 0; i < count; ++i)
@@ -201,19 +201,19 @@ namespace Core
 			return *this;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator==(const RedBlackTreeIterator& other) const noexcept -> bool
 		{
 			return m_node == other.m_node;
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		auto RedBlackTreeIterator<T, C, AllowMultiple>::operator!=(const RedBlackTreeIterator& other) const noexcept -> bool
 		{
 			return !(*this == other);
 		}
 
-		template <Movable T, Comparator<T> C, bool AllowMultiple>
+		template <typename T, Comparator<T> C, bool AllowMultiple>
 		RedBlackTreeIterator<T, C, AllowMultiple>::RedBlackTreeIterator(const NodeRef& node, usize idx)
 			: m_node(node)
 			, m_Idx(idx)
@@ -221,14 +221,14 @@ namespace Core
 		}
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(Alloc::IAllocator& alloc) noexcept
 		: m_root(&alloc)
 		, m_size(0)
 	{
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(C comp, Alloc::IAllocator& alloc) noexcept
 		: m_root(&alloc)
 		, m_size(0)
@@ -236,7 +236,7 @@ namespace Core
 	{
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const InitializerList<T>& il, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_root(&alloc)
 		, m_size(0)
@@ -244,7 +244,7 @@ namespace Core
 		Assign(il.begin(), il.end());
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const InitializerList<T>& il, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_root(&alloc)
 		, m_size(0)
@@ -253,7 +253,7 @@ namespace Core
 		Assign(il.begin(), il.end());
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <ForwardIterator It>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const It& begin, const It& end, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_root(&alloc)
@@ -262,7 +262,7 @@ namespace Core
 		Assign(begin, end);
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <ForwardIterator It>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const It& begin, const It& end, C comp, Alloc::IAllocator& alloc) noexcept requires CopyConstructible<T>
 		: m_root(&alloc)
@@ -272,7 +272,7 @@ namespace Core
 		Assign(begin, end);
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const RedBlackTree& other) noexcept
 		: m_root(other.GetAllocator())
 		, m_size(0)
@@ -280,7 +280,7 @@ namespace Core
 		Copy<false>(other);
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(const RedBlackTree& other, Alloc::IAllocator& alloc) noexcept
 		: m_root(other.GetAllocator())
 		, m_size(0)
@@ -288,7 +288,7 @@ namespace Core
 		Copy<false>(other);
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(RedBlackTree&& other) noexcept
 		: m_root(Move(other.m_root))
 		, m_size(other.m_size)
@@ -297,7 +297,7 @@ namespace Core
 		other.m_size = 0;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	RedBlackTree<T, C, AllowMultiple>::RedBlackTree(RedBlackTree&& other, Alloc::IAllocator& alloc) noexcept
 		: m_root(&alloc)
 		, m_size(0)
@@ -306,14 +306,14 @@ namespace Core
 		other.m_size = 0;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::operator=(const RedBlackTree& other) noexcept -> RedBlackTree&
 	{
 		Copy<false>(other);
 		return *this;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::operator=(RedBlackTree&& other) noexcept -> RedBlackTree&
 	{
 		m_root = Move(other.m_root);
@@ -322,7 +322,7 @@ namespace Core
 		return *this;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template<ForwardIterator It>
 	auto RedBlackTree<T, C, AllowMultiple>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>
 	{
@@ -331,19 +331,19 @@ namespace Core
 			Insert(T{ *it });
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>
 	{
 		Assign(il.begin(), il.end());
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Insert(const T& value) noexcept -> Pair<Iterator, bool> requires CopyConstructible<T>
 	{
 		return Insert(T{ value });
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Insert(T&& value) noexcept -> Pair<Iterator, bool>
 	{
 		if (!m_root)
@@ -416,7 +416,7 @@ namespace Core
 		return { Iterator{ node }, true };
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <Comparator C2>
 	auto RedBlackTree<T, C, AllowMultiple>::Merge(RedBlackTree<T, C2>& other) noexcept -> void
 	{
@@ -441,13 +441,13 @@ namespace Core
 		}
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Clear() noexcept -> void
 	{
 		ClearInternal<true>();
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Erase(ConstIterator& it) noexcept -> Iterator
 	{
 		if constexpr (AllowMultiple)
@@ -466,13 +466,13 @@ namespace Core
 		return EraseInternal<true>(it);
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Erase(const T& value) noexcept -> Iterator
 	{
 		return EraseInternal<true>(Find(value));
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Find(const T& value) noexcept -> Iterator
 	{
 		NodeRef node = m_root;
@@ -490,7 +490,7 @@ namespace Core
 		return Iterator{};
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Find(const T& value) const noexcept -> ConstIterator
 	{
 		NodeRef node = m_root;
@@ -508,7 +508,7 @@ namespace Core
 		return Iterator{};
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <OrderedComparable<T> T2>
 	auto RedBlackTree<T, C, AllowMultiple>::Find(const T2& value) noexcept -> Iterator
 	{
@@ -537,7 +537,7 @@ namespace Core
 		return Iterator{};
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <OrderedComparable<T> T2>
 	auto RedBlackTree<T, C, AllowMultiple>::Find(const T2& value) const noexcept -> ConstIterator
 	{
@@ -566,7 +566,7 @@ namespace Core
 		return Iterator{};
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::FindRange(const T& val) noexcept -> Pair<Iterator, Iterator>
 	{
 		Iterator it = Find(val);
@@ -581,7 +581,7 @@ namespace Core
 		}
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::FindRange(const T& val) const noexcept -> Pair<ConstIterator, ConstIterator>
 	{
 		Iterator it = Find(val);
@@ -596,7 +596,7 @@ namespace Core
 		}
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <EqualComparable<T> T2>
 	auto RedBlackTree<T, C, AllowMultiple>::FindRange(const T2& val) noexcept -> Pair<Iterator, Iterator>
 	{
@@ -612,7 +612,7 @@ namespace Core
 		}
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <EqualComparable<T> T2>
 	auto RedBlackTree<T, C, AllowMultiple>::FindRange(const T2& val) const noexcept -> Pair<ConstIterator, ConstIterator>
 	{
@@ -628,20 +628,20 @@ namespace Core
 		}
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Contains(const T& value) const noexcept -> bool
 	{
 		return !!Find(value).m_node;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <OrderedComparable<T> T2>
 	auto RedBlackTree<T, C, AllowMultiple>::Contains(const T2& value) const noexcept -> bool
 	{
 		return !!Find(value).m_node;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Count(const T& value) const noexcept -> usize
 	{
 		Iterator it = Find(value);
@@ -657,7 +657,7 @@ namespace Core
 		}
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <EqualComparable<T> T2>
 	auto RedBlackTree<T, C, AllowMultiple>::Count(const T2& value) const noexcept -> usize
 	{
@@ -674,25 +674,25 @@ namespace Core
 		}
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Size() const noexcept -> usize
 	{
 		return m_size;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::IsEmpty() const noexcept -> bool
 	{
 		return m_size == 0;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::GetAllocator() const noexcept -> Alloc::IAllocator*
 	{
 		return m_root.GetAlloc();
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Front() noexcept -> T&
 	{
 		ASSERT(m_size, "Invalid when RedBlackTree is empty");
@@ -702,7 +702,7 @@ namespace Core
 			return GetFirstNode()->value;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Front() const noexcept -> const T&
 	{
 		ASSERT(m_size, "Invalid when RedBlackTree is empty");
@@ -712,7 +712,7 @@ namespace Core
 			return GetFirstNode()->value;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Back() noexcept -> T&
 	{
 		ASSERT(m_size, "Invalid when RedBlackTree is empty");
@@ -722,7 +722,7 @@ namespace Core
 			return GetLastNode()->value;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Back() const noexcept -> const T&
 	{
 		ASSERT(m_size, "Invalid when RedBlackTree is empty");
@@ -732,31 +732,31 @@ namespace Core
 			return GetLastNode()->value;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Begin() noexcept -> Iterator
 	{
 		return Iterator{ GetFirstNode() };
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Begin() const noexcept -> ConstIterator
 	{
 		return Iterator{ GetFirstNode() };
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::End() noexcept -> Iterator
 	{
 		return Iterator{};
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::End() const noexcept -> ConstIterator
 	{
 		return Iterator{};
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::CreateNode(T&& val) noexcept -> NodeRef
 	{
 		Alloc::IAllocator* pAlloc = m_root.GetAlloc();
@@ -771,7 +771,7 @@ namespace Core
 		return node;
 	}
 	
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Rotate(NodeRef& parent, RotateDir dir) noexcept -> NodeRef
 	{
 		if (!parent)
@@ -801,7 +801,7 @@ namespace Core
 		return sibling;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::RebalanceInsert(NodeRef node, RotateDir dir) noexcept -> void
 	{
 		do
@@ -848,7 +848,7 @@ namespace Core
 		while (node);
 	}
 	
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <bool Moved>
 	auto RedBlackTree<T, C, AllowMultiple>::Copy(const RedBlackTree& other) noexcept -> void
 	{
@@ -864,7 +864,7 @@ namespace Core
 			other.template ClearInternal<false>();
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <bool Destruct>
 	auto RedBlackTree<T, C, AllowMultiple>::EraseInternal(Iterator it) noexcept -> Iterator
 	{
@@ -880,7 +880,7 @@ namespace Core
 		return nextIt;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::EraseNode(NodeRef node) noexcept -> NodeRef
 	{
 		// If only the root node exists
@@ -945,7 +945,7 @@ namespace Core
 		return node;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::EraseLeafNode(NodeRef node) noexcept -> void
 	{
 		NodeRef parent = node->parent;
@@ -1020,7 +1020,7 @@ namespace Core
 		while (parent);
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template<bool Destruct>
 	auto RedBlackTree<T, C, AllowMultiple>::ClearInternal() noexcept -> void
 	{
@@ -1052,7 +1052,7 @@ namespace Core
 		m_size = 0;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::GetFirstNode() const noexcept -> NodeRef
 	{
 		if (!m_root)
@@ -1064,7 +1064,7 @@ namespace Core
 		return node;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::GetLastNode() const noexcept -> NodeRef
 	{
 		if (!m_root)
@@ -1076,7 +1076,7 @@ namespace Core
 		return node;
 	}
 
-	template <Movable T, Comparator<T> C, bool AllowMultiple>
+	template <typename T, Comparator<T> C, bool AllowMultiple>
 	auto RedBlackTree<T, C, AllowMultiple>::Compare(const T& val, const NodeRef& node) const noexcept -> i8
 	{
 		if constexpr (AllowMultiple)

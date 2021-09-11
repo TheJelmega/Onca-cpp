@@ -3,9 +3,16 @@
 
 namespace Core
 {
+	/**
+	 * A fixed size array
+	 * \tparam T Underlying type (needs to conform to Core::Movable)
+	 * \tparam N Size of the array
+	 */
 	template<typename T, usize N>
 	class Array
 	{
+		// static assert to get around incomplete type issues when a class can return an Array of itself
+		STATIC_ASSERT(Movable<T>, "Type needs to be movable to be used in an Array");
 	public:
 
 		auto At(usize idx) const noexcept -> Optional<T>;
