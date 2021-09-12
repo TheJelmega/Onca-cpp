@@ -43,11 +43,13 @@ namespace Core
 		, m_isBackingMem(isBacking)
 		, m_size(size)
 	{
+		m_pCachedPtr = pAlloc->TranslateToPtr(*this);
 	}
 
 	template <typename T>
 	MemRef<T>::MemRef(const MemRef& other) noexcept
 		: m_handle(other.m_handle)
+		, m_pCachedPtr(other.m_pCachedPtr)
 		, m_pAlloc(other.m_pAlloc)
 		, m_log2Align(other.m_log2Align)
 		, m_isBackingMem(other.m_isBackingMem)
@@ -58,6 +60,7 @@ namespace Core
 	template <typename T>
 	MemRef<T>::MemRef(MemRef&& other) noexcept
 		: m_handle(other.m_handle)
+		, m_pCachedPtr(other.m_pCachedPtr)
 		, m_pAlloc(other.m_pAlloc)
 		, m_log2Align(other.m_log2Align)
 		, m_isBackingMem(other.m_isBackingMem)
@@ -65,6 +68,7 @@ namespace Core
 	{
 		MemClearData(other);
 		other.m_handle = ~usize(0);
+		other.m_pCachedPtr = nullptr;
 	}
 
 	template <typename T>
@@ -95,7 +99,8 @@ namespace Core
 	auto MemRef<T>::Ptr() const noexcept -> T*
 	{
 		if (IsValid()) LIKELY
-			return m_pAlloc->TranslateToPtr(*this);
+			//return m_pAlloc->TranslateToPtr(*this);
+			return m_pCachedPtr;
 		return nullptr;
 	}
 

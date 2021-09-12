@@ -14,7 +14,8 @@ namespace Core
 	 *
 	 * \note If both MemRefs are invalid, == or != can return invalid values, depending on the use-case, as it checks if the referenced allocators are the same
 	 */
-	// TODO: introduce pointer caching system as converting handles to pointer can be slow
+	// TODO: Merge handle to allocator and handle to memory
+	// TODO: introduce better pointer caching system as converting handles to pointer can be slow (m_pCachedPtr is incorrect if defragmentation is added)
 	template<typename T>
 	class MemRef
 	{
@@ -110,6 +111,7 @@ namespace Core
 	private:
 
 		usize              m_handle;                                          ///< Handle to allocated memory (~usize(0) == Invalid handle)
+		T*                 m_pCachedPtr;                                      ///< Cached pointer
 		Alloc::IAllocator* m_pAlloc;                                          ///< Allocator used to allocate the allocation
 		u8                 m_log2Align    : 7;                                ///< Log2 of alignment
 		bool               m_isBackingMem : 1;                                ///< Whether the memory backs an allocator
