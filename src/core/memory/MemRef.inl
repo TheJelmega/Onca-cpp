@@ -43,7 +43,7 @@ namespace Core
 		, m_isBackingMem(isBacking)
 		, m_size(size)
 	{
-		m_pCachedPtr = pAlloc->TranslateToPtr(*this);
+		m_pCachedPtr = m_pAlloc->TranslateToPtr(*this);
 	}
 
 	template <typename T>
