@@ -20,7 +20,7 @@ workspace "Engine"
     includedirs { "src" }
 
     disablewarnings { 
-        "4251" -- MSVC C4251 ... needs to have dll-interface to be sued by clients class ... (std::atomic, etc)
+        "4251" -- MSVC C4251 ... needs to have dll-interface to be used by clients class ... (std::atomic, etc)
     }
 
     flags { "FatalCompileWarnings", "MultiProcessorCompile" }
@@ -50,72 +50,14 @@ workspace "Engine"
         systemversion (os.winSdkVersion() .. ".0")
         defines { "PLATFORM_WINDOWS=1" }
 
-project "Core"
-    kind "SharedLib"
-    language "C++"
-
-    defines { "EXPORT_CORE=1" }
-    
-    files { "src/core/**.h", "src/core/**.inl", "src/core/**.cpp" }
-    location ".build/Engine/Core"
-    objdir "bin-int/Core"
-    
-project "Start"
-    kind "ConsoleApp"
-    language "C++"
-
-    files { "src/start/**.h", "src/start/**.inl", "src/start/**.cpp" }
-    location ".build/Engine/Start"
-    objdir "bin-int/Start"
-
-    links { "Core" }
-    dependson { "Core" }
-
-project "Unittest"
-    kind "ConsoleApp"
-    language "C++"
-
-    files { "src/unittest/**.h", "src/unittest/**.inl", "src/unittest/**.cpp" }
-    location ".build/Engine/Unittest"
-    objdir "bin-int/Unittest"
-
-    includedirs { "third-party/googletest/googletest/include" }
-
-    links { "Core" }
-    dependson { "Core" }
-
-    filter "configurations:Debug"
-        libdirs { "third-party/googletest/build/lib/Debug/" }
-        links { "gtestd.lib", "gtest_maind.lib" }
-
-    filter "configurations:Profile"
-        libdirs { "third-party/googletest/build/lib/Release/" }
-        links { "gtest.lib", "gtest_main.lib" }
-
-    filter "configurations:Release"
-        libdirs { "third-party/googletest/build/lib/Release/" }
-        links { "gtest.lib", "gtest_main.lib" }
-
-project "Benchmark"
-    kind "ConsoleApp"
-    language "C++"
-
-    files { "src/benchmark/**.h", "src/benchmark/**.inl", "src/benchmark/**.cpp" }
-    location ".build/Engine/Benchmark"
-    objdir "bin-int/Benchmark"
-
-    includedirs { "third-party/googlebench/include" }
-
-    links { "Core" }
-    dependson { "Core" }
-
-    libdirs { "third-party/googlebench/build/src/Release" }
-    links { "benchmark.lib" }
-
-    filter "configurations:Debug"
-        runtime "Release"
-
-    filter "platforms:Windows"
-        links { "Shlwapi.lib" }
-
-
+    filter "language:C#"
+        configmap {
+            ["Profile"] = "Debug"
+        }
+        removeplatforms "Windows"
+        removedefines { "DEBUG", "NDEBUG", "RELEASE_" }
+        
+include "src/core" 
+include "src/start"
+include "src/unittest"
+include "src/benchmark"
