@@ -788,6 +788,19 @@ namespace Core
 		 * \return Offset in string in bytes
 		 */
 		auto IndexForOffset(usize startIdx, usize offset) const noexcept -> usize;
+		/**
+		 * Get the previous index of a character
+		 * \param pData Pointer to string data
+		 * \param idx Current index
+		 * \return Previous index
+		 */
+		auto PrevIdx(const u8* pData, usize idx) const noexcept -> usize;
+		/**
+		 * Get the pointer to previous character
+		 * \param pData Pointer to the current data in the string
+		 * \return Pointer to the previous character
+		 */
+		auto PrevCharPtr(const u8* pData) const noexcept -> const u8*;
 
 		/**
 		 * Make sure the internal string is null-terminated 

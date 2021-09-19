@@ -42,7 +42,7 @@ namespace Core
 
 	inline auto String::Iterator::operator++() noexcept -> Iterator&
 	{
-		m_idx += Unicode::GetUtf8Size(*(m_pData->Data() + m_idx));
+		m_idx += Unicode::GetUtf8Size(m_pData->Data()[m_idx]);
 		return *this;
 	}
 	
@@ -56,7 +56,8 @@ namespace Core
 	inline auto String::Iterator::operator--() noexcept -> Iterator&
 	{
 		const u8* pData = m_pData->Data();
-		while (m_idx && (*(pData + m_idx) & 0x80) == 0x80)
+		--m_idx;
+		while (m_idx && (pData[m_idx] & 0x80) == 0x80)
 			--m_idx;
 		return *this;
 	}
@@ -316,8 +317,7 @@ namespace Core
 		if (m_data.Size() != other.DataSize())
 			return false;
 
-		i8 res = MemCmp(m_data.Data(), other.Data(), m_data.Size());
-		return res == 0;
+		return MemCmp(m_data.Data(), other.Data(), m_data.Size()) == 0;
 	}
 
 	inline auto String::operator!=(const String& other) const noexcept -> bool
@@ -436,7 +436,7 @@ namespace Core
 	inline auto String::Add(const String& other, usize pos, usize length) noexcept -> String&
 	{
 		ASSERT(pos < other.Length(), "'pos' needs to point to a character inside the string");
-		if (pos + length > other.Length())
+		if (length > other.Length() - pos)
 			length = other.Length() - pos;
 
 		if (length == 0)
@@ -487,8 +487,7 @@ namespace Core
 		const Unicode::Utf8Char c = Unicode::GetUtf8FromCp(codepoint);
 		const usize endByte = m_data.Size();
 		const u8* pData = m_data.Data();
-		usize idx = 0;
-		usize len = 0;
+		usize idx = 0, len = 0;
 		while (idx < endByte)
 		{
 			if (!Unicode::MatchChar(pData + idx, c.data, c.size))
@@ -513,8 +512,7 @@ namespace Core
 		
 		const usize endByte = m_data.Size();
 		const u8* pData = m_data.Data();
-		usize idx = 0;
-		usize len = 0;
+		usize idx = 0, len = 0;
 		while (idx < endByte)
 		{
 			if (!Unicode::IsWhitespace(pData + idx))
@@ -539,19 +537,15 @@ namespace Core
 
 		const Unicode::Utf8Char c = Unicode::GetUtf8FromCp(codepoint);
 		const u8* pData = m_data.Data();
-		usize idx = m_data.Size() - 1;
-		while ((pData[idx] & 0xC0) == 0x80)
-			--idx;
+		usize idx = PrevIdx(pData, m_data.Size());
 
 		usize len = 0;
 		while (idx)
 		{
 			if (!Unicode::MatchChar(pData + idx, c.data, c.size))
 				break;
-
-			--idx;
-			while ((pData[idx] & 0xC0) == 0x80)
-				--idx;
+			
+			idx = PrevIdx(pData, idx);
 			++len;
 		}
 		if (idx == m_data.Size() - 1)
@@ -570,9 +564,7 @@ namespace Core
 			return *this;
 		
 		const u8* pData = m_data.Data();
-		usize idx = m_data.Size() - 1;
-		while ((pData[idx] & 0xC0) == 0x80)
-			--idx;
+		usize idx = PrevIdx(pData, m_data.Size());
 
 		usize len = 0;
 		while (idx)
@@ -580,9 +572,7 @@ namespace Core
 			if (!Unicode::IsWhitespace(pData + idx))
 				break;
 
-			--idx;
-			while ((pData[idx] & 0xC0) == 0x80)
-				--idx;
+			idx = PrevIdx(pData, idx);
 			++len;
 		}
 		if (idx == m_data.Size() - 1)
@@ -665,7 +655,6 @@ namespace Core
 		const usize byteLength = endIdx - idx;
 		const usize strIdx = str.IndexAtCharPos(strPos);
 		const usize strEnd = str.IndexForOffset(strIdx, strLength);
-
 		return ReplaceInternal(idx, byteLength, length, str, strIdx, strEnd, strLength);
 	}
 	
@@ -1048,9 +1037,7 @@ namespace Core
 			if (idx == 0)
 				return NPos;
 
-			--idx;
-			while ((pData[idx] & 0xC0) == 0x80)
-				--idx;
+			idx = PrevIdx(pData, idx);
 			--pos;
 		}
 		return pos;
@@ -1092,9 +1079,7 @@ namespace Core
 			if (idx == 0)
 				return NPos;
 
-			--idx;
-			while ((pData[idx] & 0xC0) == 0x80)
-				--idx;
+			idx = PrevIdx(pData, idx);
 			--pos;
 		}
 		return pos;
@@ -1162,10 +1147,7 @@ namespace Core
 
 	inline auto String::RFindFirstOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
-		const u8* pData = m_data.Data() + m_data.Size() - 1;
-		while (pData && (*pData & 0x80) == 0x80)
-			--pData;
-
+		const u8* pData = PrevCharPtr(m_data.Data() + m_data.Size());
 		const u8* pCodepoints = codepoints.Data();
 		const usize numCodepoints = codepoints.Length();
 
@@ -1187,9 +1169,7 @@ namespace Core
 				pCurCp += cpSize;
 			}
 
-			--pData;
-			while (pData && (*pData & 0x80) == 0x80)
-				--pData;
+			pData = PrevCharPtr(pData);
 			--pos;
 			--count;
 		}
@@ -1198,9 +1178,7 @@ namespace Core
 
 	inline auto String::RFindFirstNotOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
-		const u8* pData = m_data.Data() + m_data.Size() - 1;
-		while (pData && (*pData & 0x80) == 0x80)
-			--pData;
+		const u8* pData = PrevCharPtr(m_data.Data() + m_data.Size());
 
 		const u8* pCodepoints = codepoints.Data();
 		const usize numCodepoints = codepoints.Length();
@@ -1228,10 +1206,8 @@ namespace Core
 			}
 			if (!found)
 				return pos;
-
-			--pData;
-			while (pData && (*pData & 0x80) == 0x80)
-				--pData;
+			
+			pData = PrevCharPtr(pData);
 			--pos;
 			--count;
 		}
@@ -1278,9 +1254,7 @@ namespace Core
 		if (m_data.Size() < c.size)
 			return false;
 
-		const u8* pData = m_data.Data() + m_data.Size() - 1;
-		while (pData && (*pData & 0x80) == 0x80)
-			--pData;
+		const u8* pData = PrevCharPtr(m_data.Data() + m_data.Size());
 		return MemCmp(pData, c.data, c.size) == 0;
 	}
 
@@ -1474,11 +1448,8 @@ namespace Core
 	inline auto String::Back() const noexcept -> UCodepoint
 	{
 		ASSERT(m_length, "Invalid when String is empty");
-		usize end = m_data.Size() - 1;
 		const u8* pData = m_data.Data();
-		while ((*(pData + end) & 0x80) == 0x80)
-			--end;
-
+		usize end = PrevIdx(pData, m_data.Size());
 		return Unicode::GetCpFromUtf8(pData + end);
 	}
 
@@ -1494,19 +1465,11 @@ namespace Core
 
 	inline auto String::End() noexcept -> Iterator
 	{
-		usize end = m_length - 1;
-		const u8* pData = m_data.Data();
-		while (end && (*(pData + end) & 0x80) == 0x80)
-			--end;
 		return { &m_data, m_data.Size() };
 	}
 
 	inline auto String::End() const noexcept -> ConstIterator
 	{
-		usize end = m_length - 1;
-		const u8* pData = m_data.Data();
-		while (end && (*(pData + end) & 0x80) == 0x80)
-			--end;
 		return { &m_data, m_data.Size() };
 	}
 
@@ -1689,16 +1652,11 @@ namespace Core
 	{
 		if (pos > m_length / 2)
 		{
-			usize end = m_data.Size() - 1;
 			const u8* pData = m_data.Data();
-			while ((pData[end] & 0xC0) == 0x80)
-				--end;
+			usize end = PrevIdx(pData, m_data.Size());
 
-			for (usize i = m_length - 1; i > pos; --end, --i)
-			{
-				while ((pData[end] & 0xC0) == 0x80)
-					--end;
-			}
+			for (usize i = m_length - 1; i > pos; --i)
+				end = PrevIdx(pData, end);
 			return end;
 		}
 		else
@@ -1714,6 +1672,22 @@ namespace Core
 		for (usize i = 0; i < offset; ++i)
 			idx += Unicode::GetUtf8Size(*(pData + idx));
 		return idx;
+	}
+
+	inline auto String::PrevIdx(const u8* pData, usize idx) const noexcept -> usize
+	{
+		--idx;
+		while ((pData[idx] & 0xC0) == 0x80)
+			--idx;
+		return idx;
+	}
+
+	inline auto String::PrevCharPtr(const u8* pData) const noexcept -> const u8*
+	{
+		--pData;
+		while ((*pData & 0xC0) == 0x80)
+			--pData;
+		return pData;
 	}
 
 	inline auto String::NullTerminate() noexcept -> void
