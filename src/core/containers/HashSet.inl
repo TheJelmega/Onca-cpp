@@ -104,7 +104,7 @@ namespace Core
 		: m_hashMap(minBuckets, Move(hasher), Move(comp), alloc)
 	{
 		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
-		minBuckets = Max(minBuckets, Ceil(il.size() / m_hashMap.MaxLoadFactor()));
+		minBuckets = Math::Max(minBuckets, Math::Ceil(il.size() / m_hashMap.MaxLoadFactor()));
 		Rehash(minBuckets);
 		for (const K& key : il)
 			Insert(key);
@@ -132,7 +132,7 @@ namespace Core
 	{
 		ASSERT(&alloc, "No allocator supplied to a HashSet/HashMultiSet");
 		if constexpr (ContiguousIterator<It>)
-			minBuckets = Max(minBuckets, Ceil((end - begin) / m_hashMap.MaxLoadFactor()));
+			minBuckets = Math::Max(minBuckets, Math::Ceil((end - begin) / m_hashMap.MaxLoadFactor()));
 		Rehash(minBuckets);
 		for (It it = begin; it != end; ++it)
 			Insert(*it);

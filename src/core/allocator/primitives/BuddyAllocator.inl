@@ -6,7 +6,7 @@ namespace Core::Alloc
 	BuddyAllocator<Size, MaxSubDivisions>::BuddyAllocator(IAllocator* pBackingAlloc) noexcept
 		: m_mem(nullptr)
 	{
-		STATIC_ASSERT(IsPowOf2(Size), "A buddy allocator requires a size that is a power of 2");
+		STATIC_ASSERT(Math::IsPowOf2(Size), "A buddy allocator requires a size that is a power of 2");
 		STATIC_ASSERT(SmallestBlockSize, "MaxSubDivision is too high");
 		const u16 align = SmallestBlockSize > 0x8000 ? 0x8000 : u16(SmallestBlockSize);
 		m_mem = pBackingAlloc->Allocate<u8>(Size + ManagementSize, align, true);
@@ -34,7 +34,7 @@ namespace Core::Alloc
 		if (divIdx == usize(-1))
 			return nullptr;
 
-		const usize offset = divIdx + 1 - (1ull << Log2(divIdx + 1));
+		const usize offset = divIdx + 1 - (1ull << Math::Log2(divIdx + 1));
 		const usize memOffset = offset * sizeClassBlockSize;
 
 		Mark(pManagementInfo, divIdx);
@@ -44,7 +44,7 @@ namespace Core::Alloc
 		m_stats.AddAlloc(size, overHead, isBacking);
 #endif
 
-		return MemRef<u8>{ memOffset, this, Log2(align), size, isBacking };
+		return MemRef<u8>{ memOffset, this, Math::Log2(align), size, isBacking };
 	}
 
 	template<usize Size, u8 MaxSubDivisions>
@@ -75,7 +75,7 @@ namespace Core::Alloc
 	template<usize Size, u8 MaxSubDivisions>
 	auto BuddyAllocator<Size, MaxSubDivisions>::CalculateSizeClassAndBlockSize(usize size) noexcept -> Tuple<usize, usize>
 	{
-		const usize sizeClass = MaxSubDivisions - Log2((size + SmallestBlockSize - 1) / SmallestBlockSize);
+		const usize sizeClass = MaxSubDivisions - Math::Log2((size + SmallestBlockSize - 1) / SmallestBlockSize);
 		const usize sizeClassBlockSize = Size >> sizeClass;
 		return { sizeClass, sizeClassBlockSize };
 	}
@@ -166,7 +166,7 @@ namespace Core::Alloc
 			u8 buddyFlag = GetDivFlag(pManagementInfo, divIdx & 0x1 ? divIdx + 1 : divIdx - 1);
 			ownFlag = SplitFlag | ((ownFlag & buddyFlag) & UsedFlag);
 
-			const usize layerStart2 = (1ull << Log2(divIdx + 1));
+			const usize layerStart2 = (1ull << Math::Log2(divIdx + 1));
 			const usize layerStart = (layerStart2 >> 1) - 1;
 			const usize offset = divIdx - (layerStart2 - 1);
 			divIdx = layerStart + offset / 2;
@@ -184,7 +184,7 @@ namespace Core::Alloc
 			u8 buddyFlag = GetDivFlag(pManagementInfo, divIdx & 0x1 ? divIdx + 1 : divIdx - 1);
 			ownFlag = ownFlag | !!(buddyFlag & (SplitFlag | UsedFlag)) * SplitFlag;
 
-			const usize layerStart2 = (1ull << Log2(divIdx + 1));
+			const usize layerStart2 = (1ull << Math::Log2(divIdx + 1));
 			const usize layerStart = (layerStart2 >> 1) - 1;
 			const usize offset = divIdx - (layerStart2 - 1);
 			divIdx = layerStart + offset / 2;

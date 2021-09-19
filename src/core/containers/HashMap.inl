@@ -130,7 +130,7 @@ namespace Core
 		, m_comp(Move(comp))
 	{
 		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
-		minBuckets = Max(minBuckets, Ceil(il.size() / m_maxLoadFactor));
+		minBuckets = Math::Max(minBuckets, Math::Ceil(il.size() / m_maxLoadFactor));
 		Rehash(minBuckets);
 		for (const Pair<K, V>* it = il.begin(); it < il.end(); ++it)
 			Insert(Move(Pair{ *it }));
@@ -164,7 +164,7 @@ namespace Core
 	{
 		ASSERT(&alloc, "No allocator supplied to a HashMap/HashMultiMap");
 		if constexpr (ContiguousIterator<It>)
-			minBuckets = Max(minBuckets, Ceil((end - begin) / m_maxLoadFactor));
+			minBuckets = Math::Max(minBuckets, Math::Ceil((end - begin) / m_maxLoadFactor));
 		Rehash(minBuckets);
 
 		for (It it = begin; it < end; ++it)
@@ -305,7 +305,7 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Reserve(usize count) noexcept -> void
 	{
-		Rehash(Ceil(count / m_maxLoadFactor));
+		Rehash(Math::Ceil(count / m_maxLoadFactor));
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>

@@ -8,7 +8,7 @@ namespace Core::Alloc
 	BitmapAllocator<BlockSize, NumBlocks>::BitmapAllocator(IAllocator* pBackingAlloc) noexcept
 		: m_mem(pBackingAlloc->Allocate<u8>(CalcReqMemSize(), u16(BlockSize > 0x8000 ? 0x8000 : BlockSize), true))
 	{
-		STATIC_ASSERT(IsPowOf2(BlockSize), "Blocksize needs to be a power of 2");
+		STATIC_ASSERT(Math::IsPowOf2(BlockSize), "Blocksize needs to be a power of 2");
 		MemClear(m_mem.Ptr(), NumManagementBlocks * BlockSize);
 	}
 
@@ -56,7 +56,7 @@ namespace Core::Alloc
 				const usize overhead = blocksNeeded * BlockSize - size;
 				m_stats.RemoveAlloc(size, overhead, isBacking);
 #endif		
-				return { i, this, Log2(align), size, isBacking };
+				return { i, this, Math::Log2(align), size, isBacking };
 			}
 		}
 

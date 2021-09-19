@@ -80,7 +80,7 @@ namespace Core::Unicode
 		for (usize i = 'z' - 'a'; i < UnicodeCaseTableSize; ++i)
 		{
 			const Utf8Char lower = Utf8CaseLowerTable[i];
-			if (MatchChar(pCh, lower.data, Min(curSize, usize(lower.size))))
+			if (MatchChar(pCh, lower.data, Math::Min(curSize, usize(lower.size))))
 				return Utf8CaseUpperTable[i];
 		}
 
@@ -119,7 +119,7 @@ namespace Core::Unicode
 		for (usize i = 'z' - 'a'; i < UnicodeCaseTableSize; ++i)
 		{
 			const Utf8Char upper = Utf8CaseUpperTable[i];
-			if (MatchChar(pCh, upper.data, Min(curSize, usize(upper.size))))
+			if (MatchChar(pCh, upper.data, Math::Min(curSize, usize(upper.size))))
 				return Utf8CaseLowerTable[i];
 		}
 

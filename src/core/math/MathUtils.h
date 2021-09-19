@@ -5,27 +5,31 @@
 #pragma diag_suppress 438 // supress bogus "expected a ''" due to concepts
 #endif
 
-namespace Core
+namespace Core::Math
 {
 	/**
 	 * \brief Get the minimum value
-	 * \tparam T Value type
+	 * \tparam T0 Value type
+	 * \tparam T1 Value type
 	 * \param[in] a First value
 	 * \param[in] b Second value
 	 * \return Minimum value
 	 */
-	template<LessComparable T>
-	constexpr auto Min(T a, T b) noexcept -> T;
+	template<typename T0, LessComparable<T0> T1>
+		requires ConstructableFrom<T0, T1>
+	constexpr auto Min(T0 a, T1 b) noexcept -> T0;
 
 	/**
 	 * \brief Get the maximum value
-	 * \tparam T Value type
+	 * \tparam T0 Value type
+	 * \tparam T1 Value type
 	 * \param[in] a First value
 	 * \param[in] b Second value
 	 * \return Maximum value
 	 */
-	template<GreaterComparable T>
-	constexpr auto Max(T a, T b) noexcept -> T;
+	template<typename T0, LessComparable<T0> T1>
+		requires ConstructableFrom<T0, T1>
+	constexpr auto Max(T0 a, T1 b) noexcept -> T0;
 
 	// TODO, return type based on fp type
 	template<FloatingPoint T>

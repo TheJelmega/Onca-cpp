@@ -973,7 +973,7 @@ namespace Core
 			}
 		}
 
-		usize cap = Max(curBlocks, usize(1));
+		usize cap = Math::Max(curBlocks, usize(1));
 		while (cap < neededBlocks)
 			cap = (cap << 1) - (cap >> 1);
 

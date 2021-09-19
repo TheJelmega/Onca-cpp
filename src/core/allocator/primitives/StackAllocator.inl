@@ -40,7 +40,7 @@ namespace Core::Alloc
 		m_stats.AddAlloc(size, padding, isBacking);
 #endif
 		
-		return { handle, this, Log2(align), size, isBacking };
+		return { handle, this, Math::Log2(align), size, isBacking };
 	}
 
 	template<usize Size, usize MaxAlignment>

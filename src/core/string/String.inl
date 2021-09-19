@@ -1088,7 +1088,7 @@ namespace Core
 	inline auto String::FindFirstOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
 		const u8* pData = m_data.Data();
-		const usize len = Min(m_length, count);
+		const usize len = Math::Min(m_length, count);
 
 		const u8* pCodepoints = codepoints.Data();
 		const usize numCodepoints = codepoints.Length();
@@ -1101,7 +1101,7 @@ namespace Core
 			for (usize i = 0; i < numCodepoints; ++i)
 			{
 				const usize cpSize = Unicode::GetUtf8Size(*pCurCp);
-				if (Unicode::MatchChar(pData, pCurCp, Min(utf8Size, cpSize)))
+				if (Unicode::MatchChar(pData, pCurCp, Math::Min(utf8Size, cpSize)))
 					return pos;
 				pCurCp += cpSize;
 			}
@@ -1115,7 +1115,7 @@ namespace Core
 	inline auto String::FindFirstNotOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
 		const u8* pData = m_data.Data();
-		const usize len = Min(m_length, count);
+		const usize len = Math::Min(m_length, count);
 
 		const u8* pCodepoints = codepoints.Data();
 		const usize numCodepoints = codepoints.Length();
@@ -1129,7 +1129,7 @@ namespace Core
 			for (usize i = 0; i < numCodepoints; ++i)
 			{
 				const usize cpSize = Unicode::GetUtf8Size(*pCurCp);
-				if (Unicode::MatchChar(pData, pCurCp, Min(utf8Size, cpSize)))
+				if (Unicode::MatchChar(pData, pCurCp, Math::Min(utf8Size, cpSize)))
 				{
 					found = true;
 					break;
@@ -1164,7 +1164,7 @@ namespace Core
 			for (usize i = 0; i < numCodepoints; ++i)
 			{
 				const usize cpSize = Unicode::GetUtf8Size(*pCurCp);
-				if (Unicode::MatchChar(pData, pCurCp, Min(utf8Size, cpSize)))
+				if (Unicode::MatchChar(pData, pCurCp, Math::Min(utf8Size, cpSize)))
 					return pos;
 				pCurCp += cpSize;
 			}
@@ -1197,7 +1197,7 @@ namespace Core
 			for (usize i = 0; i < numCodepoints; ++i)
 			{
 				const usize cpSize = Unicode::GetUtf8Size(*pCurCp);
-				if (Unicode::MatchChar(pData, pCurCp, Min(utf8Size, cpSize)))
+				if (Unicode::MatchChar(pData, pCurCp, Math::Min(utf8Size, cpSize)))
 				{
 					found = true;
 					break;
@@ -1367,7 +1367,7 @@ namespace Core
 		const usize size = m_data.Size();
 		const usize strSize = str.DataSize();
 
-		i8 res = MemCmp(m_data.Data(), str.Data(), Min(size, strSize));
+		i8 res = MemCmp(m_data.Data(), str.Data(), Math::Min(size, strSize));
 		if (res != 0)
 			return res;
 		if (size == strSize)

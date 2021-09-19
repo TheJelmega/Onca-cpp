@@ -8,7 +8,7 @@ namespace Core::Alloc
 		: m_mem(nullptr)
 		, m_head(0)
 	{
-		STATIC_ASSERT(IsPowOf2(BlockSize), "Block size needs to be a power of 2");
+		STATIC_ASSERT(Math::IsPowOf2(BlockSize), "Block size needs to be a power of 2");
 		STATIC_ASSERT(BlockSize >= sizeof(usize), "Block size needs to be larger or equal than the size of usize");
 		STATIC_ASSERT(NumBlocks != 0, "Needs to have at least 1 block");
 		
@@ -65,7 +65,7 @@ namespace Core::Alloc
 		m_stats.AddAlloc(size, overhead, isBacking);
 #endif
 		
-		return { handle, this, Log2(align), size, isBacking };
+		return { handle, this, Math::Log2(align), size, isBacking };
 	}
 
 	template<usize BlockSize, usize NumBlocks>

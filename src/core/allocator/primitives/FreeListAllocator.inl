@@ -25,7 +25,7 @@ namespace Core::Alloc
 		const usize loc = AllocFirst(size, align, isBacking);
 		if (loc == usize(-1))
 			return nullptr;
-		return { loc, this, Log2(align), size, isBacking };
+		return { loc, this, Math::Log2(align), size, isBacking };
 	}
 
 	template<usize Size>

@@ -8,7 +8,7 @@ namespace Core::Alloc
 	template <typename T>
 	auto IAllocator::Allocate(usize size, u16 align, bool isBacking) noexcept -> MemRef<T>
 	{
-		ASSERT(align > 0 && IsPowOf2(align), "Alignment needs to be a power of 2");
+		ASSERT(align > 0 && Math::IsPowOf2(align), "Alignment needs to be a power of 2");
 		return AllocateRaw(size, align, isBacking).As<T>();
 	}
 
@@ -46,10 +46,10 @@ namespace Core::Alloc
 		totalOverhead += overhead;
 		++totalAllocs;
 
-		maxMemoryUsed = Max(curMemoryUse, maxMemoryUsed);
-		maxAllocs = Max(curAllocs, maxAllocs);
-		maxOverhead = Max(curOverhead, maxOverhead);
-		maxBackingMemory = Max(curBackingMemory, maxBackingMemory);
+		maxMemoryUsed = Math::Max(curMemoryUse, maxMemoryUsed);
+		maxAllocs = Math::Max(curAllocs, maxAllocs);
+		maxOverhead = Math::Max(curOverhead, maxOverhead);
+		maxBackingMemory = Math::Max(curBackingMemory, maxBackingMemory);
 	}
 
 	INL auto AllocatorStats::RemoveAlloc(usize memUse, usize overhead, bool isBacking) noexcept -> void

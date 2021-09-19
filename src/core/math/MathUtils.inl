@@ -5,18 +5,20 @@
 #pragma diag_suppress 438 // supress bogus "expected a ''" due to concepts
 #endif
 
-namespace Core
+namespace Core::Math
 {
-	template<LessComparable T>
-	constexpr auto Min(T a, T b) noexcept -> T
+	template<typename T0, LessComparable<T0> T1>
+	requires ConstructableFrom<T0, T1>
+	constexpr auto Min(T0 a, T1 b) noexcept -> T0
 	{
-		return a < b ? a : b;
+		return a < b ? a : T0(b);
 	}
 
-	template<GreaterComparable T>
-	constexpr auto Max(T a, T b) noexcept -> T
+	template<typename T0, LessComparable<T0> T1>
+		requires ConstructableFrom<T0, T1>
+	constexpr auto Max(T0 a, T1 b) noexcept -> T0
 	{
-		return a > b ? a : b;
+		return a > b ? a : T0(b);
 	}
 
 	template <FloatingPoint T>

@@ -17,7 +17,7 @@ namespace Core
 	{
 		// static assert to get around incomplete type issues when a class can return a Deque of itself
 		STATIC_ASSERT(Movable<T>, "Type needs to be movable to be used in a Deque");
-		STATIC_ASSERT(IsPowOf2(BlockSize), "BlockSize needs to be a power of 2");
+		STATIC_ASSERT(Math::IsPowOf2(BlockSize), "BlockSize needs to be a power of 2");
 	public:
 
 		/**
