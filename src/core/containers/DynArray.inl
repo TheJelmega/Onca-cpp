@@ -310,19 +310,19 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>
+	auto DynArray<T>::Insert(ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		return Emplace(it, val);
 	}
 
 	template <typename T>
-	auto DynArray<T>::Insert(const ConstIterator& it, T&& val) noexcept -> Iterator
+	auto DynArray<T>::Insert(ConstIterator& it, T&& val) noexcept -> Iterator
 	{
 		return Emplace(it, Move(val));
 	}
 
 	template <typename T>
-	auto DynArray<T>::Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>
+	auto DynArray<T>::Insert(ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
@@ -336,7 +336,7 @@ namespace Core
 
 	template <typename T>
 	template <ForwardIterator It>
-	auto DynArray<T>::Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>
+	auto DynArray<T>::Insert(ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
@@ -350,7 +350,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>
+	auto DynArray<T>::Insert(ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
@@ -363,7 +363,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Insert(const ConstIterator& it, const DynArray& other) noexcept -> Iterator requires CopyConstructible<T>
+	auto DynArray<T>::Insert(ConstIterator& it, const DynArray& other) noexcept -> Iterator requires CopyConstructible<T>
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
@@ -376,7 +376,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Insert(const ConstIterator& it, DynArray&& other) noexcept -> Iterator
+	auto DynArray<T>::Insert(ConstIterator& it, DynArray&& other) noexcept -> Iterator
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
@@ -394,7 +394,7 @@ namespace Core
 	template <typename T>
 	template <typename ... Args>
 		requires ConstructableFrom<T, Args...>
-	auto DynArray<T>::Emplace(const ConstIterator& it, Args&&... args) noexcept -> Iterator
+	auto DynArray<T>::Emplace(ConstIterator& it, Args&&... args) noexcept -> Iterator
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
@@ -426,13 +426,13 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Erase(const Iterator& it) noexcept -> void
+	auto DynArray<T>::Erase(ConstIterator& it) noexcept -> void
 	{
 		Erase(it, 1);
 	}
 
 	template <typename T>
-	auto DynArray<T>::Erase(const Iterator& it, usize count) noexcept -> void
+	auto DynArray<T>::Erase(ConstIterator& it, usize count) noexcept -> void
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset <= m_size, "Iterator out of range");
@@ -441,18 +441,19 @@ namespace Core
 		count = maxCount < count ? maxCount : count;
 		const usize moveSize = maxCount - count;
 
-		T* eraseIt = it;
+		T* pIt = const_cast<T*>(it);
+		T* eraseIt = pIt;
 		for (usize i = 0; i < count; ++i, ++eraseIt)
 			eraseIt->~T();
 
 		if (moveSize)
-			MemMove(it, it + count, moveSize * sizeof(T));
+			MemMove(pIt, pIt + count, moveSize * sizeof(T));
 
 		m_size -= count;
 	}
 
 	template <typename T>
-	auto DynArray<T>::Erase(const Iterator& begin, const Iterator& end) noexcept -> void
+	auto DynArray<T>::Erase(ConstIterator& begin, const Iterator& end) noexcept -> void
 	{
 		Erase(begin, usize(end - begin));
 	}
@@ -670,8 +671,8 @@ namespace Core
 	template <typename T>
 	auto DynArray<T>::InsertEnd(T&& val) noexcept -> Iterator
 	{
+		Reserve(m_size + 1);
 		const usize idx = m_size++;
-		Reserve(m_size);
 		T* loc = m_mem.Ptr() + idx;
 		new (loc) T{ Move(val) };
 		return loc;

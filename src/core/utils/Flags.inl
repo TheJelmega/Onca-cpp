@@ -16,6 +16,12 @@ namespace Core
 	}
 
 	template <EnumType E>
+	constexpr Flags<E>::Flags(I val) noexcept
+		: m_data(val)
+	{
+	}
+
+	template <EnumType E>
 	constexpr Flags<E>::Flags(const InitializerList<E>& enums) noexcept
 		: m_data(0)
 	{

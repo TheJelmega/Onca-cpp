@@ -32,7 +32,7 @@ namespace Core
 		 */
 		template<typename U0, typename U1>
 			requires ConstructableFrom<T0, U0> && ConstructableFrom<T1, U1>
-		constexpr explicit Pair(U0&& first, const U1&& second) noexcept;
+		constexpr Pair(U0&& first, const U1&& second) noexcept;
 
 		/**
 		 * Convert a Pair to this Pair

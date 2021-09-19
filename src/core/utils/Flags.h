@@ -26,6 +26,7 @@ namespace Core
 	public:
 		constexpr Flags() noexcept;
 		constexpr Flags(E val) noexcept;
+		constexpr Flags(I val) noexcept;
 		constexpr Flags(const InitializerList<E>& enums) noexcept;
 
 		constexpr Flags(const Flags&) noexcept = default;

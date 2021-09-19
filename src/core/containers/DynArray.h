@@ -18,7 +18,7 @@ namespace Core
 		STATIC_ASSERT(Movable<T>, "Type needs to be move constructable to be used in a DynArray");
 	public:
 		using Iterator = T*;
-		using ConstIterator = const T*;
+		using ConstIterator = const T* const;
 		
 		/**
 		 * Create a DynArray with an allocator
@@ -164,14 +164,14 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto Insert(const ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
+		auto Insert(ConstIterator& it, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an element in a certain location
 		 * \param[in] it Iterator to position to insert the element at
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto Insert(const ConstIterator& it, T&& val) noexcept -> Iterator;
+		auto Insert(ConstIterator& it, T&& val) noexcept -> Iterator;
 		/**
 		 * Insert a number of elements in the DynArray
 		 * \param[in] it Iterator to position to insert elements at
@@ -179,7 +179,7 @@ namespace Core
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		auto Insert(const ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
+		auto Insert(ConstIterator& it, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an iterable range into the DynArray
 		 * \tparam It Iterator type
@@ -189,28 +189,28 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		auto Insert(const ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>;
+		auto Insert(ConstIterator& it, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert an initializer list into the DynArray
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>;
+		auto Insert(ConstIterator& it, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a DynArray into the DynArray
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] other DynArray to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, const DynArray& other) noexcept -> Iterator requires CopyConstructible<T>;
+		auto Insert(ConstIterator& it, const DynArray& other) noexcept -> Iterator requires CopyConstructible<T>;
 		/**
 		 * Insert a DynArray into the DynArray
 		 * \param[in] it Iterator to position to insert elements at
 		 * \param[in] other DynArray to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto Insert(const ConstIterator& it, DynArray&& other) noexcept -> Iterator;
+		auto Insert(ConstIterator& it, DynArray&& other) noexcept -> Iterator;
 
 		/**
 		 * Emplace an element into the DynArray
@@ -220,7 +220,7 @@ namespace Core
 		 */
 		template<typename ...Args>
 			requires ConstructableFrom<T, Args...>
-		auto Emplace(const ConstIterator& it, Args&&... args) noexcept -> Iterator;
+		auto Emplace(ConstIterator& it, Args&&... args) noexcept -> Iterator;
 		
 		/**
 		 * Clear the contents of the DynArray, possibly also deallocate the memory
@@ -235,19 +235,19 @@ namespace Core
 		 * Erase an element from the DynArray
 		 * \param[in] it Iterator to element to erase
 		 */
-		auto Erase(const Iterator& it) noexcept -> void;
+		auto Erase(ConstIterator& it) noexcept -> void;
 		/**
 		 * Erase a number of elements from the DynArray
 		 * \param[in] it Iterator to first element to erase
 		 * \param[in] count Number of elements to erase
 		 */
-		auto Erase(const Iterator& it, usize count) noexcept -> void;
+		auto Erase(ConstIterator& it, usize count) noexcept -> void;
 		/**
 		 * Erase a range of elements from the DynArray
 		 * \param[in] begin Iterator to first element to erase
 		 * \param[in] end Iterator to last element to erase
 		 */
-		auto Erase(const Iterator& begin, const Iterator& end) noexcept -> void;
+		auto Erase(ConstIterator& begin, const Iterator& end) noexcept -> void;
 
 		/**
 		 * Find the first element that matches the looked for value
