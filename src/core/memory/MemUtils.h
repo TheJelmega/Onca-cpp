@@ -91,6 +91,23 @@ namespace Core
 	 */
 	template<typename T>
 	auto MemClearData(T& val) noexcept -> void;
+
+	/**
+	 * Compare 2 blocks of memory
+	 * \param pA Pointer to first memory block
+	 * \param pB Pointer to second memory block
+	 * \param numBytes Number of bytes to compare
+	 * \return 0 if blocks match, -1 if the first difference has a smaller byte in a, 1 otherwise
+	 */
+	auto MemCmp(const void* pA, const void* pB, usize numBytes) noexcept -> i8;
+	/**
+	 * Compare 2 blocks of memory
+	 * \param a First MemRef
+	 * \param b Second MemRef
+	 * \return 0 if blocks match, -1 if the first difference has a smaller byte in a, 1 otherwise
+	 */
+	template<typename T>
+	auto MemCmp(MemRef<T>& a, MemRef<T>& b) noexcept -> i8;
 	
 }
 

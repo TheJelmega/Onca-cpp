@@ -8,6 +8,7 @@ namespace Core
 	template <typename T>
 	MemRef<T>::MemRef() noexcept
 		: m_handle(~usize(0))
+		, m_pCachedPtr(nullptr)
 		, m_pAlloc(nullptr)
 		, m_log2Align(0)
 		, m_isBackingMem(false)
@@ -18,6 +19,7 @@ namespace Core
 	template <typename T>
 	MemRef<T>::MemRef(nullptr_t) noexcept
 		: m_handle(~usize(0))
+		, m_pCachedPtr(nullptr)
 		, m_pAlloc(nullptr)
 		, m_log2Align(0)
 		, m_isBackingMem(false)
@@ -28,6 +30,7 @@ namespace Core
 	template <typename T>
 	MemRef<T>::MemRef(Alloc::IAllocator* pAlloc) noexcept
 		: m_handle(~usize(0))
+		, m_pCachedPtr(nullptr)
 		, m_pAlloc(pAlloc)
 		, m_log2Align(0)
 		, m_isBackingMem(false)
@@ -67,6 +70,7 @@ namespace Core
 		, m_size(other.m_size)
 	{
 		MemClearData(other);
+		other.m_pAlloc = m_pAlloc;
 		other.m_handle = ~usize(0);
 		other.m_pCachedPtr = nullptr;
 	}

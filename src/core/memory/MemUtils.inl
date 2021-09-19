@@ -83,4 +83,23 @@ namespace Core
 	{
 		MemClear(&val, sizeof(T));
 	}
+
+	inline auto MemCmp(const void* pA, const void* pB, usize numBytes) noexcept -> i8
+	{
+		return memcmp(pA, pB, numBytes);
+	}
+
+	template <typename T>
+	auto MemCmp(MemRef<T>& a, MemRef<T>& b) noexcept -> i8
+	{
+		const usize sizeA = a.Size();
+		const usize sizeB = b.Size();
+
+		i8 res = MemCmp(a.Ptr(), b.Ptr(), Min(sizeA, sizeB));
+		if (res != 0)
+			return res;
+
+		return a.Size() < b.Size() ? -1 : 1;
+	}
+
 }
