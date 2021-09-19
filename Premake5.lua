@@ -61,3 +61,6 @@ include "src/core"
 include "src/start"
 include "src/unittest"
 include "src/benchmark"
+
+-- TOOLS
+include "src/tools"

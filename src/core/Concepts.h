@@ -4,6 +4,9 @@
 
 namespace Core
 {
+	template<typename A, typename B>
+	concept SameAs = std::same_as<A, B>;
+
 	template<typename T>
 	concept Integral = std::integral<T>;
 	template<typename T>
@@ -16,6 +19,14 @@ namespace Core
 	concept PrimitiveType = std::is_fundamental_v<T>;
 	template<typename T>
 	concept EnumType = std::is_enum_v<T>;
+
+	// wchar_t is not supported, as it is not portable
+	template<typename T>
+	concept CharacterType =
+		SameAs<T, char> ||
+		SameAs<T, char8_t> ||
+		SameAs<T, char16_t> ||
+		SameAs<T, char32_t>;
 
 	template<typename T>
 	concept TriviallyCopyable = std::is_trivially_copyable_v<T>;
@@ -34,9 +45,6 @@ namespace Core
 
 	template<typename T>
 	concept Movable = MoveConstructible<T> && MoveAssignable<T>;
-
-	template<typename A, typename B>
-	concept SameAs = std::same_as<A, B>;
 
 	template<typename Derived, typename Base>
 	concept DerivesFrom = std::derived_from<Derived, Base>;

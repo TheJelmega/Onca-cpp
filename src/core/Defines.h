@@ -16,6 +16,8 @@ using f64   = double;
 using isize = ptrdiff_t;
 using usize = uintptr_t;
 
+using UCodepoint = u32;
+
 template<typename T>
 using InitializerList = std::initializer_list<T>;
 

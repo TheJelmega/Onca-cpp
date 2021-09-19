@@ -43,4 +43,7 @@
 #include "containers/RedBlackTree.h"
 #include "containers/SortedSet.h"
 
+#include "string/StringUtils.h"
+#include "string/String.h"
+
 #include "math/MathUtils.h"
