@@ -19,13 +19,6 @@ project "UnicodeTableGen"
     kind "ConsoleApp"
     dotnetframework "net5.0"
 
-    removedefines { "NDEBUG", "DEBUG", "RELEASE_" }
-
-    configmap {
-        ["Profile"] = "Debug"
-    }
-    removeplatforms "Windows"
-
     location (_MAIN_SCRIPT_DIR .. "/.build/Tools/UnicodeTableGen")
     objdir (_MAIN_SCRIPT_DIR .. "/bin-int/Tools/UnicodeTableGen")
 
