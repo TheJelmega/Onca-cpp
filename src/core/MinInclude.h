@@ -4,4 +4,5 @@
 #include "Defines.h"
 #include "Traits.h"
 #include "Concepts.h"
+#include "Essentials.h"
 #include "Endianess.h"

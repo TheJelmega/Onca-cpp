@@ -10,9 +10,9 @@ namespace Core
 	template<typename T>
 	concept Integral = std::integral<T>;
 	template<typename T>
-	concept UnsignedIntegral = std::signed_integral<T>;
+	concept UnsignedIntegral = std::unsigned_integral<T>;
 	template<typename T>
-	concept SignedIntegral = std::unsigned_integral<T>;
+	concept SignedIntegral = std::signed_integral<T>;
 	template<typename T>
 	concept FloatingPoint = std::floating_point<T>;
 	template<typename T>
@@ -59,6 +59,15 @@ namespace Core
 	{
 		{ T{ args... } } noexcept;
 	};
+
+
+	template<typename T, typename U>
+	concept ConvertableFrom = requires(U u)
+	{
+		{ static_cast<T>(u) };
+	};
+	template<typename T, typename U>
+	concept ConvertableTo = ConvertableFrom<U, T>;
 
 	template<typename A, typename B = A>
 	concept EqualComparable = requires(A a, B b)

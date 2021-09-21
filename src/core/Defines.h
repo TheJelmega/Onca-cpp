@@ -1,7 +1,6 @@
 #pragma once
 #include <stdint.h>
 #include <optional>
-#include <tuple>
 
 using i8    = int8_t;
 using i16   = int16_t;
@@ -25,9 +24,6 @@ using InitializerList = std::initializer_list<T>;
 template<typename T>
 using Optional = std::optional<T>;
 inline constexpr std::nullopt_t NullOpt{ std::nullopt_t::_Tag{} };
-
-template<typename ...T>
-using Tuple = std::tuple<T...>;
 
 template<usize... Idx>
 using IndexSequence = std::index_sequence<Idx...>;
