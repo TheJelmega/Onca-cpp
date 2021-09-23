@@ -54,7 +54,7 @@ workspace "Engine"
         configmap {
             ["Profile"] = "Debug"
         }
-        removeplatforms "Windows"
+        removeplatforms { "Windows" }
         removedefines { "DEBUG", "NDEBUG", "RELEASE_" }
         
 include "src/core" 

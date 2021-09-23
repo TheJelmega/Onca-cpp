@@ -3,10 +3,10 @@
 #include "Config.h"
 #include "Defines.h"
 #include "Concepts.h"
-#include "Endianess.h"
 #include "Assert.h"
-#include "Atomic.h"
 
+#include "utils/Endianess.h"
+#include "utils/Atomic.h"
 #include "utils/Tuple.h"
 #include "utils/Pair.h"
 #include "utils/Utils.h"

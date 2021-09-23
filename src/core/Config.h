@@ -148,7 +148,7 @@
 
 
 // Project specific
-#ifndef EXPORT_CORE
+#if !defined(EXPORT_CORE)
 #	define EXPORT_CORE 0
 #endif
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "core/allocator/IAllocator.h"
-#include "core/Atomic.h"
+#include "core/utils/Atomic.h"
 
 namespace Core::Alloc
 {

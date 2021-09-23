@@ -1,4 +1,6 @@
+#pragma once
 #include "BuddyAllocator.h"
+#include "utils/Endianess.h"
 
 namespace Core::Alloc
 {
@@ -138,7 +140,7 @@ namespace Core::Alloc
 		usize bitIdx = (6 - (divIdx & 0x3)) * 2;
 		usize byteIdx = divIdx / 4;
 
-		u16 data = TO_BIG_ENDIAN(*reinterpret_cast<u16*>(pManagementInfo + byteIdx));
+		u16 data = ToBigEndian(*reinterpret_cast<u16*>(pManagementInfo + byteIdx));
 		u16 mask = 0x0F << bitIdx;
 		u16 flags = (data & mask);
 		flags >>= bitIdx;
