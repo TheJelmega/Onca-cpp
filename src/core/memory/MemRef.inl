@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "MemRef.h"
+#endif
+
 #include "MemUtils.h"
 #include "core/allocator/IAllocator.h"
 

@@ -1,4 +1,7 @@
+#pragma once
+#if __RESHARPER__
 #include "Sync.h"
+#endif
 
 namespace Core::Threading
 {

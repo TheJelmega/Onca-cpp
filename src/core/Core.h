@@ -1,10 +1,13 @@
 #pragma once
 
+// MinInclude
 #include "Config.h"
 #include "Defines.h"
 #include "Concepts.h"
+
 #include "Assert.h"
 
+#include "utils/Meta.h"
 #include "utils/Endianess.h"
 #include "utils/Atomic.h"
 #include "utils/Tuple.h"

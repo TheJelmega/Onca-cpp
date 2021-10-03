@@ -1,5 +1,6 @@
 #pragma once
 #include "HashMap.h"
+#include "math/MathUtils.h"
 
 namespace Core
 {

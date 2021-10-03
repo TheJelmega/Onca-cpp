@@ -1,5 +1,7 @@
 #pragma once
+#if __RESHARPER__
 #include "Utils.h"
+#endif
 
 namespace Core
 {
@@ -58,11 +60,12 @@ namespace Core
 		return cnt;
 	}
 
-	template <MoveAssignable T>
-	auto Swap(T& a, T& b) noexcept -> void
+	template<typename To, typename From>
+	constexpr auto Bitcast(From& from) noexcept -> To
 	{
-		T tmp = Move(a);
-		a = Move(b);
-		b = Move(tmp);
+		To to;
+		MemCpy(to, from);
+		return to;
 	}
+	
 }

@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "List.h"
+#endif
+
 
 namespace Core
 {

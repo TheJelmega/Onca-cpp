@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "Unique.h"
+#endif
+
 #include "core/allocator/GlobalAlloc.h"
 
 #ifdef __INTELLISENSE__

@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "IAllocator.h"
+#endif
+
 #include "core/Assert.h"
 #include "core/math/MathUtils.h"
 

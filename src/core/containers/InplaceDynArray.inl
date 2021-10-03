@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "InplaceDynArray.h"
+#endif
+
 #include "core/Assert.h"
 #include "core/utils/Utils.h"
 #include "core/utils/Algo.h"

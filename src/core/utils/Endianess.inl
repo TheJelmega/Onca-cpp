@@ -1,5 +1,7 @@
 #pragma once
+#if __RESHARPER__
 #include "Endianess.h"
+#endif
 
 namespace Core
 {

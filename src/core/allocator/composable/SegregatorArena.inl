@@ -1,5 +1,7 @@
 #pragma once
+#if __RESHARPER__
 #include "SegregatorArena.h"
+#endif
 
 namespace Core::Alloc
 {

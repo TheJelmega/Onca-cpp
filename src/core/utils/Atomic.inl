@@ -1,5 +1,7 @@
 #pragma once
+#if __RESHARPER__
 #include "Atomic.h"
+#endif
 
 namespace Core
 {

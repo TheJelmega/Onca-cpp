@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "Array.h"
+#endif
+
 #include "core/Assert.h"
 
 namespace Core
@@ -15,36 +18,20 @@ namespace Core
 	template <typename T, usize N>
 	constexpr auto Array<T, N>::operator[](usize idx) noexcept -> T&
 	{
-#ifdef __cpp_if_consteval
-		if consteval
-		{
+		IF_CONSTEVAL
 			STATIC_ASSERT(idx < N, "Index out of range");
-		}
 		else
-		{
 			ASSERT(idx < N, "Index out of range");
-		}
-#elif FORCE_ARRAY_RUNTIME_ASSERT
-		ASSERT(idx < N, "Index out of range");
-#endif
 		return m_data[idx];
 	}
 
 	template <typename T, usize N>
 	constexpr auto Array<T, N>::operator[](usize idx) const noexcept -> const T&
 	{
-#ifdef __cpp_if_consteval
-		if consteval
-		{
+		IF_CONSTEVAL
 			STATIC_ASSERT(idx < N, "Index out of range");
-		}
 		else
-		{
 			ASSERT(idx < N, "Index out of range");
-		}
-#elif FORCE_ARRAY_RUNTIME_ASSERT
-		ASSERT(idx < N, "Index out of range");
-#endif
 		return m_data[idx];
 	}
 

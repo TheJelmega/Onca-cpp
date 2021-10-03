@@ -104,6 +104,15 @@
 
 #define BIT(x) (1 << (x))
 
+
+#if __cpp_if_consteval
+#	define IF_CONSTEVAL if consteval
+#	define IF_NOT_CONSTEVAL if consteval {} else
+#else
+#	define IF_CONSTEVAL if (std::is_constant_evaluated())
+#	define IF_NOT_CONSTEVAL if (!std::is_constant_evaluated())
+#endif
+
 /**
  * \def EXPORT_API
  * Defines dynamic library linkage for export
@@ -161,5 +170,3 @@
 #else
 #	define CORE_API IMPORT_API
 #endif
-
-#define FORCE_ARRAY_RUNTIME_ASSERT 0

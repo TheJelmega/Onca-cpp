@@ -1,4 +1,7 @@
+#pragma once
+#if __RESHARPER__
 #include "LinearAllocator.h"
+#endif
 
 namespace Core::Alloc
 {

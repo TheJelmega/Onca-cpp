@@ -1,5 +1,7 @@
 #pragma once
+#if __RESHARPER__
 #include "Flags.h"
+#endif
 
 namespace Core
 {

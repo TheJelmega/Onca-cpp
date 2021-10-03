@@ -1,4 +1,7 @@
+#pragma once
+#if __RESHARPER__
 #include "StackAllocator.h"
+#endif
 
 #include "core/Assert.h"
 

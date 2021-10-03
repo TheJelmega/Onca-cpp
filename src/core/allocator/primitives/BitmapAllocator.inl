@@ -1,4 +1,7 @@
+#pragma once
+#if __RESHARPER__
 #include "BitmapAllocator.h"
+#endif
 
 #include "core/memory/MemUtils.h"
 

@@ -1,5 +1,7 @@
 #pragma once
+#if __RESHARPER__
 #include "InPlaceStackAllocator.h"
+#endif
 
 #include "core/Assert.h"
 

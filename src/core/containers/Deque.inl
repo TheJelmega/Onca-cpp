@@ -1,5 +1,7 @@
 #pragma once
+#if __RESHARPER__
 #include "Deque.h"
+#endif
 
 namespace Core
 {

@@ -33,11 +33,25 @@ namespace Core
 		auto operator()(const T& t) const noexcept -> u64;
 	};
 
+	/**
+	 * Count the number of elements in an iterator range
+	 * \tparam T Forward iterator
+	 * \param begin Iterator to first element
+	 * \param end Iterator to element after the last element
+	 * \return Number of elements in the iterator range
+	 */
 	template<ForwardIterator T>
 	auto CountElems(const T& begin, const T& end) noexcept -> usize;
 
-	template<MoveAssignable T>
-	auto Swap(T& a, T& b) noexcept -> void;
+	/**
+	 * Bitcast a value from one type to another
+	 * \tparam To Type to cast to
+	 * \tparam From Type to cast from
+	 * \param from Value to cast
+	 * \return Bitcasted value
+	 */
+	template<typename To, typename From>
+	constexpr auto Bitcast(From& from) noexcept -> To;
 }
 
 #include "Utils.inl"

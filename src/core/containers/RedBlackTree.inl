@@ -1,5 +1,7 @@
 #pragma once
+#if __RESHARPER__
 #include "RedBlackTree.h"
+#endif
 
 namespace Core
 {
@@ -896,7 +898,7 @@ namespace Core
 			while (inOrderPredecessor->right)
 				inOrderPredecessor->right;
 
-			Swap(node->value, inOrderPredecessor->value);
+			Algo::Swap(node->value, inOrderPredecessor->value);
 			node = inOrderPredecessor;
 		}
 		else if (node->left || node->right)

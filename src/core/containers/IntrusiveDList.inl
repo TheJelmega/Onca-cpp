@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "IntrusiveDList.h"
+#endif
+
 #include "core/Assert.h"
 
 namespace Core

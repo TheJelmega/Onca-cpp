@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "StringUtils.h"
+#endif
+
 #include "StringConstants.h"
 
 namespace Core
@@ -134,11 +137,7 @@ namespace Core::Unicode
 	{
 		if constexpr (SameAs<C, char>)
 		{
-#if __cpp_if_consteval
-			if consteval ()
-#else
-			if (std::is_constant_evaluated())
-#endif
+			IF_CONSTEVAL
 			{
 				const char* s = str;
 				for (; s; ++s)

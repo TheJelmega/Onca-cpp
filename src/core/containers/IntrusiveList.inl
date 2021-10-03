@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "IntrusiveList.h"
+#endif
+
 
 namespace Core
 {

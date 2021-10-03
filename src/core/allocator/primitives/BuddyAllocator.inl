@@ -1,5 +1,8 @@
 #pragma once
+#if __RESHARPER__
 #include "BuddyAllocator.h"
+#endif
+
 #include "utils/Endianess.h"
 
 namespace Core::Alloc

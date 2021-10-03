@@ -1,5 +1,7 @@
 #pragma once
+#if __RESHARPER__
 #include "ExpandableArena.h"
+#endif
 
 namespace Core::Alloc
 {
