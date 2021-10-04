@@ -303,7 +303,7 @@ namespace Core
 		for (usize i = 0; i < blocksNeeded; ++i)
 		{
 			MemRef<T>& otherBlock = *(pOtherBlocks + i);
-			MemCpy(*(pBlocks + i), otherBlock, BlockSize);
+			MemRefCpy(*(pBlocks + i), otherBlock, BlockSize);
 			otherBlock.Dealloc();
 		}
 		other.m_blocks.Dealloc();
@@ -986,9 +986,9 @@ namespace Core
 		if (curBlocks)
 		{
 			if constexpr (AtBack)
-				MemCpy(m_blocks, oldBlock, curBlocks);
+				MemRefCpy(m_blocks, oldBlock, curBlocks);
 			else
-				MemCpy(m_blocks, numAdditionalBlocks, oldBlock, 0, curBlocks);
+				MemRefCpy(m_blocks, numAdditionalBlocks, oldBlock, 0, curBlocks);
 		}
 
 		oldBlock.Dealloc();

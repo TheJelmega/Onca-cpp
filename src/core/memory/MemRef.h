@@ -119,6 +119,29 @@ namespace Core
 	};
 
 	/**
+	 * Copy a region of memory from one location to another
+	 * \tparam T Type of MemRef
+	 * \param[in] dst Destination MemRef
+	 * \param[in] src Source MemRef
+	 * \param[in] numElems Number of elements to copy
+	 * \note Regions cannot overlap
+	 */
+	template <typename T>
+	auto MemRefCpy(MemRef<T>& dst, const MemRef<T>& src, usize numElems) noexcept -> void;
+	/**
+	 * Copy a region of memory from one location to another
+	 * \tparam T Type of MemRef
+	 * \param[in] dst Destination MemRef
+	 * \param[in] dstOffset Offset in destination MemRef
+	 * \param[in] src Source MemRef
+	 * \param[in] srcOffset Offset in source MemRef
+	 * \param[in] numElems Number of elements to copy
+	 * \note Regions cannot overlap
+	 */
+	template <typename T>
+	auto MemRefCpy(MemRef<T>& dst, usize dstOffset, const MemRef<T>& src, usize srcOffset, usize numElems) noexcept -> void;
+
+	/**
 	 * \brief Concept defining a valid deleter for a memory reference
 	 * \tparam D Type of the deleter
 	 * \tparam T Underlying type of the MemRef

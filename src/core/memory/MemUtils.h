@@ -1,5 +1,6 @@
 #pragma once
 #include "core/MinInclude.h"
+#include "MemRef.h"
 
 namespace Core
 {
@@ -11,28 +12,6 @@ namespace Core
 	 * \note Regions cannot overlap
 	 */
 	constexpr auto MemCpy(void* dst, const void* src, usize numBytes) noexcept -> void;
-	/**
-	 * Copy a region of memory from one location to another
-	 * \tparam T Type of MemRef
-	 * \param[in] dst Destination MemRef
-	 * \param[in] src Source MemRef
-	 * \param[in] numElems Number of elements to copy
-	 * \note Regions cannot overlap
-	 */
-	template <typename T>
-	constexpr auto MemCpy(MemRef<T>& dst, const MemRef<T>& src, usize numElems) noexcept -> void;
-	/**
-	 * Copy a region of memory from one location to another
-	 * \tparam T Type of MemRef
-	 * \param[in] dst Destination MemRef
-	 * \param[in] dstOffset Offset in destination MemRef
-	 * \param[in] src Source MemRef
-	 * \param[in] srcOffset Offset in source MemRef
-	 * \param[in] numElems Number of elements to copy
-	 * \note Regions cannot overlap
-	 */
-	template <typename T>
-	auto MemCpy(MemRef<T>& dst, usize dstOffset, const MemRef<T>& src, usize srcOffset, usize numElems) noexcept -> void;
 	/**
 	 * Copy the contents from one element to another
 	 * \tparam T Type to copy
