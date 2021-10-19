@@ -49,7 +49,7 @@ namespace Core
 		template<Integral T, usize N>
 		struct MakeIntegerSequence
 			: MergeAndRenumberIntegerSequences<typename MakeIntegerSequence<T, N/2>::Type,
-			                   typename MakeIntegerSequence<T, N - N/2>::Type>
+			                                   typename MakeIntegerSequence<T, N - N/2>::Type>
 		{};
 		template<Integral T>
 		struct MakeIntegerSequence<T, 0> : IntegerSequence<T>{};
@@ -58,8 +58,8 @@ namespace Core
 
 		template<Integral T, usize N>
 		struct MakeReverseIntegerSequence
-			: ReverseMergeAndRenumberIntegerSequences<typename MakeIntegerSequence<T, N - N / 2>::Type,
-			                                          typename MakeIntegerSequence<T, N / 2>::Type>
+			: ReverseMergeAndRenumberIntegerSequences<typename MakeReverseIntegerSequence<T, N - N / 2>::Type,
+			                                          typename MakeReverseIntegerSequence<T, N / 2>::Type>
 		{};
 		template<Integral T>
 		struct MakeReverseIntegerSequence<T, 0> : IntegerSequence<T> {};
@@ -78,8 +78,8 @@ namespace Core
 
 		template<Integral T, usize Begin, usize Size>
 		struct MakeReverseIntegerSequenceRange
-			: ReverseMergeAndRenumberIntegerSequences<typename MakeIntegerSequenceRange<T, Begin, Size - Size / 2>::Type,
-			                                          typename MakeIntegerSequenceRange<T, Begin, Size / 2>::Type>
+			: ReverseMergeAndRenumberIntegerSequences<typename MakeReverseIntegerSequenceRange<T, Begin, Size - Size / 2>::Type,
+			                                          typename MakeReverseIntegerSequenceRange<T, Begin, Size / 2>::Type>
 		{};
 		template<Integral T, usize N>
 		struct MakeReverseIntegerSequenceRange<T, N, 0> : IntegerSequence<T> {};
