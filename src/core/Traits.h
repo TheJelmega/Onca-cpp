@@ -4,6 +4,31 @@
 
 namespace Core
 {
+	namespace Detail
+	{
+		template<usize Size>
+		struct UnsignedOfSize              { using Type = void; };
+		template<>
+		struct UnsignedOfSize<sizeof(u64)> { using Type = u64;  };
+		template<>
+		struct UnsignedOfSize<sizeof(u32)> { using Type = u32;  };
+		template<>
+		struct UnsignedOfSize<sizeof(u16)> { using Type = u16;  };
+		template<>
+		struct UnsignedOfSize<sizeof(u8)>  { using Type = u8;   };
+
+		template<usize Size>
+		struct SignedOfSize              { using Type = void; };
+		template<>
+		struct SignedOfSize<sizeof(i64)> { using Type = i64;  };
+		template<>
+		struct SignedOfSize<sizeof(i32)> { using Type = i32;  };
+		template<>
+		struct SignedOfSize<sizeof(i16)> { using Type = i16;  };
+		template<>
+		struct SignedOfSize<sizeof(i8)>  { using Type = i8;   };
+	}
+
 	/**
 	 * Is a type nothrow default constructable
 	 * \tparam T Type to check
@@ -116,5 +141,11 @@ namespace Core
 
 	template<typename T>
 	using UnderlyingType = std::underlying_type_t<T>;
+
+
+	template<typename T>
+	using UnsignedOfSameSize = typename Detail::UnsignedOfSize<sizeof(T)>::Type;
+	template<typename T>
+	using SignedOfSameSize = typename Detail::SignedOfSize<sizeof(T)>::Type;
 
 }
