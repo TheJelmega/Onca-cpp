@@ -9,7 +9,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Zero() noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -82,7 +82,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Set(T val) noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		//IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -255,7 +255,7 @@ namespace Core::Intrin
 	{
 		STATIC_ASSERT(sizeof...(Args) == Width, "Expected 'Width' values");
 
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -431,7 +431,7 @@ namespace Core::Intrin
 	{
 		STATIC_ASSERT(sizeof...(Args) == Width, "Expected 'Width' values");
 
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -560,7 +560,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Load(const T* addr) noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -632,7 +632,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::AlignedLoad(const T* addr) noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			ASSERT((usize(addr) & (DataSize - 1)) == 0, "'addr' needs to have the same alignment as Pack");

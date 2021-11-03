@@ -93,7 +93,7 @@ namespace Core::Intrin
 		if constexpr (Integral<T> && Integral<U> && sizeof(T) == sizeof(U))
 			return ResPack( data );
 
-		ResPack pack{ Detail::Uninit{} };
+		ResPack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)

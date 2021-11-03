@@ -8,7 +8,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::And(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -90,7 +90,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::AndNot(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 
 		// NOTE: SSE and AVX andnot are in reverse order, i.e.: ~a & b, so args are inverted
 		IF_NOT_CONSTEVAL
@@ -174,7 +174,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Xor(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -256,7 +256,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Or(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -338,7 +338,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Not() const noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL 
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -430,7 +430,7 @@ namespace Core::Intrin
 	template<IntegralOfSameSize<T> U>
 	constexpr auto Pack<T, Width>::ShiftL(const Pack<U, Width>& count) const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 
 		IF_NOT_CONSTEVAL
 		{
@@ -613,7 +613,7 @@ namespace Core::Intrin
 	template <UnsignedIntegral U>
 	constexpr auto Pack<T, Width>::ShiftL(U count) const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -715,7 +715,7 @@ namespace Core::Intrin
 	template <usize Count>
 	constexpr auto Pack<T, Width>::ShiftL() const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -809,7 +809,7 @@ namespace Core::Intrin
 	template<IntegralOfSameSize<T> U>
 	constexpr auto Pack<T, Width>::ShiftRA(const Pack<U, Width>& count) const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -1029,7 +1029,7 @@ namespace Core::Intrin
 	template <UnsignedIntegral U>
 	constexpr auto Pack<T, Width>::ShiftRA(U count) const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -1162,7 +1162,7 @@ namespace Core::Intrin
 	template <usize Count>
 	constexpr auto Pack<T, Width>::ShiftRA() const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		//IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -1285,7 +1285,7 @@ namespace Core::Intrin
 	template<IntegralOfSameSize<T> U>
 	constexpr auto Pack<T, Width>::ShiftRL(const Pack<U, Width>& count) const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -1469,7 +1469,7 @@ namespace Core::Intrin
 	template <UnsignedIntegral U>
 	constexpr auto Pack<T, Width>::ShiftRL(U count) const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -1571,7 +1571,7 @@ namespace Core::Intrin
 	template <usize Count>
 	constexpr auto Pack<T, Width>::ShiftRL() const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)

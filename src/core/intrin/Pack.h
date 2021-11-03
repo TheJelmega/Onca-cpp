@@ -74,8 +74,6 @@ namespace Core::Intrin
 		};
 		STATIC_ASSERT(sizeof(PackData256<f32>) == 32, "PackData256 size is incorrect, expected 32");
 
-		struct Uninit{};
-
 		template<SimdBaseType T, usize DataSize>
 		struct PackDataSelector
 		{
@@ -172,7 +170,7 @@ namespace Core::Intrin
 		/**
 		 * Create an uninitialized Pack
 		 */
-		explicit constexpr Pack(Detail::Uninit) noexcept;
+		explicit constexpr Pack(UnInitTag) noexcept;
 		/**
 		 * Create a pack with all elements set to 'val'
 		 * \param val Value
@@ -185,6 +183,10 @@ namespace Core::Intrin
 		 */
 		template<SameAs<T>... Args>
 		explicit constexpr Pack(Args... vals) noexcept;
+
+		constexpr auto operator+() const noexcept -> Pack;
+		constexpr auto operator-() const noexcept -> Pack;
+		constexpr auto operator~() const noexcept -> Pack;
 
 		constexpr auto operator+(const Pack& other) const noexcept -> Pack;
 		constexpr auto operator-(const Pack& other) const noexcept -> Pack;
@@ -248,6 +250,11 @@ namespace Core::Intrin
 		template<ComparisonOp Op>
 		constexpr auto Compare(const Pack& other) const noexcept -> Pack;
 
+		/**
+		 * Get a pack with negated values
+		 * \return Pack with negated elements
+		 */
+		constexpr auto Neg() const noexcept -> Pack;
 		/**
 		 * Add the elements of the given pack to the current elements
 		 * \param other Pack to add
@@ -398,6 +405,17 @@ namespace Core::Intrin
 		 * \return Reverse square root of the elements in the Pack
 		 */
 		constexpr auto RSqrt() const noexcept -> Pack;
+
+		/**
+		 * Create a pack with the absolute value of each element
+		 * \return Pack with absolute values
+		 */
+		constexpr auto Abs() const noexcept -> Pack;
+		/**
+		 * Create a pack with the sign of each element (neg: -1, 0: 0, pos: 1)
+		 * \return Pack with the sign of each element
+		 */
+		constexpr auto Sign() const noexcept -> Pack;
 
 	private:
 

@@ -6,9 +6,18 @@
 namespace Core::Intrin
 {
 	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::Neg() const noexcept -> Pack
+	{
+		Pack pack{ UnInit };
+
+		for (usize i = 0; i < Width; ++i)
+			pack.data.raw[i] = -data.raw[i];
+	}
+
+	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Add(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -150,7 +159,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Sub(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -293,7 +302,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Mul(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -479,7 +488,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Div(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -584,7 +593,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Rcp() const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 
 		IF_NOT_CONSTEVAL
 		{
@@ -709,7 +718,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Sqrt() const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -762,8 +771,9 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::RSqrt() const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 
+		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
 			{
@@ -807,5 +817,255 @@ namespace Core::Intrin
 		}
 
 		return Sqrt().Rcp();
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::Abs() const noexcept -> Pack
+	{
+		if (UnsignedIntegral<T>)
+			return Pack{ data };
+
+		Pack pack{ UnInit };
+		IF_NOT_CONSTEVAL
+		{
+			if constexpr (Detail::IsSIMD128<DataSize>)
+			{
+				if constexpr (IsF64<T>)
+				{
+#if HAS_SSE2
+					__m128i mask = _mm_set1_epi64x(0x7FFF'FFFF'FFFF'FFFF);
+					pack.data.sse_m128i = _mm_and_si128(data.sse_m128i, mask);
+					return pack;
+#endif
+				}
+				else if constexpr (IsF32<T>)
+				{
+#if HAS_SSE
+					__m128i mask = _mm_set1_epi32(0x7FFF'FFFF);
+					pack.data.sse_m128i = _mm_and_si128(data.sse_m128i, mask);
+					return pack;
+#endif
+				}
+				else if constexpr (IsI64<T>)
+				{
+#if HAS_AVX512F && HAS_AVX512VL
+					pack.data.sse_m128i = _mm_abs_epi64(data.sse_m128i);
+					return pack;
+#elif HAS_SSE2
+					__m128i sign = ShiftRA<63>().data.sse_m128i; // broadcast sign bit to all bits
+					__m128i inv = _mm_xor_si128(data.sse_m128i, sign); // xor with sign (positive: nothing happens, negative: becomes -val - 1)
+					pack.data.sse_m128i = _mm_sub_epi64(inv, sign); // add 1 (- -1) <- only added if value was negative
+					return pack;
+#endif
+				}
+				else if constexpr (IsI32<T>)
+				{
+#if HAS_SSSE3
+					pack.data.sse_m128i = _mm_abs_epi32(data.sse_m128i);
+					return pack;
+#elif HAS_SSE2
+					__m128i sign = _mm_srai_epi32(data.sse_m128i, 31); // broadcast sign bit to all bits
+					__m128i inv = _mm_xor_si128(data.sse_m128i, sign); // xor with sign (positive: nothing happens, negative: becomes -val - 1)
+					pack.data.sse_m128i = _mm_sub_epi32(inv, sign); // add 1 (- -1) <- only added if value was negative
+					return pack;
+#endif
+				}
+				else if constexpr (IsI16<T>)
+				{
+#if HAS_SSSE3
+					pack.data.sse_m128i = _mm_abs_epi16(data.sse_m128i);
+					return pack;
+#elif HAS_SSE2
+					__m128i sign = _mm_srai_epi16(data.sse_m128i, 15); // broadcast sign bit to all bits
+					__m128i inv = _mm_xor_si128(data.sse_m128i, sign); // xor with sign (positive: nothing happens, negative: becomes -val - 1)
+					pack.data.sse_m128i = _mm_sub_epi32(inv, sign); // add 1 (- -1) <- only added if value was negative
+					return pack;
+#endif
+				}
+				else if constexpr (IsI8<T>)
+				{
+#if HAS_SSSE3
+					pack.data.sse_m128i = _mm_abs_epi8(data.sse_m128i);
+					return pack;
+#elif HAS_SSE2
+					__m128i sign = _mm_srai_epi64(data.sse_m128i, 7); // broadcast sign bit to all bits
+					__m128i inv = _mm_xor_si128(data.sse_m128i, sign); // xor with sign (positive: nothing happens, negative: becomes -val - 1)
+					pack.data.sse_m128i = _mm_sub_epi32(inv, sign); // add 1 (- -1) <- only added if value was negative
+					return pack;
+#endif
+				}
+			}
+			else if constexpr (Detail::IsSIMD256<DataSize>)
+			{
+				if constexpr (IsF64<T>)
+				{
+#if HAS_AVX
+					__m256i mask = _mm256_set1_epi64x(0x7FFF'FFFF'FFFF'FFFF);
+					pack.data.sse_m256i = _mm256_and_si256(data.sse_m256i, mask);
+					return pack;
+#endif
+				}
+				else if constexpr (IsF32<T>)
+				{
+#if HAS_AVX
+					__m256i mask = _mm256_set1_epi32(0x7FFF'FFFF);
+					pack.data.sse_m256i = _mm256_and_si256(data.sse_m256i, mask);
+					return pack;
+#endif
+				}
+				else if constexpr (IsI64<T>)
+				{
+#if HAS_AVX512F && HAS_AVX512VL
+					pack.data.sse_m256i = _mm256_abs_epi64(data.sse_m256i);
+					return pack;
+#elif HAS_AVX2
+					__m256i sign = ShiftRA<63>().data.sse_m256i; // broadcast sign bit to all bits
+					__m256i inv = _mm256_xor_si256(data.sse_m256i, sign); // xor with sign (positive: nothing happens, negative: becomes -val - 1)
+					pack.data.sse_m256i = _mm256_sub_epi64(inv, sign); // add 1 (- -1) <- only added if value was negative
+					return pack;
+#endif
+				}
+				else if constexpr (IsI32<T>)
+				{
+#if HAS_AVX2
+					pack.data.sse_m256i = _mm256_abs_epi32(data.sse_m256i);
+					return pack;
+#endif
+				}
+				else if constexpr (IsI16<T>)
+				{
+#if HAS_AVX2
+					pack.data.sse_m256i = _mm256_abs_epi16(data.sse_m256i);
+					return pack;
+#endif
+				}
+				else if constexpr (IsI8<T>)
+				{
+#if HAS_AVX2
+					pack.data.sse_m256i = _mm256_abs_epi8(data.sse_m256i);
+					return pack;
+#endif
+				}
+			}
+		}
+
+		for (usize i = 0; i < Width; ++i)
+			pack.data.raw[i] = Math::Abs(data.raw[i]);
+		return pack;
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::Sign() const noexcept -> Pack
+	{
+		Pack pack{ UnInit };
+
+		{
+			if constexpr (Detail::IsSIMD128<DataSize>)
+			{
+				if constexpr (FloatingPoint<T> || IsI64<T>)
+				{
+					Pack ones = Pack::Set(1);
+					Pack negOnes = Pack::Set(-1);
+					Pack zero = Pack::Zero();
+
+					Pack oneMask = Compare<ComparisonOp::Gt>(zero);
+					Pack negOneMask = Compare<ComparisonOp::Lt>(zero);
+
+					ones = ones.And(oneMask);
+					negOnes = negOnes.And(negOneMask);
+
+					return ones.Or(negOnes);
+				}
+				else if constexpr (UnsignedIntegral<T>)
+				{
+					Pack ones = Pack::Set(1);
+					Pack zero = Pack::Zero();
+
+					Pack oneMask = Compare<ComparisonOp::Gt>(zero);
+					return ones.And(oneMask);
+				}
+				else if constexpr (IsI32<T>)
+				{
+#if HAS_SSSE3
+					__m128i ones = _mm_set1_epi32(1);
+					pack.data.sse_m128i = _mm_sign_epi32(ones, data.sse_m128i);
+					return pack;
+#endif
+				}
+				else if constexpr (IsI16<T>)
+				{
+#if HAS_SSSE3
+					__m128i ones = _mm_set1_epi16(1);
+					pack.data.sse_m128i = _mm_sign_epi16(ones, data.sse_m128i);
+					return pack;
+#endif
+				}
+				else if constexpr (IsI8<T>)
+				{
+#if HAS_SSSE3
+					__m128i ones = _mm_set1_epi8(1);
+					pack.data.sse_m128i = _mm_sign_epi8(ones, data.sse_m128i);
+					return pack;
+#endif
+				}
+				else
+				{
+					
+				}
+			}
+			else if constexpr (Detail::IsSIMD256<DataSize>)
+			{
+				if constexpr (FloatingPoint<T> || IsI64<T>)
+				{
+					Pack ones = Pack::Set(1);
+					Pack negOnes = Pack::Set(-1);
+					Pack zero = Pack::Zero();
+
+					Pack oneMask = Compare<ComparisonOp::Gt>(zero);
+					Pack negOneMask = Compare<ComparisonOp::Lt>(zero);
+
+					ones = ones.And(oneMask);
+					negOnes = negOnes.And(negOneMask);
+
+					return ones.Or(negOnes);
+				}
+				else if constexpr (UnsignedIntegral<T>)
+				{
+					Pack ones = Pack::Set(1);
+					Pack zero = Pack::Zero();
+
+					Pack oneMask = Compare<ComparisonOp::Gt>(zero);
+					return ones.And(oneMask);
+				}
+				else if constexpr (IsI32<T>)
+				{
+#if HAS_AVX2
+					__m256i ones = _mm256_set1_epi32(1);
+					pack.data.sse_m256i = _mm256_sign_epi32(ones, data.sse_m256i);
+					return pack;
+#endif
+				}
+				else if constexpr (IsI16<T>)
+				{
+#if HAS_AVX2
+					__m256i ones = _mm256_set1_epi16(1);
+					pack.data.sse_m256i = _mm256_sign_epi16(ones, data.sse_m256i);
+					return pack;
+#endif
+				}
+				else if constexpr (IsI8<T>)
+				{
+#if HAS_AVX2
+					__m256i ones = _mm256_set1_epi8(1);
+					pack.data.sse_m256i = _mm256_sign_epi8(ones, data.sse_m256i);
+					return pack;
+#endif
+				}
+			}
+		}
+
+		for (usize i = 0; i < Width; ++i)
+			pack.data.raw[i] = T(Math::Sign(data.raw[i]));
+		return pack;
 	}
 }

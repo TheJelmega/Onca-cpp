@@ -13,7 +13,7 @@ namespace Core::Intrin
 
 
 	template <SimdBaseType T, usize Width>
-	constexpr Pack<T, Width>::Pack(Detail::Uninit) noexcept
+	constexpr Pack<T, Width>::Pack(UnInitTag) noexcept
 	{
 	}
 
@@ -28,6 +28,24 @@ namespace Core::Intrin
 	constexpr Pack<T, Width>::Pack(Args... vals) noexcept
 	{
 		*this = Set(vals...);
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator+() const noexcept -> Pack
+	{
+		return Pack(data);
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator-() const noexcept -> Pack
+	{
+		return Neg();
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator~() const noexcept -> Pack
+	{
+		return Not();
 	}
 
 	template <SimdBaseType T, usize Width>

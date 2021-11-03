@@ -27,7 +27,7 @@ namespace Core::Intrin
 		STATIC_ASSERT(Op <= ComparisonOp::Unord, "Invalid ComparisonOp");
 		STATIC_ASSERT(!Integral<T> || Op <= ComparisonOp::NEq, "Invalid integer ComparisonOp, cannot be Ord or Unord");
 
-		Pack pack{ Detail::Uninit{} };
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -1390,7 +1390,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Min(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)
@@ -1610,7 +1610,7 @@ namespace Core::Intrin
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Max(const Pack& other) const noexcept -> Pack
 	{
-		Pack pack;
+		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Detail::IsSIMD128<DataSize>)

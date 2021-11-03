@@ -4,8 +4,10 @@
 
 namespace Core
 {
-	struct Empty
-	{};
+	struct Empty {};
+
+	struct UnInitTag {};
+	constexpr UnInitTag UnInit{};
 
 	template<typename T>
 	struct DefaultDeleter
