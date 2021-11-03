@@ -73,6 +73,38 @@ namespace Core::Intrin
 	}
 
 	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator>>(const Pack& count) const noexcept -> Pack
+	{
+		return ShiftL(count);
+	}
+
+	template <SimdBaseType T, usize Width>
+	template <UnsignedIntegral U>
+	constexpr auto Pack<T, Width>::operator>>(U count) const noexcept -> Pack
+	{
+		return ShiftL(count);
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator<<(const Pack& count) const noexcept -> Pack
+	{
+		if constexpr (UnsignedIntegral<T>)
+			return ShiftRL(count);
+		else
+			return ShiftRA(count);
+	}
+
+	template <SimdBaseType T, usize Width>
+	template <UnsignedIntegral U>
+	constexpr auto Pack<T, Width>::operator<<(U count) const noexcept -> Pack
+	{
+		if constexpr (UnsignedIntegral<T>)
+			return ShiftRL(count);
+		else
+			return ShiftRA(count);
+	}
+
+	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::operator+=(const Pack& other) noexcept -> Pack&
 	{
 		*this = *this + other;
@@ -118,6 +150,36 @@ namespace Core::Intrin
 	constexpr auto Pack<T, Width>::operator|=(const Pack& other) noexcept -> Pack&
 	{
 		*this = *this | other;
+		return *this;
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator>>=(const Pack& count) const noexcept -> Pack&
+	{
+		*this = *this >> count;
+		return *this;
+	}
+
+	template <SimdBaseType T, usize Width>
+	template <UnsignedIntegral U>
+	constexpr auto Pack<T, Width>::operator>>=(U count) const noexcept -> Pack&
+	{
+		*this = *this >> count;
+		return *this;
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator<<=(const Pack& count) const noexcept -> Pack&
+	{
+		*this = *this << count;
+		return *this;
+	}
+
+	template <SimdBaseType T, usize Width>
+	template <UnsignedIntegral U>
+	constexpr auto Pack<T, Width>::operator<<=(U count) const noexcept -> Pack&
+	{
+		*this = *this << count;
 		return *this;
 	}
 

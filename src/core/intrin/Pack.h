@@ -13,19 +13,21 @@ namespace Core::Intrin
 		union PackData128
 		{
 			using Unsigned = UnsignedOfSameSize<T>;
+			using Signed = SignedOfSameSize<T>;
 
-			T        raw[16 / sizeof(T)];
-			Unsigned bits[16 / sizeof(T)];
-			f64      f64_[2];
-			f32      f32_[4];
-			u64      u64_[2];
-			u32      u32_[4];
-			u16      u16_[8];
-			u8       u8_ [16];
-			i64      i64_[2];
-			i32      i32_[4];
-			i16      i16_[8];
-			i8       i8_ [16];
+			T        raw  [16 / sizeof(T)];
+			Unsigned bits [16 / sizeof(T)];
+			Signed   sbits[16 / sizeof(T)];
+			f64      f64_ [2];
+			f32      f32_ [4];
+			u64      u64_ [2];
+			u32      u32_ [4];
+			u16      u16_ [8];
+			u8       u8_  [16];
+			i64      i64_ [2];
+			i32      i32_ [4];
+			i16      i16_ [8];
+			i8       i8_  [16];
 #if HAS_SSE
 			__m128   sse_m128;
 #endif
@@ -40,21 +42,23 @@ namespace Core::Intrin
 		union PackData256 // <32> 256-bit
 		{
 			using Unsigned = UnsignedOfSameSize<T>;
+			using Signed = SignedOfSameSize<T>;
 
-			T              raw [32 / sizeof(T)];
-			Unsigned       bits[32 / sizeof(T)];
-			f64            f64_[4];
-			f32            f32_[8];
-			u64            u64_[4];
-			u32            u32_[8];
-			u16            u16_[16];
-			u8             u8_ [32];
-			i64            i64_[4];
-			i32            i32_[8];
-			i16            i16_[16];
-			i8             i8_ [32];
+			T              raw  [32 / sizeof(T)];
+			Unsigned       bits [32 / sizeof(T)];
+			Signed         sbits[32 / sizeof(T)];
+			f64            f64_ [4];
+			f32            f32_ [8];
+			u64            u64_ [4];
+			u32            u32_ [8];
+			u16            u16_ [16];
+			u8             u8_  [32];
+			i64            i64_ [4];
+			i32            i32_ [8];
+			i16            i16_ [16];
+			i8             i8_  [32];
 
-			PackData128<T> m128[2];
+			PackData128<T> m128 [2];
 #if HAS_SSE
 			__m128         sse_m128[2];
 #endif
@@ -191,6 +195,13 @@ namespace Core::Intrin
 		constexpr auto operator^(const Pack& other) const noexcept -> Pack;
 		constexpr auto operator|(const Pack& other) const noexcept -> Pack;
 
+		constexpr auto operator>>(const Pack& count) const noexcept -> Pack;
+		template<UnsignedIntegral U>
+		constexpr auto operator>>(U count) const noexcept -> Pack;
+		constexpr auto operator<<(const Pack& count) const noexcept -> Pack;
+		template<UnsignedIntegral U>
+		constexpr auto operator<<(U count) const noexcept -> Pack;
+
 		constexpr auto operator+=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator-=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator*=(const Pack& other) noexcept -> Pack&;
@@ -199,6 +210,13 @@ namespace Core::Intrin
 		constexpr auto operator&=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator^=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator|=(const Pack& other) noexcept -> Pack&;
+
+		constexpr auto operator>>=(const Pack& count) const noexcept -> Pack&;
+		template<UnsignedIntegral U>
+		constexpr auto operator>>=(U count) const noexcept -> Pack&;
+		constexpr auto operator<<=(const Pack& count) const noexcept -> Pack&;
+		template<UnsignedIntegral U>
+		constexpr auto operator<<=(U count) const noexcept -> Pack&;
 
 		/**
 		 * Store the elements into unaligned memory
@@ -284,6 +302,70 @@ namespace Core::Intrin
 		 * \return Pack with result
 		 */
 		constexpr auto Not() const noexcept -> Pack;
+
+		/**
+		 * Shift each element of the pack to the left by the corresponding element in the given count
+		 * \param count Shift count
+		 * \return Shifted pack
+		 */
+		template<IntegralOfSameSize<T> U>
+		constexpr auto ShiftL(const Pack<U, Width>& count) const noexcept -> Pack;
+		/**
+		 * Shift each element of the pack to the left by the given count
+		 * \param count Shift count
+		 * \return Shifted pack
+		 */
+		template<UnsignedIntegral U>
+		constexpr auto ShiftL(U count) const noexcept -> Pack;
+		/**
+		 * Shift each element of the pack to the left by the given count
+		 * \tparam Count Shift count
+		 * \return Shifted pack
+		 */
+		template<usize Count>
+		constexpr auto ShiftL() const noexcept -> Pack;
+		/**
+		 * Arithmetically shift (sign extended) each element of the pack to the right by the corresponding element in the given count
+		 * \param count Shift count
+		 * \return Shifted pack
+		 */
+		template<IntegralOfSameSize<T> U>
+		constexpr auto ShiftRA(const Pack<U, Width>& count) const noexcept -> Pack;
+		/**
+		 * Arithmetically shift (sign extended) each element of the pack to the right by the given count
+		 * \param count Shift count
+		 * \return Shifted pack
+		 */
+		template<UnsignedIntegral U>
+		constexpr auto ShiftRA(U count) const noexcept -> Pack;
+		/**
+		 * Arithmetically shift (sign extended) each element of the pack to the right by the given count
+		 * \tparam Count Shift count
+		 * \return Shifted pack
+		 */
+		template<usize Count>
+		constexpr auto ShiftRA() const noexcept -> Pack;
+		/**
+		 * Logically shift (zero extended) each element of the pack to the right by the corresponding element in the given count
+		 * \param count Shift count
+		 * \return Shifted pack
+		 */
+		template<IntegralOfSameSize<T> U>
+		constexpr auto ShiftRL(const Pack<U, Width>& count) const noexcept -> Pack;
+		/**
+		 * Logically shift (zero extended) each element of the pack to the right by the given count
+		 * \param count Shift count
+		 * \return Shifted pack
+		 */
+		template<UnsignedIntegral U>
+		constexpr auto ShiftRL(U count) const noexcept -> Pack;
+		/**
+		 * Logically shift (zero extended) each element of the pack to the right by the given count
+		 * \tparam Count Shift count
+		 * \return Shifted pack
+		 */
+		template<usize Count>
+		constexpr auto ShiftRL() const noexcept -> Pack;
 
 		/**
 		 * Creates a pack with the minimum value of this and the given value
