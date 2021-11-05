@@ -86,8 +86,8 @@ namespace Core::Intrin
 			using Type = PackData128<T>;
 		};
 
-		template<SimdBaseType T, usize DataSize>
-		using PackData = typename PackDataSelector<T, DataSize>::Type;
+		template<SimdBaseType T, usize Width>
+		using PackData = typename PackDataSelector<T, Width * sizeof(T)>::Type;
 		
 	}
 	
@@ -107,7 +107,7 @@ namespace Core::Intrin
 	};
 
 	template<SimdBaseType T, usize Width>
-	struct alignas(sizeof(T) * Width) Pack
+	struct alignas(sizeof(T)* Width) Pack
 	{
 		static constexpr usize DataSize = sizeof(T) * Width;
 		static constexpr usize Align = DataSize;
@@ -117,14 +117,55 @@ namespace Core::Intrin
 #if defined(__INTELLISENSE__) || defined(__RESHARPER__)
 		Detail::PackData256<T> data;
 #else
-		Detail::PackData<T, DataSize> data;
+		Detail::PackData<T, Width> data;
 #endif
+
+		/**
+		 * Check if the pack if 128 bits wide
+		 * \return Whether the pack is 128 bits wide
+		 */
+		static constexpr auto Is128Bit() noexcept -> bool
+		{
+			return DataSize == 16;
+		}
+		/**
+		 * Check if the pack if 256 bits wide
+		 * \return Whether the pack is 256 bits wide
+		 */
+		static constexpr auto Is256Bit() noexcept -> bool
+		{
+			return DataSize == 32;
+		}
+
+		/**
+		 * Check if the pack is stored in a native register types
+		 * \return Whether the pack is stored in a native register types
+		 * \note The register is guaranteed to be at least 128-bit
+		 */
+		static constexpr auto IsNative() noexcept -> bool
+		{
+			return (IsF32<T> && HAS_SSE) || HAS_SSE2;
+		}
+
+		/**
+		 * Check if the pack is stored in a native 256-bit register types
+		 * \return Whether the pack is stored in a native register types
+		 */
+		static constexpr auto IsNative256() noexcept -> bool
+		{
+			return (FloatingPoint<T> && HAS_AVX) || HAS_AVX2;
+		}
 
 		/**
 		 * Create a pack with all its elements set to 0s
 		 * \return Zeroed pack
 		 */
 		static constexpr auto Zero() noexcept -> Pack;
+		/**
+		 * Create a pack with all its bits set to 1
+		 * \return Zeroed pack
+		 */
+		static constexpr auto Ones() noexcept -> Pack;
 		/**
 		 * Create a pack with all its elements set to a given value
 		 * \param val Value
@@ -280,6 +321,22 @@ namespace Core::Intrin
 		 */
 		// TODO: Fast version when dividing by scalar
 		constexpr auto Div(const Pack& other) const noexcept -> Pack;
+
+		/**
+		 * Add the elements of hte fiber pack to the current elements, if the result were to overflow, saturate the result to the max value
+		 * \param other Pack to add
+		 * \return Pack with result
+		 * \note When using a floating point, this will be a normal add, i.e. +INF on overflow
+		 */
+		constexpr auto AddSaturated(const Pack& other) const noexcept -> Pack;
+		/**
+		 * Add the elements of hte fiber pack to the current elements, if the result were to overflow, saturate the result to the max value
+		 * \param other Pack to add
+		 * \return Pack with result
+		 * \note When using a floating point, this will be a normal add, i.e. -INF on overflow
+		 */
+		constexpr auto SubSaturated(const Pack& other) const noexcept -> Pack;
+
 		/**
 		 * AND the current elements to the elements of the given pack
 		 * \param other Pack to devide with
@@ -309,6 +366,14 @@ namespace Core::Intrin
 		 * \return Pack with result
 		 */
 		constexpr auto Not() const noexcept -> Pack;
+
+		/**
+		 * Blend 2 packs using a mask
+		 * \param other Other pack to blend
+		 * \param mask Blend mask (0 == this, 1 == other)
+		 * \return Blended pack
+		 */
+		constexpr auto Blend(const Pack& other, const Pack& mask) const noexcept -> Pack;
 
 		/**
 		 * Shift each element of the pack to the left by the corresponding element in the given count
@@ -422,17 +487,33 @@ namespace Core::Intrin
 		template<SimdBaseType U, usize W>
 		friend struct Pack;
 
-		template<SimdBaseType U>
-		Pack(const Detail::PackData128<U>& data);
-		template<SimdBaseType U>
-		Pack(const Detail::PackData256<U>& data);
+		template<typename U>
+		Pack(const Detail::PackData128<U>& data)
+		{
+			STATIC_ASSERT(DataSize == 16, "Invalid data size for pack");
+			MemCpy(&this->data, &data, sizeof(data));
+		}
+		template<typename U>
+		Pack(const Detail::PackData256<U>& data)
+		{
+			STATIC_ASSERT(DataSize == 32, "Invalid data size for pack");
+			MemCpy(&this->data, &data, sizeof(data));
+		}
+
+		auto HalfPack(usize idx) const noexcept -> Pack<T, Width / 2>
+		{
+			if constexpr (Detail::IsSIMD128<DataSize>)
+				return Pack<T, Width / 2>{ UnInit };
+			else
+				return Pack<T, Width / 2>{ data.m128[idx] };
+		}
 	};
 }
 
 // Files are order, so they can use functionality defined in the .inl files before them
 #include "PackMemory.inl"
-#include "PackComp.inl"
 #include "PackLogic.inl"
+#include "PackComp.inl"
 #include "PackArith.inl"
 #include "PackConvert.inl"
 #include "Pack.inl"

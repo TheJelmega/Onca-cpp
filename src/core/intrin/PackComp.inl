@@ -30,7 +30,7 @@ namespace Core::Intrin
 		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
-			if constexpr (Detail::IsSIMD128<DataSize>)
+			if constexpr (Is128Bit())
 			{
 				if constexpr (IsF64<T>)
 				{
@@ -812,16 +812,14 @@ namespace Core::Intrin
 					}
 				}
 			}
-			else if constexpr (Detail::IsSIMD256<DataSize>)
+			else if constexpr (Is256Bit())
 			{
-#if !HAS_AVX2 && HAS_SSE
-				if constexpr (!HAS_AVX || Integral<T>)
+				if constexpr (IsNative() && !IsNative256())
 				{
-					pack.data.m128[0] = Pack<T, Width / 2>{ data.m128[0] }.Compare<Op>(Pack<T, Width / 2>{ other.data.m128[0] }).data;
-					pack.data.m128[1] = Pack<T, Width / 2>{ data.m128[1] }.Compare<Op>(Pack<T, Width / 2>{ other.data.m128[1] }).data;
+					pack.data.m128[0] = HalfPack(0).template Compare<Op>(other.HalfPack(0)).data;
+					pack.data.m128[1] = HalfPack(1).template Compare<Op>(other.HalfPack(1)).data;
 					return pack;
 				}
-#endif
 
 				if constexpr (IsF64<T>)
 				{
@@ -1361,7 +1359,7 @@ namespace Core::Intrin
 
 		for (usize i = 0; i < Width; ++i)
 		{
-			using Unsigned = typename Detail::PackData<T, DataSize>::Unsigned;
+			using Unsigned = typename Detail::PackData<T, Width>::Unsigned;
 			Unsigned mask = ~Unsigned(0);
 
 			if constexpr (Op == ComparisonOp::Eq)
@@ -1393,7 +1391,7 @@ namespace Core::Intrin
 		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
-			if constexpr (Detail::IsSIMD128<DataSize>)
+			if constexpr (Is128Bit())
 			{
 				if constexpr (IsF64<T>)
 				{
@@ -1416,13 +1414,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Lt>(other);
-#if HAS_SSE4_1
-					pack.data.sse_m128i = _mm_blendv_epi8(other.data.sse_m128i, data.sse_m128i, mask.data.sse_m128i);
-#elif HAS_SSE2
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
-#endif
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1433,9 +1425,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Lt>(other);
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1446,9 +1436,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Lt>(other);
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1466,13 +1454,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Lt>(other);
-#if HAS_SSE4_1
-					pack.data.sse_m128i = _mm_blendv_epi8(other.data.sse_m128i, data.sse_m128i, mask.data.sse_m128i);
-#elif HAS_SSE2
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
-#endif
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1483,9 +1465,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Lt>(other);
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1503,23 +1483,19 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Lt>(other);
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
 			}
-			else if constexpr (Detail::IsSIMD256<DataSize>)
+			else if constexpr (Is256Bit())
 			{
-#if !HAS_AVX2 && HAS_SSE
-				if constexpr (!HAS_AVX || Integral<T>)
+				if constexpr (IsNative() && !IsNative256())
 				{
-					pack.data.sse_m128i[0] = Pack<T, Width / 2>{ pack.data.m128[0] }.Min(Pack<T, Width / 2>{ other.data.m128[0] }).data;
-					pack.data.sse_m128i[1] = Pack<T, Width / 2>{ pack.data.m128[1] }.Min(Pack<T, Width / 2>{ other.data.m128[1] }).data;
+					pack.data.m128[0] = HalfPack(0).Min(other.HalfPack(0)).data;
+					pack.data.m128[1] = HalfPack(1).Min(other.HalfPack(1)).data;
 					return pack;
 				}
-#endif
 
 				if constexpr (IsF64<T>)
 				{
@@ -1542,7 +1518,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Lt>(other);
-					pack.data.sse_m256i = _mm256_blendv_epi8(other.data.sse_m256i, data.sse_m256i, mask.data.sse_m256i);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1574,7 +1550,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Lt>(other);
-					pack.data.sse_m256i = _mm256_blendv_epi8(other.data.sse_m256i, data.sse_m256i, mask.data.sse_m256i);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1613,7 +1589,7 @@ namespace Core::Intrin
 		Pack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
-			if constexpr (Detail::IsSIMD128<DataSize>)
+			if constexpr (Is128Bit())
 			{
 				if constexpr (IsF64<T>)
 				{
@@ -1636,13 +1612,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Gt>(other);
-#if HAS_SSE4_1
-					pack.data.sse_m128i = _mm_blendv_epi8(other.data.sse_m128i, data.sse_m128i, mask.data.sse_m128i);
-#elif HAS_SSE2
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
-#endif
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1653,9 +1623,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Gt>(other);
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1666,9 +1634,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Gt>(other);
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1686,13 +1652,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Gt>(other);
-#if HAS_SSE4_1
-					pack.data.sse_m128i = _mm_blendv_epi8(other.data.sse_m128i, data.sse_m128i, mask.data.sse_m128i);
-#elif HAS_SSE2
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
-#endif
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1703,9 +1663,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Gt>(other);
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1723,23 +1681,19 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Gt>(other);
-					__m128i val0 = _mm_and_si128(mask.data.sse_m128i, data.sse_m128i);
-					__m128i val1 = _mm_andnot_si128(mask.data.sse_m128i, other.data.sse_m128i);
-					pack.data.sse_m128i = _mm_or_si128(val0, val1);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
 			}
-			else if constexpr (Detail::IsSIMD256<DataSize>)
+			else if constexpr (Is256Bit())
 			{
-#if !HAS_AVX2 && HAS_SSE
-			if constexpr (!HAS_AVX || Integral<T>)
-			{
-				pack.data.sse_m128i[0] = Pack<T, Width / 2>{ pack.data.m128[0] }.Max(Pack<T, Width / 2>{ other.data.m128[0] }).data;
-				pack.data.sse_m128i[1] = Pack<T, Width / 2>{ pack.data.m128[1] }.Max(Pack<T, Width / 2>{ other.data.m128[1] }).data;
-				return pack;
-			}
-#endif
+				if constexpr (IsNative() && !IsNative256())
+				{
+					pack.data.m128[0] = HalfPack(0).Max(other.HalfPack(0)).data;
+					pack.data.m128[1] = HalfPack(1).Max(other.HalfPack(1)).data;
+					return pack;
+				}
 				if constexpr (IsF64<T>)
 				{
 #if HAS_AVX
@@ -1761,7 +1715,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Gt>(other);
-					pack.data.sse_m256i = _mm256_blendv_epi8(other.data.sse_m256i, data.sse_m256i, mask.data.sse_m256i);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1793,7 +1747,7 @@ namespace Core::Intrin
 					return pack;
 #elif HAS_SSE2
 					Pack mask = Compare<ComparisonOp::Gt>(other);
-					pack.data.sse_m256i = _mm256_blendv_epi8(other.data.sse_m256i, data.sse_m256i, mask.data.sse_m256i);
+					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}

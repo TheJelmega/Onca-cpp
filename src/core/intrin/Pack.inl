@@ -200,21 +200,4 @@ namespace Core::Intrin
 		*this = *this << count;
 		return *this;
 	}
-
-
-	template <SimdBaseType T, usize Width>
-	template<SimdBaseType U>
-	Pack<T, Width>::Pack(const Detail::PackData128<U>& data)
-	{
-		FREQ_ASSERT(sizeof(data) == sizeof(Detail::PackData128<U>), "Invalid size for this assignment");
-		MemCpy(&this->data, &data, sizeof(data));
-	}
-
-	template <SimdBaseType T, usize Width>
-	template<SimdBaseType U>
-	Pack<T, Width>::Pack(const Detail::PackData256<U>& data)
-	{
-		FREQ_ASSERT(sizeof(data) == sizeof(Detail::PackData256<U>), "Invalid size for this assignment");
-		MemCpy(&this->data, &data, sizeof(data));
-	}
 }

@@ -14,7 +14,7 @@ namespace Core::Intrin
 	template<SimdBaseType From, SimdBaseType T, usize Width>
 	auto SignExtend(Pack<T, Width>& pack) noexcept -> void
 	{
-		if constexpr (Detail::IsSIMD128<Pack<T, Width>::DataSize>)
+		if constexpr (Pack<T, Width>::Is128Bit())
 		{
 			if constexpr (sizeof(T) == 2)
 			{
@@ -60,23 +60,20 @@ namespace Core::Intrin
 		constexpr usize MinWidth = Math::Min(NewWidth, Width);
 		constexpr usize DataSize = Pack<T, Width>::DataSize;
 
-		Pack<U, NewWidth> pack{};
-
+		Pack<U, NewWidth> pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
 			alignas(DataSize) T src[Width];
-			srcPack.Store(reinterpret_cast<T*>(src));
+			srcPack.AlignedStore(reinterpret_cast<T*>(src));
 
 			alignas(DataSize) U dst[NewWidth] = {};
 			for (usize i = 0; i < MinWidth; ++i)
 				dst[i] = U(src[i]);
-			return Pack<U, NewWidth>::Load(reinterpret_cast<U*>(dst));
+			return Pack<U, NewWidth>::AlignedLoad(reinterpret_cast<U*>(dst));
 		}
 
 		for (usize i = 0; i < MinWidth; ++i)
-		{
 			pack.data.raw[i] = U(srcPack.data.raw[i]);
-		}
 		return pack;
 	}
 
@@ -91,12 +88,12 @@ namespace Core::Intrin
 		if constexpr (SameAs<T, U>)
 			return *this;
 		if constexpr (Integral<T> && Integral<U> && sizeof(T) == sizeof(U))
-			return ResPack( data );
+			return ResPack{ data };
 
 		ResPack pack{ UnInit };
 		IF_NOT_CONSTEVAL
 		{
-			if constexpr (Detail::IsSIMD128<DataSize>)
+			if constexpr (Is128Bit())
 			{
 				if constexpr (IsF64<T>)
 				{
@@ -566,29 +563,29 @@ namespace Core::Intrin
 					}
 				}
 			}
-			else if constexpr (Detail::IsSIMD256<DataSize>)
+			else if constexpr (Is128Bit())
 			{
-#if !HAS_AVX2 && HAS_SSE2
-				if constexpr (!HAS_AVX || Integral<T>)
+#if HAS_SSE2
+				if constexpr (IsNative() && !IsNative256())
 				{
 					if constexpr (Width == NewWidth)
 					{
-						pack.data.m128[0] = Pack<T, Width / 2>{ data.m128[0] }.template Convert<U>().data;
-						pack.data.m128[1] = Pack<T, Width / 2>{ data.m128[1] }.template Convert<U>().data;
+						pack.data.m128[0] = HalfPack(0).template Convert<U>().data;
+						pack.data.m128[1] = HalfPack(1).template Convert<U>().data;
 					}
 					else if constexpr (Width > NewWidth)
 					{
-						Detail::PackData<T, 16> hi = data.m128[0];
+						Detail::PackData<T, Width / 2> hi = data.m128[0];
 						constexpr i32 shift = NewWidth / 2 * sizeof(T);
 						hi.sse_m128i = _mm_bsrli_si128(hi.sse_m128i, shift);
 
-						pack.data.m128[0] = Pack<T, Width / 2>{ data.m128[0] }.template Convert<U>().data;
+						pack.data.m128[0] = HalfPack(0).template Convert<U>().data;
 						pack.data.m128[1] = Pack<T, Width / 2>{ hi }.template Convert<U>().data;
 					}
 					else // Width < NewWidth
 					{
-						__m128i lo = Pack<T, Width / 2>{ data.m128[0] }.template Convert<U>().data.sse_m128i;
-						__m128i hi = Pack<T, Width / 2>{ data.m128[1] }.template Convert<U>().data.sse_m128i;
+						__m128i lo = HalfPack(0).template Convert<U>().data.sse_m128i;
+						__m128i hi = HalfPack(1).template Convert<U>().data.sse_m128i;
 						
 						constexpr i32 shift = Width / 2 * sizeof(U);
 						hi = _mm_bslli_si128(hi, shift);
@@ -601,7 +598,7 @@ namespace Core::Intrin
 				}
 #endif
 
-				// AVX NOTE(jelte): certain functions return a smaller register than needed, to fix this, the value needs to be cast,
+				// NOTE(jelte): AVX: certain functions return a smaller register than needed, to fix this, the value needs to be cast,
 				// if we were to assign it to the first sub 'register', the other will be filled with junk,
 				// I expect that this is caused by either compiler optimizations or the compiler not understanding the code as expected
 
