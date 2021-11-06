@@ -93,13 +93,15 @@ namespace Core::Math
 	template <FloatingPoint F>
 	constexpr auto Ceil(F f) noexcept -> FloatIntType<F>
 	{
-		return static_cast<FloatIntType<F>>(f) + (f >= 0);
+		FloatIntType<F> trunc = Trunc(f);
+		return trunc + (f >= 0 && f != trunc);
 	}
 
 	template <FloatingPoint F>
 	constexpr auto Floor(F f) noexcept -> FloatIntType<F>
 	{
-		return static_cast<FloatIntType<F>>(f) - (f < 0);
+		FloatIntType<F> trunc = Trunc(f);
+		return trunc - (f < 0 && f != trunc);
 	}
 
 	template <FloatingPoint F>
