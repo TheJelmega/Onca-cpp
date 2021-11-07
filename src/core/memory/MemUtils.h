@@ -11,7 +11,7 @@ namespace Core
 	 * \param[in] numBytes Number of bytes to copy
 	 * \note Regions cannot overlap
 	 */
-	constexpr auto MemCpy(void* dst, const void* src, usize numBytes) noexcept -> void;
+	auto MemCpy(void* dst, const void* src, usize numBytes) noexcept -> void;
 	/**
 	 * Copy the contents from one element to another
 	 * \tparam T Type to copy
@@ -19,14 +19,14 @@ namespace Core
 	 * \param[in] src Source
 	 */
 	template<typename T>
-	constexpr auto MemCpy(T& dst, const T& src) noexcept -> void;
+	auto MemCpy(T& dst, const T& src) noexcept -> void;
 	/**
 	 * Move a region of memory from one location to another
 	 * \param[in] dst Pointer to destination
 	 * \param[in] src Pointer to source
 	 * \param[in] numBytes Number of bytes to copy
 	 */
-	constexpr auto MemMove(void* dst, void* src, usize numBytes) noexcept -> void;
+	auto MemMove(void* dst, void* src, usize numBytes) noexcept -> void;
 	/**
 	 * Move a region of memory from one location to another in a MemRef
 	 * \param mem MemRef to move memory in
@@ -42,20 +42,20 @@ namespace Core
 	 * \param[in] val Value to set memory to
 	 * \param[in] numBytes Number of bytes to set
 	 */
-	constexpr auto MemSet(void* ptr, u8 val, usize numBytes) noexcept -> void;
+	auto MemSet(void* ptr, u8 val, usize numBytes) noexcept -> void;
 	/**
 	 * Set the content of a MeMRef to 'val'
 	 * \param[in] mem MemRef to set content for
 	 * \param[in] val Value to set memory to
 	 */
 	template<typename T>
-	constexpr auto MemSet(MemRef<T>& mem, u8 val) noexcept -> void;
+	auto MemSet(MemRef<T>& mem, u8 val) noexcept -> void;
 	/**
 	 * Clear a region of memory (set to 0)
 	 * \param[in] ptr Pointer to memory
 	 * \param[in] numBytes Number of numElems to clear
 	 */
-	constexpr auto MemClear(void* ptr, usize numBytes) noexcept -> void;
+	auto MemClear(void* ptr, usize numBytes) noexcept -> void;
 	/**
 	 * Clears the content of a MemRef
 	 * \tparam T Type of value to clear
@@ -69,7 +69,7 @@ namespace Core
 	 * \param[in] val Value to clear
 	 */
 	template<typename T>
-	constexpr auto MemClearData(T& val) noexcept -> void;
+	auto MemClearData(T& val) noexcept -> void;
 
 	/**
 	 * Compare 2 blocks of memory
@@ -78,7 +78,7 @@ namespace Core
 	 * \param numBytes Number of bytes to compare
 	 * \return 0 if blocks match, -1 if the first difference has a smaller byte in a, 1 otherwise
 	 */
-	constexpr auto MemCmp(const void* pA, const void* pB, usize numBytes) noexcept -> i8;
+	auto MemCmp(const void* pA, const void* pB, usize numBytes) noexcept -> i8;
 	/**
 	 * Compare 2 blocks of memory
 	 * \param a First MemRef
