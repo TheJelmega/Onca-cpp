@@ -261,6 +261,13 @@ namespace Core::Intrin
 		template<UnsignedIntegral U>
 		constexpr auto operator<<=(U count) const noexcept -> Pack&;
 
+		constexpr auto operator==(const Pack& other) const noexcept -> Pack;
+		constexpr auto operator!=(const Pack& other) const noexcept -> Pack;
+		constexpr auto operator<(const Pack& other) const noexcept -> Pack;
+		constexpr auto operator<=(const Pack& other) const noexcept -> Pack;
+		constexpr auto operator>(const Pack& other) const noexcept -> Pack;
+		constexpr auto operator>=(const Pack& other) const noexcept -> Pack;
+
 		/**
 		 * Store the elements into unaligned memory
 		 * \param addr Address to store elements to
@@ -271,6 +278,22 @@ namespace Core::Intrin
 		 * \param addr Address to store elements to
 		 */
 		constexpr auto AlignedStore(T* addr) const noexcept -> void;
+
+		/**
+		 * Create a copy of the pack with a value inserted into it
+		 * \tparam Index Index of the element to insert to
+		 * \param val Value to insert
+		 * \return Pack with the value inserted
+		 */
+		template<usize Index>
+		constexpr auto Insert(T val) const noexcept -> Pack;
+		/**
+		 * Extract the value of an element from the pack
+		 * \tparam Index Index of element to extract
+		 * \return Extracted element
+		 */
+		template<usize Index>
+		constexpr auto Extract() const noexcept -> T;
 
 		/**
 		 * Convert a pack to another type
@@ -455,6 +478,33 @@ namespace Core::Intrin
 		constexpr auto Max(const Pack& other) const noexcept -> Pack;
 
 		/**
+		 * Creates a pack with elements equal to the nearest integer that is greater or equal to that element
+		 * \return Pack with the ceil of the elements
+		 */
+		constexpr auto Ceil() const noexcept -> Pack;
+		/**
+		 * Creates a pack with elements equal to the nearest integer that is less or equal to that element
+		 * \return Pack with the floor of the elements
+		 */
+		constexpr auto Floor() const noexcept -> Pack;
+		/**
+		 * Creates a pack with truncated elements (without fraction)
+		 * \return Pack with truncated elements
+		 */
+		constexpr auto Trunc() const noexcept -> Pack;
+		/**
+		 * Creates a pack with elements rounded to the nearest integer
+		 * \return Pack with the floor of the elements
+		 * \note Round is a sequence of instructions, as the intrinsic round results in RoundEven
+		 */
+		constexpr auto Round() const noexcept -> Pack;
+		/**
+		 * Creates a pack with elements rounded to the nearest even integer
+		 * \return Pack with the floor of the elements
+		 */
+		constexpr auto RoundEven() const noexcept -> Pack;
+
+		/**
 		 * Calculate the reciprocal (1/x) of each element in the Pack
 		 * \return Reciprocal of the elements in the Pack
 		 * \note Result is undefined if an element is 0
@@ -482,6 +532,23 @@ namespace Core::Intrin
 		 */
 		constexpr auto Sign() const noexcept -> Pack;
 
+
+		/**
+		 * Sum all elements in the pack
+		 * \tparam NumElements Number of elements to sum up
+		 * \return Pack set to the sum of all elements
+		 */
+		template<usize NumElements = Width>
+		constexpr auto HAdd() const noexcept -> Pack;
+		/**
+		 * Calculate a dot product of a number of elements and get a register with each element set to that dot product
+		 * \tparam NumElements Number of elements from the start to calculate the dot product for
+		 * \param other Other pack
+		 * \return A pack with each element set to the dot product
+		 */
+		template<usize NumElements = Width>
+		constexpr auto Dot(const Pack& other) const noexcept -> Pack;
+
 	private:
 
 		template<SimdBaseType U, usize W>
@@ -502,7 +569,7 @@ namespace Core::Intrin
 
 		auto HalfPack(usize idx) const noexcept -> Pack<T, Width / 2>
 		{
-			if constexpr (Detail::IsSIMD128<DataSize>)
+			if constexpr (Is128Bit())
 				return Pack<T, Width / 2>{ UnInit };
 			else
 				return Pack<T, Width / 2>{ data.m128[idx] };

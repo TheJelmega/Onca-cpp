@@ -826,4 +826,184 @@ namespace Core::Intrin
 		}
 		MemCpy(addr, &data, DataSize);
 	}
+
+	template <SimdBaseType T, usize Width>
+	template <usize Index>
+	constexpr auto Pack<T, Width>::Insert(T val) const noexcept -> Pack
+	{
+		STATIC_ASSERT(Index < Width, "Index out of range");
+
+		Pack pack{ UnInit };
+		IF_NOT_CONSTEVAL
+		{
+			if constexpr (Is128Bit())
+			{
+				if constexpr (sizeof(T) == 8)
+				{
+#if HAS_SSE4_1
+					i64 ival = *reinterpret_cast<i64*>(&val);
+					pack.data.sse_m128i = _mm_insert_epi64(data.sse_m128i, ival, Index);
+					return pack;
+#endif
+				}
+				else if constexpr (sizeof(T) == 4)
+				{
+#if HAS_SSE4_1
+					i32 ival = *reinterpret_cast<i32*>(&val);
+					pack.data.sse_m128i = _mm_insert_epi32(data.sse_m128i, ival, Index);
+					return pack;
+#endif
+				}
+				else if constexpr (sizeof(T) == 2)
+				{
+#if HAS_SSE2
+					i16 ival = *reinterpret_cast<i16*>(&val);
+					pack.data.sse_m128i = _mm_insert_epi16(data.sse_m128i, ival, Index);
+					return pack;
+#endif
+				}
+				else if constexpr (sizeof(T) == 1)
+				{
+#if HAS_SSE4_1
+					i8 ival = *reinterpret_cast<i8*>(&val);
+					pack.data.sse_m128i = _mm_insert_epi8(data.sse_m128i, ival, Index);
+					return pack;
+#endif
+				}
+			}
+			else if constexpr (Is256Bit())
+			{
+				if constexpr (IsNative256() && sizeof(T) == 8)
+				{
+#if HAS_AVX
+					i64 ival = *reinterpret_cast<i64*>(&val);
+					pack.data.sse_m256i = _mm256_insert_epi64(data.sse_m256i, ival, Index);
+					return pack;
+#endif
+				}
+				else if constexpr (IsNative256() && sizeof(T) == 4)
+				{
+#if HAS_AVX
+					i32 ival = *reinterpret_cast<i32*>(&val);
+					pack.data.sse_m256i = _mm256_insert_epi32(data.sse_m256i, ival, Index);
+					return pack;
+#endif
+				}
+				else if constexpr (sizeof(T) == 2)
+				{
+#if HAS_AVX
+					i16 ival = *reinterpret_cast<i16*>(&val);
+					pack.data.sse_m256i = _mm256_insert_epi16(data.sse_m256i, ival, Index);
+					return pack;
+#endif
+				}
+				else if constexpr (sizeof(T) == 1)
+				{
+#if HAS_AVX
+					i8 ival = *reinterpret_cast<i8*>(&val);
+					pack.data.sse_m256i = _mm256_insert_epi8(data.sse_m256i, ival, Index);
+					return pack;
+#endif
+				}
+			}
+
+			if constexpr (IsNative())
+			{
+				alignas(DataSize) T vals[Width];
+				AlignedStore(vals);
+				vals[Index] = val;
+				return Pack::AlignedLoad(vals);
+			}
+		}
+
+		pack.data.raw[Index] = val;
+		return pack;
+	}
+
+	template <SimdBaseType T, usize Width>
+	template <usize Index>
+	constexpr auto Pack<T, Width>::Extract() const noexcept -> T
+	{
+		STATIC_ASSERT(Index < Width, "Index out of range");
+
+		{
+			if constexpr (Is128Bit())
+			{
+				if constexpr (sizeof(T) == 8)
+				{
+#if HAS_SSE4_1
+					i64 val = _mm_extract_epi64(data.sse_m128i, Index);
+					return *reinterpret_cast<T*>(&val);
+#endif
+				}
+				else if constexpr (sizeof(T) == 4)
+				{
+#if HAS_SSE4_1
+					i64 val;
+					if constexpr (IsF32<T>)
+						val = _mm_extract_ps(data.sse_m128, Index);
+					else
+						val = _mm_extract_epi32(data.sse_m128i, Index);
+					return *reinterpret_cast<T*>(&val);
+#endif
+				}
+				else if constexpr (sizeof(T) == 2)
+				{
+#if HAS_SSE4_1
+					return T(_mm_extract_epi16(data.sse_m128i, Index));
+#endif
+				}
+				else if constexpr (sizeof(T) == 1)
+				{
+#if HAS_SSE4_1
+					return T(_mm_extract_epi8(data.sse_m128i, Index));
+#endif
+				}
+			}
+			else if constexpr (Is256Bit())
+			{
+				if constexpr (sizeof(T) == 8)
+				{
+#if HAS_AVX
+					i64 val = _mm256_extract_epi64(data.sse_m256i, Index);
+					return *reinterpret_cast<T*>(&val);
+#endif
+				}
+				else if constexpr (sizeof(T) == 4)
+				{
+#if HAS_AVX
+					i32 val = _mm256_extract_epi32(data.sse_m256i, Index);
+					return *reinterpret_cast<T*>(&val);
+#endif
+				}
+				else if constexpr (sizeof(T) == 2)
+				{
+#if HAS_AVX2
+					return T(_mm256_extract_epi16(data.sse_m256i, Index));
+#elif HAS_AVX
+					i32 vals = _mm256_extract_epi32(data.sse_m256i, Index >> 1);
+					return T(reinterpret_cast<i16*>(vals)[Index & 1]);
+#endif
+				}
+				else if constexpr (sizeof(T) == 1)
+				{
+#if HAS_AVX2
+					return T(_mm256_extract_epi8(data.sse_m256i, Index));
+#elif HAS_AVX
+					i32 vals = _mm256_extract_epi32(data.sse_m256i, Index >> 2);
+					return T(reinterpret_cast<i8*>(vals)[Index & 3]);
+#endif
+				}
+			}
+
+			if constexpr (IsNative())
+			{
+				alignas(DataSize) T vals[Width];
+				AlignedStore(vals);
+				return vals[Index];
+			}
+		}
+
+		return data.raw[Index];
+	}
 }

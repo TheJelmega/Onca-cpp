@@ -200,4 +200,40 @@ namespace Core::Intrin
 		*this = *this << count;
 		return *this;
 	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator==(const Pack& other) const noexcept -> Pack
+	{
+		return Compare<ComparisonOp::Eq>(other);
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator!=(const Pack& other) const noexcept -> Pack
+	{
+		return Compare<ComparisonOp::NEq>(other);
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator<(const Pack& other) const noexcept -> Pack
+	{
+		return Compare<ComparisonOp::Lt>(other);
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator<=(const Pack& other) const noexcept -> Pack
+	{
+		return Compare<ComparisonOp::Le>(other);
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator>(const Pack& other) const noexcept -> Pack
+	{
+		return Compare<ComparisonOp::Gt>(other);
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator>=(const Pack& other) const noexcept -> Pack
+	{
+		return Compare<ComparisonOp::Ge>(other);
+	}
 }
