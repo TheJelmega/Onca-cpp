@@ -17,6 +17,7 @@
 #include "utils/Flags.h"
 
 #include "intrin/Pack.h"
+#include "intrin/BitIntrin.h"
 
 #include "memory/MemUtils.h"
 #include "memory/MemRef.h"

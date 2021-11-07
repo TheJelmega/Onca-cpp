@@ -82,6 +82,9 @@
 
 // Enable all for resharper
 
+// TODO: check if this is always the case
+#define HAS_POPCNT HAS_SSE4_2
+
 #ifdef __RESHARPER__
 #undef HAS_SSE
 #define HAS_SSE 1
