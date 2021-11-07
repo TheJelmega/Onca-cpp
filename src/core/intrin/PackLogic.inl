@@ -15,21 +15,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_and_pd(data.sse_m128d, other.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_and_ps(data.sse_m128, other.data.sse_m128);
 					return pack;
 #endif
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_and_si128(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -85,21 +85,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_andnot_pd(other.data.sse_m128d, data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_andnot_ps(other.data.sse_m128, data.sse_m128);
 					return pack;
 #endif
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_andnot_si128(other.data.sse_m128i, data.sse_m128i);
 					return pack;
 #endif
@@ -154,21 +154,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_xor_pd(data.sse_m128d, other.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_xor_ps(data.sse_m128, other.data.sse_m128);
 					return pack;
 #endif
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_xor_si128(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -222,21 +222,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_or_pd(data.sse_m128d, other.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_or_ps(data.sse_m128, other.data.sse_m128);
 					return pack;
 #endif
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_or_si128(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -305,21 +305,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_blendv_pd(data.sse_m128d, other.data.sse_m128d, mask.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_blendv_ps(data.sse_m128, other.data.sse_m128, mask.data.sse_m128);
 					return pack;
 #endif
 				}
 				else
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_blendv_epi8(data.sse_m128i, other.data.sse_m128i, mask.data.sse_m128i);
 					return pack;
 #endif
@@ -568,7 +568,7 @@ namespace Core::Intrin
 			{
 				if constexpr (sizeof(T) == 8)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					pack.data.sse_m128i = _mm_sll_epi64(data.sse_m128i, shift);
 					return pack;
@@ -576,7 +576,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 4)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					pack.data.sse_m128i = _mm_sll_epi32(data.sse_m128i, shift);
 					return pack;
@@ -584,7 +584,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 2)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					pack.data.sse_m128i = _mm_sll_epi16(data.sse_m128i, shift);
 					return pack;
@@ -592,7 +592,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 1)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					__m128i oddMask = _mm_set1_epi16(i16(0x00FF));
 					__m128i evenMask = _mm_set1_epi16(i16(0xFF00));
@@ -677,28 +677,28 @@ namespace Core::Intrin
 			{
 				if constexpr (sizeof(T) == 8)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_slli_epi64(data.sse_m128i, Count);
 					return pack;
 #endif
 				}
 				else if constexpr (sizeof(T) == 4)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_slli_epi32(data.sse_m128i, Count);
 					return pack;
 #endif
 				}
 				else if constexpr (sizeof(T) == 2)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_slli_epi16(data.sse_m128i, Count);
 					return pack;
 #endif
 				}
 				else if constexpr (sizeof(T) == 1)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i oddMask = _mm_set1_epi16(i16(0x00FF));
 					__m128i evenMask = _mm_set1_epi16(i16(0xFF00));
 
@@ -1008,7 +1008,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m128i = _mm_srav_epi64(data.sse_m128i, count.data.sse_m128i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					__m128i shifted = _mm_srl_epi64(data.sse_m128i, shift);
 
@@ -1028,7 +1028,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 4)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					pack.data.sse_m128i = _mm_sra_epi32(data.sse_m128i, shift);
 					return pack;
@@ -1036,7 +1036,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 2)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					pack.data.sse_m128i = _mm_sra_epi16(data.sse_m128i, shift);
 					return pack;
@@ -1044,7 +1044,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 1)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					__m128i evenMask = _mm_set1_epi16(i16(0xFF00));
 
@@ -1148,7 +1148,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m128i = _mm_srav_epi64(data.sse_m128i, count.data.sse_m128i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					__m128i shifted = _mm_srli_epi64(data.sse_m128i, Count);
 
 					__m128i upperBit = _mm_set1_epi64x(0x8000'0000'0000'0000);
@@ -1166,21 +1166,21 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 4)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_srai_epi32(data.sse_m128i, Count);
 					return pack;
 #endif
 				}
 				else if constexpr (sizeof(T) == 2)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_srai_epi16(data.sse_m128i, Count);
 					return pack;
 #endif
 				}
 				else if constexpr (sizeof(T) == 1)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i evenMask = _mm_set1_epi16(i16(0xFF00));
 
 					__m128i odd = _mm_slli_epi16(data.sse_m128i, 8);
@@ -1466,7 +1466,7 @@ namespace Core::Intrin
 			{
 				if constexpr (sizeof(T) == 8)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					pack.data.sse_m128i = _mm_srl_epi64(data.sse_m128i, shift);
 					return pack;
@@ -1474,7 +1474,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 4)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					pack.data.sse_m128i = _mm_srl_epi32(data.sse_m128i, shift);
 					return pack;
@@ -1482,7 +1482,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 2)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					pack.data.sse_m128i = _mm_srl_epi16(data.sse_m128i, shift);
 					return pack;
@@ -1490,7 +1490,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 1)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i shift = _mm_set1_epi64x(count);
 					__m128i oddMask = _mm_set1_epi16(i16(0x00FF));
 					__m128i evenMask = _mm_set1_epi16(i16(0xFF00));
@@ -1575,28 +1575,28 @@ namespace Core::Intrin
 			{
 				if constexpr (sizeof(T) == 8)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_srli_epi64(data.sse_m128i, Count);
 					return pack;
 #endif
 				}
 				else if constexpr (sizeof(T) == 4)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_srli_epi32(data.sse_m128i, Count);
 					return pack;
 #endif
 				}
 				else if constexpr (sizeof(T) == 2)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_srli_epi16(data.sse_m128i, Count);
 					return pack;
 #endif
 				}
 				else if constexpr (sizeof(T) == 1)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i oddMask = _mm_set1_epi16(i16(0x00FF));
 					__m128i evenMask = _mm_set1_epi16(i16(0xFF00));
 

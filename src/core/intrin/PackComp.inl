@@ -41,56 +41,56 @@ namespace Core::Intrin
 
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128d = _mm_cmpeq_pd(data.sse_m128d, other.data.sse_m128d);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128d = _mm_cmpge_pd(data.sse_m128d, other.data.sse_m128d);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128d = _mm_cmpgt_pd(data.sse_m128d, other.data.sse_m128d);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128d = _mm_cmple_pd(data.sse_m128d, other.data.sse_m128d);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128d = _mm_cmplt_pd(data.sse_m128d, other.data.sse_m128d);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128d = _mm_cmpneq_pd(data.sse_m128d, other.data.sse_m128d);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ord)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128d = _mm_cmpord_pd(data.sse_m128d, other.data.sse_m128d);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Unord)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128d = _mm_cmpunord_pd(data.sse_m128d, other.data.sse_m128d);
 						return pack;
 #endif
@@ -105,56 +105,56 @@ namespace Core::Intrin
 
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128 = _mm_cmpeq_ps(data.sse_m128, other.data.sse_m128);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128 = _mm_cmpge_ps(data.sse_m128, other.data.sse_m128);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128 = _mm_cmpgt_ps(data.sse_m128, other.data.sse_m128);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128 = _mm_cmple_ps(data.sse_m128, other.data.sse_m128);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128 = _mm_cmplt_ps(data.sse_m128, other.data.sse_m128);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128 = _mm_cmpneq_ps(data.sse_m128, other.data.sse_m128);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ord)
 					{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128 = _mm_cmpord_ps(data.sse_m128, other.data.sse_m128);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Unord)
 					{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128 = _mm_cmpunord_ps(data.sse_m128, other.data.sse_m128);
 						return pack;
 #endif
@@ -164,115 +164,49 @@ namespace Core::Intrin
 				{
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpeq_epi64(data.sse_m128i, other.data.sse_m128i);
-						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) i64 vals[2];
-						alignas(sizeof(Pack)) i64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] == otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE4_2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi64(data.sse_m128i, other.data.sse_m128i);
 						__m128i gt = _mm_cmpgt_epi64(data.sse_m128i, other.data.sse_m128i);
 						pack.data.sse_m128i = _mm_or_si128(eq, gt);
-						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) i64 vals[2];
-						alignas(sizeof(Pack)) i64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] >= otherVals[i] ? ~u64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE4_2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpgt_epi64(data.sse_m128i, other.data.sse_m128i);
-						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) i64 vals[2];
-						alignas(sizeof(Pack)) i64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] > otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE4_2
+#if HAS_SSE_SUPPORT
 						__m128i lt = _mm_cmpgt_epi64(other.data.sse_m128i, data.sse_m128i);
 						__m128i eq = _mm_cmpeq_epi64(data.sse_m128i, other.data.sse_m128i);
 						pack.data.sse_m128i = _mm_or_si128(lt, eq);
-						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) i64 vals[2];
-						alignas(sizeof(Pack)) i64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] <= otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE4_2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpgt_epi64(other.data.sse_m128i, data.sse_m128i);
-						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) i64 vals[2];
-						alignas(sizeof(Pack)) i64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] < otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi64(data.sse_m128i, other.data.sse_m128i);
 						__m128i ones = _mm_cmpeq_epi64(data.sse_m128i, data.sse_m128i);
 						pack.data.sse_m128i = _mm_xor_si128(eq, ones);
-						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) i64 vals[2];
-						alignas(sizeof(Pack)) i64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] != otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
 						return pack;
 #endif
 					}
@@ -281,25 +215,14 @@ namespace Core::Intrin
 				{
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpeq_epi64(data.sse_m128i, other.data.sse_m128i);
-						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) u64 vals[2];
-						alignas(sizeof(Pack)) u64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] == otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE4_2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi64x(0x8000'0000'0000'0000);
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -307,43 +230,21 @@ namespace Core::Intrin
 						__m128i gt = _mm_cmpgt_epi64(compA, compB);
 						pack.data.sse_m128i = _mm_or_si128(eq, gt);
 						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) u64 vals[2];
-						alignas(sizeof(Pack)) u64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] >= otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
-						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE4_2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi64x(0x8000'0000'0000'0000);
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
 						pack.data.sse_m128i = _mm_cmpgt_epi64(compA, compB);
 						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) u64 vals[2];
-						alignas(sizeof(Pack)) u64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] > otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
-						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE4_2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi64x(0x8000'0000'0000'0000);
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -351,57 +252,24 @@ namespace Core::Intrin
 						__m128i eq = _mm_cmpeq_epi64(compB, compA);
 						pack.data.sse_m128i = _mm_or_si128(lt, eq);
 						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) u64 vals[2];
-						alignas(sizeof(Pack)) u64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] <= otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
-						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE4_2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi64x(0x8000'0000'0000'0000);
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
 						pack.data.sse_m128i = _mm_cmpgt_epi64(compB, compA);
 						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) u64 vals[2];
-						alignas(sizeof(Pack)) u64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] < otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
-						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi64(data.sse_m128i, other.data.sse_m128i);
 						__m128i ones = _mm_cmpeq_epi64(data.sse_m128i, data.sse_m128i);
 						pack.data.sse_m128i = _mm_xor_si128(eq, ones);
-						return pack;
-#elif HAS_SSE2
-						alignas(sizeof(Pack)) u64 vals[2];
-						alignas(sizeof(Pack)) u64 otherVals[2];
-						_mm_store_si128(reinterpret_cast<__m128i*>(vals), data.sse_m128i);
-						_mm_store_si128(reinterpret_cast<__m128i*>(otherVals), other.data.sse_m128i);
-
-						for (usize i = 0; i < Width; ++i)
-							vals[i] = vals[i] != otherVals[i] ? ~i64(0) : 0;
-
-						pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(vals));
 						return pack;
 #endif
 					}
@@ -410,14 +278,14 @@ namespace Core::Intrin
 				{
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpeq_epi32(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi32(data.sse_m128i, other.data.sse_m128i);
 						__m128i gt = _mm_cmpgt_epi32(data.sse_m128i, other.data.sse_m128i);
 						pack.data.sse_m128i = _mm_or_si128(eq, gt);
@@ -426,14 +294,14 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpgt_epi32(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i lt = _mm_cmpgt_epi32(other.data.sse_m128i, data.sse_m128i);
 						__m128i eq = _mm_cmpeq_epi32(data.sse_m128i, other.data.sse_m128i);
 						pack.data.sse_m128i = _mm_or_si128(lt, eq);
@@ -442,14 +310,14 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpgt_epi32(other.data.sse_m128i, data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi32(data.sse_m128i, other.data.sse_m128i);
 						__m128i ones = _mm_cmpeq_epi32(data.sse_m128i, data.sse_m128i);
 						pack.data.sse_m128i = _mm_xor_si128(eq, ones);
@@ -461,14 +329,14 @@ namespace Core::Intrin
 				{
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpeq_epi16(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi16(i16(0x8000));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -480,7 +348,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi16(i16(0x8000));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -490,7 +358,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi16(i16(0x8000));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -502,7 +370,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi16(i16(0x8000));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -512,7 +380,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi16(data.sse_m128i, other.data.sse_m128i);
 						__m128i ones = _mm_cmpeq_epi16(data.sse_m128i, data.sse_m128i);
 						pack.data.sse_m128i = _mm_xor_si128(eq, ones);
@@ -524,14 +392,14 @@ namespace Core::Intrin
 				{
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpeq_epi16(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi16(data.sse_m128i, other.data.sse_m128i);
 						__m128i gt = _mm_cmpgt_epi16(data.sse_m128i, other.data.sse_m128i);
 						pack.data.sse_m128i = _mm_or_si128(eq, gt);
@@ -540,14 +408,14 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpgt_epi16(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i lt = _mm_cmpgt_epi16(other.data.sse_m128i, data.sse_m128i);
 						__m128i eq = _mm_cmpeq_epi16(data.sse_m128i, other.data.sse_m128i);
 						pack.data.sse_m128i = _mm_or_si128(lt, eq);
@@ -556,14 +424,14 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpgt_epi16(other.data.sse_m128i, data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi16(data.sse_m128i, other.data.sse_m128i);
 						__m128i ones = _mm_cmpeq_epi16(data.sse_m128i, data.sse_m128i);
 						pack.data.sse_m128i = _mm_xor_si128(eq, ones);
@@ -575,14 +443,14 @@ namespace Core::Intrin
 				{
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpeq_epi16(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi16(i16(0x8000));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -594,7 +462,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi16(i16(0x8000));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -604,7 +472,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi16(i16(0x8000));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -616,7 +484,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi16(i16(0x8000));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -626,7 +494,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi16(data.sse_m128i, other.data.sse_m128i);
 						__m128i ones = _mm_cmpeq_epi16(data.sse_m128i, data.sse_m128i);
 						pack.data.sse_m128i = _mm_xor_si128(eq, ones);
@@ -638,14 +506,14 @@ namespace Core::Intrin
 				{
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpeq_epi8(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi8(i8(0x80));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -657,7 +525,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi8(i8(0x80));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -667,7 +535,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi8(i8(0x80));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -679,7 +547,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi8(i8(0x80));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -689,7 +557,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi8(data.sse_m128i, other.data.sse_m128i);
 						__m128i ones = _mm_cmpeq_epi8(data.sse_m128i, data.sse_m128i);
 						pack.data.sse_m128i = _mm_xor_si128(eq, ones);
@@ -701,14 +569,14 @@ namespace Core::Intrin
 				{
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpeq_epi8(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi8(data.sse_m128i, other.data.sse_m128i);
 						__m128i gt = _mm_cmpgt_epi8(data.sse_m128i, other.data.sse_m128i);
 						pack.data.sse_m128i = _mm_or_si128(eq, gt);
@@ -717,14 +585,14 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpgt_epi8(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i lt = _mm_cmpgt_epi8(other.data.sse_m128i, data.sse_m128i);
 						__m128i eq = _mm_cmpeq_epi8(data.sse_m128i, other.data.sse_m128i);
 						pack.data.sse_m128i = _mm_or_si128(lt, eq);
@@ -733,14 +601,14 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpgt_epi8(other.data.sse_m128i, data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi8(data.sse_m128i, other.data.sse_m128i);
 						__m128i ones = _mm_cmpeq_epi8(data.sse_m128i, data.sse_m128i);
 						pack.data.sse_m128i = _mm_xor_si128(eq, ones);
@@ -752,14 +620,14 @@ namespace Core::Intrin
 				{
 					if constexpr (Op == ComparisonOp::Eq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						pack.data.sse_m128i = _mm_cmpeq_epi8(data.sse_m128i, other.data.sse_m128i);
 						return pack;
 #endif
 					}
 					else if constexpr (Op == ComparisonOp::Ge)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi8(i8(0x80));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -771,7 +639,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Gt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi8(i8(0x80));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -781,7 +649,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Le)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi8(i8(0x80));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -793,7 +661,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::Lt)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i offset = _mm_set1_epi8(i8(0x80));
 						__m128i compA = _mm_xor_si128(data.sse_m128i, offset);
 						__m128i compB = _mm_xor_si128(other.data.sse_m128i, offset);
@@ -803,7 +671,7 @@ namespace Core::Intrin
 					}
 					else if constexpr (Op == ComparisonOp::NEq)
 					{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 						__m128i eq = _mm_cmpeq_epi8(data.sse_m128i, other.data.sse_m128i);
 						__m128i ones = _mm_cmpeq_epi8(data.sse_m128i, data.sse_m128i);
 						pack.data.sse_m128i = _mm_xor_si128(eq, ones);
@@ -1395,14 +1263,14 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_min_pd(data.sse_m128d, other.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_min_ps(data.sse_m128, other.data.sse_m128);
 					return pack;
 #endif
@@ -1412,7 +1280,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m128i = _mm_min_epu64(data.sse_m128i, other.data.sse_m128i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					Pack mask = Compare<ComparisonOp::Lt>(other);
 					pack = other.Blend(*this, mask);
 					return pack;
@@ -1420,29 +1288,21 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsU32<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_min_epu32(data.sse_m128i, other.data.sse_m128i);
-					return pack;
-#elif HAS_SSE2
-					Pack mask = Compare<ComparisonOp::Lt>(other);
-					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU16<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_min_epu16(data.sse_m128i, other.data.sse_m128i);
-					return pack;
-#elif HAS_SSE2
-					Pack mask = Compare<ComparisonOp::Lt>(other);
-					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_min_epu8(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -1452,7 +1312,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m128i = _mm_min_epi64(data.sse_m128i, other.data.sse_m128i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					Pack mask = Compare<ComparisonOp::Lt>(other);
 					pack = other.Blend(*this, mask);
 					return pack;
@@ -1460,30 +1320,22 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsI32<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_min_epi32(data.sse_m128i, other.data.sse_m128i);
-					return pack;
-#elif HAS_SSE2
-					Pack mask = Compare<ComparisonOp::Lt>(other);
-					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_min_epi16(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI8<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_min_epi8(data.sse_m128i, other.data.sse_m128i);
-					return pack;
-#elif HAS_SSE2
-					Pack mask = Compare<ComparisonOp::Lt>(other);
-					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1516,7 +1368,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m256i = _mm256_min_epu64(data.sse_m256i, other.data.sse_m256i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					Pack mask = Compare<ComparisonOp::Lt>(other);
 					pack = other.Blend(*this, mask);
 					return pack;
@@ -1548,7 +1400,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m256i = _mm256_min_epi64(data.sse_m256i, other.data.sse_m256i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					Pack mask = Compare<ComparisonOp::Lt>(other);
 					pack = other.Blend(*this, mask);
 					return pack;
@@ -1593,14 +1445,14 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_max_pd(data.sse_m128d, other.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_max_ps(data.sse_m128, other.data.sse_m128);
 					return pack;
 #endif
@@ -1610,7 +1462,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m128i = _mm_max_epu64(data.sse_m128i, other.data.sse_m128i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					Pack mask = Compare<ComparisonOp::Gt>(other);
 					pack = other.Blend(*this, mask);
 					return pack;
@@ -1618,29 +1470,21 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsU32<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_max_epu32(data.sse_m128i, other.data.sse_m128i);
-					return pack;
-#elif HAS_SSE2
-					Pack mask = Compare<ComparisonOp::Gt>(other);
-					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU16<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_max_epu16(data.sse_m128i, other.data.sse_m128i);
-					return pack;
-#elif HAS_SSE2
-					Pack mask = Compare<ComparisonOp::Gt>(other);
-					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_max_epu8(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -1650,7 +1494,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m128i = _mm_max_epi64(data.sse_m128i, other.data.sse_m128i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					Pack mask = Compare<ComparisonOp::Gt>(other);
 					pack = other.Blend(*this, mask);
 					return pack;
@@ -1658,30 +1502,22 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsI32<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_max_epi32(data.sse_m128i, other.data.sse_m128i);
-					return pack;
-#elif HAS_SSE2
-					Pack mask = Compare<ComparisonOp::Gt>(other);
-					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_max_epi16(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI8<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_max_epi8(data.sse_m128i, other.data.sse_m128i);
-					return pack;
-#elif HAS_SSE2
-					Pack mask = Compare<ComparisonOp::Gt>(other);
-					pack = other.Blend(*this, mask);
 					return pack;
 #endif
 				}
@@ -1713,7 +1549,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m256i = _mm256_max_epu64(data.sse_m256i, other.data.sse_m256i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					Pack mask = Compare<ComparisonOp::Gt>(other);
 					pack = other.Blend(*this, mask);
 					return pack;
@@ -1745,7 +1581,7 @@ namespace Core::Intrin
 #if HAS_AVX512F && HAS_AVX512VL
 					pack.data.sse_m256i = _mm256_max_epi64(data.sse_m256i, other.data.sse_m256i);
 					return pack;
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					Pack mask = Compare<ComparisonOp::Gt>(other);
 					pack = other.Blend(*this, mask);
 					return pack;

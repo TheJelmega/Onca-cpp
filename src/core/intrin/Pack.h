@@ -28,10 +28,8 @@ namespace Core::Intrin
 			i32      i32_ [4];
 			i16      i16_ [8];
 			i8       i8_  [16];
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 			__m128   sse_m128;
-#endif
-#if HAS_SSE2
 			__m128d  sse_m128d;
 			__m128i  sse_m128i;
 #endif
@@ -59,10 +57,8 @@ namespace Core::Intrin
 			i8             i8_  [32];
 
 			PackData128<T> m128 [2];
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 			__m128         sse_m128[2];
-#endif
-#if HAS_SSE2
 			__m128d        sse_m128d[2];
 			__m128i        sse_m128i[2];
 #endif
@@ -144,7 +140,7 @@ namespace Core::Intrin
 		 */
 		static constexpr auto IsNative() noexcept -> bool
 		{
-			return (IsF32<T> && HAS_SSE) || HAS_SSE2;
+			return HAS_SSE_SUPPORT;
 		}
 
 		/**

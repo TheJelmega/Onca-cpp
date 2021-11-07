@@ -16,21 +16,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_setzero_pd();
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_setzero_ps();
 					return pack;
 #endif
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_setzero_si128();
 					return pack;
 #endif
@@ -83,14 +83,14 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_cmpeq_pd(pack.data.sse_m128d, pack.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_cmpeq_ps(pack.data.sse_m128, pack.data.sse_m128);
 					return pack;
 #endif
@@ -98,7 +98,7 @@ namespace Core::Intrin
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_cmpeq_epi32(pack.data.sse_m128i, pack.data.sse_m128i);
 					return pack;
 #endif
@@ -151,14 +151,14 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_set1_pd(val);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_set1_ps(val);
 					return pack;
 #endif
@@ -166,28 +166,28 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsU64<T> || IsI64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_set1_epi64x(i64(val));
 					return pack;
 #endif
 				}
 				else if constexpr (IsU32<T> || IsI32<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_set1_epi32(i32(val));
 					return pack;
 #endif
 				}
 				else if constexpr (IsU16<T> || IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_set1_epi16(i16(val));
 					return pack;
 #endif
 				}
 				else if constexpr (IsU8<T> || IsI8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_set1_epi8(i8(val));
 					return pack;
 #endif
@@ -254,13 +254,11 @@ namespace Core::Intrin
 	template<SimdBaseType T, usize Width, typename TupType, usize... Inds>
 	auto X86Set128Helper(TupType&& args, IndexSequence<Inds...>) -> Detail::PackData<T, Width>
 	{
+#if HAS_SSE_SUPPORT
 		if constexpr (IsF32<T>)
 		{
-#if HAS_SSE
 			return { .sse_m128 = _mm_setr_ps(std::get<Inds>(args)...) };
-#endif
 		}
-#if HAS_SSE2
 		else if constexpr (IsF64<T>)
 		{
 			return { .sse_m128d = _mm_setr_pd(std::get<Inds>(args)...) };
@@ -300,42 +298,42 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_setr_pd(vals...);
 					return pack;
 #endif
 				}
 				else if constexpr  (IsF64<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_setr_ps(vals...);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU64<T> || IsI64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_setr_epi64x(i64(vals)...);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU32<T> || IsI32<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_setr_epi32(i32(vals)...);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU16<T> || IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_setr_epi16(i16(vals)...);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU8<T> || IsI8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_setr_epi8(i8(vals)...);
 					return pack;
 #endif
@@ -406,13 +404,11 @@ namespace Core::Intrin
 	template<SimdBaseType T, usize Width, typename TupType, usize... Inds>
 	auto X86SetR128Helper(TupType&& args, IndexSequence<Inds...>) -> Detail::PackData<T, Width>
 	{
+#if HAS_SSE_SUPPORT
 		if constexpr (IsF32<T>)
 		{
-#if HAS_SSE
 			return { .sse_m128 = _mm_set_ps(std::get<Inds>(args)...) };
-#endif
 		}
-#if HAS_SSE2
 		else if constexpr (IsF64<T>)
 		{
 			return { .sse_m128d = _mm_set_pd(std::get<Inds>(args)...) };
@@ -459,42 +455,42 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_set_pd(vals...);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF64<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_set_ps(vals...);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU64<T> || IsI64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_set_epi64x(i64(vals)...);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU32<T> || IsI32<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_set_epi32(i32(vals)...);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU16<T> || IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_set_epi16(i16(vals)...);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU8<T> || IsI8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_set_epi8(i8(vals)...);
 					return pack;
 #endif
@@ -568,21 +564,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_loadu_pd(addr);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_loadu_ps(addr);
 					return pack;
 #endif
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_loadu_si128(reinterpret_cast<const __m128i*>(addr));
 					return pack;
 #endif
@@ -636,21 +632,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_load_pd(addr);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_load_ps(addr);
 					return pack;
 #endif
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(addr));
 					return pack;
 #endif
@@ -701,21 +697,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					_mm_storeu_pd(addr, data.sse_m128d);
 					return;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					_mm_storeu_ps(addr, data.sse_m128);
 					return;
 #endif
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					_mm_storeu_si128(reinterpret_cast<__m128i*>(addr), data.sse_m128i);
 					return;
 #endif
@@ -769,21 +765,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					_mm_store_pd(addr, data.sse_m128d);
 					return;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					_mm_store_ps(addr, data.sse_m128);
 					return;
 #endif
 				}
 				else
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					_mm_store_si128(reinterpret_cast<__m128i*>(addr), data.sse_m128i);
 					return;
 #endif
@@ -840,7 +836,7 @@ namespace Core::Intrin
 			{
 				if constexpr (sizeof(T) == 8)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					i64 ival = *reinterpret_cast<i64*>(&val);
 					pack.data.sse_m128i = _mm_insert_epi64(data.sse_m128i, ival, Index);
 					return pack;
@@ -848,7 +844,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 4)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					i32 ival = *reinterpret_cast<i32*>(&val);
 					pack.data.sse_m128i = _mm_insert_epi32(data.sse_m128i, ival, Index);
 					return pack;
@@ -856,7 +852,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 2)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					i16 ival = *reinterpret_cast<i16*>(&val);
 					pack.data.sse_m128i = _mm_insert_epi16(data.sse_m128i, ival, Index);
 					return pack;
@@ -864,7 +860,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 1)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					i8 ival = *reinterpret_cast<i8*>(&val);
 					pack.data.sse_m128i = _mm_insert_epi8(data.sse_m128i, ival, Index);
 					return pack;
@@ -931,14 +927,14 @@ namespace Core::Intrin
 			{
 				if constexpr (sizeof(T) == 8)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					i64 val = _mm_extract_epi64(data.sse_m128i, Index);
 					return *reinterpret_cast<T*>(&val);
 #endif
 				}
 				else if constexpr (sizeof(T) == 4)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					i64 val;
 					if constexpr (IsF32<T>)
 						val = _mm_extract_ps(data.sse_m128, Index);
@@ -949,13 +945,13 @@ namespace Core::Intrin
 				}
 				else if constexpr (sizeof(T) == 2)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					return T(_mm_extract_epi16(data.sse_m128i, Index));
 #endif
 				}
 				else if constexpr (sizeof(T) == 1)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					return T(_mm_extract_epi8(data.sse_m128i, Index));
 #endif
 				}

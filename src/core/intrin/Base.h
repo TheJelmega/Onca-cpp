@@ -4,23 +4,8 @@
 // TODO: AVX512
 // TODO: ARM NEON/HELIUM
 
-#if !defined(DISABLE_SSE)
-#	define DISABLE_SSE 0
-#endif
-#if !defined(DISABLE_SSE2)
-#	define DISABLE_SSE2 0
-#endif
-#if !defined(DISABLE_SSE3)
-#	define DISABLE_SSE3 0
-#endif
-#if !defined(DISABLE_SSSE3)
-#	define DISABLE_SSSE3 0
-#endif
-#if !defined(DISABLE_SSE4_1)
-#	define DISABLE_SSE4_1 0
-#endif
-#if !defined(DISABLE_SSE4_2)
-#	define DISABLE_SSE4_2 0
+#if !defined(DISABLE_SSE_SUPPORT)
+#	define DISABLE_SSE_SUPPORT 0
 #endif
 #if !defined(DISABLE_AVX)
 #	define DISABLE_AVX 0
@@ -32,43 +17,13 @@
 #	define DISABLE_AVX512 0
 #endif
 
-#if !DISABLE_SSE && (defined(__SSE__) || defined(_M_X64))
-#	define HAS_SSE 1
+#if !DISABLE_SSE_SUPPORT && (defined(__SSE4_2__) || defined(__AVX__))
+#	define HAS_SSE_SUPPORT 1
 #else
-#	define HAS_SSE 0
+#	define HAS_SSE_SUPPORT 0
 #endif
 
-#if HAS_SSE && !DISABLE_SSE2 && (defined(__SSE2__) || defined(_M_X64))
-#	define HAS_SSE2 1
-#else
-#	define HAS_SSE2 0
-#endif
-
-#if HAS_SSE2 && !DISABLE_SSE3 && (defined(__SSE3__) || defined(__AVX__))
-#	define HAS_SSE3 1
-#else
-#	define HAS_SSE3 0
-#endif
-
-#if HAS_SSE3 && !DISABLE_SSSE3 && (defined(__SSSE3__) || defined(__AVX__))
-#	define HAS_SSSE3 1
-#else
-#	define HAS_SSSE3 0
-#endif
-
-#if HAS_SSSE3 && !DISABLE_SSE4_1 && (defined(__SSE4_1__) || defined(__AVX__))
-#	define HAS_SSE4_1 1
-#else
-#	define HAS_SSE4_1 0
-#endif
-
-#if HAS_SSE4_1 && !DISABLE_SSE4_2 && (defined(__SSE4_2__) || defined(__AVX__))
-#	define HAS_SSE4_2 1
-#else
-#	define HAS_SSE4_2 0
-#endif
-
-#if HAS_SSE4_2 && !DISABLE_AVX && defined(__AVX__)
+#if HAS_SSE_SUPPORT && !DISABLE_AVX && defined(__AVX__)
 #	define HAS_AVX 1
 #else
 #	define HAS_AVX 0
@@ -83,19 +38,15 @@
 // Enable all for resharper
 
 // TODO: check if this is always the case
-#define HAS_POPCNT HAS_SSE4_2
+#define HAS_POPCNT HAS_SSE_SUPPORT
 
 #ifdef __RESHARPER__
-#undef HAS_SSE
-#define HAS_SSE 1
-#undef HAS_SSE2
-#define HAS_SSE2 1
-#undef HAS_SSE3
-#define HAS_SSE3 1
 #undef HAS_SSSE3
 #define HAS_SSSE3 1
-#undef HAS_SSE4_1
-#define HAS_SSE4_1 1
+#undef HAS_SSE_SUPPORT
+#define HAS_SSE_SUPPORT 1
+#undef HAS_POPCNT
+#define HAS_POPCNT 1
 #undef HAS_AVX
 #define HAS_AVX 1
 #undef HAS_AVX2
@@ -123,33 +74,8 @@
 #define HAS_AVX512VPCLMULQDQ 0
 #define HAS_AVX512VAES 0
 
-#if HAS_SSE
-#	include <mmintrin.h>
-#	include <xmmintrin.h>
-#endif
-
-#if HAS_SSE2
-#	include <emmintrin.h>
-#endif
-
-#if HAS_SSE3
-#	include <pmmintrin.h>
-#endif
-
-#if HAS_SSSE3
-#	include <tmmintrin.h>
-#endif
-
-#if HAS_SSE4_1
-#	include <smmintrin.h>
-#endif
-
-#if HAS_SSE4_2
-#	include <nmmintrin.h>
-#endif
-
-#if HAS_AVX
-#	include <immintrin.h> // AVX, AVX2, AVX512, FMA
+#if HAS_SSE_SUPPORT
+#	include <immintrin.h> // all SIMD intrinsics, should work on all x86/64 compilers
 #endif
 
 // MSVC sometimes doesn't include certain intrinsics, like _mm_setr_epix64,

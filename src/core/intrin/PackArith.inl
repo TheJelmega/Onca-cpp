@@ -19,42 +19,42 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_sub_pd(_mm_setzero_pd(), data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_sub_ps(_mm_setzero_ps(), data.sse_m128);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_sub_epi64(_mm_setzero_si128(), data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI32<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_sub_epi32(_mm_setzero_si128(), data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_sub_epi16(_mm_setzero_si128(), data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_sub_epi8(_mm_setzero_si128(), data.sse_m128i);
 					return pack;
 #endif
@@ -129,42 +129,42 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_add_pd(data.sse_m128d, other.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_add_ps(data.sse_m128, other.data.sse_m128);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU64<T> || IsI64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_add_epi64(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU32<T> || IsI32<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_add_epi32(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU16<T> || IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_add_epi16(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU8<T> || IsI8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_add_epi8(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -238,42 +238,42 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_sub_pd(data.sse_m128d, other.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_sub_ps(data.sse_m128, other.data.sse_m128);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU64<T> || IsI64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_sub_epi64(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU32<T> || IsI32<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_sub_epi32(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU16<T> || IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_sub_epi16(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU8<T> || IsI8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_sub_epi8(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -347,21 +347,21 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_mul_pd(data.sse_m128d, other.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_mul_ps(data.sse_m128, other.data.sse_m128);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU64<T> || IsI64<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					__m128i bswap = _mm_shuffle_epi32(other.data.sse_m128i, 0xB1);      // (b0H,b0L,b1H,b1L) <- 0xB1 = 10 11 00 01 => (1,0,3,2)
 					__m128i prodlh = _mm_mullo_epi32(data.sse_m128i, bswap);             // (a0L*b0H,a0H*a0L,a1L*b1H,a1H*a1L)
 					__m128i zero = _mm_setzero_si128();
@@ -370,37 +370,18 @@ namespace Core::Intrin
 					__m128i prodll = _mm_mul_epu32(data.sse_m128i, other.data.sse_m128i); // (a0L*b0L,a1L*b1L)
 					pack.data.sse_m128i = _mm_add_epi64(prodlh3, prodll);           // (a0L*b0L+((a0L*b0H+a0H*b0L)<<32),a1L*b1L+((a1L*b1H+a1H*b1L)<<32))
 					return pack;
-#elif HAS_SSE2
-					alignas(DataSize) T a[2];
-					alignas(DataSize) T b[2];
-					_mm_store_si128(reinterpret_cast<__m128i*>(a), data.sse_m128i);
-					_mm_store_si128(reinterpret_cast<__m128i*>(b), other.data.sse_m128i);
-
-					a[0] *= b[0];
-					a[1] *= b[1];
-					pack.data.sse_m128i = _mm_load_si128(reinterpret_cast<const __m128i*>(a));
-					return pack;
 #endif
 				}
 				else if constexpr (IsU32<T> || IsI32<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_mullo_epi32(data.sse_m128i, other.data.sse_m128i);
-					return pack;
-#elif HAS_SSE2
-					__m128i a13 = _mm_shuffle_epi32(data.sse_m128i, 0xF5);                // (-,a3,-,a1) <- 0xF5 = 11 11 01 01 (3,3,1,1)
-					__m128i b13 = _mm_shuffle_epi32(other.data.sse_m128i, 0xF5);          // (-,b3,-,b1) <- 0xF5 = 11 11 01 01 (3,3,1,1)
-					__m128i prod02 = _mm_mul_epu32(data.sse_m128i, other.data.sse_m128i); // (-,a2*b2,-,a0*b0)
-					__m128i prod13 = _mm_mul_epu32(a13, b13);                             // (-,a3*b3,-,a1*b1)
-					__m128i prod01 = _mm_unpacklo_epi32(prod02, prod13);                  // (-,-,a1*b1,a0*b0)
-					__m128i prod23 = _mm_unpackhi_epi32(prod02, prod13);                  // (-,-,a3*b3,a2*b2)
-					pack.data.sse_m128i = _mm_unpacklo_epi64(prod01, prod23);             // (a3*b3,a2*b2,a1*b1,a0*b0)
 					return pack;
 #endif
 				}
 				else if constexpr (IsU16<T> || IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_mullo_epi16(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -408,7 +389,7 @@ namespace Core::Intrin
 
 				else if constexpr (IsU8<T> || IsI8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128i aodd = _mm_srli_epi16(data.sse_m128i, 8);
 					__m128i bodd = _mm_srli_epi16(other.data.sse_m128i, 8);
 					__m128i mulEven = _mm_mullo_epi16(data.sse_m128i, other.data.sse_m128i);
@@ -417,11 +398,7 @@ namespace Core::Intrin
 
 					// blend results
 					__m128i mask = _mm_set1_epi32(0x00FF00FF);
-#if HAS_SSE4_1
 					pack.data.sse_m128i = _mm_blendv_epi8(mulOdd, mulEven, mask);
-#else
-					pack.data.sse_m128i = _mm_or_si128(_mm_and_si128(mask, mulEven), _mm_andnot_si128(mask, mulOdd));
-#endif
 					return pack;
 #endif
 				}
@@ -509,14 +486,14 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_div_pd(data.sse_m128d, other.data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_div_ps(data.sse_m128, other.data.sse_m128);
 					return pack;
 #endif
@@ -578,28 +555,28 @@ namespace Core::Intrin
 			{
 				if constexpr (IsU16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_adds_epu16(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_adds_epu8(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_adds_epi16(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_adds_epi8(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -679,28 +656,28 @@ namespace Core::Intrin
 			{
 				if constexpr (IsU16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_subs_epu16(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsU8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_subs_epu8(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI16<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_subs_epi16(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI8<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_subs_epi8(data.sse_m128i, other.data.sse_m128i);
 					return pack;
 #endif
@@ -773,46 +750,48 @@ namespace Core::Intrin
 			return *this;
 
 		Pack pack{ UnInit };
-
-		if constexpr (Is128Bit())
+		IF_NOT_CONSTEVAL
 		{
-			if constexpr (IsF32<T>)
+			if constexpr (Is128Bit())
 			{
-#if HAS_SSE4_1
-				pack.data.sse_m128 = _mm_round_ps(data.sse_m128, _MM_FROUND_CEIL);
-				return pack;
+				if constexpr (IsF32<T>)
+				{
+#if HAS_SSE_SUPPORT
+					pack.data.sse_m128 = _mm_round_ps(data.sse_m128, _MM_FROUND_CEIL);
+					return pack;
 #endif
-			}
-			else if constexpr (IsF64<T>)
-			{
-#if HAS_SSE4_1
-				pack.data.sse_m128d = _mm_round_pd(data.sse_m128d, _MM_FROUND_CEIL);
-				return pack;
+				}
+				else if constexpr (IsF64<T>)
+				{
+#if HAS_SSE_SUPPORT
+					pack.data.sse_m128d = _mm_round_pd(data.sse_m128d, _MM_FROUND_CEIL);
+					return pack;
 #endif
+				}
 			}
-		}
-		else if constexpr (Is256Bit())
-		{
-			if constexpr (IsNative() && !IsNative256())
+			else if constexpr (Is256Bit())
 			{
-				pack.data.m128[0] = HalfPack(0).Ceil().data;
-				pack.data.m128[1] = HalfPack(1).Ceil().data;
-				return pack;
-			}
+				if constexpr (IsNative() && !IsNative256())
+				{
+					pack.data.m128[0] = HalfPack(0).Ceil().data;
+					pack.data.m128[1] = HalfPack(1).Ceil().data;
+					return pack;
+				}
 
-			if constexpr (IsF32<T>)
-			{
+				if constexpr (IsF32<T>)
+				{
 #if HAS_AVX
-				pack.data.sse_m256 = _mm256_round_ps(data.sse_m256, _MM_FROUND_CEIL);
-				return pack;
+					pack.data.sse_m256 = _mm256_round_ps(data.sse_m256, _MM_FROUND_CEIL);
+					return pack;
 #endif
-			}
-			else if constexpr (IsF64<T>)
-			{
+				}
+				else if constexpr (IsF64<T>)
+				{
 #if HAS_AVX
-				pack.data.sse_m256d = _mm256_round_pd(data.sse_m256d, _MM_FROUND_CEIL);
-				return pack;
+					pack.data.sse_m256d = _mm256_round_pd(data.sse_m256d, _MM_FROUND_CEIL);
+					return pack;
 #endif
+				}
 			}
 		}
 
@@ -828,46 +807,48 @@ namespace Core::Intrin
 			return *this;
 
 		Pack pack{ UnInit };
-
-		if constexpr (Is128Bit())
+		IF_NOT_CONSTEVAL
 		{
-			if constexpr (IsF32<T>)
+			if constexpr (Is128Bit())
 			{
-#if HAS_SSE4_1
-				pack.data.sse_m128 = _mm_round_ps(data.sse_m128, _MM_FROUND_FLOOR);
-				return pack;
+				if constexpr (IsF32<T>)
+				{
+#if HAS_SSE_SUPPORT
+					pack.data.sse_m128 = _mm_round_ps(data.sse_m128, _MM_FROUND_FLOOR);
+					return pack;
 #endif
-			}
-			else if constexpr (IsF64<T>)
-			{
-#if HAS_SSE4_1
-				pack.data.sse_m128d = _mm_round_pd(data.sse_m128d, _MM_FROUND_FLOOR);
-				return pack;
+				}
+				else if constexpr (IsF64<T>)
+				{
+#if HAS_SSE_SUPPORT
+					pack.data.sse_m128d = _mm_round_pd(data.sse_m128d, _MM_FROUND_FLOOR);
+					return pack;
 #endif
+				}
 			}
-		}
-		else if constexpr (Is256Bit())
-		{
-			if constexpr (IsNative() && !IsNative256())
+			else if constexpr (Is256Bit())
 			{
-				pack.data.m128[0] = HalfPack(0).Floor().data;
-				pack.data.m128[1] = HalfPack(1).Floor().data;
-				return pack;
-			}
+				if constexpr (IsNative() && !IsNative256())
+				{
+					pack.data.m128[0] = HalfPack(0).Floor().data;
+					pack.data.m128[1] = HalfPack(1).Floor().data;
+					return pack;
+				}
 
-			if constexpr (IsF32<T>)
-			{
+				if constexpr (IsF32<T>)
+				{
 #if HAS_AVX
-				pack.data.sse_m256 = _mm256_round_ps(data.sse_m256, _MM_FROUND_FLOOR);
-				return pack;
+					pack.data.sse_m256 = _mm256_round_ps(data.sse_m256, _MM_FROUND_FLOOR);
+					return pack;
 #endif
-			}
-			else if constexpr (IsF64<T>)
-			{
+				}
+				else if constexpr (IsF64<T>)
+				{
 #if HAS_AVX
-				pack.data.sse_m256d = _mm256_round_pd(data.sse_m256d, _MM_FROUND_FLOOR);
-				return pack;
+					pack.data.sse_m256d = _mm256_round_pd(data.sse_m256d, _MM_FROUND_FLOOR);
+					return pack;
 #endif
+				}
 			}
 		}
 
@@ -883,46 +864,48 @@ namespace Core::Intrin
 			return *this;
 
 		Pack pack{ UnInit };
-
-		if constexpr (Is128Bit())
+		IF_NOT_CONSTEVAL
 		{
-			if constexpr (IsF32<T>)
+			if constexpr (Is128Bit())
 			{
-#if HAS_SSE4_1
-				pack.data.sse_m128 = _mm_round_ps(data.sse_m128, _MM_FROUND_TRUNC);
-				return pack;
+				if constexpr (IsF32<T>)
+				{
+#if HAS_SSE_SUPPORT
+					pack.data.sse_m128 = _mm_round_ps(data.sse_m128, _MM_FROUND_TRUNC);
+					return pack;
 #endif
-			}
-			else if constexpr (IsF64<T>)
-			{
-#if HAS_SSE4_1
-				pack.data.sse_m128d = _mm_round_pd(data.sse_m128d, _MM_FROUND_TRUNC);
-				return pack;
+				}
+				else if constexpr (IsF64<T>)
+				{
+#if HAS_SSE_SUPPORT
+					pack.data.sse_m128d = _mm_round_pd(data.sse_m128d, _MM_FROUND_TRUNC);
+					return pack;
 #endif
+				}
 			}
-		}
-		else if constexpr (Is256Bit())
-		{
-			if constexpr (IsNative() && !IsNative256())
+			else if constexpr (Is256Bit())
 			{
-				pack.data.m128[0] = HalfPack(0).Trunc().data;
-				pack.data.m128[1] = HalfPack(1).Trunc().data;
-				return pack;
-			}
+				if constexpr (IsNative() && !IsNative256())
+				{
+					pack.data.m128[0] = HalfPack(0).Trunc().data;
+					pack.data.m128[1] = HalfPack(1).Trunc().data;
+					return pack;
+				}
 
-			if constexpr (IsF32<T>)
-			{
+				if constexpr (IsF32<T>)
+				{
 #if HAS_AVX
-				pack.data.sse_m256 = _mm256_round_ps(data.sse_m256, _MM_FROUND_TRUNC);
-				return pack;
+					pack.data.sse_m256 = _mm256_round_ps(data.sse_m256, _MM_FROUND_TRUNC);
+					return pack;
 #endif
-			}
-			else if constexpr (IsF64<T>)
-			{
+				}
+				else if constexpr (IsF64<T>)
+				{
 #if HAS_AVX
-				pack.data.sse_m256d = _mm256_round_pd(data.sse_m256d, _MM_FROUND_TRUNC);
-				return pack;
+					pack.data.sse_m256d = _mm256_round_pd(data.sse_m256d, _MM_FROUND_TRUNC);
+					return pack;
 #endif
+				}
 			}
 		}
 
@@ -963,46 +946,48 @@ namespace Core::Intrin
 			return *this;
 
 		Pack pack{ UnInit };
-
-		if constexpr (Is128Bit())
+		IF_NOT_CONSTEVAL
 		{
-			if constexpr (IsF32<T>)
+			if constexpr (Is128Bit())
 			{
-#if HAS_SSE4_1
-				pack.data.sse_m128 = _mm_round_ps(data.sse_m128, _MM_FROUND_NINT);
-				return pack;
+				if constexpr (IsF32<T>)
+				{
+#if HAS_SSE_SUPPORT
+					pack.data.sse_m128 = _mm_round_ps(data.sse_m128, _MM_FROUND_NINT);
+					return pack;
 #endif
-			}
-			else if constexpr (IsF64<T>)
-			{
-#if HAS_SSE4_1
-				pack.data.sse_m128d = _mm_round_pd(data.sse_m128d, _MM_FROUND_NINT);
-				return pack;
+				}
+				else if constexpr (IsF64<T>)
+				{
+#if HAS_SSE_SUPPORT
+					pack.data.sse_m128d = _mm_round_pd(data.sse_m128d, _MM_FROUND_NINT);
+					return pack;
 #endif
+				}
 			}
-		}
-		else if constexpr (Is256Bit())
-		{
-			if constexpr (IsNative() && !IsNative256())
+			else if constexpr (Is256Bit())
 			{
-				pack.data.m128[0] = HalfPack(0).RoundEven().data;
-				pack.data.m128[1] = HalfPack(1).RoundEven().data;
-				return pack;
-			}
+				if constexpr (IsNative() && !IsNative256())
+				{
+					pack.data.m128[0] = HalfPack(0).RoundEven().data;
+					pack.data.m128[1] = HalfPack(1).RoundEven().data;
+					return pack;
+				}
 
-			if constexpr (IsF32<T>)
-			{
+				if constexpr (IsF32<T>)
+				{
 #if HAS_AVX
-				pack.data.sse_m256 = _mm256_round_ps(data.sse_m256, _MM_FROUND_NINT);
-				return pack;
+					pack.data.sse_m256 = _mm256_round_ps(data.sse_m256, _MM_FROUND_NINT);
+					return pack;
 #endif
-			}
-			else if constexpr (IsF64<T>)
-			{
+				}
+				else if constexpr (IsF64<T>)
+				{
 #if HAS_AVX
-				pack.data.sse_m256d = _mm256_round_pd(data.sse_m256d, _MM_FROUND_NINT);
-				return pack;
+					pack.data.sse_m256d = _mm256_round_pd(data.sse_m256d, _MM_FROUND_NINT);
+					return pack;
 #endif
+				}
 			}
 		}
 
@@ -1026,7 +1011,7 @@ namespace Core::Intrin
 					// TODO: Check if additional newton-raphson iteration is useful here
 					// has a precision of 2^-14
 					pack.data.sse_m128d = _mm_rcp14_pd(data.sse_m128i);
-#elif HAS_SSE2
+#elif HAS_SSE_SUPPORT
 					__m128d ones = _mm_set1_pd(1.0);
 					pack.data.sse_m128d = _mm_div_pd(ones, data.sse_m128d);
 #endif
@@ -1037,7 +1022,7 @@ namespace Core::Intrin
 					// TODO: Check if additional newton-raphson iteration is useful here
 					// has a precision of 2^-14 
 					pack.data.sse_m128 = _mm_rcp14_ps(data.sse_m128);
-#elif HAS_SSE
+#elif HAS_SSE_SUPPORT
 					// only has a precision of 1.5*2^-12
 					__m128 rcp = _mm_rcp_ps(data.sse_m128);
 
@@ -1052,7 +1037,7 @@ namespace Core::Intrin
 				else if constexpr (UnsignedIntegral<T>)
 				{
 					// Unsigned rcp: 1 -> 1, other -> 0
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					Pack ones = Pack::Set(1);
 					Pack onesMask = Compare<ComparisonOp::Eq>(ones);
 					return ones & onesMask;
@@ -1061,7 +1046,7 @@ namespace Core::Intrin
 				else if constexpr (SignedIntegral<T>)
 				{
 					// Signed rcp: 1 -> 1, -1 -> -1, other -> 0
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					Pack ones = Pack::Set(1);
 					Pack onesMask = Compare<ComparisonOp::Eq>(ones);
 					Pack negOnes = Pack::Set(-1);
@@ -1145,14 +1130,14 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128d = _mm_sqrt_pd(data.sse_m128d);
 					return pack;
 #endif
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128 = _mm_sqrt_ps(data.sse_m128);
 					return pack;
 #endif
@@ -1201,7 +1186,7 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					__m128 rsqrt = _mm_rsqrt_ps(data.sse_m128);
 
 					__m128 three = _mm_set1_ps(3.0f);
@@ -1217,6 +1202,13 @@ namespace Core::Intrin
 			}
 			else if constexpr (Is256Bit())
 			{
+				if constexpr (IsNative() && !IsNative256())
+				{
+					pack.data.m128[0] = HalfPack(0).RSqrt().data;
+					pack.data.m128[1] = HalfPack(1).RSqrt().data;
+					return pack;
+				}
+
 				if constexpr (IsF32<T>)
 				{
 #if HAS_AVX
@@ -1229,10 +1221,6 @@ namespace Core::Intrin
 					__m256 c = _mm256_mul_ps(half, rsqrt);
 					__m256 d = _mm256_sub_ps(three, b);
 					pack.data.sse_m256 = _mm256_mul_ps(c, d);
-					return pack;
-#elif HAS_SSE
-					pack.data.m128[0] = HalfPack(0).RSqrt().data;
-					pack.data.m128[1] = HalfPack(1).RSqrt().data;
 					return pack;
 #endif
 				}
@@ -1255,7 +1243,7 @@ namespace Core::Intrin
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE2
+#if HAS_SSE_SUPPORT
 					__m128d mask = _mm_set1_pd(Math::IntBitsToFloat(0x7FFF'FFFF'FFFF'FFFF));
 					pack.data.sse_m128d = _mm_and_pd(data.sse_m128d, mask);
 					return pack;
@@ -1263,7 +1251,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE
+#if HAS_SSE_SUPPORT
 					__m128 mask = _mm_set1_ps(Math::IntBitsToFloat(0x7FFF'FFFF));
 					pack.data.sse_m128 = _mm_and_ps(data.sse_m128, mask);
 					return pack;
@@ -1278,21 +1266,21 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsI32<T>)
 				{
-#if HAS_SSSE3
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_abs_epi32(data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI16<T>)
 				{
-#if HAS_SSSE3
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_abs_epi16(data.sse_m128i);
 					return pack;
 #endif
 				}
 				else if constexpr (IsI8<T>)
 				{
-#if HAS_SSSE3
+#if HAS_SSE_SUPPORT
 					pack.data.sse_m128i = _mm_abs_epi8(data.sse_m128i);
 					return pack;
 #endif
@@ -1400,7 +1388,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsI32<T>)
 				{
-#if HAS_SSSE3
+#if HAS_SSE_SUPPORT
 					__m128i ones = _mm_set1_epi32(1);
 					pack.data.sse_m128i = _mm_sign_epi32(ones, data.sse_m128i);
 					return pack;
@@ -1408,7 +1396,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsI16<T>)
 				{
-#if HAS_SSSE3
+#if HAS_SSE_SUPPORT
 					__m128i ones = _mm_set1_epi16(1);
 					pack.data.sse_m128i = _mm_sign_epi16(ones, data.sse_m128i);
 					return pack;
@@ -1416,7 +1404,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsI8<T>)
 				{
-#if HAS_SSSE3
+#if HAS_SSE_SUPPORT
 					__m128i ones = _mm_set1_epi8(1);
 					pack.data.sse_m128i = _mm_sign_epi8(ones, data.sse_m128i);
 					return pack;
@@ -1504,12 +1492,13 @@ namespace Core::Intrin
 		STATIC_ASSERT(NumElements != 0, "NumElements has to be larger than 0");
 
 		Pack pack{ UnInit };
+		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Is128Bit())
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE3
+#if HAS_SSE_SUPPORT
 					__m128d vals = data.sse_m128d;
 					if (NumElements < Width)
 					{
@@ -1524,7 +1513,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE3
+#if HAS_SSE_SUPPORT
 					__m128 vals = data.sse_m128;
 					if (NumElements < Width)
 					{
@@ -1539,7 +1528,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsU32<T> || IsI32<T>)
 				{
-#if HAS_SSSE3
+#if HAS_SSE_SUPPORT
 					__m128i vals = data.sse_m128i;
 					if constexpr (NumElements < Width)
 					{
@@ -1554,7 +1543,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsU16<T> || IsI16<T>)
 				{
-#if HAS_SSSE3
+#if HAS_SSE_SUPPORT
 					__m128i vals = data.sse_m128i;
 					if constexpr (NumElements < Width)
 					{
@@ -1571,7 +1560,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsU8<T> || IsI8<T>)
 				{
-#if HAS_SSSE3
+#if HAS_SSE_SUPPORT
 					__m128i a = data.sse_m128i;
 					if constexpr (NumElements < Width)
 					{
@@ -1740,12 +1729,13 @@ namespace Core::Intrin
 		STATIC_ASSERT(NumElements != 0, "NumElements has to be larger than 0");
 
 		Pack pack{ UnInit };
+		IF_NOT_CONSTEVAL
 		{
 			if constexpr (Is128Bit())
 			{
 				if constexpr (IsF64<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					constexpr u8 imm8 = ((0x3 >> (Width - NumElements)) << 4) | 0xF;
 					pack.data.sse_m128d = _mm_dp_pd(data.sse_m128d, other.data.sse_m128d, imm8);
 					return pack;
@@ -1753,7 +1743,7 @@ namespace Core::Intrin
 				}
 				else if constexpr (IsF32<T>)
 				{
-#if HAS_SSE4_1
+#if HAS_SSE_SUPPORT
 					constexpr u8 imm8 = ((0xF >> (Width - NumElements)) << 4) | 0xF;
 					pack.data.sse_m128 = _mm_dp_ps(data.sse_m128, other.data.sse_m128, imm8);
 					return pack;
