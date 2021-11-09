@@ -306,7 +306,7 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Reserve(usize count) noexcept -> void
 	{
-		Rehash(Math::Ceil(count / m_maxLoadFactor));
+		Rehash(usize(Math::Ceil(count / m_maxLoadFactor)));
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>

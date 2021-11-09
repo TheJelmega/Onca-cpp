@@ -91,40 +91,40 @@ namespace Core::Math
 	}
 
 	template <FloatingPoint F>
-	constexpr auto Ceil(F f) noexcept -> FloatIntType<F>
+	constexpr auto Ceil(F f) noexcept -> F
 	{
-		FloatIntType<F> trunc = Trunc(f);
+		F trunc = Trunc(f);
 		return trunc + (f >= 0 && f != trunc);
 	}
 
 	template <FloatingPoint F>
-	constexpr auto Floor(F f) noexcept -> FloatIntType<F>
+	constexpr auto Floor(F f) noexcept -> F
 	{
-		FloatIntType<F> trunc = Trunc(f);
+		F trunc = Trunc(f);
 		return trunc - (f < 0 && f != trunc);
 	}
 
 	template <FloatingPoint F>
-	constexpr auto Trunc(F f) noexcept -> FloatIntType<F>
+	constexpr auto Trunc(F f) noexcept -> F
 	{
-		return static_cast<FloatIntType<F>>(f);
+		return F(static_cast<FloatIntType<F>>(f));
 	}
 
 	template <FloatingPoint F>
-	constexpr auto Round(F f) noexcept -> FloatIntType<F>
+	constexpr auto Round(F f) noexcept -> F
 	{
 		constexpr double offset[2] = { 0.5f, -0.5f };
-		return static_cast<FloatIntType<F>>(f + offset[f < 0]);
+		return F(static_cast<FloatIntType<F>>(f + offset[f < 0]));
 	}
 
 	template <FloatingPoint F>
-	constexpr auto RoundEven(F f) noexcept -> FloatIntType<F>
+	constexpr auto RoundEven(F f) noexcept -> F
 	{
 		using Int = FloatIntType<F>;
-		FloatIntType<F> round = Round(f);
+		F round = Round(f);
 		F diff = Abs(f - round);
-		Int possibleVals[2] = { round, static_cast<Int>(f - diff) };
-		return possibleVals[(diff == 0.5f) && (round & 1)];
+		Int possibleVals[2] = { Int(round), Int(f - diff) };
+		return F(possibleVals[(diff == 0.5f) && (Int(round) & 1)]);
 	}
 
 	template <Numeric T>
@@ -147,10 +147,10 @@ namespace Core::Math
 	}
 
 	template <FloatingPoint F>
-	constexpr auto ModF(F f) noexcept -> Pair<FloatIntType<F>, F>
+	constexpr auto ModF(F f) noexcept -> Pair<F, F>
 	{
-		auto i = Trunc(f);
-		return { i, f - static_cast<F>(i) };
+		F trunc = Trunc(f);
+		return { trunc, f - trunc };
 	}
 
 	template <Numeric T>

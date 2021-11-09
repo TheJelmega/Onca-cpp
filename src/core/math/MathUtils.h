@@ -104,7 +104,7 @@ namespace Core::Math
 	 * \return Ceiling of the value
 	 */
 	template<FloatingPoint F>
-	constexpr auto Ceil(F f) noexcept -> FloatIntType<F>;
+	constexpr auto Ceil(F f) noexcept -> F;
 	/**
 	 * Get a value equal to the nearest integer that is less or equal to x
 	 * \tparam F Floating point type
@@ -112,7 +112,7 @@ namespace Core::Math
 	 * \return Floor of the value
 	 */
 	template<FloatingPoint F>
-	constexpr auto Floor(F f) noexcept -> FloatIntType<F>;
+	constexpr auto Floor(F f) noexcept -> F;
 	/**
 	 * Get a value equal to the nearest integer to x whose absolute value is not larger than the absolute value of f
 	 * \tparam F Floating point type
@@ -120,7 +120,7 @@ namespace Core::Math
 	 * \return Floor of the value
 	 */
 	template<FloatingPoint F>
-	constexpr auto Trunc(F f) noexcept -> FloatIntType<F>;
+	constexpr auto Trunc(F f) noexcept -> F;
 	/**
 	 * Round a value
 	 * \tparam F Floating point type
@@ -128,15 +128,15 @@ namespace Core::Math
 	 * \return Rounded value
 	 */
 	template<FloatingPoint F>
-	constexpr auto Round(F f) noexcept -> FloatIntType<F>;
+	constexpr auto Round(F f) noexcept -> F;
 	/**
-	 * Round a value, if the value ends on .5, round towards the nearest even value
+	 * Round a value, if the value ends on .5, round towards the nearest even integer value
 	 * \tparam F Floating point type
 	 * \param f Value
 	 * \return Rounded value
 	 */
 	template<FloatingPoint F>
-	constexpr auto RoundEven(F f) noexcept -> FloatIntType<F>;
+	constexpr auto RoundEven(F f) noexcept -> F;
 	/**
 	 * Get the sign of a value
 	 * \tparam T Numeric type
@@ -146,10 +146,10 @@ namespace Core::Math
 	template<Numeric T>
 	constexpr auto Sign(T t) noexcept -> i8;
 	/**
-	 * Get the fractal part of a float
+	 * Get the fractional part of a float
 	 * \tparam F Floating point type
 	 * \param t Value
-	 * \return Fractal part
+	 * \return Fractional part
 	 */
 	template<FloatingPoint F>
 	constexpr auto Fract(F t) noexcept -> F;
@@ -169,7 +169,7 @@ namespace Core::Math
 	 * \return Pair with its integral component and fraction
 	 */
 	template<FloatingPoint F>
-	constexpr auto ModF(F f) noexcept -> Pair<FloatIntType<F>, F>;
+	constexpr auto ModF(F f) noexcept -> Pair<F, F>;
 
 	/**
 	 * Calculate the reciprocal (1/x) of a value
@@ -253,7 +253,7 @@ namespace Core::Math
 	 * \return Whether the floating points are equal
 	 */
 	template<Numeric T>
-	constexpr auto EpsilonCompare(T a, T b, T e = Epsilon<T>) noexcept -> bool;
+	constexpr auto EpsilonCompare(T a, T b, T e = Consts::Epsilon<T>) noexcept -> bool;
 
 	/**
 	 * Get the signed integer representation of a float
