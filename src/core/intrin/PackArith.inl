@@ -626,7 +626,7 @@ namespace Core::Intrin
 			{
 				Pack sum = Add(other);
 				Pack mask = Compare<ComparisonOp::Gt>(sum);
-				Pack sat = Pack::Set(Math::MaxVal<T>);
+				Pack sat = Pack::Set(Math::Consts::MaxVal<T>);
 				pack = sum.Blend(sat, mask);
 				return pack;
 			}
@@ -634,8 +634,8 @@ namespace Core::Intrin
 
 		for (usize i = 0; i < Width; ++i)
 		{
-			if (Math::MaxVal<T> -data.raw[i] < other.data.raw[i])
-				pack.data.raw[i] = Math::MaxVal<T>;
+			if (Math::Consts::MaxVal<T> -data.raw[i] < other.data.raw[i])
+				pack.data.raw[i] = Math::Consts::MaxVal<T>;
 			else
 				pack.data.raw[i] = data.raw[i] + other.data.raw[i];
 		}
@@ -727,7 +727,7 @@ namespace Core::Intrin
 			{
 				Pack sum = Sub(other);
 				Pack mask = Compare<ComparisonOp::Lt>(sum);
-				Pack sat = Pack::Set(Math::MinVal<T>);
+				Pack sat = Pack::Set(Math::Consts::MinVal<T>);
 				pack = sum.Blend(sat, mask);
 				return pack;
 			}
@@ -735,8 +735,8 @@ namespace Core::Intrin
 
 		for (usize i = 0; i < Width; ++i)
 		{
-			if (Core::Math::LowestVal<T> + other.data.raw[i] > data.raw[i])
-				pack.data.raw[i] = Math::LowestVal<T>;
+			if (Core::Math::Consts::LowestVal<T> + other.data.raw[i] > data.raw[i])
+				pack.data.raw[i] = Math::Consts::LowestVal<T>;
 			else
 				pack.data.raw[i] = data.raw[i] - other.data.raw[i];
 		}
