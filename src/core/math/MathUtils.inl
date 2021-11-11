@@ -38,11 +38,23 @@ namespace Core::Math
 		return a < b ? a : T0(b);
 	}
 
+	template<typename T0, ConvertableTo<T0> T1, ConvertableTo<T0> T2, ConvertableTo<T0>... Args>
+	constexpr auto Min(T0 a, T1 b, T2 c, Args... args) noexcept -> T0
+	{
+		return Min(a, Min(b, c, args...));
+	}
+
 	template<typename T0, LessComparable<T0> T1>
 		requires ConvertableFrom<T0, T1>
 	constexpr auto Max(T0 a, T1 b) noexcept -> T0
 	{
 		return a > b ? a : T0(b);
+	}
+
+	template <typename T0, ConvertableTo<T0> T1, ConvertableTo<T0> T2, ConvertableTo<T0> ... Args>
+	constexpr auto Max(T0 a, T1 b, T2 c, Args... args) noexcept -> T0
+	{
+		return Max(a, Max(b, c, args...));
 	}
 
 	template <Numeric T, LessComparable<T> A, GreaterComparable<T> B> requires ConvertableFrom<T, A> && ConvertableFrom<T, B>
@@ -90,41 +102,69 @@ namespace Core::Math
 		}
 	}
 
-	template <FloatingPoint F>
-	constexpr auto Ceil(F f) noexcept -> F
+	template <Numeric T>
+	constexpr auto Ceil(T t) noexcept -> T
 	{
-		F trunc = Trunc(f);
-		return trunc + (f >= 0 && f != trunc);
+		if constexpr (!FloatingPoint<T>)
+			return t;
+
+		T trunc = Trunc(t);
+		return trunc + (t >= 0 && t != trunc);
 	}
 
-	template <FloatingPoint F>
-	constexpr auto Floor(F f) noexcept -> F
+	template <Numeric T>
+	constexpr auto Floor(T t) noexcept -> T
 	{
-		F trunc = Trunc(f);
-		return trunc - (f < 0 && f != trunc);
+		if constexpr (FloatingPoint<T>)
+		{
+			T trunc = Trunc(t);
+			return trunc - (t < 0 && t != trunc);
+		}
+		else
+		{
+			return t;
+		}
 	}
 
-	template <FloatingPoint F>
-	constexpr auto Trunc(F f) noexcept -> F
+	template <Numeric T>
+	constexpr auto Trunc(T t) noexcept -> T
 	{
-		return F(static_cast<FloatIntType<F>>(f));
+		if constexpr (FloatingPoint<T>)
+			return T(static_cast<FloatIntType<T>>(t));
+		else
+			return t;
 	}
 
-	template <FloatingPoint F>
-	constexpr auto Round(F f) noexcept -> F
+	template <Numeric T>
+	constexpr auto Round(T t) noexcept -> T
 	{
-		constexpr double offset[2] = { 0.5f, -0.5f };
-		return F(static_cast<FloatIntType<F>>(f + offset[f < 0]));
+		if constexpr (FloatingPoint<T>)
+		{
+			constexpr double offset[2] = { 0.5f, -0.5f };
+			return T(static_cast<FloatIntType<T>>(t + offset[t < 0]));
+			
+		}
+		else
+		{
+			return t;
+		}
 	}
 
-	template <FloatingPoint F>
-	constexpr auto RoundEven(F f) noexcept -> F
+	template <Numeric T>
+	constexpr auto RoundEven(T t) noexcept -> T
 	{
-		using Int = FloatIntType<F>;
-		F round = Round(f);
-		F diff = Abs(f - round);
-		Int possibleVals[2] = { Int(round), Int(f - diff) };
-		return F(possibleVals[(diff == 0.5f) && (Int(round) & 1)]);
+		if constexpr (FloatingPoint<T>)
+		{
+			using Int = FloatIntType<T>;
+			T round = Round(t);
+			T diff = Abs(t - round);
+			Int possibleVals[2] = { Int(round), Int(t - diff) };
+			return T(possibleVals[(diff == 0.5f) && (Int(round) & 1)]);
+		}
+		else
+		{
+			return t;
+		}
 	}
 
 	template <Numeric T>
@@ -134,23 +174,36 @@ namespace Core::Math
 		return signs[(t <= 0) + (t < 0)];
 	}
 
-	template <FloatingPoint F>
-	constexpr auto Fract(F t) noexcept -> F
+	template<Numeric T>
+	constexpr auto Fract(T t) noexcept -> T
 	{
-		return t - Floor(t);
+		if constexpr (FloatingPoint<T>)
+			return t - Trunc(t);
+		else
+			return T(0);
 	}
 
 	template <Numeric T>
 	constexpr auto Mod(T a, T b) noexcept -> T
 	{
-		return a - b * Floor(a / b);
+		if constexpr (FloatingPoint)
+			return a - b * Floor(a / b);
+		else
+			return a % b;
 	}
 
-	template <FloatingPoint F>
-	constexpr auto ModF(F f) noexcept -> Pair<F, F>
+	template<Numeric T>
+	constexpr auto ModF(T t) noexcept -> Pair<T, T>
 	{
-		F trunc = Trunc(f);
-		return { trunc, f - trunc };
+		if constexpr (FloatingPoint<T>)
+		{
+			T trunc = Trunc(t);
+			return { trunc, t - trunc };
+		}
+		else
+		{
+			return { t, T(0) };
+		}
 	}
 
 	template <Numeric T>

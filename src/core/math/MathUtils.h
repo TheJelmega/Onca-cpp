@@ -31,6 +31,20 @@ namespace Core::Math
 		requires ConvertableFrom<T0, T1>
 	constexpr auto Min(T0 a, T1 b) noexcept -> T0;
 	/**
+	 * \brief Get the minimum value
+	 * \tparam T0 Value type
+	 * \tparam T1 Value type
+	 * \tparam T2 Value type
+	 * \tparam Args Types of other arguments
+	 * \param[in] a First value
+	 * \param[in] b Second value
+	 * \param[in] c Third value
+	 * \param[in] args Other values
+	 * \return Minimum value
+	 */
+	template<typename T0, ConvertableTo<T0> T1, ConvertableTo<T0> T2, ConvertableTo<T0>... Args>
+	constexpr auto Min(T0 a, T1 b, T2 c, Args... args) noexcept -> T0;
+	/**
 	 * \brief Get the maximum value
 	 * \tparam T0 Value type
 	 * \tparam T1 Value type
@@ -41,6 +55,20 @@ namespace Core::Math
 	template<typename T0, LessComparable<T0> T1>
 		requires ConvertableFrom<T0, T1>
 	constexpr auto Max(T0 a, T1 b) noexcept -> T0;
+	/**
+	 * \brief Get the maximum value
+	 * \tparam T0 Value type
+	 * \tparam T1 Value type
+	 * \tparam T2 Value type
+	 * \tparam Args Types of other arguments
+	 * \param[in] a First value
+	 * \param[in] b Second value
+	 * \param[in] c Third value
+	 * \param[in] args Other values
+	 * \return Minimum value
+	 */
+	template<typename T0, ConvertableTo<T0> T1, ConvertableTo<T0> T2, ConvertableTo<T0>... Args>
+	constexpr auto Max(T0 a, T1 b, T2 c, Args... args) noexcept -> T0;
 
 	/**
 	 * Clamp a value between a min and max
@@ -103,40 +131,40 @@ namespace Core::Math
 	 * \param f Value
 	 * \return Ceiling of the value
 	 */
-	template<FloatingPoint F>
-	constexpr auto Ceil(F f) noexcept -> F;
+	template<Numeric T>
+	constexpr auto Ceil(T t) noexcept -> T;
 	/**
 	 * Get a value equal to the nearest integer that is less or equal to x
 	 * \tparam F Floating point type
 	 * \param f Value
 	 * \return Floor of the value
 	 */
-	template<FloatingPoint F>
-	constexpr auto Floor(F f) noexcept -> F;
+	template<Numeric T>
+	constexpr auto Floor(T t) noexcept -> T;
 	/**
 	 * Get a value equal to the nearest integer to x whose absolute value is not larger than the absolute value of f
 	 * \tparam F Floating point type
 	 * \param f Value
 	 * \return Floor of the value
 	 */
-	template<FloatingPoint F>
-	constexpr auto Trunc(F f) noexcept -> F;
+	template<Numeric T>
+	constexpr auto Trunc(T t) noexcept -> T;
 	/**
 	 * Round a value
 	 * \tparam F Floating point type
 	 * \param f Value
 	 * \return Rounded value
 	 */
-	template<FloatingPoint F>
-	constexpr auto Round(F f) noexcept -> F;
+	template<Numeric T>
+	constexpr auto Round(T t) noexcept -> T;
 	/**
 	 * Round a value, if the value ends on .5, round towards the nearest even integer value
 	 * \tparam F Floating point type
 	 * \param f Value
 	 * \return Rounded value
 	 */
-	template<FloatingPoint F>
-	constexpr auto RoundEven(F f) noexcept -> F;
+	template<Numeric T>
+	constexpr auto RoundEven(T t) noexcept -> T;
 	/**
 	 * Get the sign of a value
 	 * \tparam T Numeric type
@@ -151,8 +179,8 @@ namespace Core::Math
 	 * \param t Value
 	 * \return Fractional part
 	 */
-	template<FloatingPoint F>
-	constexpr auto Fract(F t) noexcept -> F;
+	template<Numeric T>
+	constexpr auto Fract(T t) noexcept -> T;
 	/**
 	 * Get the remainder of division
 	 * \tparam T Numeric type
@@ -168,8 +196,8 @@ namespace Core::Math
 	 * \param f Value
 	 * \return Pair with its integral component and fraction
 	 */
-	template<FloatingPoint F>
-	constexpr auto ModF(F f) noexcept -> Pair<F, F>;
+	template<Numeric T>
+	constexpr auto ModF(T t) noexcept -> Pair<T, T>;
 
 	/**
 	 * Calculate the reciprocal (1/x) of a value
