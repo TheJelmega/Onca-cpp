@@ -186,7 +186,7 @@ namespace Core::Math
 	template <Numeric T>
 	constexpr auto Mod(T a, T b) noexcept -> T
 	{
-		if constexpr (FloatingPoint)
+		if constexpr (FloatingPoint<T>)
 			return a - b * Floor(a / b);
 		else
 			return a % b;
