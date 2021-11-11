@@ -31,6 +31,36 @@ namespace Core::Intrin
 	}
 
 	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator++() noexcept -> Pack&
+	{
+		*this += Set(T(1));
+		return *this;
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator++(int) noexcept -> Pack
+	{
+		Pack tmp = *this;
+		operator++();
+		return tmp;
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator--() noexcept -> Pack&
+	{
+		*this -= Set(T(1));
+		return *this;
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator--(int) noexcept -> Pack
+	{
+		Pack tmp = *this;
+		operator--();
+		return tmp;
+	}
+
+	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::operator+() const noexcept -> Pack
 	{
 		return Pack(data);

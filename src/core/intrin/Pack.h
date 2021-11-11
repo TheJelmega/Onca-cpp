@@ -221,6 +221,11 @@ namespace Core::Intrin
 		template<SameAs<T>... Args>
 		explicit constexpr Pack(Args... vals) noexcept;
 
+		constexpr auto operator++() noexcept -> Pack&;
+		constexpr auto operator++(int) noexcept -> Pack;
+		constexpr auto operator--() noexcept -> Pack&;
+		constexpr auto operator--(int) noexcept -> Pack;
+
 		constexpr auto operator+() const noexcept -> Pack;
 		constexpr auto operator-() const noexcept -> Pack;
 		constexpr auto operator~() const noexcept -> Pack;
