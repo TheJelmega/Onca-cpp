@@ -103,6 +103,12 @@ namespace Core::Intrin
 	}
 
 	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator%(const Pack& other) const noexcept -> Pack
+	{
+		return Mod(other);
+	}
+
+	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::operator&(const Pack& other) const noexcept -> Pack
 	{
 		return And(other);
@@ -177,6 +183,13 @@ namespace Core::Intrin
 	constexpr auto Pack<T, Width>::operator/=(const Pack& other) noexcept -> Pack&
 	{
 		*this = *this / other;
+		return *this;
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::operator%=(const Pack& other) noexcept -> Pack&
+	{
+		*this = *this % other;
 		return *this;
 	}
 

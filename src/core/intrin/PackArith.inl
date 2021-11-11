@@ -542,6 +542,12 @@ namespace Core::Intrin
 	}
 
 	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::Mod(const Pack& other) const noexcept -> Pack
+	{
+		return Sub(other.Mul(Div(other).Trunc()));
+	}
+
+	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::AddSaturated(const Pack& other) const noexcept -> Pack
 	{
 		Pack pack{ UnInit };

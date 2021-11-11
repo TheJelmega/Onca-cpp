@@ -234,7 +234,7 @@ namespace Core::Intrin
 		constexpr auto operator-(const Pack& other) const noexcept -> Pack;
 		constexpr auto operator*(const Pack& other) const noexcept -> Pack;
 		constexpr auto operator/(const Pack& other) const noexcept -> Pack;
-
+		constexpr auto operator%(const Pack& other) const noexcept -> Pack;
 		constexpr auto operator&(const Pack& other) const noexcept -> Pack;
 		constexpr auto operator^(const Pack& other) const noexcept -> Pack;
 		constexpr auto operator|(const Pack& other) const noexcept -> Pack;
@@ -250,7 +250,7 @@ namespace Core::Intrin
 		constexpr auto operator-=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator*=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator/=(const Pack& other) noexcept -> Pack&;
-
+		constexpr auto operator%=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator&=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator^=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator|=(const Pack& other) noexcept -> Pack&;
@@ -328,23 +328,29 @@ namespace Core::Intrin
 		constexpr auto Add(const Pack& other) const noexcept -> Pack;
 		/**
 		 * Subtract the elements of the given pack from the current elements
-		 * \param other Pack to add
+		 * \param other Pack to subtract
 		 * \return Pack with result
 		 */
 		constexpr auto Sub(const Pack& other) const noexcept -> Pack;
 		/**
 		 * Multiply the elements of the given pack with the current elements
-		 * \param other Pack to subtract
+		 * \param other Pack to multiply with
 		 * \return Pack with result
 		 */
 		constexpr auto Mul(const Pack& other) const noexcept -> Pack;
 		/**
 		 * Divide the current elements by the elements of the given pack
-		 * \param other Pack to multiply with
+		 * \param other Pack to divide by
 		 * \return Pack with result
 		 */
 		// TODO: Fast version when dividing by scalar
 		constexpr auto Div(const Pack& other) const noexcept -> Pack;
+		/**
+		 * Calculate the modulus/remainder of a division
+		 * \param other Pack to divide by
+		 * \return Pack with result
+		 */
+		constexpr auto Mod(const Pack& other) const noexcept -> Pack;
 
 		/**
 		 * Add the elements of hte fiber pack to the current elements, if the result were to overflow, saturate the result to the max value
