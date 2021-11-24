@@ -19,6 +19,24 @@ namespace Core::Math
 	template<UnsignedIntegral U>
 	using UIntFloatType = Conditional<SameAs<U, u32>, f32, f64>;
 
+	namespace Detail
+	{
+		template<FloatingPoint T>
+		constexpr auto SqrtHelperF(T x, T curr, T prev) noexcept -> T;
+		template<Integral T>
+		constexpr auto SqrtHelper(T x, T lo, T hi) noexcept -> T;
+		template<Numeric T, Integral I>
+		constexpr auto IntegralPow(T base, I exp) noexcept -> T;
+		template<Numeric T>
+		constexpr auto ExpHelper(T val) noexcept -> T;
+		template<Numeric T>
+		constexpr auto FindExp10I(T val) noexcept -> SignedOfSameSize<T>;
+		template<Numeric T>
+		constexpr auto FindBase10Mantissa(T val) noexcept -> T;
+		template<Numeric T>
+		constexpr auto LnContinuedFraction(T val) noexcept -> T;
+	}
+
 	/**
 	 * \brief Get the minimum value
 	 * \tparam T0 Value type
@@ -225,6 +243,35 @@ namespace Core::Math
 	constexpr auto RSqrt(T t) noexcept -> T;
 
 	/**
+	 * Calculate e^x
+	 * \tparam T Numeric type
+	 * \param power Power
+	 * \return e^x
+	 */
+	template<Numeric T>
+	constexpr auto Exp(T power) noexcept -> T;
+
+	/**
+	 * Calculate the natural logarithm of the value
+	 * \tparam T Numeric type
+	 * \param val Value
+	 * \return Natural logarithm of the value
+	 */
+	template<Numeric T>
+	constexpr auto Ln(T val) noexcept -> T;
+
+	/**
+	 * Calculate base^exp
+	 * \tparam T Numeric type
+	 * \tparam U Numeric type
+	 * \param base Base value
+	 * \param exp Exponent
+	 * \return base^exp
+	 */
+	template<Numeric T, Numeric U>
+	constexpr auto Pow(T base, U exp) noexcept -> T;
+
+	/**
 	 * Get an integer log2 of a value
 	 * \param val Value
 	 * \return Integer log2 of the value
@@ -275,13 +322,14 @@ namespace Core::Math
 	/**
 	 * Compare 2 values with an epsilon
 	 * \tparam T Numeric type
+	 * \tparam U Type of second value
 	 * \param a First value
 	 * \param b Second value
 	 * \param e Epsilon
 	 * \return Whether the floating points are equal
 	 */
-	template<Numeric T>
-	constexpr auto EpsilonCompare(T a, T b, T e = Consts::Epsilon<T>) noexcept -> bool;
+	template<Numeric T, ConvertableTo<T> U>
+	constexpr auto EpsilonCompare(T a, U b, T e = Consts::MathEpsilon<T>) noexcept -> bool;
 
 	/**
 	 * Get the signed integer representation of a float

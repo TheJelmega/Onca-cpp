@@ -6,6 +6,8 @@ namespace Core
 {
 	template<typename A, typename B>
 	concept SameAs = std::same_as<A, B>;
+	template<typename A, typename B>
+	concept SameSizeAs = (sizeof(A) == sizeof(B));
 
 	template<typename T>
 	concept Integral = std::integral<T>;
@@ -19,6 +21,30 @@ namespace Core
 	concept PrimitiveType = std::is_fundamental_v<T>;
 	template<typename T>
 	concept EnumType = std::is_enum_v<T>;
+
+	template<typename A, typename B>
+	concept IntegralOfSameSize = Integral<A> && SameSizeAs<A, B>;
+
+	template<typename T>
+	concept IsI8 = SameAs<T, i8>;
+	template<typename T>
+	concept IsI16 = SameAs<T, i16>;
+	template<typename T>
+	concept IsI32 = SameAs<T, i32>;
+	template<typename T>
+	concept IsI64 = SameAs<T, i64>;
+	template<typename T>
+	concept IsU8 = SameAs<T, u8>;
+	template<typename T>
+	concept IsU16 = SameAs<T, u16>;
+	template<typename T>
+	concept IsU32 = SameAs<T, u32>;
+	template<typename T>
+	concept IsU64 = SameAs<T, u64>;
+	template<typename T>
+	concept IsF32 = SameAs<T, f32>;
+	template<typename T>
+	concept IsF64 = SameAs<T, f64>;
 
 	// wchar_t is not supported, as it is not portable
 	template<typename T>

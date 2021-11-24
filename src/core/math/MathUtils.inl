@@ -29,6 +29,117 @@ namespace Core::Math
 				return SqrtHelper<T>(x, lo, mid - 1);
 			return SqrtHelper<T>(x, mid, hi);
 		}
+
+		template <Numeric T, Integral I>
+		constexpr auto IntegralPow(T base, I exp) noexcept -> T
+		{
+			// https://en.wikipedia.org/wiki/Exponentiation_by_squaring
+			if (exp == 0)
+				return T(1);
+
+			if (exp < 0)
+			{
+				base = T(1) / base;
+				exp = -exp;
+			}
+
+			if (exp == 1)
+				return base;
+
+			T y = T(1);
+			while (exp > 1)
+			{
+				if (exp & 1)
+				{
+					y *= base;
+					base *= base;
+					exp /= 2;
+				}
+				else
+				{
+					base *= base;
+					exp /= 2;
+				}
+			}
+			return base * y;
+		}
+
+		template <Numeric T>
+		constexpr auto ExpHelper(T val) noexcept -> T
+		{
+			if (val < Consts::MathEpsilon<T> && val > -Consts::MathEpsilon<T>)
+				return T(1);
+
+			// Euler's continued fraction for exponential
+			// exp(x) = 1 / (1 - x / (1 + x - (1/2)x / (1 + (1/2)x - (1/3)x/(...))))
+			T res = T(1);
+			for (usize i = 25; i > 1; --i)
+				res = T(1) + val / T(i - 1) - val / T(i) / res;
+			return T(1) / (T(1) - val / res);
+		}
+
+		template <Numeric T>
+		constexpr auto FindExp10I(T val) noexcept -> SignedOfSameSize<T>
+		{
+			using Signed = SignedOfSameSize<T>;
+
+			if (val >= 1 && val <= 10)
+				return Signed(0);
+
+			Signed exp = 0;
+			if (val < 1)
+			{
+				while (val < 1)
+				{
+					val *= 10;
+					--exp;
+				}
+				return exp;
+			}
+
+			while (val > 10)
+			{
+				val /= 10;
+				++exp;
+			}
+			return exp;
+		}
+
+		template <Numeric T>
+		constexpr auto FindBase10Mantissa(T val) noexcept -> T
+		{
+			if (val >= 1 && val <= 10)
+				return val;
+
+			if (val < 1)
+			{
+				while (val < 1)
+				{
+					val *= 10;
+				}
+				return val;
+			}
+
+			while (val > 10)
+			{
+				val /= 10;
+			}
+			return val;
+		}
+
+		template <Numeric T>
+		constexpr auto LnContinuedFraction(T val) noexcept -> T
+		{
+			// based on continued fraction: https://functions.wolfram.com/ElementaryFunctions/Log/10/0005/
+			val = (val - T(1)) / (val + T(1));
+
+			usize maxDepth = 25;
+			T val2 = val * val;
+			T res = T(2 * maxDepth - 1);
+			for (usize i = maxDepth - 1; i > 0; --i)
+				res = T(2 * i - 1) - T(i * i) * val2 / res;
+			return T(2) * val / res;
+		}
 	}
 
 	template<typename T0, LessComparable<T0> T1>
@@ -233,6 +344,80 @@ namespace Core::Math
 		return Rcp(Sqrt(t));
 	}
 
+	template <Numeric T>
+	constexpr auto Exp(T power) noexcept -> T
+	{
+		IF_CONSTEVAL
+		{
+			if (EpsilonCompare(power, 0))
+				return T(1);
+			if (power < 2.0)
+				Detail::ExpHelper(power);
+
+			using Signed = SignedOfSameSize<T>;
+			return Detail::IntegralPow(Consts::E<T>, Signed(Trunc(power))) * Detail::ExpHelper(Fract(power));
+		}
+		else
+		{
+			return T(exp(power));
+		}
+	}
+
+	template <Numeric T>
+	constexpr auto Ln(T val) noexcept -> T
+	{
+		//IF_CONSTEVAL
+		{
+			if (EpsilonCompare(val, 1))
+				return T(0);
+
+			if (val < 0.5 || val > 1.5)
+			{
+				T res = Consts::LnTen<T> * T(Detail::FindExp10I(val));
+
+				constexpr T integerMantissaLn[10] =
+				{
+					T(0),
+					T(0.6931471805599453094172321214581765680755L),
+					T(1.0986122886681096913952452369225257046475L),
+					T(1.3862943611198906188344642429163531361510L),
+					T(1.6094379124341003746007593332261876395256L),
+					T(1.7917594692280550008124773583807022727230L),
+					T(1.9459101490553133051053527434431797296371L),
+					T(2.0794415416798359282516963643745297042265L),
+					T(2.1972245773362193827904904738450514092950L),
+					T(2.3025850929940456840179914546843642076011L),
+				};
+				T mantissa = Detail::FindBase10Mantissa(val);
+
+				res += integerMantissaLn[u8(mantissa) - 1];
+				res += Detail::LnContinuedFraction(mantissa / T(u8(mantissa)));
+				return res;
+			}
+
+			// Continued fractions is only accurate for small values around 1 (0.5-1.5)
+			return Detail::LnContinuedFraction(val);
+		}
+		//else 
+		//{
+		//	return T(log(val));
+		//}
+	}
+
+	template <Numeric T, Numeric U>
+	constexpr auto Pow(T base, U exp) noexcept -> T
+	{
+		IF_CONSTEVAL
+		{
+			if constexpr (Integral<U>)
+				return Detail::IntegralPow(base, exp);
+			else
+				return Exp(exp * Ln(base));
+		}
+
+		return T(pow(f64(base), f64(exp)));
+	}
+
 	constexpr auto Log2(u64 val) noexcept -> u8
 	{
 		u8 res = -(val == 0);
@@ -312,10 +497,10 @@ namespace Core::Math
 		}
 	}
 
-	template <Numeric T>
-	constexpr auto EpsilonCompare(T a, T b, T e) noexcept -> bool
+	template <Numeric T, ConvertableTo<T> U>
+	constexpr auto EpsilonCompare(T a, U b, T e) noexcept -> bool
 	{
-		return Abs(a - b) <= T(e);
+		return Abs(a - T(b)) <= T(e);
 	}
 
 	template <FloatingPoint F>

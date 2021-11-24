@@ -24,7 +24,7 @@ namespace Core::Math
 		using Pack = Intrin::Pack<T, Width>;
 		Pack minCmp = val.Compare<Intrin::ComparisonOp::Lt>(min);
 		Pack maxCmp = val.Compare<Intrin::ComparisonOp::Gt>(max);
-		return val.Blend(min, minCmp).Blend(max, minCmp);
+		return val.Blend(min, minCmp).Blend(max, maxCmp);
 	}
 
 	template <Intrin::SimdBaseType T, usize Width>
@@ -110,7 +110,7 @@ namespace Core::Math
 	template <Intrin::SimdBaseType T, usize Width>
 	constexpr auto Mod(const Intrin::Pack<T, Width>& a, const Intrin::Pack<T, Width>& b) noexcept -> Intrin::Pack<T, Width>
 	{
-		// TODO: Is there a better SIMD implementation
+		// TODO: Is there a better SIMD implementation?
 		using Pack = Intrin::Pack<T, Width>;
 		Pack div = a.Div(b).Trunc();
 		Pack mul = a * b;
@@ -149,7 +149,7 @@ namespace Core::Math
 	{
 		using Pack = Intrin::Pack<T, Width>;
 		Pack absDiff = a.Sub(b).Abs();
-		Pack epsilon = Pack::Set(epsilon);
+		Pack epsilon = Pack::Set(e);
 		return absDiff.Compare<Intrin::ComparisonOp::Lt>(epsilon);
 	}
 }

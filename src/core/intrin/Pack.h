@@ -102,6 +102,7 @@ namespace Core::Intrin
 		Unord, ///< Either value is NaN
 	};
 
+	// TODO: Shuffle/Permute
 	template<SimdBaseType T, usize Width>
 	struct alignas(sizeof(T)* Width) Pack
 	{
@@ -255,12 +256,12 @@ namespace Core::Intrin
 		constexpr auto operator^=(const Pack& other) noexcept -> Pack&;
 		constexpr auto operator|=(const Pack& other) noexcept -> Pack&;
 
-		constexpr auto operator>>=(const Pack& count) const noexcept -> Pack&;
+		constexpr auto operator>>=(const Pack& count) noexcept -> Pack&;
 		template<UnsignedIntegral U>
-		constexpr auto operator>>=(U count) const noexcept -> Pack&;
-		constexpr auto operator<<=(const Pack& count) const noexcept -> Pack&;
+		constexpr auto operator>>=(U count) noexcept -> Pack&;
+		constexpr auto operator<<=(const Pack& count) noexcept -> Pack&;
 		template<UnsignedIntegral U>
-		constexpr auto operator<<=(U count) const noexcept -> Pack&;
+		constexpr auto operator<<=(U count) noexcept -> Pack&;
 
 		constexpr auto operator==(const Pack& other) const noexcept -> Pack;
 		constexpr auto operator!=(const Pack& other) const noexcept -> Pack;
@@ -396,6 +397,25 @@ namespace Core::Intrin
 		 * \return Pack with result
 		 */
 		constexpr auto Not() const noexcept -> Pack;
+
+		/**
+		 * Check if all elements are set to all ones
+		 * \return Whether all elements are set to all ones
+		 * \note intrinsic might only check the top bits, so make sure it's called on a register with a mask
+		 */
+		constexpr auto All() const noexcept -> bool;
+		/**
+		 * Check if any elements are set to all ones
+		 * \return Whether any elements are set to all ones
+		 * \note intrinsic might only check the top bits, so make sure it's called on a register with a mask
+		 */
+		constexpr auto Any() const noexcept -> bool;
+		/**
+		 * Check if no elements are set to all ones
+		 * \return Whether no elements are set to all ones
+		 * \note intrinsic might only check the top bits, so make sure it's called on a register with a mask
+		 */
+		constexpr auto None() const noexcept -> bool;
 
 		/**
 		 * Blend 2 packs using a mask

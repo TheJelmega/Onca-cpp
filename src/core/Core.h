@@ -53,4 +53,4 @@
 #include "string/StringUtils.h"
 #include "string/String.h"
 
-#include "math/MathUtils.h"
+#include "math/Math.h"

@@ -215,7 +215,7 @@ namespace Core::Math
 	 * \return Whether the floating points are equal
 	 */
 	template<Intrin::SimdBaseType T, usize Width>
-	constexpr auto EpsilonCompare(const Intrin::Pack<T, Width>& a, const Intrin::Pack<T, Width>& b, T e = Consts::Epsilon<T>) noexcept -> Intrin::Pack<T, Width>;
+	constexpr auto EpsilonCompare(const Intrin::Pack<T, Width>& a, const Intrin::Pack<T, Width>& b, T e = Consts::MathEpsilon<T>) noexcept -> Intrin::Pack<T, Width>;
 }
 
 #include "MathUtils.inl"

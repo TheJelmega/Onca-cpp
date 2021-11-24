@@ -4,17 +4,12 @@
  * but seemingly because of a quirk with MSVC, DISABLE_... did not work, as the preprocessed headers were seemingly cached
  */
 
-#define SSE_VER 8
+#define SSE_VER 3
 
 #if 1
-#define DISABLE_SSE    (SSE_VER < 1)
-#define DISABLE_SSE2   (SSE_VER < 2)
-#define DISABLE_SSE3   (SSE_VER < 3)
-#define DISABLE_SSSE3  (SSE_VER < 4)
-#define DISABLE_SSE4_1 (SSE_VER < 5)
-#define DISABLE_SSE4_2 (SSE_VER < 6)
-#define DISABLE_AVX    (SSE_VER < 7)
-#define DISABLE_AVX2   (SSE_VER < 8)
+#define DISABLE_SSE_SUPPORT (SSE_VER < 1)
+#define DISABLE_AVX         (SSE_VER < 2)
+#define DISABLE_AVX2        (SSE_VER < 3)
 #endif
 
 #include "gtest/gtest.h"
@@ -34,7 +29,7 @@ auto ZeroAndStore() -> void
 		ASSERT_EQ(res[i], 0);
 }
 
-TEST(Intr, ZeroAndStore)
+TEST(IntrinPack, ZeroAndStore)
 {
 	ZeroAndStore<f64, 2>();
 	ZeroAndStore<f64, 4>();
@@ -78,6 +73,64 @@ TEST(Intr, ZeroAndStore)
 }
 
 template<Intrin::SimdBaseType T, usize Width>
+auto OnesAndStore() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	PackT pack = PackT::Ones();
+	T res[Width];
+	pack.Store(res);
+
+	u64 ones = 0xFFFF'FFFF'FFFF'FFFF;
+
+	using Unsigned = Core::UnsignedOfSameSize<T>;
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(*reinterpret_cast<Unsigned*>(&res[i]), Unsigned(ones));
+}
+
+TEST(IntrinPack, OnesAndStore)
+{
+	OnesAndStore<f64, 2>();
+	OnesAndStore<f64, 4>();
+	//OnesAndStore<f64, 8>();
+
+	OnesAndStore<f32, 4>();
+	OnesAndStore<f32, 8>();
+	//OnesAndStore<f32, 16>();
+
+	OnesAndStore<u64, 2>();
+	OnesAndStore<u64, 4>();
+	//OnesAndStore<u64, 8>();
+
+	OnesAndStore<u32, 4>();
+	OnesAndStore<u32, 8>();
+	//OnesAndStore<u32, 16>();
+
+	OnesAndStore<u16, 8>();
+	OnesAndStore<u16, 16>();
+	//OnesAndStore<u16, 32>();
+
+	OnesAndStore<u8, 16>();
+	OnesAndStore<u8, 32>();
+	//OnesAndStore<u8, 64>();
+
+	OnesAndStore<i64, 2>();
+	OnesAndStore<i64, 4>();
+	//OnesAndStore<i64, 8>();
+
+	OnesAndStore<i32, 4>();
+	OnesAndStore<i32, 8>();
+	//OnesAndStore<i32, 16>();
+
+	OnesAndStore<i16, 8>();
+	OnesAndStore<i16, 16>();
+	//OnesAndStore<i16, 32>();
+
+	OnesAndStore<i8, 16>();
+	OnesAndStore<i8, 32>();
+	//OnesAndStore<i8, 64>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
 auto Set1AndStore()
 {
 	using PackT = Intrin::Pack<T, Width>;
@@ -89,7 +142,7 @@ auto Set1AndStore()
 		ASSERT_EQ(res[i], 42);
 }
 
-TEST(Intr, Set1AndStoreTest)
+TEST(IntrinPack, Set1AndStore)
 {
 	Set1AndStore<f64, 2>();
 	Set1AndStore<f64, 4>();
@@ -145,7 +198,7 @@ auto SetAndStore(Args... args)
 		ASSERT_EQ(res[i], expected[i]);
 }
 
-TEST(Intr, SetAndStoreTest)
+TEST(IntrinPack, SetAndStore)
 {
 	SetAndStore<f64, 2>(1.0, 2.0);
 	SetAndStore<f64, 4>(1.0, 2.0, 3.0, 4.0);
@@ -203,7 +256,7 @@ auto SetRAndStore(Args... args)
 		ASSERT_EQ(res[i], expected[Width - i - 1]);
 }
 
-TEST(Intr, SetRAndStoreTest)
+TEST(IntrinPack, SetRAndStore)
 {
 	SetRAndStore<f64, 2>(1.0, 2.0);
 	SetRAndStore<f64, 4>(1.0, 2.0, 3.0, 4.0);
@@ -248,11 +301,14 @@ TEST(Intr, SetRAndStoreTest)
 	//                    33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64);
 }
 
-template<Intrin::SimdBaseType T, usize Width, Core::ConvertableTo<T>... Args>
-auto LoadAndStore(Args... args)
+template<Intrin::SimdBaseType T, usize Width>
+auto LoadAndStore()
 {
 	using PackT = Intrin::Pack<T, Width>;
-	T src[Width] = { T(args)... };
+	T src[Width];
+	for (usize i = 0; i < Width; ++i)
+		src[i] = T(i);
+
 	PackT pack = PackT::Load(src);
 	T res[Width];
 	pack.Store(res);
@@ -261,56 +317,51 @@ auto LoadAndStore(Args... args)
 		ASSERT_EQ(res[i], src[i]);
 }
 
-TEST(Intr, LoadAndStoreTest)
+TEST(IntrinPack, LoadAndStoreTest)
 {
-	LoadAndStore<f64, 2>(1.0, 2.0);
-	LoadAndStore<f64, 4>(1.0, 2.0, 3.0, 4.0);
-	//LoadAndStore<f64, 8>(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0);
+	LoadAndStore<f64, 2>();
+	LoadAndStore<f64, 4>();
+	//LoadAndStore<f64, 8>();
 
-	LoadAndStore<f32, 4>(1.0f, 2.0f, 3.0f, 4.0f);
-	LoadAndStore<f32, 8>(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f);
-	//LoadAndStore<f32, 16>(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
+	LoadAndStore<f32, 4>();
+	LoadAndStore<f32, 8>();
+	//LoadAndStore<f32, 16>();
 	
-	LoadAndStore<u64, 2>(1, 2);
-	LoadAndStore<u64, 4>(1, 2, 3, 4);
-	//LoadAndStore<u64, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	
-	LoadAndStore<u32, 4>(1, 2, 3, 4);
-	LoadAndStore<u32, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	//LoadAndStore<u32, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-	
-	LoadAndStore<u16, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	LoadAndStore<u16, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	//LoadAndStore<u16, 32>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
-	
-	LoadAndStore<u8, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	LoadAndStore<u8, 32>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
-	//LoadAndStore<u8, 64>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
-	//                    33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64);
-	
-	LoadAndStore<i64, 2>(1, 2);
-	LoadAndStore<i64, 4>(1, 2, 3, 4);
-	//LoadAndStore<i64, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	
-	LoadAndStore<i32, 4>(1, 2, 3, 4);
-	LoadAndStore<i32, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	//LoadAndStore<i32, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-	
-	LoadAndStore<i16, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	LoadAndStore<i16, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	//LoadAndStore<i16, 32>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
-	
-	LoadAndStore<i8, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	LoadAndStore<i8, 32>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
-	//LoadAndStore<i8, 64>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
-	//                    33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64);
+	LoadAndStore<u64, 2>();
+	LoadAndStore<u64, 4>();
+	//LoadAndStore<u64, 8>();
+	LoadAndStore<u32, 4>();
+	LoadAndStore<u32, 8>();
+	//LoadAndStore<u32, 16>();
+	LoadAndStore<u16, 8>();
+	LoadAndStore<u16, 16>();
+	//LoadAndStore<u16, 32>();
+	LoadAndStore<u8, 16>();
+	LoadAndStore<u8, 32>();
+	//LoadAndStore<u8, 64>();
+
+	LoadAndStore<i64, 2>();
+	LoadAndStore<i64, 4>();
+	//LoadAndStore<i64, 8>();
+	LoadAndStore<i32, 4>();
+	LoadAndStore<i32, 8>();
+	//LoadAndStore<i32, 16>();
+	LoadAndStore<i16, 8>();
+	LoadAndStore<i16, 16>();
+	//LoadAndStore<i16, 32>();
+	LoadAndStore<i8, 16>();
+	LoadAndStore<i8, 32>();
+	//LoadAndStore<i8, 64>();
 }
 
-template<Intrin::SimdBaseType T, usize Width, Core::ConvertableTo<T>... Args>
-auto AlignedLoadAndStore(Args... args)
+template<Intrin::SimdBaseType T, usize Width>
+auto AlignedLoadAndStore()
 {
 	using PackT = Intrin::Pack<T, Width>;
-	alignas(PackT::Align) T src[Width] = { T(args)... };
+	alignas(PackT::Align) T src[Width];
+	for (usize i = 0; i < Width; ++i)
+		src[i] = T(i);
+
 	PackT pack = PackT::AlignedLoad(src);
 	alignas(PackT::Align) T res[Width];
 	pack.AlignedStore(res);
@@ -319,49 +370,149 @@ auto AlignedLoadAndStore(Args... args)
 		ASSERT_EQ(res[i], src[i]);
 }
 
-TEST(Intr, AlignedLoadAndStoreTest)
+TEST(IntrinPack, AlignedLoadAndStore)
 {
-	AlignedLoadAndStore<f64, 2>(1.0, 2.0);
-	AlignedLoadAndStore<f64, 4>(1.0, 2.0, 3.0, 4.0);
-	//AlignedLoadAndStore<f64, 8>(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0);
+	AlignedLoadAndStore<f64, 2>();
+	AlignedLoadAndStore<f64, 4>();
+	//AlignedLoadAndStore<f64, 8>();
 
-	AlignedLoadAndStore<f32, 4>(1.0f, 2.0f, 3.0f, 4.0f);
-	AlignedLoadAndStore<f32, 8>(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f);
-	//AlignedLoadAndStore<f32, 16>(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
+	AlignedLoadAndStore<f32, 4>();
+	AlignedLoadAndStore<f32, 8>();
+	//AlignedLoadAndStore<f32, 16>();
 
-	AlignedLoadAndStore<u64, 2>(1, 2);
-	AlignedLoadAndStore<u64, 4>(1, 2, 3, 4);
-	//AlignedLoadAndStore<u64, 8>(1, 2, 3, 4, 5, 6, 7, 8);
+	AlignedLoadAndStore<u64, 2>();
+	AlignedLoadAndStore<u64, 4>();
+	//AlignedLoadAndStore<u64, 8>();
+	AlignedLoadAndStore<u32, 4>();
+	AlignedLoadAndStore<u32, 8>();
+	//AlignedLoadAndStore<u32, 16>();
+	AlignedLoadAndStore<u16, 8>();
+	AlignedLoadAndStore<u16, 16>();
+	//AlignedLoadAndStore<u16, 32>();
+	AlignedLoadAndStore<u8, 16>();
+	AlignedLoadAndStore<u8, 32>();
+	//AlignedLoadAndStore<u8, 64>();
 
-	AlignedLoadAndStore<u32, 4>(1, 2, 3, 4);
-	AlignedLoadAndStore<u32, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	//AlignedLoadAndStore<u32, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+	AlignedLoadAndStore<i64, 2>();
+	AlignedLoadAndStore<i64, 4>();
+	//AlignedLoadAndStore<i64, 8>();
+	AlignedLoadAndStore<i32, 4>();
+	AlignedLoadAndStore<i32, 8>();
+	//AlignedLoadAndStore<i32, 16>();
+	AlignedLoadAndStore<i16, 8>();
+	AlignedLoadAndStore<i16, 16>();
+	//AlignedLoadAndStore<i16, 32>();
+	AlignedLoadAndStore<i8, 16>();
+	AlignedLoadAndStore<i8, 32>();
+	//AlignedLoadAndStore<i8, 64>();
+}
 
-	AlignedLoadAndStore<u16, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	AlignedLoadAndStore<u16, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	//AlignedLoadAndStore<u16, 32>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
+template<Intrin::SimdBaseType T, usize Width>
+auto Insert()
+{
+	using PackT = Intrin::Pack<T, Width>;
+	alignas(PackT::Align) T src[Width];
+	for (usize i = 0; i < Width; ++i)
+		src[i] = T(i);
+	PackT pack = PackT::AlignedLoad(src);
 
-	AlignedLoadAndStore<u8, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	AlignedLoadAndStore<u8, 32>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
-	//AlignedLoadAndStore<u8, 64>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
-	//                    33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64);
+	constexpr usize Idx = Width / 2 - 1;
+	PackT packRes = pack.template Insert<Idx>(T(137));
 
-	AlignedLoadAndStore<i64, 2>(1, 2);
-	AlignedLoadAndStore<i64, 4>(1, 2, 3, 4);
-	//AlignedLoadAndStore<i64, 8>(1, 2, 3, 4, 5, 6, 7, 8);
+	alignas(PackT::Align) T res[Width];
+	packRes.AlignedStore(res);
 
-	AlignedLoadAndStore<i32, 4>(1, 2, 3, 4);
-	AlignedLoadAndStore<i32, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	//AlignedLoadAndStore<i32, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+	ASSERT_EQ(res[Idx], T(137));
+}
 
-	AlignedLoadAndStore<i16, 8>(1, 2, 3, 4, 5, 6, 7, 8);
-	AlignedLoadAndStore<i16, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	//AlignedLoadAndStore<i16, 32>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
+TEST(IntrinPack, Insert)
+{
+	Insert<f64, 2>();
+	Insert<f64, 4>();
+	//Insert<f64, 8>();
 
-	AlignedLoadAndStore<i8, 16>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	AlignedLoadAndStore<i8, 32>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32);
-	//AlignedLoadAndStore<i8, 64>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
-	//                    33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64);
+	Insert<f32, 4>();
+	Insert<f32, 8>();
+	//Insert<f32, 16>();
+
+	Insert<u64, 2>();
+	Insert<u64, 4>();
+	//Insert<u64, 8>();
+	Insert<u32, 4>();
+	Insert<u32, 8>();
+	//Insert<u32, 16>();
+	Insert<u16, 8>();
+	Insert<u16, 16>();
+	//Insert<u16, 32>();
+	Insert<u8, 16>();
+	Insert<u8, 32>();
+	//Insert<u8, 64>();
+
+	Insert<i64, 2>();
+	Insert<i64, 4>();
+	//Insert<i64, 8>();
+	Insert<i32, 4>();
+	Insert<i32, 8>();
+	//Insert<i32, 16>();
+	Insert<i16, 8>();
+	Insert<i16, 16>();
+	//Insert<i16, 32>();
+	Insert<i8, 16>();
+	Insert<i8, 32>();
+	//Insert<i8, 64>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto Extract()
+{
+	using PackT = Intrin::Pack<T, Width>;
+	alignas(PackT::Align) T src[Width];
+	for (usize i = 0; i < Width; ++i)
+		src[i] = T(i);
+	constexpr usize Idx = Width / 2 - 1;
+	src[Idx] = T(137);
+	PackT pack = PackT::AlignedLoad(src);
+
+	T val = pack.template Extract<Idx>();
+
+	ASSERT_EQ(val, T(137));
+}
+
+TEST(IntrinPack, Extract)
+{
+	Extract<f64, 2>();
+	Extract<f64, 4>();
+	//Extract<f64, 8>();
+
+	Extract<f32, 4>();
+	Extract<f32, 8>();
+	//Extract<f32, 16>();
+
+	Extract<u64, 2>();
+	Extract<u64, 4>();
+	//Extract<u64, 8>();
+	Extract<u32, 4>();
+	Extract<u32, 8>();
+	//Extract<u32, 16>();
+	Extract<u16, 8>();
+	Extract<u16, 16>();
+	//Extract<u16, 32>();
+	Extract<u8, 16>();
+	Extract<u8, 32>();
+	//Extract<u8, 64>();
+
+	Extract<i64, 2>();
+	Extract<i64, 4>();
+	//Extract<i64, 8>();
+	Extract<i32, 4>();
+	Extract<i32, 8>();
+	//Extract<i32, 16>();
+	Extract<i16, 8>();
+	Extract<i16, 16>();
+	//Extract<i16, 32>();
+	Extract<i8, 16>();
+	Extract<i8, 32>();
+	//Extract<i8, 64>();
 }
 
 template<Intrin::ComparisonOp Op, Intrin::SimdBaseType T, usize Width>
@@ -386,7 +537,7 @@ auto Compare(InitializerList<T> a, InitializerList<T> b, InitializerList<Core::U
 		ASSERT_EQ(*reinterpret_cast<USizeT*>(&res[i]), expected[i]);
 }
 
-TEST(Intr, CmpEqTest)
+TEST(IntrinPack, CmpEqTest)
 {
 	u64 Ones64 = 0xFFFF'FFFF'FFFF'FFFF;
 	u32 Ones32 = 0xFFFF'FFFF;
@@ -476,7 +627,7 @@ TEST(Intr, CmpEqTest)
 	//										      0, 0xFF, 0xFF, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0, 0,  0xFF, 0, 0, 0xFF });
 }
 
-TEST(Intr, CmpNEqTest)
+TEST(IntrinPack, CmpNEqTest)
 {
 	u64 Ones64 = 0xFFFF'FFFF'FFFF'FFFF;
 	u32 Ones32 = 0xFFFF'FFFF;
@@ -565,7 +716,7 @@ TEST(Intr, CmpNEqTest)
 	//										      0xFF, 0, 0, 0xFF, 0xFF, 0xFF, 0, 0, 0, 0, 0xFF, 0xFF,  0, 0xFF, 0xFF, 0 });
 }
 
-TEST(Intr, CmpLtTest)
+TEST(IntrinPack, CmpLtTest)
 {
 	u64 Ones64 = 0xFFFF'FFFF'FFFF'FFFF;
 	u32 Ones32 = 0xFFFF'FFFF;
@@ -653,7 +804,7 @@ TEST(Intr, CmpLtTest)
 	//										      0xFF, 0, 0, 0xFF, 0xFF, 0xFF, 0, 0, 0, 0, 0xFF, 0xFF,  0, 0xFF, 0xFF, 0 });
 }
 
-TEST(Intr, CmpLeTest)
+TEST(IntrinPack, CmpLeTest)
 {
 	u64 Ones64 = 0xFFFF'FFFF'FFFF'FFFF;
 	u32 Ones32 = 0xFFFF'FFFF;
@@ -743,7 +894,7 @@ TEST(Intr, CmpLeTest)
 	//										      0, 0xFF, 0xFF, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0, 0,  0xFF, 0, 0, 0xFF });
 }
 
-TEST(Intr, CmpGtTest)
+TEST(IntrinPack, CmpGtTest)
 {
 	u64 Ones64 = 0xFFFF'FFFF'FFFF'FFFF;
 	u32 Ones32 = 0xFFFF'FFFF;
@@ -832,7 +983,7 @@ TEST(Intr, CmpGtTest)
 	//										      0xFF, 0, 0, 0xFF, 0xFF, 0xFF, 0, 0, 0, 0, 0xFF, 0xFF,  0, 0xFF, 0xFF, 0 });
 }
 
-TEST(Intr, CmpGeTest)
+TEST(IntrinPack, CmpGeTest)
 {
 	u64 Ones64 = 0xFFFF'FFFF'FFFF'FFFF;
 	u32 Ones32 = 0xFFFF'FFFF;
@@ -923,10 +1074,18 @@ TEST(Intr, CmpGeTest)
 }
 
 template<Intrin::SimdBaseType T, usize Width>
-auto Convert(InitializerList<T> values)
+auto Convert()
 {
 	using PackT = Intrin::Pack<T, Width>;
-	PackT pack = PackT::Load(values.begin());
+	alignas(PackT::Align) T src[Width];
+	for (usize i = 0; i < Width; ++i)
+	{
+		if (Core::SignedIntegral<T>)
+			src[i] = T(i * (1 - 2 * (i & 1)));
+
+		src[i] = T(i);
+	}
+	PackT pack = PackT::AlignedLoad(src);
 
 	if constexpr (!Core::IsF64<T>)
 	{
@@ -936,7 +1095,7 @@ auto Convert(InitializerList<T> values)
 		packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], values.begin()[i]);
+			ASSERT_EQ(res[i], src[i]);
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
@@ -949,7 +1108,7 @@ auto Convert(InitializerList<T> values)
 		packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], values.begin()[i]);
+			ASSERT_EQ(res[i], src[i]);
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
@@ -962,7 +1121,7 @@ auto Convert(InitializerList<T> values)
 		packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], u64(values.begin()[i]));
+			ASSERT_EQ(res[i], u64(src[i]));
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
@@ -975,7 +1134,7 @@ auto Convert(InitializerList<T> values)
 		packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], u32(values.begin()[i]));
+			ASSERT_EQ(res[i], u32(src[i]));
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
@@ -988,7 +1147,7 @@ auto Convert(InitializerList<T> values)
 		packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], u16(values.begin()[i]));
+			ASSERT_EQ(res[i], u16(src[i]));
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
@@ -1001,7 +1160,7 @@ auto Convert(InitializerList<T> values)
 		packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], u8(values.begin()[i]));
+			ASSERT_EQ(res[i], u8(src[i]));
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
@@ -1014,7 +1173,7 @@ auto Convert(InitializerList<T> values)
 		packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], values.begin()[i]);
+			ASSERT_EQ(res[i], src[i]);
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
@@ -1027,7 +1186,7 @@ auto Convert(InitializerList<T> values)
 		packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], values.begin()[i]);
+			ASSERT_EQ(res[i], src[i]);
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
@@ -1040,7 +1199,7 @@ auto Convert(InitializerList<T> values)
 		packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], values.begin()[i]);
+			ASSERT_EQ(res[i], src[i]);
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
@@ -1053,48 +1212,51 @@ auto Convert(InitializerList<T> values)
 		 packRes.Store(res);
 
 		for (usize i = 0; i < Core::Math::Min(Width, NewWidth); ++i)
-			ASSERT_EQ(res[i], values.begin()[i]);
+			ASSERT_EQ(res[i], src[i]);
 
 		for (usize i = Width; i < NewWidth; ++i)
 			ASSERT_EQ(res[i], 0);
 	}
 }
 
-TEST(Intr, Convert)
+TEST(IntrinPack, Convert)
 {
-	Convert<f64, 2>({ 1, 2 });
-	Convert<f64, 4>({ 1, 2, 3, 4 });
-	Convert<f32, 4>({ 1, 2, 3, 4 });
-	Convert<f32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
+	Convert<f64, 2>();
+	Convert<f64, 4>();
+	Convert<f32, 4>();
+	Convert<f32, 8>();
 	
-	Convert<u64, 2>({ 1, 2 });
-	Convert<u64, 4>({ 1, 2, 3, 4 });
-	Convert<u32, 4>({ 1, 2, 3, 4 });
-	Convert<u32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Convert<u16, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Convert<u16, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Convert<u8, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Convert<u8, 32>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 });
+	Convert<u64, 2>();
+	Convert<u64, 4>();
+	Convert<u32, 4>();
+	Convert<u32, 8>();
+	Convert<u16, 8>();
+	Convert<u16, 16>();
+	Convert<u8, 16>();
+	Convert<u8, 32>();
 	
-	Convert<i64, 2>({ -1, 2 });
-	Convert<i64, 4>({ -1, 2, -3, 4 });
-	Convert<i32, 4>({ -1, 2, -3, 4 });
-	Convert<i32, 8>({ -1, 2, -3, 4, -5, 6, -7, 8 });
-	Convert<i16, 8>({ -1, 2, -3, 4, -5, 6, -7, 8 });
-	Convert<i16, 16>({ -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15, 16 });
-	Convert<i8, 16>({ -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15, 16 });
-	Convert<i8, 32>({ -1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15, 16, -17, 18, -19, 20, -21, 22, -23, 24, -25, 26, -27, 28, -29, 30, -31, 32 });
+	Convert<i64, 2>();
+	Convert<i64, 4>();
+	Convert<i32, 4>();
+	Convert<i32, 8>();
+	Convert<i16, 8>();
+	Convert<i16, 16>();
+	Convert<i8, 16>();
+	Convert<i8, 32>();
 }
 
 template<Intrin::SimdBaseType T, usize Width>
-auto Add(InitializerList<T> a, InitializerList<T> b) -> void
+auto Add() -> void
 {
 	using PackT = Intrin::Pack<T, Width>;
 	T dataA[Width];
-	Core::MemCpy(dataA, a.begin(), a.size() * sizeof(T));
+	for (usize i = 0; i < Width; ++i)
+		dataA[i] = T(i);
 	PackT packA = PackT::Load(dataA);
+
 	T dataB[Width];
-	Core::MemCpy(dataB, b.begin(), b.size() * sizeof(T));
+	for (usize i = 0; i < Width; ++i)
+		dataB[i] = T(2 * i);
 	PackT packB = PackT::Load(dataB);
 
 	PackT packRes = packA.Add(packB);
@@ -1105,68 +1267,44 @@ auto Add(InitializerList<T> a, InitializerList<T> b) -> void
 		ASSERT_EQ(res[i], dataA[i] + dataB[i]);
 }
 
-TEST(Intr, Add)
+TEST(IntrinPack, Add)
 {
-	Add<f64, 2>({1, 2}, 
-				{2, 4});
-	Add<f64, 4>({1, 2, 3, 4}, 
-				{2, 4, 6, 8});
+	Add<f64, 2>();
+	Add<f64, 4>();
+	Add<f32, 4>();
+	Add<f32, 8>();
 
-	Add<f32, 4>({ 1, 2, 3, 4  },
-				{ 2, 4, 6, 8  });
-	Add<f32, 8>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8  },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+	Add<u64, 2>();
+	Add<u64, 4>();
+	Add<u32, 4>();
+	Add<u32, 8>();
+	Add<u16, 8>();
+	Add<u16, 16>();
+	Add<u8, 16>();
+	Add<u8, 32>();
 
-	Add<u64, 2>({ 1, 2 },
-				{ 2, 4 });
-	Add<u64, 4>({ 1, 2, 3, 4 },
-				{ 2, 4, 6, 8 });
-
-	Add<u32, 4>({ 1, 2, 3, 4  },
-				{ 2, 4, 6, 8  });
-	Add<u32, 8>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8  },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
-
-	Add<u16, 8>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8  },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
-	Add<u16, 16>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13, 14, 15, 16 },
-				 { 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
-
-	Add<u8, 16>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13, 14, 15, 16 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
-	Add<u8, 32>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64 });
-
-	Add<i64, 2>({ 1, 2 },
-				{ 2, 4 });
-	Add<i64, 4>({ 1, 2, 3, 4 },
-				{ 2, 4, 6, 8 });
-
-	Add<i32, 4>({ 1, 2, 3, 4  },
-				{ 2, 4, 6, 8  });
-	Add<i32, 8>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8  },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
-
-	Add<i16, 8>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8  },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
-	Add<i16, 16>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13, 14, 15, 16 },
-				 { 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
-
-	Add<i8, 16>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13, 14, 15, 16 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
-	Add<i8, 32>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8 , 9 , 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64 });
+	Add<i64, 2>();
+	Add<i64, 4>();
+	Add<i32, 4>();
+	Add<i32, 8>();
+	Add<i16, 8>();
+	Add<i16, 16>();
+	Add<i8, 16>();
+	Add<i8, 32>();
 }
 
 template<Intrin::SimdBaseType T, usize Width>
-auto Sub(InitializerList<T> a, InitializerList<T> b) -> void
+auto Sub() -> void
 {
 	using PackT = Intrin::Pack<T, Width>;
 	T dataA[Width];
-	Core::MemCpy(dataA, a.begin(), a.size() * sizeof(T));
+	for (usize i = 0; i < Width; ++i)
+		dataA[i] = T(3 * i);
 	PackT packA = PackT::Load(dataA);
+
 	T dataB[Width];
-	Core::MemCpy(dataB, b.begin(), b.size() * sizeof(T));
+	for (usize i = 0; i < Width; ++i)
+		dataB[i] = T(2 * i);
 	PackT packB = PackT::Load(dataB);
 
 	PackT packRes = packA.Sub(packB);
@@ -1177,68 +1315,44 @@ auto Sub(InitializerList<T> a, InitializerList<T> b) -> void
 		ASSERT_EQ(res[i], dataA[i] - dataB[i]);
 }
 
-TEST(Intr, Sub)
+TEST(IntrinPack, Sub)
 {
-	Sub<f64, 2>({ 3, 6 },
-				{ 2, 4 });
-	Sub<f64, 4>({ 3, 6, 9, 12},
-				{ 2, 4, 6, 8 });
+	Sub<f64, 2>();
+	Sub<f64, 4>();
+	Sub<f32, 4>();
+	Sub<f32, 8>();
 
-	Sub<f32, 4>({ 3, 6, 9, 12 },
-				{ 2, 4, 6, 8 });
-	Sub<f32, 8>({ 3, 6, 9, 12, 15, 18, 21, 24 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+	Sub<u64, 2>();
+	Sub<u64, 4>();
+	Sub<u32, 4>();
+	Sub<u32, 8>();
+	Sub<u16, 8>();
+	Sub<u16, 16>();
+	Sub<u8, 16>();
+	Sub<u8, 32>();
 
-	Sub<u64, 2>({ 3, 6 },
-				{ 2, 4 });
-	Sub<u64, 4>({ 3, 6, 9, 12},
-				{ 2, 4, 6, 8 });
-
-	Sub<u32, 4>({ 3, 6, 9, 12},
-				{ 2, 4, 6, 8 });
-	Sub<u32, 8>({ 3, 6, 9, 12, 15, 18, 21, 24 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
-
-	Sub<u16, 8>({ 3, 6, 9, 12, 15, 18, 21, 24 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
-	Sub<u16, 16>({ 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48 },
-				 { 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
-
-	Sub<u8, 16>({ 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
-	Sub<u8, 32>({ 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64 });
-
-	Sub<i64, 2>({ 3, 6 },
-				{ 2, 4 });
-	Sub<i64, 4>({ 3, 6, 9, 12},
-				{ 2, 4, 6, 8 });
-
-	Sub<i32, 4>({ 3, 6, 9, 12},
-				{ 2, 4, 6, 8 });
-	Sub<i32, 8>({ 3, 6, 9, 12, 15, 18, 21, 24 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
-
-	Sub<i16, 8>({ 3, 6, 9, 12, 15, 18, 21, 24 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
-	Sub<i16, 16>({ 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48 },
-				 { 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
-
-	Sub<i8, 16>({ 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
-	Sub<i8, 32>({ 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96 },
-				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64 });
+	Sub<i64, 2>();
+	Sub<i64, 4>();
+	Sub<i32, 4>();
+	Sub<i32, 8>();
+	Sub<i16, 8>();
+	Sub<i16, 16>();
+	Sub<i8, 16>();
+	Sub<i8, 32>();
 }
 
 template<Intrin::SimdBaseType T, usize Width>
-auto Mul(InitializerList<T> a, InitializerList<T> b) -> void
+auto Mul() -> void
 {
 	using PackT = Intrin::Pack<T, Width>;
 	T dataA[Width];
-	Core::MemCpy(dataA, a.begin(), a.size() * sizeof(T));
+	for (usize i = 0; i < Width; ++i)
+		dataA[i] = T(i);
 	PackT packA = PackT::Load(dataA);
+
 	T dataB[Width];
-	Core::MemCpy(dataB, b.begin(), b.size() * sizeof(T));
+	for (usize i = 0; i < Width; ++i)
+		dataB[i] = T(2 * i);
 	PackT packB = PackT::Load(dataB);
 
 	PackT packRes = packA.Mul(packB);
@@ -1246,60 +1360,33 @@ auto Mul(InitializerList<T> a, InitializerList<T> b) -> void
 	packRes.Store(res);
 
 	for (usize i = 0; i < Width; ++i)
-		ASSERT_EQ(res[i], dataA[i] * dataB[i]);
+		ASSERT_EQ(res[i], T(dataA[i] * dataB[i]));
 }
 
-TEST(Intr, Mul)
+TEST(IntrinPack, Mul)
 {
-	Mul<f64, 2>({ 1, 2 },
-				{ 2, 4 });
-	Mul<f64, 4>({ 1, 2, 3 , 4  },
-				{ 2, 4, 6 , 8  });
+	Mul<f64, 2>();
+	Mul<f64, 4>();
+	Mul<f32, 4>();
+	Mul<f32, 8>();
 
-	Mul<f32, 4>({ 1, 2, 3 , 4 },
-				{ 2, 4, 6 , 8 });
-	Mul<f32, 8>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 8   },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
+	Mul<u64, 2>();
+	Mul<u64, 4>();
+	Mul<u32, 4>();
+	Mul<u32, 8>();
+	Mul<u16, 8>();
+	Mul<u16, 16>();
+	Mul<u8, 16>();
+	Mul<u8, 32>();
 
-	Mul<u64, 2>({ 1, 2 },
-				{ 2, 4 });
-	Mul<u64, 4>({ 1, 2, 3 , 4  },
-				{ 2, 4, 6 , 8  });
-
-	Mul<u32, 4>({ 1, 2, 3 , 4 },
-				{ 2, 4, 6 , 8 });
-	Mul<u32, 8>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 8   },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
-
-	Mul<u16, 8>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 8   },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
-	Mul<u16, 16>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 8  , 9  , 10 , 11 , 12 , 13 , 14 , 15 , 16  },
-				 { 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 24 , 26 , 28 , 30 , 32  });
-
-	Mul<u8, 16>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 8  , 9  , 10 , 11 , 10 , 9  , 8  , 7 , 6  },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 20 , 18 , 16 , 14, 12 });
-	Mul<u8, 32>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 8  , 9  , 10 , 11 , 10 , 9  , 8  , 7 , 6 , 5 , 4 , 3 , 2, 1, 2, 3 , 4 , 5 , 6 , 7 , 8  , 9  , 10 , 11 , 10  },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 20 , 18 , 16 , 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 20  });
-
-	Mul<i64, 2>({ 1, 2 },
-				{ 2, 4 });
-	Mul<i64, 4>({ 1, 2, 3 , 4 },
-				{ 2, 4, 6 , 8 });
-
-	Mul<i32, 4>({ 1, 2, 3 , 4  },
-				{ 2, 4, 6 , 8  });
-	Mul<i32, 8>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 8   },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
-
-	Mul<i16, 8>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 8   },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
-	Mul<i16, 16>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 8  , 9  , 10 , 11 , 12 , 13 , 14 , 15 , 16  },
-				 { 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 24 , 26 , 28 , 30 , 32  });
-
-	Mul<i8, 16>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 6 , 5 , 4 , 3 , 2, 1, 2, 3 , 4  },
-			    { 2, 4, 6 , 8 , 10, 12, 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8  });
-	Mul<i8, 32>({ 1, 2, 3 , 4 , 5 , 6 , 7 , 6 , 5 , 4 , 3 , 2, 1, 2, 3 , 4 , 5 , 6 , 7 , 6 , 5 , 4 , 3 , 2, 1, 2, 3 , 4 , 5 , 6 , 7 , 6 },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8 , 10, 12, 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8 , 10, 12, 14, 12 });
+	Mul<i64, 2>();
+	Mul<i64, 4>();
+	Mul<i32, 4>();
+	Mul<i32, 8>();
+	Mul<i16, 8>();
+	Mul<i16, 16>();
+	Mul<i8, 16>();
+	Mul<i8, 32>();
 }
 
 template<Intrin::SimdBaseType T, usize Width>
@@ -1321,57 +1408,213 @@ auto Div(InitializerList<T> a, InitializerList<T> b) -> void
 		ASSERT_EQ(res[i], dataA[i] / dataB[i]);
 }
 
-TEST(Intr, Div)
+TEST(IntrinPack, Div)
 {
 	Div<f64, 2>({ 2, 8 },
 				{ 2, 4 });
 	Div<f64, 4>({ 2, 8, 18, 32 },
-				{ 2, 4, 6 , 8  });
+				{ 2, 4, 6 , 8 });
 
 	Div<f32, 4>({ 2, 8, 18, 32 },
-				{ 2, 4, 6 , 8  });
+				{ 2, 4, 6 , 8 });
 	Div<f32, 8>({ 2, 8, 18, 32, 50, 72, 98, 128 },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
+				{ 2, 4, 6 , 8 , 10, 12, 14, 16 });
 
 	Div<u64, 2>({ 2, 8 },
 				{ 2, 4 });
 	Div<u64, 4>({ 2, 8, 18, 32 },
-				{ 2, 4, 6 , 8  });
+				{ 2, 4, 6 , 8 });
 
 	Div<u32, 4>({ 2, 8, 18, 32 },
-				{ 2, 4, 6 , 8  });
+				{ 2, 4, 6 , 8 });
 	Div<u32, 8>({ 2, 8, 18, 32, 50, 72, 98, 128 },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
+				{ 2, 4, 6 , 8 , 10, 12, 14, 16 });
 
 	Div<u16, 8>({ 2, 8, 18, 32, 50, 72, 98, 128 },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
+				{ 2, 4, 6 , 8 , 10, 12, 14, 16 });
 	Div<u16, 16>({ 2, 8, 18, 32, 50, 72, 98, 128, 162, 200, 242, 288, 338, 392, 450, 512 },
-				 { 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 24 , 26 , 28 , 30 , 32  });
+				 { 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 24 , 26 , 28 , 30 , 32 });
 
 	Div<u8, 16>({ 2, 8, 18, 32, 50, 72, 98, 128, 162, 200, 242, 200, 162, 128, 98, 72 },
 				{ 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 20 , 18 , 16 , 14, 12 });
 	Div<u8, 32>({ 2, 8, 18, 32, 50, 72, 98, 128, 162, 200, 242, 200, 162, 128, 98, 72, 50, 32, 18, 8, 2, 8, 18, 32, 50, 72, 98, 128, 162, 200, 242, 200 },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 20 , 18 , 16 , 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 20  });
+				{ 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 20 , 18 , 16 , 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 20 });
 
 	Div<i64, 2>({ 2, 8 },
 				{ 2, 4 });
 	Div<i64, 4>({ 2, 8, 18, 32 },
-				{ 2, 4, 6 , 8  });
+				{ 2, 4, 6 , 8 });
 
 	Div<i32, 4>({ 2, 8, 18, 32 },
-				{ 2, 4, 6 , 8  });
+				{ 2, 4, 6 , 8 });
 	Div<i32, 8>({ 2, 8, 18, 32, 50, 72, 98, 128 },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
+				{ 2, 4, 6 , 8 , 10, 12, 14, 16 });
 
 	Div<i16, 8>({ 2, 8, 18, 32, 50, 72, 98, 128 },
-				{ 2, 4, 6 , 8 , 10, 12, 14, 16  });
+				{ 2, 4, 6 , 8 , 10, 12, 14, 16 });
 	Div<i16, 16>({ 2, 8, 18, 32, 50, 72, 98, 128, 162, 200, 242, 288, 338, 392, 450, 512 },
-				 { 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 24 , 26 , 28 , 30 , 32  });
+				 { 2, 4, 6 , 8 , 10, 12, 14, 16 , 18 , 20 , 22 , 24 , 26 , 28 , 30 , 32 });
 
 	Div<i8, 16>({ 2, 8, 18, 32, 50, 72, 98, 72, 50, 32, 18, 8, 2, 8, 18, 32 },
-			    { 2, 4, 6 , 8 , 10, 12, 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8  });
+				{ 2, 4, 6 , 8 , 10, 12, 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8 });
 	Div<i8, 32>({ 2, 8, 18, 32, 50, 72, 98, 72, 50, 32, 18, 8, 2, 8, 18, 32, 50, 72, 98, 72, 50, 32, 18, 8, 2, 8, 18, 32, 50, 72, 98, 72 },
 				{ 2, 4, 6 , 8 , 10, 12, 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8 , 10, 12, 14, 12, 10, 8 , 6 , 4, 2, 4, 6 , 8 , 10, 12, 14, 12 });
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto AddSaturated(InitializerList<T> a, InitializerList<T> b) -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+	Core::MemCpy(dataA, a.begin(), a.size() * sizeof(T));
+	PackT packA = PackT::Load(dataA);
+	T dataB[Width];
+	Core::MemCpy(dataB, b.begin(), b.size() * sizeof(T));
+	PackT packB = PackT::Load(dataB);
+
+	PackT packRes = packA.AddSaturated(packB);
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		if (Core::Math::Consts::MaxVal<T> - dataA[i] < dataB[i])
+			ASSERT_EQ(res[i], Core::Math::Consts::MaxVal<T>);
+		else
+			ASSERT_EQ(res[i], dataA[i] + dataB[i]);
+	}
+}
+
+TEST(IntrinPack, AddSaturated)
+{
+	AddSaturated<f64, 2>({ 1, 2 },
+				{ 2, 4 });
+	AddSaturated<f64, 4>({ 1, 2, 3, 4 },
+				{ 2, 4, 6, 8 });
+
+	AddSaturated<f32, 4>({ 1, 2, 3, 4 },
+				{ 2, 4, 6, 8 });
+	AddSaturated<f32, 8>({ 1, 2, 3, 4 , 5 , 6 , 7 , 8 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+
+	u64 maxU64 = Core::Math::Consts::MaxVal<u64>;
+	AddSaturated<u64, 2>({ 1, maxU64 },
+				{ 2, 4 });
+	AddSaturated<u64, 4>({ 1, maxU64, 3, maxU64 - 5 },
+				{ 2, 4, 6, 8 });
+
+	AddSaturated<u32, 4>({ 1, 4294967295, 3, 4294967290 },
+				{ 2, 4, 6, 8 });
+	AddSaturated<u32, 8>({ 1, 4294967295, 3, 4294967290, 5 , 6 , 7 , 4294967280 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+
+	AddSaturated<u16, 8>({ 1, 65535, 3, 65534 , 5 , 6 , 7 , 65520 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+	AddSaturated<u16, 16>({ 1, 65535, 3, 65534 , 5 , 6 , 7 , 65520 , 9 , 10, 11, 12, 13, 14, 65510, 16 },
+				 { 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
+
+	AddSaturated<u8, 16>({ 1, 255, 3, 253 , 5 , 6 , 7 , 240 , 9 , 10, 11, 12, 13, 14, 15, 230 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
+	AddSaturated<u8, 32>({ 1, 255, 3, 253 , 5 , 6 , 7 , 240 , 9 , 10, 11, 12, 13, 14, 15, 230, 17, 18, 19, 20, 21, 22, 23, 250, 25, 26, 27, 28, 29, 30, 222, 32 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64 });
+
+	i64 maxI64 = Core::Math::Consts::MaxVal<i64>;
+	AddSaturated<i64, 2>({ 1, maxI64 },
+				{ 2, 4 });
+	AddSaturated<i64, 4>({ 1, maxI64, 3, maxI64 - 5 },
+				{ 2, 4, 6, 8 });
+
+	AddSaturated<i32, 4>({ 1, 2147483647, 3, 2147483640 },
+				{ 2, 4, 6, 8 });
+	AddSaturated<i32, 8>({ 1, 2147483647, 2147483640, 4 , 5 , 6 , 7 , 2147483630 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+
+	AddSaturated<i16, 8>({ 1, 32767, 3, 32760 , 5 , 6 , 7 , 32750 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+	AddSaturated<i16, 16>({ 1, 32767, 3, 32760 , 5 , 6 , 7 , 32750 , 9 , 10, 11, 12, 13, 14, 32740, 16 },
+				 { 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
+
+	AddSaturated<i8, 16>({ 1, 127, 3, 120 , 5 , 6 , 7 , 110 , 9 , 10, 11, 12, 13, 14, 100, 16 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
+	AddSaturated<i8, 32>({ 1, 127, 3, 120 , 5 , 6 , 7 , 110 , 9 , 10, 11, 12, 13, 14, 100, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 90, 28, 29, 30, 31, 32 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64 });
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto SubSaturated(InitializerList<T> a, InitializerList<T> b) -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+	Core::MemCpy(dataA, a.begin(), a.size() * sizeof(T));
+	PackT packA = PackT::Load(dataA);
+	T dataB[Width];
+	Core::MemCpy(dataB, b.begin(), b.size() * sizeof(T));
+	PackT packB = PackT::Load(dataB);
+
+	PackT packRes = packA.SubSaturated(packB);
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		if (Core::Math::Consts::LowestVal<T> + dataB[i] > dataA[i])
+			ASSERT_EQ(res[i], Core::Math::Consts::LowestVal<T>);
+		else
+			ASSERT_EQ(res[i], dataA[i] - dataB[i]);
+	}
+}
+
+TEST(IntrinPack, SubSaturated)
+{
+	SubSaturated<f64, 2>({ 3, 2 },
+				{ 2, 4 });
+	SubSaturated<f64, 4>({ 3, 2, 9, 12 },
+				{ 2, 4, 6, 8 });
+
+	SubSaturated<f32, 4>({ 3, 2, 9, 12 },
+				{ 2, 4, 6, 8 });
+	SubSaturated<f32, 8>({ 3, 2, 9, 12, 15, 18, 21, 24 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+
+	SubSaturated<u64, 2>({ 3, 6 },
+				{ 2, 4 });
+	SubSaturated<u64, 4>({ 3, 6, 9, 12 },
+				{ 2, 4, 6, 8 });
+
+	SubSaturated<u32, 4>({ 3, 2, 9, 6 },
+				{ 2, 4, 6, 8 });
+	SubSaturated<u32, 8>({ 3, 2, 9, 6, 15, 18, 11, 24 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+	
+	SubSaturated<u16, 8>({ 3, 2, 9, 6, 15, 18, 21, 24 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+	SubSaturated<u16, 16>({ 3, 2, 9, 6, 15, 18, 11, 24, 27, 15, 33, 36, 39, 42, 45, 48 },
+				 { 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
+	
+	SubSaturated<u8, 16>({ 3, 2, 9, 6, 15, 18, 11, 24, 27, 15, 33, 36, 39, 42, 45, 48 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
+	SubSaturated<u8, 32>({ 3, 2, 9, 6, 15, 18, 21, 24, 27, 15, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 40, 78, 81, 84, 87, 90, 93, 96 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64 });
+	
+	SubSaturated<i64, 2>({ 3, 6 },
+				{ 2, 4 });
+	SubSaturated<i64, 4>({ 3, 6, 9, 12 },
+				{ 2, 4, 6, 8 });
+	
+	SubSaturated<i32, 4>({ 3, -2147483647, 9, -2147483642 },
+				{ 2, 4, 6, 8 });
+	SubSaturated<i32, 8>({ 3, -2147483647, 9, -2147483642, 15, 18, 21, -2147483640 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+	
+	SubSaturated<i16, 8>({ 3, -32767, 9, -32761, 15, 18, 21, -32760 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16 });
+	SubSaturated<i16, 16>({ 3, -32767, 9, -32761, 15, 18, 21, -32760, 27, 30, 33, 36, 39, 42, 45, -32750 },
+				 { 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
+	
+	SubSaturated<i8, 16>({ 3, -128, 9, -123, 15, 18, 21, -120, 27, 30, 33, 36, 39, 42, 45, -110 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 });
+	SubSaturated<i8, 32>({ 3, -128, 9, -123, 15, 18, 21, -120, 27, 30, 33, 36, 39, 42, 45, -110, 51, 54, 57, 60, 63, 66, 69, 72, -100, 78, 81, 84, 87, 90, 93, 96 },
+				{ 2, 4, 6, 8 , 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64 });
 }
 
 template<Intrin::SimdBaseType T, usize Width>
@@ -1425,7 +1668,7 @@ auto And() -> void
 		ASSERT_EQ(res[i], expected[i]);
 }
 
-TEST(Intr, And)
+TEST(IntrinPack, And)
 {
 	u64 signF64 = 0x7FFF'FFFF'FFFF'FFFF;
 	f64 maskF64 = *reinterpret_cast<f64*>(&signF64);
@@ -1511,7 +1754,7 @@ auto AndNot() -> void
 		ASSERT_EQ(res[i], expected[i]);
 }
 
-TEST(Intr, AndNot)
+TEST(IntrinPack, AndNot)
 {
 	u64 signF64 = 0x8000'0000'0000'0000;
 	f64 maskF64 = *reinterpret_cast<f64*>(&signF64);
@@ -1597,7 +1840,7 @@ auto Xor() -> void
 		ASSERT_EQ(res[i], expected[i]);
 }
 
-TEST(Intr, Xor)
+TEST(IntrinPack, Xor)
 {
 	u64 signF64 = 0x8000'0000'0000'0000;
 	f64 maskF64 = *reinterpret_cast<f64*>(&signF64);
@@ -1683,7 +1926,7 @@ auto Or() -> void
 		ASSERT_EQ(res[i], expected[i]);
 }
 
-TEST(Intr, Or)
+TEST(IntrinPack, Or)
 {
 	u64 signF64 = 0x8000'0000'0000'0000;
 	f64 maskF64 = *reinterpret_cast<f64*>(&signF64);
@@ -1766,7 +2009,7 @@ auto Not() -> void
 		ASSERT_EQ(res[i], expected[i]);
 }
 
-TEST(Intr, Not)
+TEST(IntrinPack, Not)
 {
 	Not<f64, 2>({ 1, 2 });
 	Not<f64, 4>({ 1, 2, 3, 4 });
@@ -1794,6 +2037,378 @@ TEST(Intr, Not)
 }
 
 template<Intrin::SimdBaseType T, usize Width>
+auto ShiftLPerElem() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+	T dataB[Width];
+	T expected[Width];
+
+	usize iMask = (sizeof(T) * 8) - 1;
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = ~T(0);
+		dataB[i] = T(i) & iMask;
+		expected[i] = dataA[i] << dataB[i];
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packB = PackT::Load(dataB);
+	PackT packRes = packA.ShiftL(packB);
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], expected[i]);
+}
+
+TEST(IntrinPack, ShiftLPerElem)
+{
+	// Only need to check for unsigned, as signed and floating point use the same underlying code
+	ShiftLPerElem<u64, 2>();
+	ShiftLPerElem<u64, 4>();
+	ShiftLPerElem<u32, 4>();
+	ShiftLPerElem<u32, 8>();
+	ShiftLPerElem<u16, 8>();
+	ShiftLPerElem<u16, 16>();
+	ShiftLPerElem<u8, 16>();
+	ShiftLPerElem<u8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto ShiftLScalar() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+	
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = ~T(0);
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packRes = packA.ShiftL(3u);
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i) 
+		ASSERT_EQ(res[i], T(dataA[i] << 3));
+}
+
+TEST(IntrinPack, ShiftLScalar)
+{
+	// Only need to check for unsigned, as signed and floating point use the same underlying code
+	ShiftLScalar<u64, 2>();
+	ShiftLScalar<u64, 4>();
+	ShiftLScalar<u32, 4>();
+	ShiftLScalar<u32, 8>();
+	ShiftLScalar<u16, 8>();
+	ShiftLScalar<u16, 16>();
+	ShiftLScalar<u8, 16>();
+	ShiftLScalar<u8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto ShiftLConst() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = ~T(0);
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packRes = packA.template ShiftL<3>();
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], T(dataA[i] << 3));
+}
+
+TEST(IntrinPack, ShiftLConst)
+{
+	// Only need to check for unsigned, as signed and floating point use the same underlying code
+	ShiftLConst<u64, 2>();
+	ShiftLConst<u64, 4>();
+	ShiftLConst<u32, 4>();
+	ShiftLConst<u32, 8>();
+	ShiftLConst<u16, 8>();
+	ShiftLConst<u16, 16>();
+	ShiftLConst<u8, 16>();
+	ShiftLConst<u8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto ShiftRAPerElem() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+	T dataB[Width];
+	T expected[Width];
+
+	usize iMask = (sizeof(T) * 8) - 1;
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataB[i] = T(i) & iMask;
+		T bit = (1ull << iMask) >> dataB[i];
+		dataA[i] = i % 2 ? (~T(0) ^ bit) : bit;
+		expected[i] = dataA[i] >> dataB[i];
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packB = PackT::Load(dataB);
+	PackT packRes = packA.ShiftRA(packB);
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], expected[i]);
+}
+
+TEST(IntrinPack, ShiftRAPerElem)
+{
+	// Only need to check for signed, as unsigned and floating point use the same underlying code
+	ShiftRAPerElem<i64, 2>();
+	ShiftRAPerElem<i64, 4>();
+	ShiftRAPerElem<i32, 4>();
+	ShiftRAPerElem<i32, 8>();
+	ShiftRAPerElem<i16, 8>();
+	ShiftRAPerElem<i16, 16>();
+	ShiftRAPerElem<i8, 16>();
+	ShiftRAPerElem<i8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto ShiftRAScalar() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = ~T(0);
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packRes = packA.ShiftRA(3u);
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], T(dataA[i] >> 3));
+}
+
+TEST(IntrinPack, ShiftRAScalar)
+{
+	// Only need to check for unsigned, as signed and floating point use the same underlying code
+	ShiftRAScalar<i64, 2>();
+	ShiftRAScalar<i64, 4>();
+	ShiftRAScalar<i32, 4>();
+	ShiftRAScalar<i32, 8>();
+	ShiftRAScalar<i16, 8>();
+	ShiftRAScalar<i16, 16>();
+	ShiftRAScalar<i8, 16>();
+	ShiftRAScalar<i8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto ShiftRAConst() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = ~T(0);
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packRes = packA.template ShiftRA<3>();
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], T(dataA[i] >> 3));
+}
+
+TEST(IntrinPack, ShiftRAConst)
+{
+	// Only need to check for unsigned, as signed and floating point use the same underlying code
+	ShiftRAConst<i64, 2>();
+	ShiftRAConst<i64, 4>();
+	ShiftRAConst<i32, 4>();
+	ShiftRAConst<i32, 8>();
+	ShiftRAConst<i16, 8>();
+	ShiftRAConst<i16, 16>();
+	ShiftRAConst<i8, 16>();
+	ShiftRAConst<i8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto ShiftRLPerElem() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+	T dataB[Width];
+	T expected[Width];
+
+	usize iMask = (sizeof(T) * 8) - 1;
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = ~T(0);
+		dataB[i] = T(i) & iMask;
+		expected[i] = dataA[i] >> dataB[i];
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packB = PackT::Load(dataB);
+	PackT packRes = packA.ShiftRL(packB);
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], expected[i]);
+}
+
+TEST(IntrinPack, ShiftRLPerElem)
+{
+	// Only need to check for unsigned, as signed and floating point use the same underlying code
+	ShiftRLPerElem<u64, 2>();
+	ShiftRLPerElem<u64, 4>();
+	ShiftRLPerElem<u32, 4>();
+	ShiftRLPerElem<u32, 8>();
+	ShiftRLPerElem<u16, 8>();
+	ShiftRLPerElem<u16, 16>();
+	ShiftRLPerElem<u8, 16>();
+	ShiftRLPerElem<u8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto ShiftRLScalar() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = ~T(0);
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packRes = packA.ShiftRL(3u);
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], T(dataA[i] >> 3));
+}
+
+TEST(IntrinPack, ShiftRLScalar)
+{
+	// Only need to check for unsigned, as signed and floating point use the same underlying code
+	ShiftRLScalar<u64, 2>();
+	ShiftRLScalar<u64, 4>();
+	ShiftRLScalar<u32, 4>();
+	ShiftRLScalar<u32, 8>();
+	ShiftRLScalar<u16, 8>();
+	ShiftRLScalar<u16, 16>();
+	ShiftRLScalar<u8, 16>();
+	ShiftRLScalar<u8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto ShiftRLConst() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = ~T(0);
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packRes = packA.template ShiftRL<3>();
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], T(dataA[i] >> 3));
+}
+
+TEST(IntrinPack, ShiftRLConst)
+{
+	// Only need to check for unsigned, as signed and floating point use the same underlying code
+	ShiftRLConst<u64, 2>();
+	ShiftRLConst<u64, 4>();
+	ShiftRLConst<u32, 4>();
+	ShiftRLConst<u32, 8>();
+	ShiftRLConst<u16, 8>();
+	ShiftRLConst<u16, 16>();
+	ShiftRLConst<u8, 16>();
+	ShiftRLConst<u8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto BlendPack() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+	T dataB[Width];
+	T dataM[Width];
+	T expected[Width];
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = T(i);
+		dataB[i] = T(Width + i);
+		u64 bits = ~0ull * (i & 1);
+		dataM[i] = *reinterpret_cast<T*>(&bits);
+		expected[i] = i & 1 ? dataB[i] : dataA[i];
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packB = PackT::Load(dataB);
+	PackT mask = PackT::Load(dataM);
+	PackT packRes = packA.Blend(packB, mask);
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], expected[i]);
+}
+
+TEST(IntrinPack, BlendPack)
+{
+	BlendPack<f64, 2>();
+	BlendPack<f64, 4>();
+	BlendPack<f32, 4>();
+	BlendPack<f32, 8>();
+
+	BlendPack<u64, 2>();
+	BlendPack<u64, 4>();
+	BlendPack<u32, 4>();
+	BlendPack<u32, 8>();
+	BlendPack<u16, 8>();
+	BlendPack<u16, 16>();
+	BlendPack<u8, 16>();
+	BlendPack<u8, 32>();
+
+	BlendPack<i64, 2>();
+	BlendPack<i64, 4>();
+	BlendPack<i32, 4>();
+	BlendPack<i32, 8>();
+	BlendPack<i16, 8>();
+	BlendPack<i16, 16>();
+	BlendPack<i8, 16>();
+	BlendPack<i8, 32>();
+}
+
+
+template<Intrin::SimdBaseType T, usize Width>
 auto Min(InitializerList<T> a, InitializerList<T> b)
 {
 	using PackT = Intrin::Pack<T, Width>;
@@ -1812,7 +2427,7 @@ auto Min(InitializerList<T> a, InitializerList<T> b)
 		ASSERT_EQ(res[i], Core::Math::Min(dataA[i], dataB[i]));
 }
 
-TEST(Intr, MinTest)
+TEST(IntrinPack, Min)
 {
 	Min<f64, 2>({ 1, 3 },
 				{ 3, 2 });
@@ -1877,7 +2492,7 @@ auto Max(InitializerList<T> a, InitializerList<T> b)
 		ASSERT_EQ(res[i], Core::Math::Max(dataA[i], dataB[i]));
 }
 
-TEST(Intr, MaxTest)
+TEST(IntrinPack, Max)
 {
 	Max<f64, 2>({ 1, 3 },
 				{ 3, 2 });
@@ -1924,11 +2539,136 @@ TEST(Intr, MaxTest)
 }
 
 template<Intrin::SimdBaseType T, usize Width>
-auto Rcp(InitializerList<T> vals)
+auto Ceil()
 {
 	using PackT = Intrin::Pack<T, Width>;
 	T data[Width];
-	Core::MemCpy(data, vals.begin(), vals.size() * sizeof(T));
+	for (usize i = 0; i < Width; ++i)
+	{
+		T fract = T((i & 3) * 0.25);
+		if (i & 1)
+			data[i] = -(T(i) + fract);
+		else
+			data[i] = T(i) + fract;
+	}
+	PackT packA = PackT::Load(data);
+
+	PackT packRes = packA.Ceil();
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_TRUE(Core::Math::EpsilonCompare(res[i], T(Core::Math::Ceil(data[i])), T(0.00001)));
+}
+
+TEST(IntrinPack, Ceil)
+{
+	Ceil<f64, 2>();
+	Ceil<f64, 4>();
+	Ceil<f32, 4>();
+	Ceil<f32, 8>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto Floor()
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T data[Width];
+	for (usize i = 0; i < Width; ++i)
+	{
+		T fract = T((i & 3) * 0.25);
+		if (i & 1)
+			data[i] = -(T(i) + fract);
+		else
+			data[i] = T(i) + fract;
+	}
+	PackT packA = PackT::Load(data);
+
+	PackT packRes = packA.Floor();
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_TRUE(Core::Math::EpsilonCompare(res[i], T(Core::Math::Floor(data[i])), T(0.00001)));
+}
+
+TEST(IntrinPack, Floor)
+{
+	Floor<f64, 2>();
+	Floor<f64, 4>();
+	Floor<f32, 4>();
+	Floor<f32, 8>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto Round()
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T data[Width];
+	for (usize i = 0; i < Width; ++i)
+	{
+		T fract = T((i & 1) * 0.5);
+		if (i & 1)
+			data[i] = -T(i + fract);
+		else
+			data[i] = T(i) + fract;
+	}
+	PackT packA = PackT::Load(data);
+
+	PackT packRes = packA.Round();
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_TRUE(Core::Math::EpsilonCompare(res[i], T(Core::Math::Round(data[i])), T(0.00001)));
+}
+
+TEST(IntrinPack, Round)
+{
+	Round<f64, 2>();
+	Round<f64, 4>();
+	Round<f32, 4>();
+	Round<f32, 8>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto RoundEven()
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T data[Width];
+	for (usize i = 0; i < Width; ++i)
+	{
+		T fract = T((i & 1) * 0.5);
+		if (i & 1)
+			data[i] = -T(i + fract);
+		else
+			data[i] = T(i) + fract;
+	}
+	PackT packA = PackT::Load(data);
+
+	PackT packRes = packA.RoundEven();
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_TRUE(Core::Math::EpsilonCompare(res[i], T(Core::Math::RoundEven(data[i])), T(0.00001)));
+}
+
+TEST(IntrinPack, RoundEven)
+{
+	RoundEven<f64, 2>();
+	RoundEven<f64, 4>();
+	RoundEven<f32, 4>();
+	RoundEven<f32, 8>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto Rcp()
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T data[Width];
+	for (usize i = 0; i < Width; ++i)
+		data[i] = T(i + 1);
 	PackT packA = PackT::Load(data);
 
 	PackT packRes = packA.Rcp();
@@ -1939,38 +2679,39 @@ auto Rcp(InitializerList<T> vals)
 		ASSERT_TRUE(Core::Math::EpsilonCompare(res[i], Core::Math::Rcp(data[i]), T(0.00001)));
 }
 
-TEST(Intr, Rcp)
+TEST(IntrinPack, Rcp)
 {
-	Rcp<f64, 2>({ 1, 2 });
-	Rcp<f64, 4>({ 1, 2, 3, 4 });
-	Rcp<f32, 4>({ 1, 2, 3, 4 });
-	Rcp<f32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
+	Rcp<f64, 2>();
+	Rcp<f64, 4>();
+	Rcp<f32, 4>();
+	Rcp<f32, 8>();
 
-	Rcp<u64, 2>({ 1, 2 });
-	Rcp<u64, 4>({ 1, 2, 3, 4 });
-	Rcp<u32, 4>({ 1, 2, 3, 4 });
-	Rcp<u32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Rcp<u16, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Rcp<u16, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Rcp<u8, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Rcp<u8, 32>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 });
-	
-	Rcp<i64, 2>({ 1, 2 });
-	Rcp<i64, 4>({ 1, 2, 3, 4 });
-	Rcp<i32, 4>({ 1, 2, 3, 4 });
-	Rcp<i32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Rcp<i16, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Rcp<i16, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Rcp<i8, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Rcp<i8, 32>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 });
+	Rcp<u64, 2>();
+	Rcp<u64, 4>();
+	Rcp<u32, 4>();
+	Rcp<u32, 8>();
+	Rcp<u16, 8>();
+	Rcp<u16, 16>();
+	Rcp<u8, 16>();
+	Rcp<u8, 32>();
+
+	Rcp<i64, 2>();
+	Rcp<i64, 4>();
+	Rcp<i32, 4>();
+	Rcp<i32, 8>();
+	Rcp<i16, 8>();
+	Rcp<i16, 16>();
+	Rcp<i8, 16>();
+	Rcp<i8, 32>();
 }
 
 template<Intrin::SimdBaseType T, usize Width>
-auto Sqrt(InitializerList<T> vals)
+auto Sqrt()
 {
 	using PackT = Intrin::Pack<T, Width>;
 	T data[Width];
-	Core::MemCpy(data, vals.begin(), vals.size() * sizeof(T));
+	for (usize i = 0; i < Width; ++i)
+		data[i] = T(i);
 	PackT packA = PackT::Load(data);
 
 	PackT packRes = packA.Sqrt();
@@ -1981,38 +2722,39 @@ auto Sqrt(InitializerList<T> vals)
 		ASSERT_TRUE(Core::Math::EpsilonCompare(res[i], Core::Math::Sqrt(data[i]), T(0.00001)));
 }
 
-TEST(Intr, Sqrt)
+TEST(IntrinPack, Sqrt)
 {
-	Sqrt<f64, 2>({ 1, 2 });
-	Sqrt<f64, 4>({ 1, 2, 3, 4 });
-	Sqrt<f32, 4>({ 1, 2, 3, 4 });
-	Sqrt<f32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
+	Sqrt<f64, 2>();
+	Sqrt<f64, 4>();
+	Sqrt<f32, 4>();
+	Sqrt<f32, 8>();
 
-	Sqrt<u64, 2>({ 1, 2 });
-	Sqrt<u64, 4>({ 1, 2, 3, 4 });
-	Sqrt<u32, 4>({ 1, 2, 3, 4 });
-	Sqrt<u32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Sqrt<u16, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Sqrt<u16, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Sqrt<u8, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Sqrt<u8, 32>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 });
+	Sqrt<u64, 2>();
+	Sqrt<u64, 4>();
+	Sqrt<u32, 4>();
+	Sqrt<u32, 8>();
+	Sqrt<u16, 8>();
+	Sqrt<u16, 16>();
+	Sqrt<u8, 16>();
+	Sqrt<u8, 32>();
 
-	Sqrt<i64, 2>({ 1, 2 });
-	Sqrt<i64, 4>({ 1, 2, 3, 4 });
-	Sqrt<i32, 4>({ 1, 2, 3, 4 });
-	Sqrt<i32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Sqrt<i16, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	Sqrt<i16, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Sqrt<i8, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	Sqrt<i8, 32>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 });
+	Sqrt<i64, 2>();
+	Sqrt<i64, 4>();
+	Sqrt<i32, 4>();
+	Sqrt<i32, 8>();
+	Sqrt<i16, 8>();
+	Sqrt<i16, 16>();
+	Sqrt<i8, 16>();
+	Sqrt<i8, 32>();
 }
 
 template<Intrin::SimdBaseType T, usize Width>
-auto RSqrt(InitializerList<T> vals)
+auto RSqrt()
 {
 	using PackT = Intrin::Pack<T, Width>;
 	T data[Width];
-	Core::MemCpy(data, vals.begin(), vals.size() * sizeof(T));
+	for (usize i = 0; i < Width; ++i)
+		data[i] = T(i + 1);
 	PackT packA = PackT::Load(data);
 
 	PackT packRes = packA.RSqrt();
@@ -2023,28 +2765,271 @@ auto RSqrt(InitializerList<T> vals)
 		ASSERT_TRUE(Core::Math::EpsilonCompare(res[i], Core::Math::RSqrt(data[i]), T(0.00001)));
 }
 
-TEST(Intr, RSqrt)
+TEST(IntrinPack, RSqrt)
 {
-	RSqrt<f64, 2>({ 1, 2 });
-	RSqrt<f64, 4>({ 1, 2, 3, 4 });
-	RSqrt<f32, 4>({ 1, 2, 3, 4 });
-	RSqrt<f32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
+	RSqrt<f64, 2>();
+	RSqrt<f64, 4>();
+	RSqrt<f32, 4>();
+	RSqrt<f32, 8>();
 
-	RSqrt<u64, 2>({ 1, 2 });
-	RSqrt<u64, 4>({ 1, 2, 3, 4 });
-	RSqrt<u32, 4>({ 1, 2, 3, 4 });
-	RSqrt<u32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	RSqrt<u16, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	RSqrt<u16, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	RSqrt<u8, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	RSqrt<u8, 32>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 });
+	RSqrt<u64, 2>();
+	RSqrt<u64, 4>();
+	RSqrt<u32, 4>();
+	RSqrt<u32, 8>();
+	RSqrt<u16, 8>();
+	RSqrt<u16, 16>();
+	RSqrt<u8, 16>();
+	RSqrt<u8, 32>();
 
-	RSqrt<i64, 2>({ 1, 2 });
-	RSqrt<i64, 4>({ 1, 2, 3, 4 });
-	RSqrt<i32, 4>({ 1, 2, 3, 4 });
-	RSqrt<i32, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	RSqrt<i16, 8>({ 1, 2, 3, 4, 5, 6, 7, 8 });
-	RSqrt<i16, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	RSqrt<i8, 16>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-	RSqrt<i8, 32>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 });
+	RSqrt<i64, 2>();
+	RSqrt<i64, 4>();
+	RSqrt<i32, 4>();
+	RSqrt<i32, 8>();
+	RSqrt<i16, 8>();
+	RSqrt<i16, 16>();
+	RSqrt<i8, 16>();
+	RSqrt<i8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto Abs() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		if constexpr (Core::UnsignedIntegral<T>)
+			dataA[i] = T(i);
+		else
+			dataA[i] = -T(i);
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packRes = packA.Abs();
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], Core::Math::Abs(dataA[i]));
+}
+
+TEST(IntrinPack, Abs)
+{
+	Abs<f64, 2>();
+	Abs<f64, 4>();
+	Abs<f32, 4>();
+	Abs<f32, 8>();
+
+	Abs<u64, 2>();
+	Abs<u64, 4>();
+	Abs<u32, 4>();
+	Abs<u32, 8>();
+	Abs<u16, 8>();
+	Abs<u16, 16>();
+	Abs<u8, 16>();
+	Abs<u8, 32>();
+
+	Abs<i64, 2>();
+	Abs<i64, 4>();
+	Abs<i32, 4>();
+	Abs<i32, 8>();
+	Abs<i16, 8>();
+	Abs<i16, 16>();
+	Abs<i8, 16>();
+	Abs<i8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width>
+auto Sign() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+
+	i8 vals[3] = { -23, 0, 42 };
+
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = T(vals[i % 3]);
+	}
+
+	PackT packA = PackT::Load(dataA);
+	PackT packRes = packA.Sign();
+	T res[Width];
+	packRes.Store(res);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], Core::Math::Sign(dataA[i]));
+}
+
+TEST(IntrinPack, Sign)
+{
+	Sign<f64, 2>();
+	Sign<f64, 4>();
+	Sign<f32, 4>();
+	Sign<f32, 8>();
+
+	Sign<u64, 2>();
+	Sign<u64, 4>();
+	Sign<u32, 4>();
+	Sign<u32, 8>();
+	Sign<u16, 8>();
+	Sign<u16, 16>();
+	Sign<u8, 16>();
+	Sign<u8, 32>();
+
+	Sign<i64, 2>();
+	Sign<i64, 4>();
+	Sign<i32, 4>();
+	Sign<i32, 8>();
+	Sign<i16, 8>();
+	Sign<i16, 16>();
+	Sign<i8, 16>();
+	Sign<i8, 32>();
+}
+
+template<Intrin::SimdBaseType T, usize Width, usize NumElems = Width>
+auto HAdd() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T data[Width];
+	for (usize i = 0; i < Width; ++i)
+		data[i] = T(i);
+	PackT pack = PackT::Load(data);
+
+	PackT packRes = pack.template HAdd<NumElems>();
+	T res[Width];
+	packRes.Store(res);
+
+	T sum = T(0);
+	for (usize i = 0; i < NumElems; ++i)
+		sum += T(i);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], sum);
+}
+
+TEST(IntrinPack, HAdd)
+{
+	HAdd<f64, 2>();
+	HAdd<f64, 4>();
+	HAdd<f32, 4>();
+	HAdd<f32, 8>();
+	
+	HAdd<u64, 2>();
+	HAdd<u64, 4>();
+	HAdd<u32, 4>();
+	HAdd<u32, 8>();
+	HAdd<u16, 8>();
+	HAdd<u16, 16>();
+	HAdd<u8, 16>();
+	HAdd<u8, 32>();
+
+	HAdd<i64, 2>();
+	HAdd<i64, 4>();
+	HAdd<i32, 4>();
+	HAdd<i32, 8>();
+	HAdd<i16, 8>();
+	HAdd<i16, 16>();
+	HAdd<i8, 16>();
+	HAdd<i8, 32>();
+
+	HAdd<f64, 2, 1>();
+	HAdd<f64, 4, 3>();
+	HAdd<f32, 4, 3>();
+	HAdd<f32, 8, 7>();
+
+	HAdd<u64, 2, 1>();
+	HAdd<u64, 4, 2>();
+	HAdd<u32, 4, 3>();
+	HAdd<u32, 8, 7>();
+	HAdd<u16, 8, 7>();
+	HAdd<u16, 16, 15>();
+	HAdd<u8, 16, 15>();
+	HAdd<u8, 32, 31>();
+
+	HAdd<i64, 2, 1>();
+	HAdd<i64, 4, 2>();
+	HAdd<i32, 4, 3>();
+	HAdd<i32, 8, 7>();
+	HAdd<i16, 8, 7>();
+	HAdd<i16, 16, 15>();
+	HAdd<i8, 16, 15>();
+	HAdd<i8, 32, 31>();
+}
+
+template<Intrin::SimdBaseType T, usize Width, usize NumElems = Width>
+auto Dot() -> void
+{
+	using PackT = Intrin::Pack<T, Width>;
+	T dataA[Width];
+	T dataB[Width];
+	for (usize i = 0; i < Width; ++i)
+	{
+		dataA[i] = T(i);
+		dataB[i] = T(i * 2);
+	}
+	PackT packA = PackT::Load(dataA);
+	PackT packB = PackT::Load(dataB);
+
+	PackT packRes = packA.template Dot<NumElems>(packB);
+	T res[Width];
+	packRes.Store(res);
+
+	T sum = T(0);
+	for (usize i = 0; i < NumElems; ++i)
+		sum += T(i) * T(i * 2);
+
+	for (usize i = 0; i < Width; ++i)
+		ASSERT_EQ(res[i], sum);
+}
+
+TEST(IntrinPack, Dot)
+{
+	Dot<f64, 2>();
+	Dot<f64, 4>();
+	Dot<f32, 4>();
+	Dot<f32, 8>();
+	
+	Dot<u64, 2>();
+	Dot<u64, 4>();
+	Dot<u32, 4>();
+	Dot<u32, 8>();
+	Dot<u16, 8>();
+	Dot<u16, 16>();
+	Dot<u8, 16>();
+	Dot<u8, 32>();
+	
+	Dot<i64, 2>();
+	Dot<i64, 4>();
+	Dot<i32, 4>();
+	Dot<i32, 8>();
+	Dot<i16, 8>();
+	Dot<i16, 16>();
+	Dot<i8, 16>();
+	Dot<i8, 32>();
+
+	Dot<f64, 2, 1>();
+	Dot<f64, 4, 3>();
+	Dot<f32, 4, 3>();
+	Dot<f32, 8, 7>();
+	Dot<f32, 8, 3>();
+
+	Dot<u64, 2, 1>();
+	Dot<u64, 4, 2>();
+	Dot<u32, 4, 3>();
+	Dot<u32, 8, 7>();
+	Dot<u16, 8, 7>();
+	Dot<u16, 16, 15>();
+	Dot<u8, 16, 15>();
+	Dot<u8, 32, 31>();
+	
+	Dot<i64, 2, 1>();
+	Dot<i64, 4, 2>();
+	Dot<i32, 4, 3>();
+	Dot<i32, 8, 7>();
+	Dot<i16, 8, 7>();
+	Dot<i16, 16, 15>();
+	Dot<i8, 16, 15>();
+	Dot<i8, 32, 31>();
 }

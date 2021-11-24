@@ -5,30 +5,28 @@
 namespace Core::Math::Consts
 {
 	template<typename T>
-	constexpr u32 Digits   = u32(std::numeric_limits<T>::digits);
+	constexpr u32 Digits       = u32(std::numeric_limits<T>::digits);
 	template<typename T>
-	constexpr u32 Digits10 = u32(std::numeric_limits<T>::digits10);
+	constexpr u32 Digits10     = u32(std::numeric_limits<T>::digits10);
 	template<typename T>
-	constexpr u32 Radix    = u32(std::numeric_limits<T>::radix);
+	constexpr u32 Radix        = u32(std::numeric_limits<T>::radix);
 	template<typename T>
-	constexpr T MinVal     = std::numeric_limits<T>::min();
+	constexpr T MinVal         = std::numeric_limits<T>::min();
 	template<typename T>
-	constexpr T MaxVal     = std::numeric_limits<T>::max();
+	constexpr T MaxVal         = std::numeric_limits<T>::max();
 	template<typename T>
-	constexpr T LowestVal  = std::numeric_limits<T>::lowest();
+	constexpr T LowestVal      = std::numeric_limits<T>::lowest();
 	template<typename T>
-	constexpr T Infinity   = std::numeric_limits<T>::infinity();
+	constexpr T Infinity       = std::numeric_limits<T>::infinity();
 	template<typename T>
-	constexpr T QNaN       = std::numeric_limits<T>::quiet_NaN();
+	constexpr T QNaN           = std::numeric_limits<T>::quiet_NaN();
 	template<typename T>
-	constexpr T SNaN       = std::numeric_limits<T>::signaling_NaN();
+	constexpr T SNaN           = std::numeric_limits<T>::signaling_NaN();
 
 	template<typename T>
-	constexpr T Epsilon = std::numeric_limits<T>::epsilon();
+	constexpr T MachineEpsilon = std::numeric_limits<T>::epsilon();
 	template<typename T>
-	constexpr T Zero = static_cast<T>(0);
-	template<typename T>
-	constexpr T One = static_cast<T>(1);
+	constexpr T MathEpsilon    = static_cast<T>(0.00001);
 
 	template<typename T>
 	constexpr T Pi             = static_cast<T>(3.14159265358979323846264338327950288);
@@ -88,4 +86,9 @@ namespace Core::Math::Consts
 	constexpr T Euler          = static_cast<T>(0.577215664901532860606);
 	template<typename T>
 	constexpr T GoldenRatio    = static_cast<T>(1.61803398874989484820458683436563811);
+
+	template<typename T>
+	constexpr T Deg2Rad        = Pi<T> / static_cast<T>(180);
+	template<typename T>
+	constexpr T Rad2Deg        = static_cast<T>(180) / Pi<T>;
 }

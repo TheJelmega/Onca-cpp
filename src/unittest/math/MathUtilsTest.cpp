@@ -100,11 +100,9 @@ TEST(MathUtilsTest, Mod)
 
 TEST(MathUtilsTest, ModF)
 {
-	Core::Pair<i64, f64> pair;
-
-	pair = Math::ModF(1.9f);
+	Core::Pair<f32, f32> pair = Math::ModF(1.9f);
 	ASSERT_EQ(pair.first, 1);
-	ASSERT_TRUE(Math::EpsilonCompare(pair.second, 0.9, 0.0001));
+	ASSERT_TRUE(Math::EpsilonCompare(pair.second, 0.9f, 0.0001f));
 }
 
 TEST(MathUtilsTest, EpsilonCompare)

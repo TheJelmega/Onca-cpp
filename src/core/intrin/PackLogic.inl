@@ -296,6 +296,171 @@ namespace Core::Intrin
 	}
 
 	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::All() const noexcept -> bool
+	{
+		if constexpr (Is128Bit())
+		{
+			if constexpr (IsF64<T>)
+			{
+#if HAS_SSE_SUPPORT
+				return _mm_movemask_ps(data.sse_m128) == 0xF;
+#endif
+			}
+			else if constexpr (IsF32<T>)
+			{
+#if HAS_SSE_SUPPORT
+				return _mm_movemask_pd(data.sse_m128d) == 0x3;
+#endif
+			}
+			else
+			{
+#if HAS_SSE_SUPPORT
+				return _mm_movemask_epi8(data.sse_m128i) == 0xFFFF;
+#endif
+			}
+		}
+		else if (Is256Bit())
+		{
+			if constexpr (IsF64<T>)
+			{
+#if HAS_AVX
+				return _mm256_movemask_ps(data.sse_m256) == 0xFF;
+#endif
+			}
+			else if constexpr (IsF32<T>)
+			{
+#if HAS_AVX
+				return _mm256_movemask_pd(data.sse_m256d) == 0xF;
+#endif
+			}
+			else
+			{
+#if HAS_AVX2
+				return _mm256_movemask_epi8(data.sse_m256i) == 0xFFFF'FFFF;
+#endif
+			}
+		}
+
+		using Unsigned = UnsignedOfSameSize<T>;
+		for (usize i = 0; i < Width; ++i)
+		{
+			if (data.bits[i] != ~Unsigned(0))
+				return false;
+		}
+		return true;
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::Any() const noexcept -> bool
+	{
+		if constexpr (Is128Bit())
+		{
+			if constexpr (IsF64<T>)
+			{
+#if HAS_SSE_SUPPORT
+				return _mm_movemask_ps(data.sse_m128) != 0;
+#endif
+			}
+			else if constexpr (IsF32<T>)
+			{
+#if HAS_SSE_SUPPORT
+				return _mm_movemask_pd(data.sse_m128d) != 0;
+#endif
+			}
+			else
+			{
+#if HAS_SSE_SUPPORT
+				return _mm_movemask_epi8(data.sse_m128i) != 0;
+#endif
+			}
+		}
+		else if (Is256Bit())
+		{
+			if constexpr (IsF64<T>)
+			{
+#if HAS_AVX
+				return _mm256_movemask_ps(data.sse_m256) != 0;
+#endif
+			}
+			else if constexpr (IsF32<T>)
+			{
+#if HAS_AVX
+				return _mm256_movemask_pd(data.sse_m256d) != 0;
+#endif
+			}
+			else
+			{
+#if HAS_AVX2
+				return _mm256_movemask_epi8(data.sse_m256i) != 0;
+#endif
+			}
+		}
+
+		using Unsigned = UnsignedOfSameSize<T>;
+		for (usize i = 0; i < Width; ++i)
+		{
+			if (data.bits[i] == ~Unsigned(0))
+				return true;
+		}
+		return false;
+	}
+
+	template <SimdBaseType T, usize Width>
+	constexpr auto Pack<T, Width>::None() const noexcept -> bool
+	{
+		if constexpr (Is128Bit())
+		{
+			if constexpr (IsF64<T>)
+			{
+#if HAS_SSE_SUPPORT
+				return _mm_movemask_ps(data.sse_m128) == 0;
+#endif
+			}
+			else if constexpr (IsF32<T>)
+			{
+#if HAS_SSE_SUPPORT
+				return _mm_movemask_pd(data.sse_m128d) == 0;
+#endif
+			}
+			else
+			{
+#if HAS_SSE_SUPPORT
+				return _mm_movemask_epi8(data.sse_m128i) == 0;
+#endif
+			}
+		}
+		else if (Is256Bit())
+		{
+			if constexpr (IsF64<T>)
+			{
+#if HAS_AVX
+				return _mm256_movemask_ps(data.sse_m256) == 0;
+#endif
+			}
+			else if constexpr (IsF32<T>)
+			{
+#if HAS_AVX
+				return _mm256_movemask_pd(data.sse_m256d) == 0;
+#endif
+			}
+			else
+			{
+#if HAS_AVX2
+				return _mm256_movemask_epi8(data.sse_m256i) == 0;
+#endif
+			}
+		}
+
+		using Unsigned = UnsignedOfSameSize<T>;
+		for (usize i = 0; i < Width; ++i)
+		{
+			if (data.bits[i] != 0)
+				return false;
+		}
+		return true;
+	}
+
+	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Blend(const Pack& other, const Pack& mask) const noexcept -> Pack
 	{
 		Pack pack{ UnInit };

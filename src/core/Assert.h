@@ -2,6 +2,8 @@
 #include "Config.h"
 #include <cassert>
 
+// TODO: make asserts work, or disable them, during consteval 
+
 #if ENABLE_ASSERT
 // TODO: better assert impl
 #	define ASSERT(cond, msg) assert((cond) && (msg))
@@ -23,5 +25,11 @@
 #	define SLOW_ASSERT(cond, msg)
 #endif
 
+#if ENABLE_MATH_ASSERT
+// TODO: better assert impl
+#	define MATH_ASSERT(cond, msg) IF_NOT_CONSTEVAL assert((cond) && (msg))
+#else
+#	define MATH_ASSERT(cond, msg)
+#endif
 
 #define STATIC_ASSERT(cond, msg) static_assert((cond), msg)
