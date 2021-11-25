@@ -17,7 +17,7 @@ namespace Core::Math
 #if !MATH_DISABLE_SIMD
 		template<Intrin::SimdBaseType Ty>
 			requires (sizeof(Ty) == 4) || (sizeof(Ty) == 8)
-		struct Vec4PackData
+		struct Vec4PackSelector<Ty>
 		{
 			using Type = Intrin::Pack<Ty, 4>;
 		};
@@ -27,17 +27,18 @@ namespace Core::Math
 		using Vec4Pack = typename Vec4PackSelector<Ty>::Type;
 	}
 
+#define REFLECT(...)
+
 	/**
 	 * 4D vector
 	 * \tparam Ty Component type
 	 */
+	REFLECT(0, Value)
 	template<Numeric Ty>
 	struct Vec4
 	{
 	private:
-
-		//using PackT = Detail::Vec4PackSelector<Ty>;
-		using PackT = Intrin::Pack<Ty, 4>;
+		using PackT = Detail::Vec4Pack<Ty>;
 
 		/**
 		 * Create a Vec4 from a pack
@@ -59,7 +60,7 @@ namespace Core::Math
 			PackT pack;
 		};
 
-		static constexpr auto HasNativeRegister() noexcept -> bool { return sizeof(pack) == sizeof(Ty) * 4; }
+		static constexpr auto HasNativeRegister() noexcept -> bool { return !SameAs<PackT, Empty>; }
 
 		/**
 		* Create a default Vec4 (0, 0, 0, 0)
