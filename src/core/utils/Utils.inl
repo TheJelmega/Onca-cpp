@@ -3,6 +3,8 @@
 #include "Utils.h"
 #endif
 
+#include "hash/Hash.h"
+
 namespace Core
 {
 	template <typename T>
@@ -29,7 +31,8 @@ namespace Core
 	template <typename T>
 	auto Hash<T>::operator()(const T& t) const noexcept -> u64
 	{
-		return usize(t);
+		static Hashing::FVN1A_64 hash;
+		return hash(reinterpret_cast<const u8*>(&t), sizeof(T));
 	}
 
 	template<typename T>

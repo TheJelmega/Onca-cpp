@@ -16,6 +16,8 @@
 #include "utils/Algo.h"
 #include "utils/Flags.h"
 
+#include "hash/Hash.h"
+
 #include "intrin/Pack.h"
 #include "intrin/BitIntrin.h"
 

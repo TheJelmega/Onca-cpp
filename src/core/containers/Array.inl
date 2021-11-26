@@ -18,9 +18,7 @@ namespace Core
 	template <typename T, usize N>
 	constexpr auto Array<T, N>::operator[](usize idx) noexcept -> T&
 	{
-		IF_CONSTEVAL
-			STATIC_ASSERT(idx < N, "Index out of range");
-		else
+		IF_NOT_CONSTEVAL
 			ASSERT(idx < N, "Index out of range");
 		return m_data[idx];
 	}
@@ -28,9 +26,7 @@ namespace Core
 	template <typename T, usize N>
 	constexpr auto Array<T, N>::operator[](usize idx) const noexcept -> const T&
 	{
-		IF_CONSTEVAL
-			STATIC_ASSERT(idx < N, "Index out of range");
-		else
+		IF_NOT_CONSTEVAL
 			ASSERT(idx < N, "Index out of range");
 		return m_data[idx];
 	}
