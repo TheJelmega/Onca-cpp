@@ -452,9 +452,9 @@ namespace Core
 			--count;
 			size -= c.size;
 		}
-		m_data.Insert(m_data.IteratorAt(idx), count * c.size, 0);
+		m_data.Insert(m_data.IteratorAt(m_data.Size()), count * c.size, 0);
 
-		u8* pData = m_data.Data() + idx;
+		u8* pData = m_data.Data() + m_data.Size();
 		for (usize i = 0; i < count; ++i, pData += c.size)
 			MemCpy(pData, c.data, c.size);
 
@@ -945,7 +945,7 @@ namespace Core
 
 		const usize strSize = m_data.Size();
 		
-		InplaceDynArray<ConstString, Cap * sizeof(this)> res{alloc};
+		InplaceDynArray<ConstString, Cap * sizeof(this)> res;
 		usize max = Max;
 		while (curIdx < strSize && max > 1)
 		{
@@ -1666,7 +1666,7 @@ namespace Core
 		}
 		else
 		{
-			m_data.Erase(m_data.IteratorAt(idx), byteLength - otherSize);
+			m_data.Erase(m_data.IteratorAt(idx), byteLength - needed);
 		}
 
 		u8* pData = m_data.Data() + idx;
