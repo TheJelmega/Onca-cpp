@@ -7,18 +7,6 @@
 namespace Core
 {
 	/**
-	 * Options of String::Split
-	 */
-	enum class StringSplitOption
-	{
-		None        = 0,      ///< No options
-		RemoveEmpty = BIT(0), ///< Omit empty substrings from the result
-		TrimEntries = BIT(1), ///< Trim whitespace from each substring
-		All         = 0x3,    ///< All options (will also remove substrings that are only whitespace)
-	};
-	DEFINE_FLAGS(StringSplitOption);
-
-	/**
 	 * Utf8 string
 	 */
 	class String
@@ -813,6 +801,11 @@ namespace Core
 
 }
 
-DEFINE_ENUM_FLAG_OPS(StringSplitOption);
+inline namespace Literals
+{
+	auto operator""_s(const char* cstr, usize size) noexcept -> Core::String;
+	auto operator""_s(const char16_t* cstr, usize size) noexcept -> Core::String;
+	auto operator""_s(const char32_t* cstr, usize size) noexcept -> Core::String;
+}
 
 #include "String.inl"
