@@ -46,9 +46,11 @@ workspace "Engine"
     filter "platforms:Windows"
         system "windows"
         architecture "x86_64"
-        toolset (iif(_ACTION == "vs2019", "v142", "v141"))
+        vectorextensions "AVX2"
+        toolset (iif(_ACTION == "vs2022", "v143", iif(_ACTION == "vs2019", "v142", "v141")))
         systemversion (os.winSdkVersion() .. ".0")
         defines { "PLATFORM_WINDOWS=1" }
+
 
     filter "language:C#"
         configmap {
