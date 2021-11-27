@@ -189,4 +189,18 @@ namespace Core
 	{
 		{ static_cast<const T>(T{})(a, b) } noexcept -> SameAs<i8>;
 	};
+
+	template<typename T, typename R, typename... Args>
+	concept Functor =
+		DefaultConstructible<T> &&
+		requires(T t, Args... args)
+	{
+		{ T{}(args...) } noexcept -> SameAs<R>;
+	};
+
+	// Context sensitive
+	// TODO: better concept for this
+	template<typename T>
+	concept Lambda =
+		SameAs<T, Decay<T>>;
 }

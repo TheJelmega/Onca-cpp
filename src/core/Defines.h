@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <optional>
+#include <cstddef> // nullptr_t
 
 using i8    = int8_t;
 using i16   = int16_t;

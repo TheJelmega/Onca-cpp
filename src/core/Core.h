@@ -15,6 +15,7 @@
 #include "utils/Utils.h"
 #include "utils/Algo.h"
 #include "utils/Flags.h"
+#include "utils/Delegate.h"
 
 #include "hash/Hash.h"
 
