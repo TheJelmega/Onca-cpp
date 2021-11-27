@@ -61,6 +61,7 @@ namespace Core::Alloc
 		auto GetCurStats(usize& memUse, usize& numAllocs, usize& overhead, usize& backingMem) noexcept -> void;
 	};
 
+	// TODO: Go over ownership system + possible redo
 	// TODO: Add Defragment virtual function
 	class CORE_API IAllocator
 	{
@@ -126,10 +127,10 @@ namespace Core::Alloc
 		virtual auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void = 0;
 		/**
 		 * \brief Check if the allocation was allocated by this allocator (this or child allocator)
-		 * \param[in] pAlloc Allocator that is stored in MemRef
+		 * \param[in] mem MemRef to check
 		 * \return If the allocation is owned by the allocator
 		 */
-		virtual auto OwnsInternal(IAllocator* pAlloc) noexcept -> bool;
+		virtual auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool;
 		/**
 		 * Translate a MemRef into a pointer
 		 * \param[in] mem MemRef to translate ptr from

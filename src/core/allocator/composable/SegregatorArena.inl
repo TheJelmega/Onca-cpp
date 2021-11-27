@@ -18,9 +18,13 @@ namespace Core::Alloc
 	{
 		// TODO: Alloc stats
 
+		MemRef<u8> mem;
 		if (size > m_bound)
-			return m_gtAlloc.template Allocate<u8>(size, align, isBacking);
-		return m_leAlloc.template Allocate<u8>(size, align, isBacking);
+			mem = m_gtAlloc.template Allocate<u8>(size, align, isBacking);
+		else
+			mem = m_leAlloc.template Allocate<u8>(size, align, isBacking);
+		mem.SetAlloc(this);
+		return mem;
 	}
 
 	template <ImplementsIAllocator GtAlloc, ImplementsIAllocator LeAlloc>

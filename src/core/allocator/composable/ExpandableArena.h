@@ -36,7 +36,7 @@ namespace Core::Alloc
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
-		auto OwnsInternal(IAllocator* pAlloc) noexcept -> bool override;
+		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	private:

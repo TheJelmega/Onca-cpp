@@ -97,6 +97,15 @@ namespace Core
 		 */
 		template<typename U>
 		auto As() const noexcept -> const MemRef<U>&;
+
+
+		/**
+		 * Set the allocator of the memory
+		 * \param[in] pAlloc Pointer to the allocator
+		 * \warning This function should only be used in allocators that depend on sub-allocators
+		 * \warning Setting an allocator that does not match the allocation is undefined behavior
+		 */
+		auto SetAlloc(Alloc::IAllocator* pAlloc) noexcept -> void;
 		
 		auto operator->() const noexcept -> T*;
 		auto operator*() const noexcept -> T&;

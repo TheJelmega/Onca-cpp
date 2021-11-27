@@ -79,14 +79,12 @@ namespace Core::Alloc
 	}
 
 	template <ExtendableAlloc Alloc>
-	bool ExpandableArena<Alloc>::OwnsInternal(IAllocator* pAlloc) noexcept
+	bool ExpandableArena<Alloc>::OwnsInternal(const MemRef<u8>& mem) noexcept
 	{
 		Threading::Lock lock{ m_mutex };
-
-		MemRef<u8> dummyMem{ pAlloc };
 		for (Unique<Alloc>& subAlloc : m_allocs)
 		{
-			if (subAlloc->Owns(dummyMem))
+			if (subAlloc->Owns(mem))
 				return true;
 		}
 		return false;
@@ -95,7 +93,12 @@ namespace Core::Alloc
 	template <ExtendableAlloc Alloc>
 	auto ExpandableArena<Alloc>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
 	{
-		ASSERT(false, "MemRef's allocator should never reference a FallbackArena");
+		for (Unique<Alloc>& alloc : m_allocs)
+		{
+			u8* ptr = alloc->template TranslateToPtr<u8>(mem);
+			if (ptr)
+				return ptr;
+		}
 		return nullptr;
 	}
 }

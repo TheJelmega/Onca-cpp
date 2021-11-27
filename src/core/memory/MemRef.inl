@@ -169,6 +169,12 @@ namespace Core
 	}
 
 	template <typename T>
+	auto MemRef<T>::SetAlloc(Alloc::IAllocator* pAlloc) noexcept -> void
+	{
+		m_pAlloc = pAlloc;
+	}
+
+	template <typename T>
 	auto MemRef<T>::operator->() const noexcept -> T*
 	{
 		return Ptr();

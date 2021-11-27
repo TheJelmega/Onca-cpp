@@ -18,7 +18,6 @@ namespace Core::Alloc
 	template <typename T>
 	auto IAllocator::Deallocate(MemRef<T>&& ref) noexcept -> void
 	{
-		ASSERT(Owns(ref), "MemRef is not owned by allocator");
 		DeallocateRaw(ref.template As<u8>());
 		MemClearData(ref);
 	}
@@ -26,7 +25,7 @@ namespace Core::Alloc
 	template <typename T>
 	auto IAllocator::Owns(const MemRef<T>& ref) noexcept -> bool
 	{
-		return OwnsInternal(ref.GetAlloc());
+		return OwnsInternal(ref.template As<u8>());
 	}
 
 	template <typename T>
@@ -96,8 +95,8 @@ namespace Core::Alloc
 #endif
 	}
 
-	INL auto IAllocator::OwnsInternal(IAllocator* pAlloc) noexcept -> bool
+	INL auto IAllocator::OwnsInternal(const MemRef<u8>& mem) noexcept -> bool
 	{
-		return pAlloc == this;
+		return mem.GetAlloc() == this;
 	}
 }
