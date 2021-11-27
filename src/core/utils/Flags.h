@@ -1,5 +1,6 @@
 #pragma once
 #include "core/MinInclude.h"
+#include "core/utils/Utils.h"
 
 namespace Core
 {

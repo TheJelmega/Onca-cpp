@@ -3,7 +3,7 @@
 #include "Utils.h"
 #endif
 
-#include "hash/Hash.h"
+#include "core/hash/Hash.h"
 
 namespace Core
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 #include "core/containers/DynArray.h"
-#include "utils/Flags.h"
+#include "core/utils/Flags.h"
 #include "StringUtils.h"
 
 namespace Core
