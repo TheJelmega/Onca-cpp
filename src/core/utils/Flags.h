@@ -72,6 +72,7 @@ namespace Core
 
 		constexpr operator E() const noexcept;
 		constexpr operator I() const noexcept;
+		explicit constexpr operator bool() const noexcept;
 
 		constexpr auto Set(E val, bool set) noexcept -> void;
 		constexpr auto IsSet(E val) const noexcept -> bool;
@@ -95,7 +96,7 @@ namespace Core
 	constexpr auto operator|(E a, E b) noexcept -> Flags<E>
 	{
 		using I = UnderlyingType<E>;
-		return { E(I(a) | i(b)) };
+		return { E(I(a) | I(b)) };
 	}
 	
 }

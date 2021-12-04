@@ -231,12 +231,14 @@ namespace Core
 		: m_data(other.m_data)
 		, m_length(other.m_length)
 	{
+		NullTerminate();
 	}
 
 	inline String::String(const String& other, Alloc::IAllocator& alloc) noexcept
 		: m_data(other.m_data, alloc)
 		, m_length(other.m_length)
 	{
+		NullTerminate();
 	}
 
 	inline String::String(String&& other) noexcept
@@ -250,6 +252,7 @@ namespace Core
 		: m_data(Move(other.m_data), alloc)
 		, m_length(other.m_length)
 	{
+		NullTerminate();
 		other.m_length = 0;
 	}
 
@@ -437,7 +440,7 @@ namespace Core
 
 	inline auto String::Add(const String& other, usize pos, usize length) noexcept -> String&
 	{
-		ASSERT(pos < other.Length(), "'pos' needs to point to a character inside the string");
+		ASSERT(pos < other.Length() || pos == 0, "'pos' needs to point to a character inside the string");
 		if (length > other.Length() - pos)
 			length = other.Length() - pos;
 

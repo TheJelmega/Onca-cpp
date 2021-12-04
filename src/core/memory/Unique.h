@@ -28,6 +28,8 @@ namespace Core
 		auto operator=(Unique&&) noexcept -> Unique<T, D>& = default;
 		auto operator=(const Unique&) -> Unique<T, D>& = delete;
 
+		operator bool() const noexcept;
+
 		/**
 		 * \brief Release control of the underlying MemRef and return it
 		 * \return Underlying MemRef
@@ -50,6 +52,11 @@ namespace Core
 		 * \return Pointer to managed memory
 		 */
 		auto Get() noexcept -> T*;
+		/**
+		 * \brief Get a pointer to the managed memory
+		 * \return Pointer to managed memory
+		 */
+		auto Get() const noexcept -> const T*;
 		/**
 		 * \brief Get a const reference to the managed MemRef
 		 * \return Managed MemRef

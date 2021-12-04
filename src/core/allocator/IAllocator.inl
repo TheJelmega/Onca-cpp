@@ -31,6 +31,8 @@ namespace Core::Alloc
 	template <typename T>
 	auto IAllocator::TranslateToPtr(const MemRef<T>& mem) noexcept -> T*
 	{
+		if (mem.GetRawHandle() == ~usize(0))
+			return nullptr;
 		return reinterpret_cast<T*>(TranslateToPtrInternal(mem.template As<u8>()));
 	}
 

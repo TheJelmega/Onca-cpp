@@ -140,7 +140,7 @@ namespace Core::Unicode
 			IF_CONSTEVAL
 			{
 				const char* s = str;
-				for (; s; ++s)
+				for (; *s; ++s)
 					;
 				usize len = usize(s - str);
 				return { len, len };
@@ -155,22 +155,22 @@ namespace Core::Unicode
 		{
 			usize len = 0;
 			const char16_t* s = str;
-			for (; s; ++s)
-				len += GetUtf16Size(*s);
-			return { usize(s - str), len };
+			while (s[len])
+				len += GetUtf16Size(s[len]);
+			return { usize(&s[len] - str), len};
 		}
 		else if constexpr (SameAs<C, char8_t>)
 		{
 			usize len = 0;
-			const char16_t* s = str;
-			for (; s; ++s)
-				len += GetUtf8Size(*s);
-			return { usize(s - str), len };
+			const char8_t* s = str;
+			while (s[len])
+				len += GetUtf8Size(s[len]);
+			return { usize(&s[len] - str), len };
 		}
 		else // SameAs<C, char32_t>
 		{
 			const C* s = str;
-			for (; s; ++s)
+			for (; *s; ++s)
 				;
 			usize len = usize(s - str);
 			return { len, len * sizeof(char32_t) };

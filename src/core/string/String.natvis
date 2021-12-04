@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+	<!--String visualization-->
+	<Type Name="Core::String">
+		<DisplayString Condition="!m_data.m_mem.m_pCachedPtr">""</DisplayString>
+		<DisplayString>{m_data.m_mem.m_pCachedPtr,s8}</DisplayString>
+		<Expand>
+			<ArrayItems>
+				<Size>m_length</Size>
+				<ValuePointer>m_data.m_mem.m_pCachedPtr</ValuePointer>
+			</ArrayItems>
+			<Item Name="[length]">m_length</Item>
+		</Expand>
+	</Type>
+
+</AutoVisualizer>

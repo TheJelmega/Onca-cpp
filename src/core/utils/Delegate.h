@@ -75,12 +75,18 @@ namespace Core
 		 * \param[in] lambda Lambda
 		 */
 		template<Lambda L>
-		Delegate(L& lambda) noexcept;
+		Delegate(const L& lambda) noexcept;
 		/**
 		 * Create a delegate set to nullptr
 		 */
 		Delegate(std::nullptr_t) noexcept;
 
+		auto operator=(std::nullptr_t) noexcept -> Delegate&;
+		auto operator=(R(*pFunc)(Args...)) noexcept -> Delegate&;
+		template<Functor<R, Args...> F>
+		auto operator=(F* pFunctor) noexcept -> Delegate&;
+		template<Lambda L>
+		auto operator=(const L& lambda) noexcept -> Delegate&;
 
 		auto operator==(const Delegate& other) const noexcept -> bool;
 		auto operator!=(const Delegate& other) const noexcept -> bool;
@@ -108,6 +114,13 @@ namespace Core
 		 * \return Return value
 		 */
 		auto Invoke(Args&&... args) noexcept -> R;
+		/**
+		 * Try to invoke the delegate if it is valid, if not, return the default constructed R value
+		 * \param[in] args Arguments
+		 * \return Result value
+		 * \note This should only be used for free or static functions, as only CanInvoke is checked
+		 */
+		auto TryInvoke(Args&&... args) noexcept -> R requires DefaultConstructible<R> || SameAs<R, void>;
 		/**
 		 * Check if the delegate can be invoked
 		 * \return Whether the delegate can be invoked

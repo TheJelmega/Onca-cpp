@@ -63,6 +63,7 @@ namespace Core::Alloc
 
 	// TODO: Go over ownership system + possible redo
 	// TODO: Add Defragment virtual function
+	// TODO: canMove bool, since certain memory needs to stay in place
 	class CORE_API IAllocator
 	{
 	public:

@@ -27,7 +27,7 @@ namespace Core
 		explicit DynArray(Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
 		/**
 		 * Create a DynArray with a capacity and an allocator
-		 * \param[in] capacity Capacity of the allocator
+		 * \param[in] capacity Capacity of the array
 		 * \param[in] alloc Allocator the container should use
 		 */
 		explicit DynArray(usize capacity, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
@@ -122,7 +122,7 @@ namespace Core
 		 * Resize the DynArray and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the DynArray
 		 */
-		auto Resize(usize newSize) noexcept -> void  requires NoThrowDefaultConstructible<T>;
+		auto Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructible<T>;
 		/**
 		 * Shrink the memory used by the DynArray to the minimum needed
 		 */

@@ -65,8 +65,8 @@ namespace Core
 
 	template <typename R, typename ... Args>
 	template <Lambda L>
-	Delegate<R(Args...)>::Delegate(L& lambda) noexcept
-		: m_pObj(reinterpret_cast<void*>(&lambda))
+	Delegate<R(Args...)>::Delegate(const L& lambda) noexcept
+		: m_pObj(const_cast<void*>(reinterpret_cast<const void*>(&lambda)))
 		, m_pData(nullptr)
 		, m_stub(&LambdaStub<Decay<L>>)
 	{
@@ -76,6 +76,44 @@ namespace Core
 	Delegate<R(Args...)>::Delegate(std::nullptr_t) noexcept
 		: Delegate()
 	{
+	}
+
+	template <typename R, typename ... Args>
+	auto Delegate<R(Args...)>::operator=(std::nullptr_t) noexcept -> Delegate&
+	{
+		m_pObj = nullptr;
+		m_pData = nullptr;
+		m_stub = nullptr;
+		return *this;
+	}
+
+	template <typename R, typename ... Args>
+	auto Delegate<R(Args...)>::operator=(R(* pFunc)(Args...)) noexcept -> Delegate&
+	{
+		m_pObj = pFunc;
+		m_pData = nullptr;
+		m_stub = &FunctorStub<R(*)(Args&&...)>;
+		return *this;
+	}
+
+	template <typename R, typename ... Args>
+	template <Functor<R, Args...> F>
+	auto Delegate<R(Args...)>::operator=(F* pFunctor) noexcept -> Delegate&
+	{
+		m_pObj = reinterpret_cast<void*>(pFunctor);
+		m_pData = nullptr;
+		m_stub = &FunctorStub<F*>;
+		return *this;
+	}
+
+	template <typename R, typename ... Args>
+	template <Lambda L>
+	auto Delegate<R(Args...)>::operator=(const L& lambda) noexcept -> Delegate&
+	{
+		m_pObj = const_cast<void*>(reinterpret_cast<const void*>(&lambda));
+		m_pData = nullptr;
+		m_stub = &LambdaStub<Decay<L>>;
+		return *this;
 	}
 
 	template <typename R, typename ... Args>
@@ -105,10 +143,7 @@ namespace Core
 	template <typename R, typename ... Args>
 	auto Delegate<R(Args...)>::operator()(Args&&... args) noexcept -> R
 	{
-		ASSERT(m_stub, "Cannot call a null delegate");
-		if (m_pData)
-			return m_stub(&m_pObj, Forward<Args>(args)...);
-		return m_stub(m_pObj, Forward<Args>(args)...);
+		return Invoke(args...);
 	}
 
 	template <typename R, typename ... Args>
@@ -126,7 +161,18 @@ namespace Core
 	template <typename R, typename ... Args>
 	auto Delegate<R(Args...)>::Invoke(Args&&... args) noexcept -> R
 	{
+		ASSERT(m_stub, "Cannot call a null delegate");
+		if (m_pData)
+			return m_stub(&m_pObj, Forward<Args>(args)...);
 		return m_stub(m_pObj, Forward<Args>(args)...);
+	}
+
+	template <typename R, typename ... Args>
+	auto Delegate<R(Args...)>::TryInvoke(Args&&... args) noexcept -> R requires DefaultConstructible<R> || SameAs<R, void>
+	{
+		if (!CanInvoke())
+			return R();
+		return Invoke(Forward<Args>(args)...);
 	}
 
 	template <typename R, typename ... Args>

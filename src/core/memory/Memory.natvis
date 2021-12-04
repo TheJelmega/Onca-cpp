@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+	<!--MemRef<T> visualization-->
+	<Type Name="Core::MemRef&lt;*&gt;">
+		<DisplayString>{m_pCachedPtr}</DisplayString>
+		<Expand>
+			<Item Name="[handle]">m_handle</Item>
+			<Item Name="[ptr]">m_pCachedPtr</Item>
+			<Item Name="[alloc]">m_pAlloc</Item>
+			<Item Name="[align]">1 &lt;&lt; m_log2Align</Item>
+			<Item Name="[size]">m_size</Item>
+			<Item Name="[backing]">m_isBackingMem</Item>
+		</Expand>
+	</Type>
+
+	<Type Name="Core::Unique&lt;*&gt;">
+		<DisplayString>{m_mem}</DisplayString>
+		<Expand>
+			<Item Name="[ptr]">m_mem.m_pCachedPtr</Item>
+			<Item Name="[mem]">m_mem</Item>
+		</Expand>
+	</Type>
+
+</AutoVisualizer>

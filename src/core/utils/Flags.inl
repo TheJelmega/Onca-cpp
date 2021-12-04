@@ -46,55 +46,55 @@ namespace Core
 	template <EnumType E>
 	constexpr auto Flags<E>::operator|(Flags other) const noexcept -> Flags
 	{
-		return { m_data | other.m_data };
+		return { I(m_data | other.m_data) };
 	}
 
 	template <EnumType E>
 	constexpr auto Flags<E>::operator|(E other) const noexcept -> Flags
 	{
-		return { m_data | I(other) };
+		return { I(m_data | I(other)) };
 	}
 
 	template <EnumType E>
 	constexpr auto Flags<E>::operator|(I mask) const noexcept -> Flags
 	{
-		return { m_data | mask };
+		return { I(m_data | mask) };
 	}
 
 	template <EnumType E>
 	constexpr auto Flags<E>::operator&(Flags other) const noexcept -> Flags
 	{
-		return { m_data & other.m_data };
+		return { I(m_data & other.m_data) };
 	}
 
 	template <EnumType E>
 	constexpr auto Flags<E>::operator&(E other) const noexcept -> Flags
 	{
-		return { m_data & I(other) };
+		return { I(m_data & I(other)) };
 	}
 
 	template <EnumType E>
 	constexpr auto Flags<E>::operator&(I mask) const noexcept -> Flags
 	{
-		return { m_data & mask };
+		return { I(m_data & mask) };
 	}
 
 	template <EnumType E>
 	constexpr auto Flags<E>::operator^(Flags other) const noexcept -> Flags
 	{
-		return { m_data ^ other.m_data };
+		return { I(m_data ^ other.m_data) };
 	}
 
 	template <EnumType E>
 	constexpr auto Flags<E>::operator^(E other) const noexcept -> Flags
 	{
-		return { m_data ^ I(other) };
+		return { I(m_data ^ I(other)) };
 	}
 
 	template <EnumType E>
 	constexpr auto Flags<E>::operator^(I mask) const noexcept -> Flags
 	{
-		return { m_data ^ mask };
+		return { I(m_data ^ mask) };
 	}
 
 	template <EnumType E>
@@ -208,6 +208,12 @@ namespace Core
 	constexpr Flags<E>::operator I() const noexcept
 	{
 		return m_data;
+	}
+
+	template <EnumType E>
+	constexpr Flags<E>::operator bool() const noexcept
+	{
+		return m_data != 0;
 	}
 
 	template <EnumType E>

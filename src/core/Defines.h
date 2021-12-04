@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <optional>
 #include <cstddef> // nullptr_t
+#include <variant>
 
 using i8    = int8_t;
 using i16   = int16_t;
@@ -25,6 +26,10 @@ using InitializerList = std::initializer_list<T>;
 template<typename T>
 using Optional = std::optional<T>;
 inline constexpr std::nullopt_t NullOpt{ std::nullopt_t::_Tag{} };
+
+// TODO: Custom variant type
+template<typename... Args>
+using Variant = std::variant<Args...>;
 
 template<usize... Idx>
 using IndexSequence = std::index_sequence<Idx...>;

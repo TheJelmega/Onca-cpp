@@ -53,6 +53,12 @@ namespace Core
 	}
 
 	template <typename T, MemRefDeleter<T> D>
+	Unique<T, D>::operator bool() const noexcept
+	{
+		return m_mem.IsValid();
+	}
+
+	template <typename T, MemRefDeleter<T> D>
 	auto Unique<T, D>::Release() noexcept -> MemRef<T>
 	{
 		MemRef<T> tmp = Move(m_mem);
@@ -76,6 +82,12 @@ namespace Core
 
 	template <typename T, MemRefDeleter<T> D>
 	auto Unique<T, D>::Get() noexcept -> T*
+	{
+		return m_mem.Ptr();
+	}
+
+	template <typename T, MemRefDeleter<T> D>
+	auto Unique<T, D>::Get() const noexcept -> const T*
 	{
 		return m_mem.Ptr();
 	}

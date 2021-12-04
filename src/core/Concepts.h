@@ -7,6 +7,8 @@ namespace Core
 	template<typename A, typename B>
 	concept SameAs = std::same_as<A, B>;
 	template<typename A, typename B>
+	concept NotSameAs = (!SameAs<A, B>);
+	template<typename A, typename B>
 	concept SameSizeAs = (sizeof(A) == sizeof(B));
 
 	template<typename T>

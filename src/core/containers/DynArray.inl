@@ -122,6 +122,9 @@ namespace Core
 	auto DynArray<T>::Assign(const It& begin, const It& end) noexcept -> void  requires CopyConstructible<T>
 	{
 		Clear();
+		if (!(begin != end))
+			return;
+
 		if constexpr (RandomAccessIterator<It>)
 		{
 			ASSERT(begin < end, "'begin' iterator must be smaller than 'end' iterator");

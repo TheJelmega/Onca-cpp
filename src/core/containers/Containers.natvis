@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+	<!--DynArray<T> visualization-->
+	<Type Name="Core::DynArray&lt;*&gt;">
+		<DisplayString>{{ Size = {m_size} }}</DisplayString>
+		<Expand>
+			<ArrayItems>
+				<Size>m_size</Size>
+				<ValuePointer>m_mem.m_pCachedPtr</ValuePointer>
+			</ArrayItems>
+			<Item Name="[size]">m_size</Item>
+			<Item Name="[mem]">m_mem</Item>
+		</Expand>
+	</Type>
+
+</AutoVisualizer>
