@@ -16,6 +16,7 @@
 #include "utils/Algo.h"
 #include "utils/Flags.h"
 #include "utils/Delegate.h"
+#include "utils/Result.h"
 
 #include "hash/Hash.h"
 
@@ -47,3 +48,5 @@
 #include "string/ConstString.h"
 
 #include "math/Math.h"
+
+#include "filesystem/FileSystem.h"

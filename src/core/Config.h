@@ -107,6 +107,8 @@
 
 #define BIT(x) (1 << (x))
 
+#define DEFINE_OPAQUE_HANDLE(name) using name = void*;
+#define DEFINE_SIZED_OPAQUE_HANDLE(name, size) struct name { u8 _[size]; };
 
 #if __cpp_if_consteval
 #	define IF_CONSTEVAL if consteval
