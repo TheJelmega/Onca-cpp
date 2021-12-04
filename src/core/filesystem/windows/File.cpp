@@ -140,7 +140,7 @@ namespace Core::FileSystem
 			break;
 		}
 		case SeekDir::End: 
-			offset = Math::Clamp(offset, -fileSize, 0);
+			offset = Math::Clamp(offset, -isize(fileSize), 0);
 			break;
 		default: ;
 		}

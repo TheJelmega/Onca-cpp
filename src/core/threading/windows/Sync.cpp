@@ -3,7 +3,7 @@
 #if PLATFORM_WINDOWS
 #include "core/Assert.h"
 #include "core/threading/Sync.h"
-#include "Win.h"
+#include "core/platform/Platform.h"
 
 namespace Core::Threading
 {

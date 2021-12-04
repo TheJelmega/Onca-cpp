@@ -50,3 +50,4 @@
 #include "math/Math.h"
 
 #include "filesystem/FileSystem.h"
+#include "platform/Console.h"
