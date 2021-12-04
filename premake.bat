@@ -1,1 +1,1 @@
-.\tools\premake\premake5.exe vs2022
+.\tools\premake\premake5.exe vs2022 --unittest

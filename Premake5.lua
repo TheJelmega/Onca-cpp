@@ -8,6 +8,16 @@ end
 
 --premake
 
+newoption {
+    trigger = "unittest",
+    description = "Compile unittests"
+}
+
+newoption {
+    trigger = "benchmark",
+    description = "Compile benchmarks"
+}
+
 workspace "Engine"
     configurations { "Debug", "Profile", "Release" }
     platforms { "Windows" }
@@ -59,10 +69,16 @@ workspace "Engine"
         removeplatforms { "Windows" }
         removedefines { "DEBUG", "NDEBUG", "RELEASE_" }
         
-include "src/core" 
-include "src/start"
-include "src/unittest"
-include "src/benchmark"
+    include "src/core" 
+    include "src/start"
+
+    if _OPTIONS["unittest"] then
+        include "src/unittest"
+    end
+
+    if _OPTIONS["benchmark"] then
+        include "src/benchmark"
+    end
 
 -- TOOLS
-include "src/tools"
+    include "src/tools"
