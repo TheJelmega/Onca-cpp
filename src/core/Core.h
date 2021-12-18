@@ -43,9 +43,7 @@
 
 #include "containers/Containers.h"
 
-#include "string/StringUtils.h"
-#include "string/String.h"
-#include "string/ConstString.h"
+#include "string/Include.h"
 
 #include "math/Math.h"
 

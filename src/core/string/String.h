@@ -60,7 +60,7 @@ namespace Core
 
 			friend class String;
 		};
-		using ConstIterator = const Iterator;
+		using ConstIterator = Iterator;
 
 	public:
 		/**
@@ -807,5 +807,3 @@ inline namespace Literals
 	auto operator""_s(const char16_t* cstr, usize size) noexcept -> Core::String;
 	auto operator""_s(const char32_t* cstr, usize size) noexcept -> Core::String;
 }
-
-#include "String.inl"

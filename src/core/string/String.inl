@@ -440,11 +440,9 @@ namespace Core
 
 	inline auto String::Add(const String& other, usize pos, usize length) noexcept -> String&
 	{
-		ASSERT(pos < other.Length() || pos == 0, "'pos' needs to point to a character inside the string");
 		if (length > other.Length() - pos)
 			length = other.Length() - pos;
-
-		if (length == 0)
+		if (length == 0 || pos > other.Length())
 			return *this;
 
 		const usize startIdx = other.IndexAtCharPos(pos);
@@ -612,7 +610,7 @@ namespace Core
 	
 	inline auto String::Insert(usize pos, const String& str, usize strPos, usize strLength) noexcept -> String&
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the string");
+		ASSERT(pos == 0 || pos < m_length, "'pos' needs to point to a character inside the string");
 		ASSERT(strPos < str.Length(), "'strPos' needs to point to a character inside 'str'");
 		if (strLength > str.Length() - strPos)
 			strLength = str.Length() - strPos;
@@ -631,7 +629,7 @@ namespace Core
 	
 	inline auto String::Insert(usize pos, UCodepoint codepoint, usize count) noexcept -> String&
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the string");
+		ASSERT(pos == 0 || pos < m_length, "'pos' needs to point to a character inside the string");
 		const usize idx = IndexAtCharPos(pos);
 		const Unicode::Utf8Char c = Unicode::GetUtf8FromCp(codepoint);
 		m_data.Insert(m_data.IteratorAt(idx), count * c.size, 0);
@@ -647,7 +645,7 @@ namespace Core
 	
 	inline auto String::Replace(usize pos, usize length, const String& str, usize strPos, usize strLength) noexcept -> String&
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the string");
+		ASSERT(pos == 0 || pos < m_length, "'pos' needs to point to a character inside the string");
 		ASSERT(strPos < str.Length(), "'pos' needs to point to a character inside 'str'");
 		if (strLength > str.Length() - strPos)
 			strLength = str.Length() - strPos;
@@ -665,7 +663,7 @@ namespace Core
 	
 	inline auto String::Replace(usize pos, usize length, UCodepoint codepoint, usize count) noexcept -> String&
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the string");
+		ASSERT(pos == 0 || pos < m_length, "'pos' needs to point to a character inside the string");
 		if (length > m_length - pos)
 			length = m_length - pos;
 
@@ -1002,7 +1000,9 @@ namespace Core
 
 	inline auto String::Find(UCodepoint codepoint, usize pos, usize count) const noexcept -> usize
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the string");
+		if (pos >= m_length)
+			return NPos;
+		
 		const usize startIdx = IndexAtCharPos(pos);
 		auto [ret, _] = FindInternal(codepoint, pos, startIdx, count);
 		return ret;
@@ -1010,7 +1010,8 @@ namespace Core
 
 	inline auto String::Find(const String& str, usize pos, usize count) const noexcept -> usize
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the string");
+		if (pos >= m_length)
+			return NPos;
 		if (str.Length() > m_length)
 			return NPos;
 
@@ -1021,11 +1022,8 @@ namespace Core
 
 	inline auto String::RFind(UCodepoint codepoint, usize pos, usize count) const noexcept -> usize
 	{
-		if (pos == NPos)
+		if (pos >= m_length)
 			pos = m_length - 1;
-		else
-			ASSERT(pos < m_length, "'pos' needs to point to a character inside the string");
-
 		if (count > pos)
 			count = pos;
 
@@ -1050,14 +1048,10 @@ namespace Core
 
 	inline auto String::RFind(const String& str, usize pos, usize count) const noexcept -> usize
 	{
-		if (pos == NPos)
+		if (pos >= m_length)
 			pos = m_length - 1;
-		else
-			ASSERT(pos < m_length, "'pos' needs to point to a character inside the string");
-
 		if (str.Length() > m_length)
 			return NPos;
-
 		if (count > pos)
 			count = pos;
 
@@ -1603,7 +1597,7 @@ namespace Core
 		if (count > m_length - pos)
 			count = m_length - pos;
 
-		const usize endPos = pos + count - str.Length();
+		const usize endPos = pos + count - str.Length() + 1;
 		if (endPos < pos)
 			return { NPos, NPos };
 

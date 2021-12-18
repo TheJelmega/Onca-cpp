@@ -57,6 +57,13 @@ namespace Core
 		constexpr auto IsWhitespace(const u8* pCh) noexcept -> bool;
 
 		/**
+		 * Check if a codepoint is a digit
+		 * \param codepoint Codepoint
+		 * \return Whether the codepoint is a digit
+		 */
+		constexpr auto IsDigit(const UCodepoint codepoint) noexcept -> bool;
+
+		/**
 		 * Convert a codepoint to its uppercase version
 		 * \param codepoint Codepoint
 		 * \return Uppercase version of the codepoint
@@ -170,5 +177,3 @@ namespace Core
 		constexpr auto ToUtf8(const C* pCh) noexcept -> Pair<Utf8Char, usize>;
 	}
 }
-
-#include "StringUtils.inl"

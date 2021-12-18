@@ -27,6 +27,13 @@ namespace Core
 		struct SignedOfSize<sizeof(i16)> { using Type = i16;  };
 		template<>
 		struct SignedOfSize<sizeof(i8)>  { using Type = i8;   };
+
+		template<usize Size>
+		struct FloatOfSize              { using Type = void; };
+		template<>
+		struct FloatOfSize<sizeof(i64)> { using Type = f64; };
+		template<>
+		struct FloatOfSize<sizeof(i32)> { using Type = f32; };
 	}
 
 	/**
@@ -147,5 +154,7 @@ namespace Core
 	using UnsignedOfSameSize = typename Detail::UnsignedOfSize<sizeof(T)>::Type;
 	template<typename T>
 	using SignedOfSameSize = typename Detail::SignedOfSize<sizeof(T)>::Type;
+	template<typename T>
+	using FloatOfSameSize = typename Detail::FloatOfSize<sizeof(T)>::Type;
 
 }

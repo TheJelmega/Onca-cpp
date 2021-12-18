@@ -766,5 +766,3 @@ namespace Core
 	};
 
 }
-
-#include "ConstString.inl"

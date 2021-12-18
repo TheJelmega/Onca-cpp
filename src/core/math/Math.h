@@ -8,6 +8,8 @@
 #include "Concepts.h"
 #include "Constants.h"
 #include "MathUtils.h"
+#include "FloatUtils.h"
+#include "IntUtils.h"
 #include "core/intrin/MathUtils.h" // MathUtils overloads for Intrin::Pack<T, Width>
 
 // headers

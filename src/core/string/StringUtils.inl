@@ -53,7 +53,12 @@ namespace Core::Unicode
 		}
 		return false;
 	}
-	
+
+	constexpr auto IsDigit(const UCodepoint codepoint) noexcept -> bool
+	{
+		return codepoint >= '0' && codepoint <= '9';
+	}
+
 	constexpr auto ToUpper(UCodepoint codepoint) noexcept -> UCodepoint
 	{
 		// ASCII shortcut

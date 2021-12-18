@@ -1,6 +1,6 @@
 #pragma once
 #include "core/MinInclude.h"
-#include "core/string/String.h"
+#include "core/string/Include.h"
 #include "core/utils/Delegate.h"
 
 namespace Core::FileSystem

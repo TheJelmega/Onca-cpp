@@ -272,29 +272,24 @@ namespace Core::Math
 	constexpr auto Pow(T base, U exp) noexcept -> T;
 
 	/**
-	 * Get an integer log2 of a value
-	 * \param val Value
-	 * \return Integer log2 of the value
+	 * Count the number of time a value can be divided by a given divisor
+	 * \tparam T Integral type
+	 * \tparam U Integral type
+	 * \param[in] val Value
+	 * \param[in] divisor Divisor
+	 * \return Factor count
 	 */
-	constexpr auto Log2(u64 val) noexcept -> u8;
+	template<Integral T, Integral U>
+	constexpr auto CountFactors(T val, U divisor) noexcept -> T;
+
 	/**
 	 * Get an integer log2 of a value
+	 * \tparam I Integral type
 	 * \param val Value
 	 * \return Integer log2 of the value
 	 */
-	constexpr auto Log2(u32 val) noexcept -> u8;
-	/**
-	 * Get an integer log2 of a value
-	 * \param val Value
-	 * \return Integer log2 of the value
-	 */
-	constexpr auto Log2(u16 val) noexcept -> u8;
-	/**
-	 * Get an integer log2 of a value
-	 * \param val Value
-	 * \return Integer log2 of the value
-	 */
-	constexpr auto Log2(u8 val) noexcept -> u8;
+	template<Integral I>
+	constexpr auto Log2(I val) noexcept -> u8;
 
 	/**
 	 * Check if a value is a power of 2

@@ -1,5 +1,9 @@
 #pragma once
+#if __RESHARPER__
 #include "MathUtils.h"
+#endif
+
+#include "core/intrin/BitIntrin.h"
 
 #ifdef __INTELLISENSE__
 #pragma diag_suppress 438 // supress bogus "expected a ''" due to concepts
@@ -37,10 +41,13 @@ namespace Core::Math
 			if (exp == 0)
 				return T(1);
 
-			if (exp < 0)
+			if constexpr (SignedIntegral<I>)
 			{
-				base = T(1) / base;
-				exp = -exp;
+				if (exp < 0)
+				{
+					base = T(1) / base;
+					exp = -exp;
+				}
 			}
 
 			if (exp == 1)
@@ -203,14 +210,11 @@ namespace Core::Math
 	constexpr auto Abs(T t) noexcept -> T
 	{
 		if constexpr (UnsignedIntegral<T>)
-		{
 			return t;
-		}
-		else
-		{
-			const T values[2] = { t, -t };
-			return values[t < 0];
-		}
+		
+		const T values[2] = { t, -t };
+		return values[t < 0];
+		
 	}
 
 	template <Numeric T>
@@ -226,15 +230,11 @@ namespace Core::Math
 	template <Numeric T>
 	constexpr auto Floor(T t) noexcept -> T
 	{
-		if constexpr (FloatingPoint<T>)
-		{
-			T trunc = Trunc(t);
-			return trunc - (t < 0 && t != trunc);
-		}
-		else
-		{
+		if constexpr (!FloatingPoint<T>)
 			return t;
-		}
+		
+		T trunc = Trunc(t);
+		return trunc - (t < 0 && t != trunc);
 	}
 
 	template <Numeric T>
@@ -418,47 +418,26 @@ namespace Core::Math
 		return T(pow(f64(base), f64(exp)));
 	}
 
-	constexpr auto Log2(u64 val) noexcept -> u8
+	template <Integral T, Integral U>
+	constexpr auto CountFactors(T val, U divisor) noexcept -> T
 	{
-		u8 res = -(val == 0);
-		if (val >= 1ull << 32) { res += 32; val >>= 32; };
-		if (val >= 1ull << 16) { res += 16; val >>= 16; };
-		if (val >= 1ull << 8) { res += 8; val >>= 8; };
-		if (val >= 1ull << 4) { res += 4; val >>= 4; };
-		if (val >= 1ull << 2) { res += 2; val >>= 2; };
-		if (val >= 1ull << 1) { res += 1; };
-		return res;
+		if (divisor == 0)
+			return T(-1);
+
+		T count = 0;
+		while (val % divisor == 0)
+		{
+			val /= divisor;
+			++count;
+		}
+		return count;
 	}
 
-	constexpr auto Log2(u32 val) noexcept -> u8
+	template <Integral I>
+	constexpr auto Log2(I val) noexcept -> u8
 	{
-		u8 res = -(val == 0);
-		if (val >= 1ull << 16) { res += 16; val >>= 16; };
-		if (val >= 1ull << 8) { res += 8; val >>= 8; };
-		if (val >= 1ull << 4) { res += 4; val >>= 4; };
-		if (val >= 1ull << 2) { res += 2; val >>= 2; };
-		if (val >= 1ull << 1) { res += 1; };
-		return res;
-	}
-
-	constexpr auto Log2(u16 val) noexcept -> u8
-	{
-		u8 res = -(val == 0);
-		if (val >= 1ull << 8) { res += 8; val >>= 8; };
-		if (val >= 1ull << 4) { res += 4; val >>= 4; };
-		if (val >= 1ull << 2) { res += 2; val >>= 2; };
-		if (val >= 1ull << 1) { res += 1; };
-		return res;
-	}
-
-	constexpr auto Log2(u8 val) noexcept -> u8
-	{
-		u8 res = -(val == 0);
-		if (val >= 1ull << 4) { res += 4; val >>= 4; };
-		if (val >= 1ull << 2) { res += 2; val >>= 2; };
-		if (val >= 1ull << 1) { res += 1; };
-		return res;
-	}
+		return Intrin::BitScanMSB(val);
+	} 
 
 	constexpr auto IsPowOf2(u64 val) noexcept -> bool
 	{
