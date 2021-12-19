@@ -1,10 +1,9 @@
 #pragma once
 #if __RESHARPER__
-#endif
-#include <charconv>
-
 #include "Parse.h"
+#endif
 
+#include <charconv>
 #include "core/math/IntUtils.h"
 
 namespace Core
