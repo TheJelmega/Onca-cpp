@@ -5,5 +5,7 @@
 #undef CreateDirectory
 #undef DeleteFile
 
+#undef OutputDebugString
+
 #undef min
 #undef max

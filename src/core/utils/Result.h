@@ -43,6 +43,12 @@ namespace Core
 		 */
 		constexpr auto Value() const noexcept -> const T&;
 		/**
+		 * Move the value out of the result, getting the value after this move is undefined
+		 * \return Value
+		 * \note When calling this when the result is 'failed', the function is undefined behavior
+		 */
+		constexpr auto MoveValue() noexcept -> T&&;
+		/**
 		 * Get the error
 		 * \return Error
 		 * \note When calling this when the result is 'success', the function is undefined behavior
@@ -66,6 +72,7 @@ namespace Core
 
 	private:
 		Variant<T, E> m_value;
+		bool m_valueMoved;
 	};
 }
 
