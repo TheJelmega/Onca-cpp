@@ -78,7 +78,8 @@ namespace Core::FileSystem
 	}
 
 	File::File(File&& other) noexcept
-		: m_handle(other.m_handle)
+		: m_path(Move(other.m_path))
+		, m_handle(other.m_handle)
 		, m_access(other.m_access)
 		, m_share(other.m_share)
 		, m_flags(other.m_flags)
@@ -93,6 +94,8 @@ namespace Core::FileSystem
 
 	auto File::operator=(File&& other) noexcept -> File&
 	{
+		m_path = other.m_path;
+
 		m_handle = other.m_handle;
 		other.m_handle = INVALID_HANDLE_VALUE;
 
@@ -157,7 +160,8 @@ namespace Core::FileSystem
 
 		LONG upper = 0;
 		const LONG lower = ::SetFilePointer(m_handle, 0, &upper, FILE_CURRENT);
-		if (::GetLastError() != NO_ERROR)
+		u32 err = ::GetLastError();
+		if (lower == INVALID_SET_FILE_POINTER && err != 0)
 			return Math::Consts::MaxVal<usize>;
 
 		return (isize(upper) << 32) | lower;
@@ -337,8 +341,11 @@ namespace Core::FileSystem
 			return Error{ ErrorCode::NoWritePerms };
 
 		const usize fileSize = GetFileSize();
+		if (offset == usize(-1))
+			offset = 0;
 		offset += GetFileOffset();
-		if (offset >= fileSize)
+
+		if (offset > fileSize)
 			return Error{ ErrorCode::OffOutOfRange };
 
 		OVERLAPPED overlapped = { .Pointer = reinterpret_cast<PVOID>(offset) };
@@ -433,6 +440,16 @@ namespace Core::FileSystem
 		return res && info.DeletePending;
 	}
 
+	auto File::IsValid() const noexcept -> bool
+	{
+		return m_handle != INVALID_HANDLE_VALUE;
+	}
+
+	File::operator bool() const noexcept
+	{
+		return IsValid();
+	}
+
 	auto File::GetFileSize() const noexcept -> u64
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
@@ -485,7 +502,7 @@ namespace Core::FileSystem
 
 	auto File::Create(const Path& path, FileCreateKind createKind, AccessMode access, ShareModes share, FileAttributes attribs, FileFlags flags) noexcept -> Result<File, Error>
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 
 		const u32 accessMode = (u8(access) & u8(AccessMode::Read)    ? GENERIC_READ    : 0) |
 			                   (u8(access) & u8(AccessMode::Write)   ? GENERIC_WRITE   : 0) |
@@ -502,12 +519,12 @@ namespace Core::FileSystem
 		if (handle == INVALID_HANDLE_VALUE)
 			return TranslateFSError();
 
-		return File{ path, reinterpret_cast<NativeHandle>(handle), access, share, flags };
+		return File{ path.AsAbsolute(), reinterpret_cast<NativeHandle>(handle), access, share, flags};
 	}
 
 	auto File::Open(const Path& path, bool truncate, AccessMode access, ShareModes share, FileFlags flags) noexcept -> Result<File, Error>
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 
 		const u32 accessMode = (u8(access) & u8(AccessMode::Read)    ? GENERIC_READ    : 0) |
 			                   (u8(access) & u8(AccessMode::Write)   ? GENERIC_WRITE   : 0) |
@@ -539,14 +556,14 @@ namespace Core::FileSystem
 	// TODO: what about symlinks, etc ???
 	auto IsFile(const Path& path) noexcept -> bool
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const u32 attribs = ::GetFileAttributesW(reinterpret_cast<LPCWSTR>(utf16.Data()));
 		return attribs != INVALID_FILE_ATTRIBUTES && !(attribs & FILE_ATTRIBUTE_DIRECTORY);
 	}
 
 	auto DeleteFile(const Path& path) noexcept -> Error
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const bool res = ::DeleteFileW(reinterpret_cast<LPCWSTR>(utf16.Data()));
 		return res ? Error{} : TranslateFSError();
 	}

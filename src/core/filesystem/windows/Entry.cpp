@@ -32,7 +32,7 @@ namespace Core::FileSystem
 		else
 			searchPath /= "*"_path;
 
-		const DynArray<char16_t> utf16 = searchPath.ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = searchPath.AsAbsolute().ToNative().GetString().ToUtf16();
 
 		WIN32_FIND_DATAW findData;
 		const HANDLE handle = ::FindFirstFileExW
@@ -130,13 +130,13 @@ namespace Core::FileSystem
 
 	auto Exists(const Path& path) noexcept -> bool
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		return ::GetFileAttributesW(reinterpret_cast<LPCWSTR>(utf16.Data())) != INVALID_FILE_ATTRIBUTES;
 	}
 
 	auto GetEntry(const Path& path) noexcept -> Entry
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		WIN32_FILE_ATTRIBUTE_DATA data;
 		const bool res = ::GetFileAttributesExW(reinterpret_cast<LPCWSTR>(utf16.Data()), GetFileExInfoStandard, &data);
 
@@ -155,7 +155,7 @@ namespace Core::FileSystem
 
 	auto GetCreationTimestamp(const Path& path) noexcept -> u64
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		WIN32_FILE_ATTRIBUTE_DATA data;
 		const bool res = ::GetFileAttributesExW(reinterpret_cast<LPCWSTR>(utf16.Data()), GetFileExInfoStandard, &data);
 		return res ? (u64(data.ftCreationTime.dwHighDateTime) << 32) | data.ftCreationTime.dwLowDateTime : 0;
@@ -163,7 +163,7 @@ namespace Core::FileSystem
 
 	auto GetLastAccessTimestamp(const Path& path) noexcept -> u64
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		WIN32_FILE_ATTRIBUTE_DATA data;
 		const bool res = ::GetFileAttributesExW(reinterpret_cast<LPCWSTR>(utf16.Data()), GetFileExInfoStandard, &data);
 		return res ? (u64(data.ftLastAccessTime.dwHighDateTime) << 32) | data.ftLastAccessTime.dwLowDateTime : 0;
@@ -171,7 +171,7 @@ namespace Core::FileSystem
 
 	auto GetLastWriteTimestamp(const Path& path) noexcept -> u64
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		WIN32_FILE_ATTRIBUTE_DATA data;
 		const bool res = ::GetFileAttributesExW(reinterpret_cast<LPCWSTR>(utf16.Data()), GetFileExInfoStandard, &data);
 		return res ? (u64(data.ftLastWriteTime.dwHighDateTime) << 32) | data.ftLastWriteTime.dwLowDateTime : 0;
@@ -179,8 +179,8 @@ namespace Core::FileSystem
 
 	auto Move(const Path& from, const Path& to, MoveFlags flags) noexcept -> Error
 	{
-		const DynArray<char16_t> fromUtf16 = ("\\\\?\\"_path + from).ToNative().GetString().ToUtf16();
-		const DynArray<char16_t> toUtf16 = ("\\\\?\\"_path + to).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> fromUtf16 = ("\\\\?\\"_path + from.AsAbsolute()).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> toUtf16 = ("\\\\?\\"_path + to.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const bool res = ::MoveFileExW(reinterpret_cast<LPCWSTR>(fromUtf16.Data()), 
 								       reinterpret_cast<LPCWSTR>(toUtf16.Data()), 
 								       (DWORD)flags);

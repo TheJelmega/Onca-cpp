@@ -193,10 +193,18 @@ namespace Core::FileSystem
 		auto IsDeletePending() const noexcept -> bool;
 
 		/**
+		 * Check if the file is valid
+		 * \return Whether the file is valid
+		 */
+		auto IsValid() const noexcept -> bool;
+
+		explicit operator bool() const noexcept;
+
+		/**
 		 * Get the size of the file
 		 * \return Size of the file
 		 */
-		u64 GetFileSize() const noexcept;
+		auto GetFileSize() const noexcept -> u64;
 
 		/**
 		 * Get the creation timestamp (needs to be converted to know actual time)

@@ -1,5 +1,7 @@
 #include "Path.h"
 
+#include "Directory.h"
+
 namespace Core::FileSystem
 {
 	Path::Path(Alloc::IAllocator& alloc) noexcept
@@ -137,6 +139,21 @@ namespace Core::FileSystem
 				m_string.Replace(idx, endIdx - idx + 1, path.m_string);
 			idx = endIdx + 1;
 		}
+		return *this;
+	}
+
+	auto Path::MakeAbsolute() noexcept -> Path&
+	{
+		if (IsRelative())
+			m_string = GetCurrentWorkingDirectory().GetString() + m_string;
+		return *this;
+	}
+
+	auto Path::AsAbsolute() const noexcept -> Path
+	{
+		if (IsRelative())
+			return Path{ GetCurrentWorkingDirectory().GetString() + m_string };
+
 		return *this;
 	}
 

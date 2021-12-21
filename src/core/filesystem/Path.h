@@ -103,6 +103,17 @@ namespace Core::FileSystem
 		auto ReplaceMacros(Delegate<Path(const String&)>& macroQuery) noexcept -> Path&;
 
 		/**
+		 * Turn a relative path into an absolute path
+		 * \return Reference to the path
+		 */
+		auto MakeAbsolute() noexcept -> Path&;
+		/**
+		 * Get an absolute path from a path
+		 * \return Absolute path
+		 */
+		auto AsAbsolute() const noexcept -> Path;
+
+		/**
 		 * Get the root name
 		 * Examples:
 		 * - windows local: "C:"

@@ -8,8 +8,8 @@ namespace Core::FileSystem
 {
 	auto CreateSymLink(const Path& path, const Path& target) noexcept -> Error
 	{
-		const DynArray<char16_t> utf16Path = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
-		const DynArray<char16_t> utf16Target = ("\\\\?\\"_path + target).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16Path = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16Target = ("\\\\?\\"_path + target.AsAbsolute()).ToNative().GetString().ToUtf16();
 
 		const u32 flags = ::GetFileAttributesW(reinterpret_cast<LPCWSTR>(utf16Target.Data()));
 		if (flags == INVALID_FILE_ATTRIBUTES)
@@ -22,8 +22,8 @@ namespace Core::FileSystem
 
 	auto CreateHardLink(const Path& path, const Path& target) noexcept -> Error
 	{
-		const DynArray<char16_t> utf16Path = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
-		const DynArray<char16_t> utf16Target = ("\\\\?\\"_path + target).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16Path = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16Target = ("\\\\?\\"_path + target.AsAbsolute()).ToNative().GetString().ToUtf16();
 
 		const u32 flags = ::GetFileAttributesW(reinterpret_cast<LPCWSTR>(utf16Target.Data()));
 

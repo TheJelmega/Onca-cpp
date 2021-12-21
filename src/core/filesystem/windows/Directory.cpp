@@ -12,26 +12,26 @@ namespace Core::FileSystem
 		DynArray<char16_t> rawChars;
 		rawChars.Resize(len, '\0');
 		::GetCurrentDirectoryW(len, reinterpret_cast<LPWSTR>(rawChars.Data()));
-		return Path{ String{ rawChars.Data(), len - 1 } }.ToGeneral();
+		return Path{ String{ rawChars.Data(), len - 1 } + '\\' }.ToGeneral();
 	}
 
 	auto SetCurrentWorkingDirectory(const Path& path) noexcept -> Error
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const bool res = ::SetCurrentDirectoryW(reinterpret_cast<LPCWSTR>(utf16.Data()));
 		return res ? Error{} : TranslateFSError();
 	}
 
 	auto CreateDirectory(const Path& path) noexcept -> Error
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const bool res = ::CreateDirectoryW(reinterpret_cast<LPCWSTR>(utf16.Data()), nullptr);
 		return res ? Error{} : TranslateFSError();
 	}
 
 	auto DeleteDirectory(const Path& path, bool recursively) noexcept -> Error
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		if (recursively)
 		{
 			// TODO: recursively delete directory content
@@ -43,7 +43,7 @@ namespace Core::FileSystem
 
 	auto IsDirectory(const Path& path) noexcept -> bool
 	{
-		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path).ToNative().GetString().ToUtf16();
+		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const u32 attribs = ::GetFileAttributesW(reinterpret_cast<LPCWSTR>(utf16.Data()));
 		return attribs != INVALID_FILE_ATTRIBUTES && (attribs & FILE_ATTRIBUTE_DIRECTORY);
 	}
