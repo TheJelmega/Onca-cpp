@@ -6,14 +6,14 @@ namespace Core::Unicode
 {
 	struct Utf8Char
 	{
-		u8 data[4];
-		u32 size;
+		u8 data[4] = {};
+		u32 size   = 0;
 	};
 
 	struct Utf16Char
 	{
-		u16 data[2];
-		u32 size;
+		u16 data[2] = {};
+		u32 size    = 0;
 	};
 }
 

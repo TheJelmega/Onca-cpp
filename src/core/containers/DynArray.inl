@@ -501,14 +501,14 @@ namespace Core
 	template <typename T>
 	auto DynArray<T>::IteratorAt(usize idx) noexcept -> Iterator
 	{
-		FREQ_ASSERT(idx < m_size, "Index out of range");
+		FREQ_ASSERT(idx <= m_size, "Index out of range");
 		return m_mem.Ptr() + idx;
 	}
 
 	template <typename T>
 	auto DynArray<T>::IteratorAt(usize idx) const noexcept -> ConstIterator
 	{
-		FREQ_ASSERT(idx < m_size, "Index out of range");
+		FREQ_ASSERT(idx <= m_size, "Index out of range");
 		return m_mem.Ptr() + idx;
 	}
 

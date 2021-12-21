@@ -41,6 +41,14 @@ namespace Core
 	 */
 	auto ToString(const String& str) noexcept -> String;
 	/**
+	 * Convert a const string to a string
+	 * \tparam N Size of const string
+	 * \param[in] str Const string
+	 * \return String
+	 */
+	template<usize N>
+	auto ToString(const ConstString<N>& str) noexcept -> String;
+	/**
 	 * Convert any type that has a ToString() method to a string via a free function
 	 * \tparam T Type
 	 * \param[in] t Value
@@ -88,6 +96,14 @@ namespace Core
 	 * \return String
 	 */
 	auto ToDebugString(const String& str) noexcept -> String;
+	/**
+	 * Convert a const string to a string
+	 * \tparam N Size of const string
+	 * \param[in] str Const string
+	 * \return String
+	 */
+	template<usize N>
+	auto ToDebugString(const ConstString<N>& str) noexcept -> String;
 	/**
 	 * Convert any type that has a ToDebugString() method to a string via a free function
 	 * \tparam T Type

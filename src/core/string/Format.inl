@@ -36,6 +36,12 @@ namespace Core
 		template <Integral I>
 		auto FormatIntegerDecToBuf(I val, char* buffer) noexcept -> char*
 		{
+			if (val == 0)
+			{
+				*buffer++ = '0';
+				return buffer;
+			}
+
 			usize digits = CountDecDigits(val);
 			char* bufferPtr = buffer + digits;
 			char* bufferEnd = bufferPtr;
@@ -43,7 +49,7 @@ namespace Core
 			while (val >= 1'000)
 			{
 				I rem = val % 10'000;
-				val /= 10'000;
+				val /= I(10'000);
 
 				// c1 = rem / 100; c2 = rem % 100
 				auto [c1, c2] = FastDiv<100, 14, 5>(u32(rem));
@@ -154,6 +160,9 @@ namespace Core
 		template <Integral I>
 		auto FormatIntegerSci(I val, u8 precision) noexcept -> String
 		{
+			if (val == 0)
+				return "0e0"_s;
+
 			constexpr u8 bufferSize = Math::Consts::Digits10<I> + 3;
 			char buffer[bufferSize];
 
@@ -223,7 +232,7 @@ namespace Core
 
 			if constexpr (IsF32<F>)
 			{
-				i32 remainingDigitsMinus1 = CountDecDigits(significand) - 1;
+				i32 remainingDigitsMinus1 = significand == 0 ? 0 : CountDecDigits(significand) - 1;
 				exp += remainingDigitsMinus1;
 				if (remainingDigitsMinus1 > precision)
 				{
@@ -564,6 +573,9 @@ namespace Core
 		template <FloatingPoint F>
 		auto FormatFloatingPoint(UnsignedOfSameSize<F> significand, i32 exp, u8 precision) noexcept -> String
 		{
+			if (significand == 0)
+				return 0;
+
 			if (exp > 9 || exp < -7)
 				return FormatFloatSci<F>(significand, exp, precision);
 
@@ -619,7 +631,12 @@ namespace Core
 		{
 			if (idx == 0)
 			{
-				return ToDebugString(first);
+				if constexpr (DebugStringifyable<First>)
+					return ToDebugString(first);
+				else if constexpr (Stringifyable<First>)
+					return ToString(first);
+				else
+					return "<NO_DEBUG_STRING>";
 			}
 
 			if constexpr (sizeof...(Args) == 0)
@@ -652,8 +669,14 @@ namespace Core
 		return val ? "true"_s : "false"_s;
 	}
 
+	template <usize N>
+	auto ToFormat(const ConstString<N>& str, const String&) noexcept -> String
+	{
+		return String{ str.Begin(), str.End() };
+	}
+
 	template <CharacterType C>
-	auto ToFormat(const C* cstr) noexcept -> String
+	auto ToFormat(const C* cstr, const String& options) noexcept -> String
 	{
 		return String{ cstr };
 	}
@@ -758,7 +781,7 @@ namespace Core
 			return format;
 
 		usize len = format.Length();
-		usize lastPos = pos;
+		usize lastPos = 0;
 		usize nextArgIdx = 0;
 		do
 		{
@@ -770,7 +793,7 @@ namespace Core
 				continue;
 			}
 
-			usize end = format.Find('}');
+			usize end = format.Find('}', pos + 1);
 			if (end == String::NPos)
 			{
 				// Should not happen

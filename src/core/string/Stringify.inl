@@ -13,6 +13,12 @@ namespace Core
 		return str;
 	}
 
+	template <usize N>
+	auto ToString(const ConstString<N>& str) noexcept -> String
+	{
+		return String{ str.Begin(), str.End() };
+	}
+
 	template<ToStringMethod T>
 	auto ToString(const T& t) noexcept -> String
 	{
@@ -49,6 +55,12 @@ namespace Core
 	inline auto ToDebugString(const String& str) noexcept -> String
 	{
 		return str;
+	}
+
+	template <usize N>
+	auto ToDebugString(const ConstString<N>& str) noexcept -> String
+	{
+		return String{ str.Begin(), str.End() };
 	}
 
 	template <ToDebugStringMethod T>

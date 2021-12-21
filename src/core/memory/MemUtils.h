@@ -11,6 +11,15 @@ namespace Core
 	 * \param[in] numBytes Number of bytes to copy
 	 * \note Regions cannot overlap
 	 */
+	template<typename T>
+	constexpr auto MemCpy(T* dst, const T* src, usize numBytes) noexcept -> void;
+	/**
+	 * Copy a region of memory from one location to another
+	 * \param[in] dst Pointer to destination
+	 * \param[in] src Pointer to source
+	 * \param[in] numBytes Number of bytes to copy
+	 * \note Regions cannot overlap
+	 */
 	auto MemCpy(void* dst, const void* src, usize numBytes) noexcept -> void;
 	/**
 	 * Copy the contents from one element to another

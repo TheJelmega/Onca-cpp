@@ -383,7 +383,21 @@ namespace Core
 		m_length = 0;
 		for (It it = begin; it != end;)
 		{
-			const auto [c, toSkip] = Unicode::ToUtf8(&*it);
+			Unicode::Utf8Char c;
+			u64 toSkip;
+			if constexpr (IsLValueReference<decltype(*it)>)
+			{
+				const auto [c_, toSkip_] = Unicode::ToUtf8(&*it);
+				c = c_;
+				toSkip = toSkip_;
+			}
+			else
+			{
+				decltype(*it) tmp = *it;
+				const auto [c_, toSkip_] = Unicode::ToUtf8(&tmp);
+				c = c_;
+				toSkip = toSkip_;
+			}
 			for (usize i = 0; i < toSkip; ++i)
 				++it;
 

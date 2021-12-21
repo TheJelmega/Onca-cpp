@@ -67,7 +67,6 @@ namespace Core
 	public:
 		/**
 		 * Create a ConstString with an allocator
-		 * \param[in] alloc Allocator the ConstString should use
 		 */
 		explicit constexpr ConstString() noexcept;
 		/**
@@ -98,7 +97,6 @@ namespace Core
 		 * Create a ConstString from a c-ConstString
 		 * \tparam C Character type
 		 * \param[in] str C-ConstString
-		 * \param[in] alloc Allocator the ConstString should use
 		 */
 		template<CharacterType C>
 		constexpr ConstString(const C* str) noexcept;
@@ -122,7 +120,6 @@ namespace Core
 		 * \tparam It Forward iterator
 		 * \param[in] begin Begin iterator
 		 * \param[in] end End iterator
-		 * \param[in] alloc Allocator the ConstString should use
 		 * \note Iterators need to dereference to either utf8 bytes or UCodepoint
 		 */
 		template<ForwardIterator It>

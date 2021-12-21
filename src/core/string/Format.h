@@ -233,6 +233,13 @@ namespace Core
 	 * \return String
 	 */
 	auto ToFormat(const String& str, const String& = ""_s) noexcept -> String;
+	/**
+	 * Default format case for string
+	 * \param[in] str String
+	 * \return String
+	 */
+	template<usize N>
+	auto ToFormat(const ConstString<N>& str, const String & = ""_s) noexcept -> String;
 
 	/**
 	 * Convert a c-string to a string
@@ -241,7 +248,7 @@ namespace Core
 	 * \return String
 	 */
 	template<CharacterType C>
-	auto ToFormat(const C* cstr) noexcept -> String;
+	auto ToFormat(const C* cstr, const String& options = ""_s) noexcept -> String;
 
 	template<Integral I>
 	auto ToFormat(I val, const String& options = ""_s) noexcept -> String;

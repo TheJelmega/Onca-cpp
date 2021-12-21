@@ -390,7 +390,7 @@ namespace Core
 			if (size + c.size + 1 >= Cap) // +1 for null terminator
 				break;
 			m_data.Resize(size + c.size);
-			MemCpy(m_data.Data() + size, c.data, c.size);
+			MemCpy<u8>(m_data.Data() + size, c.data, c.size);
 			++m_length;
 		}
 		NullTerminate();
@@ -1551,25 +1551,25 @@ namespace Core
 	template<usize Cap>
 	constexpr auto ConstString<Cap>::Begin() noexcept -> Iterator
 	{
-		return { &m_data, 0 };
+		return { this, 0 };
 	}
 
 	template<usize Cap>
 	constexpr auto ConstString<Cap>::Begin() const noexcept -> ConstIterator
 	{
-		return { &m_data, 0 };
+		return { this, 0 };
 	}
 
 	template<usize Cap>
 	constexpr auto ConstString<Cap>::End() noexcept -> Iterator
 	{
-		return { &m_data, m_data.Size() };
+		return { this, m_data.Size() };
 	}
 
 	template<usize Cap>
 	constexpr auto ConstString<Cap>::End() const noexcept -> ConstIterator
 	{
-		return { &m_data, m_data.Size() };
+		return { this, m_data.Size() };
 	}
 
 	template<usize Cap>

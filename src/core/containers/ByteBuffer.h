@@ -20,6 +20,12 @@ namespace Core
 
 		/**
 		 * Create a ByteBuffer from a DynArray
+		 * \param[in] pData Pointer to data
+		 * \param[in] size Size of data
+		 */
+		ByteBuffer(const u8* pData, usize size) noexcept;
+		/**
+		 * Create a ByteBuffer from a DynArray
 		 * \param[in] data DynArray with data
 		 */
 		explicit ByteBuffer(const DynArray<u8>& data) noexcept;

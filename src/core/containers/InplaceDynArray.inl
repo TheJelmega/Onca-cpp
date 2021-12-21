@@ -11,27 +11,31 @@ namespace Core
 {
 	template <typename T, usize Cap>
 	constexpr InplaceDynArray<T, Cap>::InplaceDynArray() noexcept
-		: m_size(0)
+		: m_data{}
+		, m_size(0)
 	{
 	}
 
 	template <typename T, usize Cap>
 	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(usize count) noexcept requires CopyConstructible<T>
-		: m_size(0)
+		: m_data{}
+		, m_size(0)
 	{
 		FillDefault(count);
 	}
 
 	template <typename T, usize Cap>
 	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(usize count, const T& val) noexcept requires CopyConstructible<T>
-		: m_size(0)
+		: m_data{}
+		, m_size(0)
 	{
 		Fill(count, val);
 	}
 
 	template <typename T, usize Cap>
 	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(const InitializerList<T>& il) noexcept requires CopyConstructible<T>
-		: m_size(0)
+		: m_data{}
+		, m_size(0)
 	{
 		Assign(il);
 	}
@@ -39,14 +43,16 @@ namespace Core
 	template <typename T, usize Cap>
 	template <ForwardIterator It>
 	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(const It& begin, const It& end) noexcept requires CopyConstructible<T>
-		: m_size(0)
+		: m_data{}
+		, m_size(0)
 	{
 		Assign(begin, end);
 	}
 
 	template <typename T, usize Cap>
 	constexpr InplaceDynArray<T, Cap>::InplaceDynArray(const InplaceDynArray& other) noexcept requires CopyConstructible<T>
-		: m_size(0)
+		: m_data{}
+		, m_size(0)
 	{
 		Assign(other.Begin(), other.End());
 	}
@@ -97,7 +103,10 @@ namespace Core
 		for (It it = begin; it != end; ++it)
 		{
 			ASSERT(m_size != Cap, "InplaceDynArray has run out of space");
-			new (m_data + m_size) T{ *it };
+			IF_CONSTEVAL
+				m_data[m_size] = T{ *it };
+			else
+				new (m_data + m_size) T{ *it };
 			++m_size;
 		}
 	}
@@ -109,7 +118,10 @@ namespace Core
 		ASSERT(il.size() <= Cap, "ImplaceDynArray has not enough capacity to store the initializer list");
 		for (const T* it = il.begin(), *end = il.end(); it != end; ++it)
 		{
-			new (m_data + m_size) T{ *it };
+			IF_CONSTEVAL
+				m_data[m_size] = T{ *it };
+			else
+				new (m_data + m_size) T{ *it };
 			++m_size;
 		}
 	}
@@ -121,7 +133,10 @@ namespace Core
 		ASSERT(count <= Cap, "ImplaceDynArray has not enough capacity to store the initializer list");
 		for (usize i = 0; i < count; ++i)
 		{
-			new (m_data + m_size) T{ val };
+			IF_CONSTEVAL
+				m_data[m_size] = T{ val };
+			else
+				new (m_data + m_size) T{ val };
 			++m_size;
 		}
 	}
@@ -133,7 +148,10 @@ namespace Core
 		ASSERT(count <= Cap, "ImplaceDynArray has not enough capacity to store the initializer list");
 		for (usize i = 0; i < count; ++i)
 		{
-			new (m_data + m_size) T{};
+			IF_CONSTEVAL
+				m_data[m_size] = T{};
+			else
+				new (m_data + m_size) T{};
 			++m_size;
 		}
 	}
@@ -151,7 +169,10 @@ namespace Core
 		{
 			for (usize i = m_size; i < newSize; ++i)
 			{
-				new (m_data + m_size) T{ val };
+				IF_CONSTEVAL
+					m_data[m_size] = T{ val };
+				else
+					new (m_data + m_size) T{ val };
 				++m_size;
 			}
 		}
@@ -171,7 +192,10 @@ namespace Core
 		{
 			for (usize i = m_size; i < newSize; ++i)
 			{
-				new (m_data + m_size) T{};
+				IF_CONSTEVAL
+					m_data[m_size] = T{};
+				else
+					new (m_data + m_size) T{};
 				++m_size;
 			}
 		}
@@ -188,7 +212,10 @@ namespace Core
 	constexpr auto InplaceDynArray<T, Cap>::Add(T&& val) noexcept -> void
 	{
 		ASSERT(m_size < Cap, "ImplaceDynArray has not enough capacity to store another element");
-		new (m_data + m_size) T{ Move(val) };
+		IF_CONSTEVAL
+			m_data[m_size] = T{ Move(val) };
+		else
+			new (m_data + m_size) T{ Move(val) };
 		++m_size;
 	}
 

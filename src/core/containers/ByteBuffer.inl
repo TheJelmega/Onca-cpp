@@ -18,6 +18,12 @@ namespace Core
 	{
 	}
 
+	inline ByteBuffer::ByteBuffer(const u8* pData, usize size) noexcept
+		: m_data(pData, pData + size)
+		, m_cursor(0)
+	{
+	}
+
 	inline ByteBuffer::ByteBuffer(const DynArray<u8>& data) noexcept
 		: m_data(data)
 		, m_cursor(0)
@@ -93,7 +99,7 @@ namespace Core
 		const usize size = Size();
 		if (pos >= size)
 			pos = size;
-		m_cursor = size;
+		m_cursor = pos;
 	}
 
 	template <typename T>

@@ -1,5 +1,6 @@
 #pragma once
 #include "core/MinInclude.h"
+#include "core/Assert.h"
 
 namespace Core
 {
@@ -381,7 +382,7 @@ namespace Core
 	private:
 
 		T     m_data[Cap]; ///< Inplace memory
-		usize m_size;           ///< Size of the InplaceDynArray
+		usize m_size;      ///< Size of the InplaceDynArray
 	};
 }
 

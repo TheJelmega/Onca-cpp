@@ -8,6 +8,22 @@
 
 namespace Core
 {
+	template<typename T>
+	constexpr auto MemCpy(T* dst, const T* src, usize numBytes) noexcept -> void
+	{
+		IF_CONSTEVAL
+		{
+			for (usize i = 0; i < numBytes; ++i)
+			{
+				dst[i] = src[i];
+			}
+		}
+		else
+		{
+			memcpy(dst, src, numBytes);
+		}
+	}
+
 	inline auto MemCpy(void* dst, const void* src, usize numBytes) noexcept -> void
 	{
 		memcpy(dst, src, numBytes);
