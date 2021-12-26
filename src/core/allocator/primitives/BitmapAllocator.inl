@@ -58,8 +58,9 @@ namespace Core::Alloc
 #if ENABLE_ALLOC_STATS
 				const usize overhead = blocksNeeded * BlockSize - size;
 				m_stats.AddAlloc(size, overhead, isBacking);
-#endif		
-				return { m_mem.Ptr() + (i + NumManagementBlocks) * BlockSize, this, Math::Log2(align), size, isBacking };
+#endif
+				u8* ptr = m_mem.Ptr() + (i + NumManagementBlocks) * BlockSize;
+				return { ptr, this, Math::Log2(align), size, isBacking };
 			}
 		}
 
@@ -71,7 +72,7 @@ namespace Core::Alloc
 	{
 		Threading::Lock lock{ m_mutex };
 		
-		const usize startIdx = (mem.Ptr() - m_mem.Ptr()) / BlockSize;
+		const usize startIdx = (mem.Ptr() - m_mem.Ptr()) / BlockSize - NumManagementBlocks;
 		const usize size = mem.Size();
 		const usize numBlocks = (size + BlockSize - 1) / BlockSize;
 		MarkBits(startIdx, numBlocks, false);

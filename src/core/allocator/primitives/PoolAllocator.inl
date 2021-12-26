@@ -15,7 +15,7 @@ namespace Core::Alloc
 		STATIC_ASSERT(NumBlocks != 0, "Needs to have at least 1 block");
 		
 		constexpr usize memSize = BlockSize * NumBlocks;
-		m_mem = pBackingAlloc->Allocate<u8>(memSize, true);
+		m_mem = pBackingAlloc->Allocate<u8>(memSize, BlockSize, true);
 
 		// Setup free blocks
 		u8* pBegin = m_mem.Ptr();
@@ -28,7 +28,7 @@ namespace Core::Alloc
 			ptr = pNext;
 		}
 		
-		*reinterpret_cast<usize*>(pEnd - BlockSize) = usize(-1);
+		*reinterpret_cast<u8**>(pEnd - BlockSize) = nullptr;
 		m_head = pBegin;
 	}
 
@@ -58,7 +58,7 @@ namespace Core::Alloc
 			ptr = m_head;
 
 			// In case we run out of space when updating the head
-			if (ptr >= m_mem.Ptr() + m_mem.Size()) UNLIKELY
+			if (!ptr) UNLIKELY
 				return nullptr;
 
 			next = *reinterpret_cast<u8**>(ptr);

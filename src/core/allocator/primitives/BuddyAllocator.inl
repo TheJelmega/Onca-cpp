@@ -74,7 +74,7 @@ namespace Core::Alloc
 	template<usize Size, u8 MaxSubDivisions>
 	auto BuddyAllocator<Size, MaxSubDivisions>::CalculateSizeClassAndBlockSize(usize size) noexcept -> Tuple<usize, usize>
 	{
-		const usize sizeClass = MaxSubDivisions - Math::Log2((size + SmallestBlockSize - 1) / SmallestBlockSize);
+		const usize sizeClass = MaxSubDivisions - Math::Log2((size + SmallestBlockSize - 1) / SmallestBlockSize) - 1;
 		const usize sizeClassBlockSize = Size >> sizeClass;
 		return { sizeClass, sizeClassBlockSize };
 	}

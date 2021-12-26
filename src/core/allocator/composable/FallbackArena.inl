@@ -21,7 +21,7 @@ namespace Core::Alloc
 			m_main.GetAllocStats().GetCurStats(oldMemUse, _, oldOverhead, _);
 #endif
 
-		MemRef<u8> mem = m_main.Allocate(size, align, isBacking);
+		MemRef<u8> mem = m_main.template Allocate<u8>(size, align, isBacking);
 		if (mem)
 		{
 #if ENABLE_ALLOC_STATS
@@ -38,7 +38,7 @@ namespace Core::Alloc
 		m_fallback.GetAllocStats().GetCurStats(oldMemUse, _, oldOverhead, _);
 #endif		
 			
-		mem = m_fallback.Allocate(size, align, isBacking);
+		mem = m_fallback.template Allocate<u8>(size, align, isBacking);
 
 #if ENABLE_ALLOC_STATS
 		usize newMemUse, newOverhead;
@@ -82,12 +82,5 @@ namespace Core::Alloc
 			m_stats.AddAlloc(oldMemUse - newMemUse, oldOverhead - newOverhead, mem.IsBackingMem());
 #endif
 		}
-	}
-
-	template <ImplementsIAllocator MainAlloc, ImplementsIAllocator FallbackAlloc>
-	auto FallbackArena<MainAlloc, FallbackAlloc>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
-	{
-		ASSERT(false, "MemRef's allocator should never reference a FallbackArena");
-		return nullptr;
 	}
 }
