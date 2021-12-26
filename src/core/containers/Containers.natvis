@@ -14,4 +14,30 @@
 		</Expand>
 	</Type>
 
+	<!--HashMap<T> visualization-->
+	<Type Name="Core::HashMap&lt;*,*,*,*,*&gt;">
+		<DisplayString>{{ size = {m_size} }}</DisplayString>
+		<Expand>
+			<CustomListItems>
+				<Variable Name="iBucket" InitialValue="0"/>
+				<Variable Name="pBucket" InitialValue="m_buckets.m_pAddr == nullptr ? nullptr : m_buckets.m_pAddr->m_pAddr"/>
+				<Variable Name="pBucketArr" InitialValue="m_buckets.m_pAddr"/>
+
+				<Size>m_size</Size>
+				<Loop>
+					<Loop Condition="pBucket == nullptr">
+						<Exec>++iBucket</Exec>
+						<Break Condition="iBucket >= m_bucketCount"/>
+						<Exec>pBucket = pBucketArr[iBucket].m_pAddr</Exec>
+					</Loop>
+					<Item>pBucket->pair</Item>
+					<Exec>pBucket = pBucket->next.m_pAddr</Exec>
+				</Loop>
+			</CustomListItems>
+			<Item Name="[size]">m_size</Item>
+			<Item Name="[bucketCount]">m_bucketCount</Item>
+			<Item Name="[maxloadfactor]">m_maxLoadFactor</Item>
+		</Expand>
+	</Type>
+
 </AutoVisualizer>

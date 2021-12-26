@@ -1,6 +1,6 @@
 #pragma once
 #include "HashMap.h"
-#include "math/MathUtils.h"
+#include "core/math/MathUtils.h"
 
 namespace Core
 {
@@ -26,10 +26,15 @@ namespace Core
 		}
 
 		NodeRef* pNodes = m_buckets.Ptr();
-		usize bucketCount = m_buckets.Size() / sizeof(Node);
+		usize bucketCount = m_buckets.Size() / sizeof(NodeRef);
 		do
 		{
 			++m_bucketIdx;
+			if (m_bucketIdx >= bucketCount)
+			{
+				m_node = nullptr;
+				return *this;
+			}
 			m_node = *(pNodes + m_bucketIdx);
 		}
 		while (!m_node && m_bucketIdx < bucketCount);
@@ -98,6 +103,7 @@ namespace Core
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(usize minBuckets, H hasher, C comp,
 		Alloc::IAllocator& alloc) noexcept
 		: m_buckets(&alloc)
+		, m_bucketCount(0)
 		, m_size(0)
 		, m_maxLoadFactor(1.0f)
 		, m_hash(Move(hasher))
@@ -125,6 +131,7 @@ namespace Core
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const InitializerList<Pair<K, V>>& il, usize minBuckets, H hasher,	C comp, Alloc::IAllocator& alloc) noexcept
 		requires CopyConstructible<K> && CopyConstructible<V>
 		: m_buckets(&alloc)
+		, m_bucketCount(0)
 		, m_size(0)
 		, m_maxLoadFactor(1.0f)
 		, m_hash(Move(hasher))
@@ -158,6 +165,7 @@ namespace Core
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const It& begin, const It& end, usize minBuckets, H hasher, C comp, Alloc::IAllocator& alloc) noexcept
 		requires CopyConstructible<K> && CopyConstructible<V>
 		: m_buckets(&alloc)
+		, m_bucketCount(0)
 		, m_size(0)
 		, m_maxLoadFactor(1.0f)
 		, m_hash(Move(hasher))
@@ -183,6 +191,7 @@ namespace Core
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(const HashMap& other, Alloc::IAllocator& alloc) noexcept requires
 		CopyConstructible<K> && CopyConstructible<V>
 		: m_buckets(&alloc)
+		, m_bucketCount(other.m_bucketCount)
 		, m_size(other.m_size)
 		, m_maxLoadFactor(other.m_maxLoadFactor)
 		, m_hash(other.m_hash)
@@ -196,6 +205,7 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(HashMap&& other) noexcept
 		: m_buckets(Move(other.m_buckets))
+		, m_bucketCount(other.m_bucketCount)
 		, m_size(other.m_size)
 		, m_maxLoadFactor(other.m_maxLoadFactor)
 		, m_hash(other.m_hash)
@@ -207,6 +217,7 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	HashMap<K, V, H, C, IsMultiMap>::HashMap(HashMap&& other, Alloc::IAllocator& alloc) noexcept
 		: m_buckets(&alloc)
+		, m_bucketCount(other.m_bucketCount)
 		, m_size(other.m_size)
 		, m_maxLoadFactor(other.m_maxLoadFactor)
 		, m_hash(Move(other.m_hash))
@@ -256,6 +267,7 @@ namespace Core
 			ClearInternal<true>(true);
 
 			m_buckets = Move(other.m_buckets);
+			m_bucketCount = other.m_bucketCount;
 			m_size = other.m_size;
 			m_maxLoadFactor = other.m_maxLoadFactor;
 			m_hash = Move(other.m_hash);
@@ -276,12 +288,12 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Rehash(usize count) noexcept -> void
 	{
-		if (BucketCount() >= count)
+		if (m_bucketCount >= count)
 			return;
 
-		usize bucketCount = 2;
-		while (bucketCount < count)
-			bucketCount <<= 1;
+		m_bucketCount = 2;
+		while (m_bucketCount < count)
+			m_bucketCount <<= 1;
 
 		Alloc::IAllocator* pAlloc = m_buckets.GetAlloc();
 
@@ -289,9 +301,9 @@ namespace Core
 		Iterator end;
 		MemRef<NodeRef> oldData = Move(m_buckets);
 
-		m_buckets = pAlloc->Allocate<NodeRef>(bucketCount * sizeof(NodeRef));
+		m_buckets = pAlloc->Allocate<NodeRef>(m_bucketCount * sizeof(NodeRef));
 		NodeRef* pBegin = m_buckets.Ptr();
-		for (usize i = 0; i < bucketCount; ++i)
+		for (usize i = 0; i < m_bucketCount; ++i)
 			new (pBegin + i) NodeRef{};
 
 		m_size = 0;
@@ -600,13 +612,13 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::BucketCount() const noexcept -> usize
 	{
-		return m_buckets.Size() / sizeof(NodeRef);
+		return m_bucketCount;
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::BucketSize(usize idx) const noexcept -> usize
 	{
-		const usize bucketCount = BucketCount();
+		const usize bucketCount = m_bucketCount;
 		if (idx > bucketCount)
 			return 0;
 
@@ -634,7 +646,7 @@ namespace Core
 		Iterator it = Find(key);
 		if (it.m_node)
 		{
-			const u64 mask = BucketCount() - 1;
+			const u64 mask = u64(m_bucketCount) - 1;
 			return it.m_node->hash & mask;
 		}
 		return ~usize(0);
@@ -643,7 +655,7 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::LoadFactor() const noexcept -> usize
 	{
-		return f32(m_size) / f32(BucketCount());
+		return f32(m_size) / f32(m_bucketCount);
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
@@ -760,6 +772,7 @@ namespace Core
 	{
 		NodeRef node = m_buckets.GetAlloc()->template Allocate<Node>();
 		Node* pNode = node.Ptr();
+		new (pNode) Node{};
 		pNode->next = NodeRef{};
 		pNode->hash = hash; 
 		pNode->pair = Move(pair);
@@ -773,7 +786,7 @@ namespace Core
 		u64 hash = node->hash;
 		const K& key = node->pair.first;
 
-		u64 mask = u64(BucketCount()) - 1;
+		u64 mask = u64(m_bucketCount) - 1;
 		usize bucketIdx = hash & mask;
 		NodeRef* pBucket = m_buckets.Ptr() + bucketIdx;
 		NodeRef bucket = *pBucket;
@@ -866,7 +879,7 @@ namespace Core
 			prev->next = next;
 			NodeRef tmp = node;
 
-			u64 mask = u64(BucketCount()) - 1;
+			u64 mask = u64(m_bucketCount) - 1;
 			usize bucketIdx = node->hash & mask;
 			NodeRef bucketNode = *(m_buckets.Ptr() + bucketIdx);
 			if (node == bucketNode && next && next->hash & mask == bucketIdx)
@@ -880,7 +893,7 @@ namespace Core
 		{
 			NodeRef tmp = node;
 
-			u64 mask = u64(BucketCount()) - 1;
+			u64 mask = u64(m_bucketCount) - 1;
 			usize bucketIdx = node->hash & mask;
 			if (next && (next->hash & mask) == bucketIdx)
 			{
@@ -896,7 +909,7 @@ namespace Core
 	auto HashMap<K, V, H, C, IsMultiMap>::ClearInternal(bool clearMemory) noexcept -> void
 	{
 		NodeRef* pBuckets = m_buckets.Ptr();
-		for (usize i = 0, bucketCount = BucketCount(); i < bucketCount; ++i)
+		for (usize i = 0; i < m_bucketCount; ++i)
 		{
 			NodeRef node = *(pBuckets + i);
 			while (node)
@@ -920,7 +933,7 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::FindWithHash(u64 hash, const K& key) const noexcept -> Iterator
 	{
-		u64 mask = BucketCount() - 1;
+		u64 mask = u64(m_bucketCount) - 1;
 		usize bucketIdx = hash & mask;
 		NodeRef node = *(m_buckets.Ptr() + bucketIdx);
 		if (!node)
@@ -957,7 +970,7 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::FindRangeWithHash(u64 hash, const K& key) const noexcept -> Pair<Iterator, Iterator>
 	{
-		u64 mask = BucketCount() - 1;
+		u64 mask = u64(m_bucketCount) - 1;
 		usize bucketIdx = hash & mask;
 		NodeRef node = *(m_buckets.Ptr() + bucketIdx);
 		if (!node)
@@ -1017,10 +1030,9 @@ namespace Core
 	{
 		if (!m_buckets)
 			return Pair{ usize(0), NodeRef{} };
-
-		usize bucketCount = BucketCount();
+		
 		NodeRef* pBegin = m_buckets.Ptr();
-		for (usize i = 0; i < bucketCount; ++i)
+		for (usize i = 0; i < m_bucketCount; ++i)
 		{
 			NodeRef node = *(pBegin + i);
 			if (node)
@@ -1032,9 +1044,8 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::GetLastNode() const noexcept -> NodeRef
 	{
-		usize bucketCount = BucketCount();
-		NodeRef* pEnd = m_buckets.Ptr() + bucketCount;
-		for (usize i = 1; i <= bucketCount; ++i)
+		NodeRef* pEnd = m_buckets.Ptr() + m_bucketCount;
+		for (usize i = 1; i <= m_bucketCount; ++i)
 		{
 			NodeRef node = *(pEnd - i);
 			if (!node)

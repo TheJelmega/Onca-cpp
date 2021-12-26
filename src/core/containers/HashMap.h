@@ -2,6 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/memory/MemRef.h"
 #include "core/allocator/GlobalAlloc.h"
+#include "core/utils/Utils.h"
 
 namespace Core
 {
@@ -583,6 +584,7 @@ namespace Core
 		auto GetLastNode() const noexcept -> NodeRef;
 
 		MemRef<NodeRef>     m_buckets;       ///< Managed memory with buckets
+		usize               m_bucketCount;   ///< Number of buckets
 		usize               m_size;          ///< Number of elements
 		float               m_maxLoadFactor; ///< Maximum load factor
 		NO_UNIQUE_ADDRESS H m_hash;          ///< Hasher for keys
