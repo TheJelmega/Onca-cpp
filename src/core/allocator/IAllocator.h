@@ -62,8 +62,6 @@ namespace Core::Alloc
 	};
 
 	// TODO: Go over ownership system + possible redo
-	// TODO: Add Defragment virtual function
-	// TODO: canMove bool, since certain memory needs to stay in place
 	class CORE_API IAllocator
 	{
 	public:
@@ -98,15 +96,6 @@ namespace Core::Alloc
 		auto Owns(const MemRef<T>& mem) noexcept -> bool;
 
 		/**
-		 * Translate a MemRef into a pointer
-		 * \tparam T Underlying type of the MemRef
-		 * \param[in] mem MemRef to translate ptr from
-		 * \return Ptr to memory
-		 */
-		template<typename T>
-		auto TranslateToPtr(const MemRef<T>& mem) noexcept -> T*;
-
-		/**
 		 * Get statistics for this allocator 
 		 * \return Alloc stats
 		 */
@@ -132,12 +121,6 @@ namespace Core::Alloc
 		 * \return If the allocation is owned by the allocator
 		 */
 		virtual auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool;
-		/**
-		 * Translate a MemRef into a pointer
-		 * \param[in] mem MemRef to translate ptr from
-		 * \return Ptr to memory
-		 */
-		virtual auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* = 0;
 		
 #if ENABLE_ALLOC_STATS
 		AllocatorStats m_stats;

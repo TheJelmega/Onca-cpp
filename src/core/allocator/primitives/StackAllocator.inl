@@ -10,10 +10,10 @@ namespace Core::Alloc
 	template<usize Size, usize MaxAlignment>
 	StackAllocator<Size, MaxAlignment>::StackAllocator(IAllocator* pBackingAlloc) noexcept
 		: m_mem(pBackingAlloc->Allocate<u8>(Size, MaxAlignment, true))
-		, m_offset(0)
 	{
-		STATIC_ASSERT(IsPowOf2(MaxAlignment), "Max alignment needs to be a power of 2");
+		STATIC_ASSERT(Math::IsPowOf2(MaxAlignment), "Max alignment needs to be a power of 2");
 		STATIC_ASSERT(Size & ~(MaxAlignment - 1), "Memory size needs to be a multiple of maxAlignment");
+		m_head = m_mem.Ptr();
 	}
 
 	template<usize Size, usize MaxAlignment>
@@ -28,7 +28,7 @@ namespace Core::Alloc
 		ASSERT(align <= MaxAlignment, "Alignment cannot be larger than is allowed by the allocator");
 		UNUSED(align);
 
-		if (m_offset + size > m_mem.Size()) UNLIKELY
+		if (m_head + size > m_mem.Ptr() + m_mem.Size()) UNLIKELY
 			return nullptr;
 
 		const usize mask = align - 1;
@@ -36,14 +36,14 @@ namespace Core::Alloc
 		const usize padding = (diff == 0 ? 0 : MaxAlignment - diff);
 		const usize paddedSize = size + padding;
 		 
-		usize handle = m_offset;
-		m_offset += paddedSize;
+		u8* ptr = m_head;
+		m_head += paddedSize;
 
 #if ENABLE_ALLOC_STATS
 		m_stats.AddAlloc(size, padding, isBacking);
 #endif
 		
-		return { handle, this, Math::Log2(align), size, isBacking };
+		return { ptr, this, Math::Log2(align), size, isBacking };
 	}
 
 	template<usize Size, usize MaxAlignment>
@@ -58,18 +58,12 @@ namespace Core::Alloc
 		const usize paddedSize = size + padding;
 #endif
 
-		const usize handle = mem.GetRawHandle();
-		ASSERT(handle == m_offset - paddedSize, "Deallocations can only happen from the top of the stack");
-		m_offset = handle;
+		u8* memStart = mem.Ptr();
+		ASSERT(memStart == m_head - paddedSize, "Deallocations can only happen from the top of the stack");
+		m_head = memStart;
 
 #if ENABLE_ALLOC_STATS
 		m_stats.RemoveAlloc(size, padding, mem.IsBackingMem());
 #endif
-	}
-
-	template<usize Size, usize MaxAlignment>
-	auto StackAllocator<Size, MaxAlignment>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
-	{
-		return m_mem.Ptr() + mem.GetRawHandle();
 	}
 }

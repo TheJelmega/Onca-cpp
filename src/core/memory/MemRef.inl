@@ -10,8 +10,7 @@ namespace Core
 {
 	template <typename T>
 	MemRef<T>::MemRef() noexcept
-		: m_handle(~usize(0))
-		, m_pCachedPtr(nullptr)
+		: m_pAddr(nullptr)
 		, m_pAlloc(nullptr)
 		, m_log2Align(0)
 		, m_isBackingMem(false)
@@ -21,8 +20,7 @@ namespace Core
 
 	template <typename T>
 	MemRef<T>::MemRef(nullptr_t) noexcept
-		: m_handle(~usize(0))
-		, m_pCachedPtr(nullptr)
+		: m_pAddr(nullptr)
 		, m_pAlloc(nullptr)
 		, m_log2Align(0)
 		, m_isBackingMem(false)
@@ -32,8 +30,7 @@ namespace Core
 
 	template <typename T>
 	MemRef<T>::MemRef(Alloc::IAllocator* pAlloc) noexcept
-		: m_handle(~usize(0))
-		, m_pCachedPtr(nullptr)
+		: m_pAddr(nullptr)
 		, m_pAlloc(pAlloc)
 		, m_log2Align(0)
 		, m_isBackingMem(false)
@@ -42,20 +39,18 @@ namespace Core
 	}
 
 	template <typename T>
-	MemRef<T>::MemRef(usize handle, Alloc::IAllocator* pAlloc, u8 log2Align, usize size, bool isBacking) noexcept
-		: m_handle(handle)
+	MemRef<T>::MemRef(T* pAddr, Alloc::IAllocator* pAlloc, u8 log2Align, usize size, bool isBacking) noexcept
+		: m_pAddr(pAddr)
 		, m_pAlloc(pAlloc)
 		, m_log2Align(log2Align)
 		, m_isBackingMem(isBacking)
 		, m_size(size)
 	{
-		m_pCachedPtr = m_pAlloc->TranslateToPtr(*this);
 	}
 
 	template <typename T>
 	MemRef<T>::MemRef(const MemRef& other) noexcept
-		: m_handle(other.m_handle)
-		, m_pCachedPtr(other.m_pCachedPtr)
+		: m_pAddr(other.m_pAddr)
 		, m_pAlloc(other.m_pAlloc)
 		, m_log2Align(other.m_log2Align)
 		, m_isBackingMem(other.m_isBackingMem)
@@ -65,8 +60,7 @@ namespace Core
 
 	template <typename T>
 	MemRef<T>::MemRef(MemRef&& other) noexcept
-		: m_handle(other.m_handle)
-		, m_pCachedPtr(other.m_pCachedPtr)
+		: m_pAddr(other.m_pAddr)
 		, m_pAlloc(other.m_pAlloc)
 		, m_log2Align(other.m_log2Align)
 		, m_isBackingMem(other.m_isBackingMem)
@@ -74,15 +68,14 @@ namespace Core
 	{
 		MemClearData(other);
 		other.m_pAlloc = m_pAlloc;
-		other.m_handle = ~usize(0);
-		other.m_pCachedPtr = nullptr;
+		other.m_pAddr = nullptr;
 	}
 
 	template <typename T>
 	auto MemRef<T>::operator=(nullptr_t) noexcept -> MemRef<T>&
 	{
 		MemClearData(*this);
-		m_handle = ~usize(0);
+		m_pAddr = nullptr;
 		return *this;
 	}
 
@@ -98,7 +91,7 @@ namespace Core
 	{
 		MemCpy(*this, other);
 		MemClearData(other);
-		other.m_handle = ~usize(0);
+		other.m_pAddr = nullptr;
 		return *this;
 	}
 
@@ -106,8 +99,7 @@ namespace Core
 	auto MemRef<T>::Ptr() const noexcept -> T*
 	{
 		if (IsValid()) LIKELY
-			//return m_pAlloc->TranslateToPtr(*this);
-			return m_pCachedPtr;
+			return m_pAddr;
 		return nullptr;
 	}
 
@@ -128,13 +120,7 @@ namespace Core
 	{
 		return m_size;
 	}
-
-	template <typename T>
-	auto MemRef<T>::GetRawHandle() const noexcept -> usize
-	{
-		return m_handle;
-	}
-
+	
 	template <typename T>
 	auto MemRef<T>::IsBackingMem() const noexcept -> bool
 	{
@@ -144,7 +130,7 @@ namespace Core
 	template <typename T>
 	auto MemRef<T>::IsValid() const noexcept -> bool
 	{
-		return m_handle != ~usize(0) && m_pAlloc && m_size != 0;
+		return m_pAddr && m_pAlloc && m_size != 0;
 	}
 
 	template <typename T>
@@ -158,7 +144,7 @@ namespace Core
 	template <typename U>
 	auto MemRef<T>::As() noexcept -> MemRef<U>
 	{
-		return { m_handle, m_pAlloc, m_log2Align, m_size, m_isBackingMem };
+		return { reinterpret_cast<U*>(m_pAddr), m_pAlloc, m_log2Align, m_size, m_isBackingMem };
 	}
 
 	template <typename T>
@@ -196,7 +182,7 @@ namespace Core
 	auto MemRef<T>::operator==(const MemRef<U>& other) const noexcept -> bool
 	{
 		return m_pAlloc == other.m_pAlloc &&
-			   m_handle == other.m_handle ||
+			   m_pAddr == other.m_pAddr ||
 			   (!IsValid() && !other.IsValid());
 	}
 

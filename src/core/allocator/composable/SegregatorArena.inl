@@ -37,12 +37,4 @@ namespace Core::Alloc
 		else
 			m_leAlloc.Deallocate(Move(mem));
 	}
-
-	template <ImplementsIAllocator GtAlloc, ImplementsIAllocator LeAlloc>
-	auto SegregatorAllocator<GtAlloc, LeAlloc>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
-	{
-		if (mem.Size() > m_bound)
-			return m_gtAlloc.TranslateToPtr(mem);
-		return m_leAlloc.TranslateToPtr(mem);
-	}
 }

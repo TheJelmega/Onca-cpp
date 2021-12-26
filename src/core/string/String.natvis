@@ -3,12 +3,12 @@
 
 	<!--String visualization-->
 	<Type Name="Core::String">
-		<DisplayString Condition="!m_data.m_mem.m_pCachedPtr">""</DisplayString>
-		<DisplayString>{m_data.m_mem.m_pCachedPtr,s8}</DisplayString>
+		<DisplayString Condition="!m_data.m_mem.m_pAddr">""</DisplayString>
+		<DisplayString>{m_data.m_mem.m_pAddr,s8}</DisplayString>
 		<Expand>
 			<ArrayItems>
 				<Size>m_length</Size>
-				<ValuePointer>m_data.m_mem.m_pCachedPtr</ValuePointer>
+				<ValuePointer>m_data.m_mem.m_pAddr</ValuePointer>
 			</ArrayItems>
 			<Item Name="[length]">m_length</Item>
 		</Expand>

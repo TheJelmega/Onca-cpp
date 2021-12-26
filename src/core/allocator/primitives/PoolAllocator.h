@@ -37,11 +37,10 @@ namespace Core::Alloc
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
-		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	private:
-		MemRef<u8>     m_mem;          ///< Managed memory
-		Atomic<usize>  m_head;         ///< Offset to first empty block
+		MemRef<u8>   m_mem;          ///< Managed memory
+		Atomic<u8*>  m_head;         ///< Offset to first empty block
 	};
 }
 

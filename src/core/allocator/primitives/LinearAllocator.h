@@ -29,7 +29,7 @@ namespace Core::Alloc
 	public:
 		/**
 		 * Create a linear allocator
-		 * \param pBackingAlloc Allocator to create the underlying memory block
+		 * \param[in]pBackingAlloc Allocator to create the underlying memory block
 		 */
 		LinearAllocator(IAllocator* pBackingAlloc);
 		LinearAllocator(LinearAllocator&&) = default;
@@ -44,11 +44,10 @@ namespace Core::Alloc
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
-		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	private:
-		MemRef<u8>  m_mem;    ///< Managed memory
-		usize       m_offset; ///< Current location in the linear allocator
+		MemRef<u8> m_mem;  ///< Managed memory
+		u8*        m_head; ///< Current location in the linear allocator
 	};
 
 }

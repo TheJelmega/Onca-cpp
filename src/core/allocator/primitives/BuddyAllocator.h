@@ -41,7 +41,7 @@ namespace Core::Alloc
 	public:
 		/**
 		 * Create a buddy allocator
-		 * \param pBackingAlloc Allocator to create the underlying memory block
+		 * \param[in]pBackingAlloc Allocator to create the underlying memory block
 		 */
 		BuddyAllocator(IAllocator* pBackingAlloc) noexcept;
 		BuddyAllocator(BuddyAllocator&&) noexcept = default;
@@ -50,7 +50,6 @@ namespace Core::Alloc
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
-		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	public:
 		/**
@@ -67,61 +66,61 @@ namespace Core::Alloc
 
 		/**
 		 * Calculate the size class and block size for an allocation of a certain size
-		 * \param size Size of allocation
+		 * \param[in]size Size of allocation
 		 * \return Size class and block size for allocation
 		 */
 		auto CalculateSizeClassAndBlockSize(usize size) noexcept -> Tuple<usize, usize>;
 
 		/**
 		 * Get the index of a free division fitting the requested size class
-		 * \param pManagementInfo Pointer to management info
-		 * \param neededClass Size class needed for allocation
+		 * \param[in]pManagementInfo Pointer to management info
+		 * \param[in]neededClass Size class needed for allocation
 		 * \return Index of a free division, or usize(-1) if no free division is found
 		 */
 		auto GetIdx(u8* pManagementInfo, usize neededClass) noexcept -> usize;
 
 		/**
 		 * Get the index of a free division fitting the requested size class
-		 * \param pManagementInfo Pointer to management info
-		 * \param neededClass Size class needed for allocation
-		 * \param curClass Current size class to work in
-		 * \param curDivIdx CUrrent division index
+		 * \param[in]pManagementInfo Pointer to management info
+		 * \param[in]neededClass Size class needed for allocation
+		 * \param[in]curClass Current size class to work in
+		 * \param[in]curDivIdx CUrrent division index
 		 * \return Index of a free division, or usize(-1) if no free division is found
 		 */
 		auto GetSubIdx(u8* pManagementInfo, usize neededClass, usize curClass, usize curDivIdx) noexcept -> usize;
 
 		/**
 		 * Get the flag for the division at a certain index
-		 * \param pManagementInfo Pointer to management info
-		 * \param divIdx Division index
+		 * \param[in]pManagementInfo Pointer to management info
+		 * \param[in]divIdx Division index
 		 * \return Flag of the division
 		 */
 		auto GetDivFlag(u8* pManagementInfo, usize divIdx) noexcept -> u8;
 		/**
 		 * Get the flags for both divisions at a certain index
-		 * \param pManagementInfo Pointer to management info
-		 * \param divIdx Division index of the left child
+		 * \param[in]pManagementInfo Pointer to management info
+		 * \param[in]divIdx Division index of the left child
 		 * \return Flag of the division
 		 */
 		auto GetDivFlags(u8* pManagementInfo, usize divIdx) noexcept -> Tuple<u8, u8>;
 		/**
 		 * Set the flag for the division at a certain index
-		 * \param pManagementInfo Pointer to management info
-		 * \param divIdx Division index
-		 * \param flag Flag to se
+		 * \param[in]pManagementInfo Pointer to management info
+		 * \param[in]divIdx Division index
+		 * \param[in]flag Flag to se
 		 */
 		auto SetDivFlag(u8* pManagementInfo, usize divIdx, u8 flag) noexcept -> void;
 
 		/**
 		 * Mark a division as used and update the parent divisions
-		 * \param pManagementInfo Pointer to management info
-		 * \param divIdx Index to mark
+		 * \param[in]pManagementInfo Pointer to management info
+		 * \param[in]divIdx Index to mark
 		 */
 		auto Mark(u8* pManagementInfo, usize divIdx) noexcept -> void;
 		/**
 		 * Unmark a division as used and update the parent divisions
-		 * \param pManagementInfo Pointer to management info
-		 * \param divIdx Index to unmark
+		 * \param[in]pManagementInfo Pointer to management info
+		 * \param[in]divIdx Index to unmark
 		 */
 		auto Unmark(u8* pManagementInfo, usize divIdx) noexcept -> void;
 
@@ -129,7 +128,6 @@ namespace Core::Alloc
 		static constexpr usize ManagementSize = CalculateManagementSize();
 
 		MemRef<u8>       m_mem;           ///< Managed memory
-		usize            m_managmentSize; ///< Memory used for management
 		Threading::Mutex m_mutex;         ///< Mutex to guard division flag modifications
 	};
 }

@@ -7,7 +7,7 @@
 		<Expand>
 			<ArrayItems>
 				<Size>m_size</Size>
-				<ValuePointer>m_mem.m_pCachedPtr</ValuePointer>
+				<ValuePointer>m_mem.m_pAddr</ValuePointer>
 			</ArrayItems>
 			<Item Name="[size]">m_size</Item>
 			<Item Name="[mem]">m_mem</Item>

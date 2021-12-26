@@ -12,6 +12,11 @@ namespace Core::Alloc
 	class FallbackArena final : public IAllocator
 	{
 	public:
+		/**
+		 * Create a fallback arena
+		 * \param[in] main Main allocator
+		 * \param[in] fallback Allocator to use when main allocator cannot allocate
+		 */
 		FallbackArena(MainAlloc&& main, FallbackAlloc&& fallback);
 		FallbackArena(FallbackArena&& main) = default;
 

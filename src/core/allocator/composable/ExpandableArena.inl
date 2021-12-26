@@ -89,16 +89,4 @@ namespace Core::Alloc
 		}
 		return false;
 	}
-
-	template <ExtendableAlloc Alloc>
-	auto ExpandableArena<Alloc>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
-	{
-		for (Unique<Alloc>& alloc : m_allocs)
-		{
-			u8* ptr = alloc->template TranslateToPtr<u8>(mem);
-			if (ptr)
-				return ptr;
-		}
-		return nullptr;
-	}
 }

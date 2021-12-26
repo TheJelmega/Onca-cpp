@@ -57,9 +57,9 @@ namespace Core::Alloc
 
 #if ENABLE_ALLOC_STATS
 				const usize overhead = blocksNeeded * BlockSize - size;
-				m_stats.RemoveAlloc(size, overhead, isBacking);
+				m_stats.AddAlloc(size, overhead, isBacking);
 #endif		
-				return { i, this, Math::Log2(align), size, isBacking };
+				return { m_mem.Ptr() + (i + NumManagementBlocks) * BlockSize, this, Math::Log2(align), size, isBacking };
 			}
 		}
 
@@ -71,7 +71,7 @@ namespace Core::Alloc
 	{
 		Threading::Lock lock{ m_mutex };
 		
-		const usize startIdx = mem.GetRawHandle();
+		const usize startIdx = (mem.Ptr() - m_mem.Ptr()) / BlockSize;
 		const usize size = mem.Size();
 		const usize numBlocks = (size + BlockSize - 1) / BlockSize;
 		MarkBits(startIdx, numBlocks, false);
@@ -81,13 +81,7 @@ namespace Core::Alloc
 		m_stats.RemoveAlloc(size, overhead, mem.IsBackingMem());
 #endif
 	}
-
-	template<usize BlockSize, usize NumBlocks>
-	auto BitmapAllocator<BlockSize, NumBlocks>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
-	{
-		return m_mem.Ptr() + (NumManagementBlocks + mem.GetRawHandle()) * BlockSize;
-	}
-
+	
 	template<usize BlockSize, usize NumBlocks>
 	auto BitmapAllocator<BlockSize, NumBlocks>::MarkBits(usize startIdx, usize numBlocks, bool set) noexcept -> void
 	{

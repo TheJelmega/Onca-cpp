@@ -35,11 +35,10 @@ namespace Core::Alloc
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
-		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	private:
-		u8          m_mem[Size]; ///< Ih-place memory
-		usize       m_offset;    ///< Current location on the stack
+		u8  m_mem[Size]; ///< In-place memory
+		u8* m_head;      ///< Current location on the stack
 	};
 }
 

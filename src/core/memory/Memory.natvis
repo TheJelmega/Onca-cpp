@@ -3,10 +3,10 @@
 
 	<!--MemRef<T> visualization-->
 	<Type Name="Core::MemRef&lt;*&gt;">
-		<DisplayString>{m_pCachedPtr}</DisplayString>
+		<DisplayString>{m_pAddr}</DisplayString>
 		<Expand>
 			<Item Name="[handle]">m_handle</Item>
-			<Item Name="[ptr]">m_pCachedPtr</Item>
+			<Item Name="[ptr]">m_pAddr</Item>
 			<Item Name="[alloc]">m_pAlloc</Item>
 			<Item Name="[align]">1 &lt;&lt; m_log2Align</Item>
 			<Item Name="[size]">m_size</Item>
@@ -17,7 +17,7 @@
 	<Type Name="Core::Unique&lt;*&gt;">
 		<DisplayString>{m_mem}</DisplayString>
 		<Expand>
-			<Item Name="[ptr]">m_mem.m_pCachedPtr</Item>
+			<Item Name="[ptr]">m_mem.m_pAddr</Item>
 			<Item Name="[mem]">m_mem</Item>
 		</Expand>
 	</Type>

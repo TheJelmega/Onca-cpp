@@ -3,7 +3,7 @@
 #include "BuddyAllocator.h"
 #endif
 
-#include "utils/Endianess.h"
+#include "core/utils/Endianess.h"
 
 namespace Core::Alloc
 {
@@ -49,7 +49,7 @@ namespace Core::Alloc
 		m_stats.AddAlloc(size, overHead, isBacking);
 #endif
 
-		return MemRef<u8>{ memOffset, this, Math::Log2(align), size, isBacking };
+		return MemRef<u8>{ m_mem.Ptr() + ManagementSize + memOffset, this, Math::Log2(align), size, isBacking };
 	}
 
 	template<usize Size, u8 MaxSubDivisions>
@@ -57,7 +57,7 @@ namespace Core::Alloc
 	{
 		const auto [sizeClass, sizeClassBlockSize] = CalculateSizeClassAndBlockSize(mem.Size());
 
-		const usize offset = mem.GetRawHandle() / sizeClassBlockSize;
+		const usize offset = usize(mem.Ptr() - ManagementSize - m_mem.Ptr()) / sizeClassBlockSize;
 		const usize divIdx = sizeClass == 0 ? 0 : (1ull << sizeClass) - 1 + offset;
 
 		Threading::Lock lock{ m_mutex };
@@ -69,12 +69,6 @@ namespace Core::Alloc
 		const usize overHead = sizeClassBlockSize - mem.Size();
 		m_stats.AddAlloc(mem.Size(), overHead, mem.IsBackingMem());
 #endif
-	}
-
-	template<usize Size, u8 MaxSubDivisions>
-	auto BuddyAllocator<Size, MaxSubDivisions>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
-	{
-		return m_mem.Ptr() + ManagementSize + mem.GetRawHandle();
 	}
 	
 	template<usize Size, u8 MaxSubDivisions>

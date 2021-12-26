@@ -29,7 +29,7 @@ namespace Core::Alloc
 	public:
 		/**
 		 * Create an expandable allocator
-		 * \param expandAlloc Backing allocator used to expand size
+		 * \param[in] expandAlloc Backing allocator used to expand size
 		 */
 		ExpandableArena(IAllocator* expandAlloc);
 
@@ -37,7 +37,6 @@ namespace Core::Alloc
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
 		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
-		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	private:
 		IAllocator*             m_backingAlloc; ///< Allocator to back sub-allocators

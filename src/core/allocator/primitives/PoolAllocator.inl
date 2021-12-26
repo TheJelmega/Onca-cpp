@@ -19,14 +19,17 @@ namespace Core::Alloc
 
 		// Setup free blocks
 		u8* pBegin = m_mem.Ptr();
+		u8* pEnd = pBegin + memSize;
 
-		for (usize i = 0; i < memSize;)
+		for (u8* ptr = pBegin; ptr < pEnd;)
 		{
-			usize next = i + BlockSize;
-			*reinterpret_cast<usize*>(pBegin + i) = next;
-			i = next;
+			u8* pNext = ptr + BlockSize;
+			*reinterpret_cast<u8**>(ptr) = pNext;
+			ptr = pNext;
 		}
-		*reinterpret_cast<usize*>(pBegin + memSize - BlockSize) = usize(-1);
+		
+		*reinterpret_cast<usize*>(pEnd - BlockSize) = usize(-1);
+		m_head = pBegin;
 	}
 
 	template<usize BlockSize, usize NumBlocks>
@@ -47,52 +50,46 @@ namespace Core::Alloc
 	{
 		ASSERT(align <= BlockSize, "Cannot have a greater aligment than the blocksize");
 		ASSERT(size <= BlockSize, "Cannot allocate more than the blocksize");
-
-		u8* pMem = m_mem.Ptr();
-		usize handle, next;
+		
+		u8* ptr;
+		u8* next;
 		do
 		{
-			handle = m_head;
+			ptr = m_head;
 
 			// In case we run out of space when updating the head
-			if (handle >= m_mem.Size()) UNLIKELY
+			if (ptr >= m_mem.Ptr() + m_mem.Size()) UNLIKELY
 				return nullptr;
 
-			next = *reinterpret_cast<usize*>(pMem + handle);
+			next = *reinterpret_cast<u8**>(ptr);
 		}
-		while (!m_head.CompareExchangeWeak(handle, next));
+		while (!m_head.CompareExchangeWeak(ptr, next));
 
 #if ENABLE_ALLOC_STATS
 		const usize overhead = BlockSize - size;
 		m_stats.AddAlloc(size, overhead, isBacking);
 #endif
 		
-		return { handle, this, Math::Log2(align), size, isBacking };
+		return { ptr, this, Math::Log2(align), size, isBacking };
 	}
 
 	template<usize BlockSize, usize NumBlocks>
 	auto PoolAllocator<BlockSize, NumBlocks>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
 	{
-		const usize handle = mem.GetRawHandle();
-		usize* pBlock = reinterpret_cast<usize*>(m_mem.Ptr() + handle);
-		usize cur;
+		u8* ptr = mem.Ptr();
+		u8** pBlock = reinterpret_cast<u8**>(ptr);
+		u8* cur;
 		do
 		{
 			cur = m_head;
 			*pBlock = cur;
 		}
-		while (!m_head.CompareExchangeWeak(cur, handle));
+		while (!m_head.CompareExchangeWeak(cur, ptr));
 
 #if ENABLE_ALLOC_STATS
 		const usize size = mem.Size();
 		const usize overhead = BlockSize - size;
 		m_stats.RemoveAlloc(size, overhead, mem.IsBackingMem());
 #endif
-	}
-
-	template<usize BlockSize, usize NumBlocks>
-	auto PoolAllocator<BlockSize, NumBlocks>::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
-	{
-		return m_mem.Ptr() + mem.GetRawHandle();
 	}
 }

@@ -35,12 +35,12 @@ namespace Core::Alloc
 		m_stats.AddAlloc(size, align, isBacking);
 #endif
 		
-		return { reinterpret_cast<usize>(alignedPtr), this, Math::Log2(align), size, isBacking };
+		return { alignedPtr, this, Math::Log2(align), size, isBacking };
 	}
 
 	auto Mallocator::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
 	{
-		u8* ptr = reinterpret_cast<u8*>(mem.GetRawHandle());
+		u8* ptr = mem.Ptr();
 		usize offset = ptr[-1];
 		if (offset & 0x80)
 		{
@@ -53,10 +53,5 @@ namespace Core::Alloc
 #if ENABLE_ALLOC_STATS
 		m_stats.RemoveAlloc(mem.Size(), mem.Align(), mem.IsBackingMem());
 #endif
-	}
-
-	auto Mallocator::TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8*
-	{
-		return reinterpret_cast<u8*>(mem.GetRawHandle());
 	}
 }

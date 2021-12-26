@@ -25,7 +25,7 @@ namespace Core::Alloc
 		struct FreeHeader
 		{
 			usize size; ///< Size of free block
-			usize next; ///< Offset to the next free block
+			u8*   next; ///< Offset to the next free block
 		};
 
 		/**
@@ -40,7 +40,7 @@ namespace Core::Alloc
 	public:
 		/**
 		 * Create a freelist allocator
-		 * \param pBackingAllocator Allocator to create the underlying memory block
+		 * \param[in]pBackingAllocator Allocator to create the underlying memory block
 		 */
 		FreeListAllocator(IAllocator* pBackingAllocator) noexcept;
 		FreeListAllocator(FreeListAllocator&&) = default;
@@ -49,29 +49,27 @@ namespace Core::Alloc
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
-		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	private:
 
 		/**
 		 * Find space for the allocation (first-fit) and create space for the allcoation
-		 * \param size Size of the allocation
-		 * \param align Align of the allocation
-		 * \param isBacking Whether the memory backs another allocator
+		 * \param[in]size Size of the allocation
+		 * \param[in]align Align of the allocation
+		 * \param[in]isBacking Whether the memory backs another allocator
 		 * \return Offset to allocation
 		 */
-		auto AllocFirst(usize size, u16 align, bool isBacking) noexcept -> usize;
+		auto AllocFirst(usize size, u16 align, bool isBacking) noexcept -> u8*;
 		/**
 		 * Coalesce multiple blocks when possible
-		 * \param pBegin Pointer to memory
-		 * \param prevLoc Index of previous block
-		 * \param curLoc Index of current block
-		 * \param nextLoc Index of next block
+		 * \param[in]pPrev Pointer of previous block
+		 * \param[in]pCur Pointer of current block
+		 * \param[in]pNext Pointer of next block
 		 */
-		auto Coalesce(u8* pBegin, usize prevLoc, usize curLoc, usize nextLoc) noexcept -> void;
+		auto Coalesce(u8* pPrev, u8* pCur, u8* pNext) noexcept -> void;
 
 		MemRef<u8> m_mem;  ///< Managed memory
-		usize      m_head; ///< Offset to free head
+		u8*        m_head; ///< Offset to free head
 	};
 
 }

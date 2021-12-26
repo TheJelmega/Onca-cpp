@@ -27,15 +27,7 @@ namespace Core::Alloc
 	{
 		return OwnsInternal(ref.template As<u8>());
 	}
-
-	template <typename T>
-	auto IAllocator::TranslateToPtr(const MemRef<T>& mem) noexcept -> T*
-	{
-		if (mem.GetRawHandle() == ~usize(0))
-			return nullptr;
-		return reinterpret_cast<T*>(TranslateToPtrInternal(mem.template As<u8>()));
-	}
-
+	
 	INL auto AllocatorStats::AddAlloc(usize memUse, usize overhead, bool isBacking) noexcept -> void
 	{
 		Threading::Lock lock(m_statMutex);

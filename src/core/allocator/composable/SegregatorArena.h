@@ -13,13 +13,18 @@ namespace Core::Alloc
 	class SegregatorAllocator final : public IAllocator
 	{
 	public:
+		/**
+		 * 
+		 * \param[in] bound Maximum size of allocation to use the gtAlloc
+		 * \param[in] gtAlloc Allocator to use when the size of the allocation is greater than the bound
+		 * \param[in] leAlloc Allocator to use when the size of the allocation is less or equal than the bound
+		 */
 		SegregatorAllocator(usize bound, GtAlloc&& gtAlloc, LeAlloc&& leAlloc);
 		SegregatorAllocator(SegregatorAllocator&&) = default;
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
-		auto TranslateToPtrInternal(const MemRef<u8>& mem) noexcept -> u8* override;
 
 	private:
 		usize   m_bound;   ///< Boundary between allocators
