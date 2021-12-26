@@ -13,6 +13,9 @@ namespace Core
 	struct DefaultDeleter
 	{
 		auto operator()(MemRef<T>&& ref) noexcept -> void;
+
+		template<typename U>
+		auto operator=(DefaultDeleter<U>&&) noexcept -> DefaultDeleter& { return *this; }
 	};
 
 	template<typename T>

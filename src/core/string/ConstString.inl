@@ -420,7 +420,7 @@ namespace Core
 			if (size + c.size + 1 >= Cap) // +1 for null terminator
 				break;
 			m_data.Resize(size + c.size);
-			MemCpy(m_data.Data() + size, c.data, c.size);
+			MemCpy<u8>(m_data.Data() + size, c.data, c.size);
 			++m_length;
 		}
 		NullTerminate();
@@ -456,7 +456,7 @@ namespace Core
 
 		u8* pData = m_data.Data() + m_data.Size();
 		for (usize i = 0; i < count; ++i, pData += c.size)
-			MemCpy(pData, c.data, c.size);
+			MemCpy<u8>(pData, c.data, c.size);
 
 		m_length += count;
 		NullTerminate();
@@ -485,7 +485,7 @@ namespace Core
 			byteLen = tmpIdx - startIdx;
 		}
 		
-		MemCpy(m_data.Data() + size, other.Data() + startIdx, byteLen);
+		MemCpy<u8>(m_data.Data() + size, other.Data() + startIdx, byteLen);
 		m_length += length;
 		NullTerminate();
 		return *this;
@@ -671,7 +671,7 @@ namespace Core
 		}
 
 		m_data.Insert(m_data.IteratorAt(idx), otherSize, 0);
-		MemCpy(m_data.Data() + idx, str.m_data.Data() + strIdx, otherSize);
+		MemCpy<u8>(m_data.Data() + idx, str.m_data.Data() + strIdx, otherSize);
 		m_length += strLength;
 		NullTerminate();
 		return *this;
@@ -694,7 +694,7 @@ namespace Core
 
 		u8* pData = m_data.Data() + idx;
 		for (usize i = 0; i < count; ++i, pData += c.size)
-			MemCpy(pData, c.data, c.size);
+			MemCpy<u8>(pData, c.data, c.size);
 
 		m_length += count;
 		NullTerminate();
@@ -851,7 +851,7 @@ namespace Core
 			{
 				m_data.Erase(pData + i, utf8size - upper.size);
 			}
-			MemCpy(pData + i, upper.data, upper.size);
+			MemCpy<u8>(pData + i, upper.data, upper.size);
 			i += upper.size;
 		}
 		NullTerminate();
@@ -872,7 +872,7 @@ namespace Core
 			res.m_data.Resize(res.DataSize() + upper.size);
 			pData = res.Data();
 
-			MemCpy(pData + i, upper.data, upper.size);
+			MemCpy<u8>(pData + i, upper.data, upper.size);
 			i += upper.size;
 			pSourceData += utf8size;
 		}
@@ -899,7 +899,7 @@ namespace Core
 			{
 				m_data.Erase(pData + i, utf8size - upper.size);
 			}
-			MemCpy(pData + i, upper.data, upper.size);
+			MemCpy<u8>(pData + i, upper.data, upper.size);
 			i += upper.size;
 		}
 		NullTerminate();
@@ -920,7 +920,7 @@ namespace Core
 			res.m_data.Resize(res.DataSize() + upper.size);
 			pData = res.Data();
 
-			MemCpy(pData + i, upper.data, upper.size);
+			MemCpy<u8>(pData + i, upper.data, upper.size);
 			i += upper.size;
 			pSourceData += utf8size;
 		}

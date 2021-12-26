@@ -436,7 +436,12 @@ namespace Core
 		m_data.ShrinkToFit();
 		m_data.Pop();
 	}
-	
+
+	inline auto String::Clear(bool clearMemory) noexcept -> void
+	{
+		m_data.Clear(clearMemory);
+	}
+
 	inline auto String::Add(UCodepoint codepoint, usize count) noexcept -> String&
 	{
 		const Unicode::Utf8Char c = Unicode::GetUtf8FromCp(codepoint);
@@ -881,7 +886,7 @@ namespace Core
 		return String{ *this, pos, length, *GetAllocator() };
 	}
 
-	inline auto String::Split(UCodepoint delimiter, usize max, StringSplitOptions options) noexcept -> DynArray<String>
+	inline auto String::Split(UCodepoint delimiter, usize max, StringSplitOptions options) const noexcept -> DynArray<String>
 	{
 		usize curPos = 0;
 		usize curIdx = 0;
@@ -1708,6 +1713,12 @@ namespace Core
 		const usize size = m_data.Size();
 		m_data.Reserve(size + 1);
 		m_data.Data()[size] = 0;
+	}
+
+	inline auto Hash<String>::operator()(const String& t) const noexcept -> u64
+	{
+		static Hashing::FVN1A_64 fnv;
+		return fnv(t.Data(), t.DataSize());
 	}
 }
 

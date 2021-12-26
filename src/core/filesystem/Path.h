@@ -5,7 +5,6 @@
 
 namespace Core::FileSystem
 {
-
 	/**
 	 * File path
 	 */
@@ -249,7 +248,7 @@ namespace Core::FileSystem
 		auto AsGeneral() const noexcept -> Path;
 
 		/**
-		 * Get the underlying string
+		 * Get the underlying st(ring
 		 * \return Underlying string
 		 */
 		auto GetString() const noexcept -> const String&;
@@ -284,6 +283,21 @@ namespace Core::FileSystem
 		String m_string;
 	};
 
+}
+
+namespace Core
+{
+	template<>
+	inline auto Parse<FileSystem::Path>(const String& str) noexcept -> FileSystem::Path
+	{
+		return FileSystem::Path{ str };
+	}
+
+	template<>
+	inline auto TryParse<FileSystem::Path>(const String& str) noexcept -> Optional<FileSystem::Path>
+	{
+		return FileSystem::Path{ str };
+	}
 }
 
 namespace Literals

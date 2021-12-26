@@ -243,6 +243,12 @@ namespace Core
 		 * Shrink the memory used by the String to the minimum needed
 		 */
 		auto ShrinkToFit() noexcept -> void;
+
+		/**
+		 * Clear the contents of the String, possibly also deallocate the memory
+		 * \param[in] clearMemory Whether to deallocate the memory
+		 */
+		auto Clear(bool clearMemory = false) noexcept -> void;
 		
 		/**
 		 * Add a number of codepoints to a String
@@ -419,7 +425,7 @@ namespace Core
 		 * \param options Splitting options (see SplitOption)
 		 * \return Dynamic array with split parts
 		 */
-		auto Split(UCodepoint delimiter, usize max = NPos, StringSplitOptions options = StringSplitOption::None) noexcept -> DynArray<String>;
+		auto Split(UCodepoint delimiter, usize max = NPos, StringSplitOptions options = StringSplitOption::None) const noexcept -> DynArray<String>;
 		/**
 		 * Split a string into substrings based on a delimiter
 		 * \param delimiter Delimiter
@@ -797,6 +803,12 @@ namespace Core
 
 		DynArray<u8> m_data;   ///< UTF8 data
 		usize        m_length; ///< String length
+	};
+
+	template<>
+	struct Hash<String>
+	{
+		auto operator()(const String& t) const noexcept -> u64;
 	};
 
 }

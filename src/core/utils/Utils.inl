@@ -10,8 +10,11 @@ namespace Core
 	template <typename T>
 	auto DefaultDeleter<T>::operator()(MemRef<T>&& ref) noexcept -> void
 	{
-		~*ref.m_handle;
-		ref.Dealloc();
+		if (ref)
+		{
+			ref.Ptr()->~T();
+			ref.Dealloc();
+		}
 	}
 
 	template <typename T> requires EqualComparable<T, T>

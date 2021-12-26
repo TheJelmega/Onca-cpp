@@ -149,11 +149,11 @@ namespace Core
 		for (usize i = 0; i < count; ++i)
 		{
 			IF_CONSTEVAL
-				m_data[m_size] = T{};
+				m_data[i] = T{};
 			else
-				new (m_data + m_size) T{};
-			++m_size;
+				new (m_data + i) T{};
 		}
+		m_size = count;
 	}
 	
 	template <typename T, usize Cap>
@@ -170,10 +170,9 @@ namespace Core
 			for (usize i = m_size; i < newSize; ++i)
 			{
 				IF_CONSTEVAL
-					m_data[m_size] = T{ val };
+					m_data[i] = T{ val };
 				else
-					new (m_data + m_size) T{ val };
-				++m_size;
+					new (m_data + i) T{ val };
 			}
 		}
 		m_size = newSize;
@@ -193,10 +192,9 @@ namespace Core
 			for (usize i = m_size; i < newSize; ++i)
 			{
 				IF_CONSTEVAL
-					m_data[m_size] = T{};
+					m_data[i] = T{};
 				else
-					new (m_data + m_size) T{};
-				++m_size;
+					new (m_data + i) T{};
 			}
 		}
 		m_size = newSize;

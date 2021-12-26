@@ -16,7 +16,12 @@ namespace Core
 	
 }
 
+#define DEFINE_LOG_CATEGORY(name) constexpr Core::LogCategory name{ #name };
+
 namespace LogCategories
 {
-	constexpr Core::LogCategory Core{ "Core" };
+	/**
+	 * Logging category for core library
+	 */
+	DEFINE_LOG_CATEGORY(CORE);
 }

@@ -49,3 +49,4 @@
 
 #include "filesystem/FileSystem.h"
 #include "platform/Console.h"
+#include "logging/Logger.h"

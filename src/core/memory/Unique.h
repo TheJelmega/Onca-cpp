@@ -15,15 +15,15 @@ namespace Core
 		constexpr Unique() noexcept;
 		constexpr Unique(nullptr_t) noexcept;
 		explicit Unique(MemRef<T>&& ref) noexcept;
-		template<typename U>
-		explicit Unique(Unique<U, D>&& unique);
+		template<typename U, MemRefDeleter<U> D2>
+		explicit Unique(Unique<U, D2>&& unique);
 
 		Unique(Unique&&) noexcept = default;
 		Unique(const Unique&) = delete;
 
 		auto operator=(nullptr_t) noexcept -> Unique<T, D>&;
-		template<typename U>
-		auto operator=(Unique<U, D>&& unique) noexcept -> Unique<T, D>&;
+		template<typename U, MemRefDeleter<U> D2>
+		auto operator=(Unique<U, D2>&& unique) noexcept -> Unique<T, D>&;
 		
 		auto operator=(Unique&&) noexcept -> Unique<T, D>& = default;
 		auto operator=(const Unique&) -> Unique<T, D>& = delete;
@@ -82,7 +82,7 @@ namespace Core
 		 * \return Unique with the constructed type
 		 */
 		template<typename ...Args>
-		static auto Create(const Args&... args) noexcept -> Unique<T, D>;
+		static auto Create(Args&&... args) noexcept -> Unique<T, D>;
 		/**
 		 * Create a Unique with a constructed type
 		 * \tparam Args Argument types
@@ -94,6 +94,9 @@ namespace Core
 		static auto CreateWitAlloc(Alloc::IAllocator& alloc, Args&&... args) noexcept -> Unique<T, D>;
 
 	private:
+		template<typename U, MemRefDeleter<U> D2>
+		friend class Unique;
+
 		MemRef<T>         m_mem;       ///< Managed memory
 		NO_UNIQUE_ADDRESS D m_Deleter; ///< Deleter when memory is discarded
 	};

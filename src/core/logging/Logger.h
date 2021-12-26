@@ -12,6 +12,7 @@ namespace Core
 		Warning, ///< Warning
 		Info   , ///< Info
 		Verbose, ///< Verbose info
+		Append , ///< Append to previous line
 	};
 
 
@@ -135,6 +136,15 @@ namespace Core
 		 */
 		template<typename... Args>
 		auto Verbose(const LogCategory& category, const String& format, const Args&... args) noexcept -> void;
+		/**
+		 * Append a message to the previous value with the given category
+		 * \tparam Args Argument types
+		 * \param[in] category Log category
+		 * \param[in] format Message format
+		 * \param[in] args Arguments
+		 */
+		template<typename... Args>
+		auto Append(const String& format, const Args&... args) noexcept -> void;
 
 	private:
 
@@ -162,16 +172,20 @@ namespace Core
 			"ERROR",
 			"WARNING",
 			"INFO",
-			"VERBOSE"
+			"VERBOSE",
+			"INVALID LOG LEVEL"
 		};
 
-		FileSystem::File m_file;                ///< File to log to
-		LogLevel         m_maxLevel;
-		bool             m_logToSysConsole : 1; ///< Whether to log to the system console
-		bool             m_logToFile       : 1; ///< Whether to log to a file
-		bool             m_logToDebugger   : 1; ///< Whether to log to the debugger
+		FileSystem::File m_file;                      ///< File to log to
+		LogLevel         m_maxLevel;                  ///< Maximum log level to output
+		bool             m_logToSysConsole : 1;       ///< Whether to log to the system console
+		bool             m_logToFile       : 1;       ///< Whether to log to a file
+		bool             m_logToDebugger   : 1;       ///< Whether to log to the debugger
 
 		bool             m_ignoreMaxLevelForFile : 1; ///< Whether to ignore the max log level when writing to the log file
+
+		LogLevel         m_prevLevel;                 ///< Log level of previous message
+		u32              m_prevPrefixLen;             ///< Length of the prefix of the previous level
 	};
 
 	CORE_API auto GetLogger() noexcept -> Logger&;

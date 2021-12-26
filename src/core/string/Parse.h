@@ -512,6 +512,20 @@ namespace Core
 		auto ComputeF64(u64 i, i64 power, bool isNegative) -> Pair<f64, bool>;
 	}
 
+    template<typename T>
+    concept Parsable =
+        requires(const String& str)
+    {
+        { Parse<T>(str) } noexcept -> SameAs<T>;
+    };
+
+    template<typename T>
+    concept TryParsable =
+        requires(const String & str)
+    {
+        { TryParse<T>(str) } noexcept -> SameAs<Optional<T>>;
+    };
+
 	/**
 	 * Parse a type from a string
 	 * \tparam T Type to parse

@@ -13,6 +13,7 @@ namespace Core
 		, m_logToFile(false)
 		, m_logToDebugger(Debugger::IsAttached())
 		, m_ignoreMaxLevelForFile(true)
+		, m_prevPrefixLen(0)
 	{
 	}
 
@@ -22,6 +23,7 @@ namespace Core
 		, m_logToFile(true)
 		, m_logToDebugger(Debugger::IsAttached())
 		, m_ignoreMaxLevelForFile(true)
+		, m_prevPrefixLen(0)
 	{
 		auto res = FileSystem::File::Create(filePath, FileSystem::FileCreateKind::CreateAlways);
 
@@ -76,12 +78,22 @@ namespace Core
 
 	auto Logger::Log(LogLevel level, const LogCategory& category, const String& message) noexcept -> void
 	{
-		bool validLevel = u8(level) <= u8(m_maxLevel);
+		bool validLevel = u8(level) <= u8(m_maxLevel) || (level == LogLevel::Append && u8(m_prevLevel) < u8(m_maxLevel));
 		if (!validLevel && !m_ignoreMaxLevelForFile)
 			return;
 
-		Chrono::DateTime dateTime = Chrono::DateTime::Now();
-		String formatted = Format("{} {} [{}]: {}\n"_s, dateTime, LogLevelNames[u8(level)], category.name, message);
+		String prefix;
+		if (level == LogLevel::Append)
+		{
+			prefix.PadLeft(m_prevPrefixLen);
+		}
+		else
+		{
+			Chrono::DateTime dateTime = Chrono::DateTime::Now();
+			prefix = Format("{} {} [{}]: "_s, dateTime, LogLevelNames[u8(level)], category.name);
+			m_prevPrefixLen = u32(prefix.Length());
+		}
+		String formatted = prefix + message + '\n';
 
 		if (m_logToFile && (validLevel || m_ignoreMaxLevelForFile))
 			LogToFile(formatted);
@@ -116,7 +128,7 @@ namespace Core
 			SystemConsoleColor::Default,
 		};
 
-		SystemConsole::SetForeColor(colors[u8(level)]);
+		SystemConsole::SetForeColor(colors[u8(level == LogLevel::Append ? m_prevLevel : level)]);
 		SystemConsole::Write(str);
 		SystemConsole::SetForeColor(SystemConsoleColor::Default);
 	}
