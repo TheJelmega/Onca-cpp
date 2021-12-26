@@ -49,4 +49,5 @@
 
 #include "filesystem/FileSystem.h"
 #include "platform/Console.h"
-#include "logging/Logger.h"
+#include "logging/Logger.h"
+#include "misc/CmdLine.h"
