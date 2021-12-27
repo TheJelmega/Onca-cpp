@@ -47,7 +47,7 @@ namespace Core::Alloc
 
 		u8* pPrev = nullptr;
 		u8* pNext = m_head;
-		while (pNext < pCur)
+		while (pNext && pNext < pCur)
 		{
 			pPrev = pNext;
 			FreeHeader* pNextHeader = reinterpret_cast<FreeHeader*>(pNext);

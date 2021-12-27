@@ -97,6 +97,7 @@ namespace Core::Alloc
 				return 1;
 			if (rflag == FreeFlag)
 				return 2;
+			return usize(-1);
 		}
 
 		if (!(lFlag & UsedFlag))
@@ -116,6 +117,7 @@ namespace Core::Alloc
 				return newDivIdx;
 			if (rflag == FreeFlag)
 				return newDivIdx + 1;
+			return usize(-1);
 		}
 
 		if (!(lFlag & UsedFlag))

@@ -58,7 +58,7 @@ namespace Core::Alloc
 
 		for (Unique<Alloc>& alloc : m_allocs)
 		{
-			if (!alloc->Owns(mem))
+			if (alloc->Owns(mem))
 			{
 #if ENABLE_ALLOC_STATS
 				usize _, oldMemUse, oldOverhead;
