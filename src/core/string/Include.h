@@ -6,6 +6,7 @@
 #include "Stringify.h"
 #include "Format.h"
 #include "Parse.h"
+#include "StringId.h"
 
 #include "StringUtils.inl"
 #include "String.inl"
@@ -13,3 +14,4 @@
 #include "Stringify.inl"
 #include "Format.inl"
 #include "Parse.inl"
+#include "StringId.inl"
