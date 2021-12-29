@@ -54,8 +54,8 @@ namespace Core
 		 * \return Current value
 		 * \note 'memOrder' must be one of the following: Relaxed, Consume, Acquire, or SeqCst
 		 */
-		auto Load(MemOrder memOrder = MemOrder::SeqCst) noexcept -> T;
-		operator T() noexcept;
+		auto Load(MemOrder memOrder = MemOrder::SeqCst) const noexcept -> T;
+		operator T() const noexcept;
 
 		
 		/**

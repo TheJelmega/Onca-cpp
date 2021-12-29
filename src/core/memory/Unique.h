@@ -12,14 +12,26 @@ namespace Core
 	class Unique
 	{
 	public:
+		/**
+		 * Create a null unique pointer
+		 */
 		constexpr Unique() noexcept;
+		/**
+		 * Create a null unique pointer
+		 */
 		constexpr Unique(nullptr_t) noexcept;
+		/**
+		 * Create a unique pointer from a MemRef
+		 * \param[in] ref MemRef
+		 */
 		explicit Unique(MemRef<T>&& ref) noexcept;
+
 		template<typename U, MemRefDeleter<U> D2>
 		explicit Unique(Unique<U, D2>&& unique);
-
 		Unique(Unique&&) noexcept = default;
 		Unique(const Unique&) = delete;
+
+		~Unique() noexcept;
 
 		auto operator=(nullptr_t) noexcept -> Unique<T, D>&;
 		template<typename U, MemRefDeleter<U> D2>
@@ -61,19 +73,21 @@ namespace Core
 		 * \brief Get a const reference to the managed MemRef
 		 * \return Managed MemRef
 		 */
-		auto GetRef() noexcept -> const MemRef<T>&;
+		auto GetMemRef() const noexcept -> const MemRef<T>&;
 		/**
 		 * \brief Get the deleter for this unique
 		 * \return Deleter for this unique
 		 */
-		auto GetDeleter() noexcept -> D;
+		auto GetDeleter() const noexcept -> D;
 
 		explicit operator bool();
 		
-		auto operator->() const noexcept -> T*;
-		auto operator*() const noexcept -> T&;
-
-		auto operator<=>(const Unique<T>& other) const noexcept -> std::strong_ordering;
+		auto operator->() const noexcept -> const T*;
+		auto operator->() noexcept -> T*;
+		auto operator*() const noexcept -> const T&;
+		auto operator*() noexcept -> T&;
+		
+		auto operator==(const Unique<T>& other) const noexcept -> bool;
 
 		/**
 		 * Create a Unique with a constructed type and the global allocator

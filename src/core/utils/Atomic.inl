@@ -30,13 +30,13 @@ namespace Core
 	}
 
 	template <typename T>
-	auto Atomic<T>::Load(MemOrder memOrder) noexcept -> T
+	auto Atomic<T>::Load(MemOrder memOrder) const noexcept -> T
 	{
 		return m_atomic.load(static_cast<std::memory_order>(memOrder));
 	}
 
 	template <typename T>
-	Atomic<T>::operator T() noexcept
+	Atomic<T>::operator T() const noexcept
 	{
 		return Load();
 	}

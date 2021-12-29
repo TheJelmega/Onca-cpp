@@ -38,6 +38,12 @@ namespace Core
 	}
 
 	template <typename T, MemRefDeleter<T> D>
+	Unique<T, D>::~Unique() noexcept
+	{
+		m_Deleter(Move(m_mem));
+	}
+
+	template <typename T, MemRefDeleter<T> D>
 	auto Unique<T, D>::operator=(nullptr_t) noexcept -> Unique<T, D>&
 	{
 		m_Deleter(Move(m_mem));
@@ -95,13 +101,13 @@ namespace Core
 	}
 
 	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::GetRef() noexcept -> const MemRef<T>&
+	auto Unique<T, D>::GetMemRef() const noexcept -> const MemRef<T>&
 	{
 		return m_mem;
 	}
 
 	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::GetDeleter() noexcept -> D
+	auto Unique<T, D>::GetDeleter() const noexcept -> D
 	{
 		return m_Deleter;
 	}
@@ -113,27 +119,35 @@ namespace Core
 	}
 
 	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::operator->() const noexcept -> T*
+	auto Unique<T, D>::operator->() const noexcept -> const T*
 	{
 		return m_mem.Ptr();
 	}
 
 	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::operator*() const noexcept -> T&
+	auto Unique<T, D>::operator->() noexcept -> T*
+	{
+		return m_mem.Ptr();
+	}
+
+	template <typename T, MemRefDeleter<T> D>
+	auto Unique<T, D>::operator*() const noexcept -> const T&
 	{
 		return *m_mem.Ptr();
 	}
 
 	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::operator<=>(const Unique<T>& other) const noexcept -> std::strong_ordering
+	auto Unique<T, D>::operator*() noexcept -> T&
 	{
-		T* pThis = m_mem.Ptr();
-		T* pOther = other.m_mem.Ptr();
-		if (pThis == pOther) return std::strong_ordering::equal;
-		if (pThis <  pOther) return std::strong_ordering::less;
-		return std::strong_ordering::greater;
+		return m_mem.Ptr();
 	}
 
+	template <typename T, MemRefDeleter<T> D>
+	auto Unique<T, D>::operator==(const Unique<T>& other) const noexcept -> bool
+	{
+		return m_mem == other.m_mem;
+	}
+	
 	template <typename T, MemRefDeleter<T> D>
 	template <typename ... Args>
 	auto Unique<T, D>::Create(Args&&... args) noexcept -> Unique<T, D>
