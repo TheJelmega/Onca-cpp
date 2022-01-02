@@ -26,8 +26,10 @@
 #include "memory/MemUtils.h"
 #include "memory/MemRef.h"
 #include "memory/Unique.h"
+#include "memory/RefCounted.h"
 
-#include "threading/Sync.h"
+#include "platform/SystemInfo.h"
+#include "threading/Threading.h"
 
 #include "allocator/IAllocator.h"
 #include "allocator/primitives/Mallocator.h"
