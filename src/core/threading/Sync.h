@@ -275,25 +275,86 @@ namespace Core::Threading
 		{ t.Unlock() } noexcept;
 	};
 
+	namespace Detail
+	{
+		/**
+		 * Lock a Lockable object for the current scope, needs to be manually locked
+		 * \tparam T Lockable object to lock
+		 * \tparam Others Additional lockable object to lock
+		 */
+		template<Lockable T, Lockable... Others>
+		class ManualLock
+		{
+		public:
+			explicit ManualLock(T& ManualLock, Others&... others) noexcept;
+			~ManualLock() noexcept;
+
+			ManualLock(const ManualLock&) = delete;
+			auto operator=(const ManualLock&) = delete;
+
+			/**
+			 * Lock all lockable objects
+			 */
+			auto Lock() noexcept -> void;
+			/**
+			 * Unlock all lockable objects
+			 */
+			auto Unlock() noexcept -> void;
+		private:
+			template<Lockable U, Lockable... V>
+			friend class ManualLock;
+
+			ManualLock() noexcept;
+
+			T& m_lock;
+			ManualLock<Others...> m_others;
+		};
+
+		template<Lockable T>
+		class ManualLock<T>
+		{
+		public:
+			explicit ManualLock(T& ManualLock) noexcept;
+			~ManualLock() noexcept;
+
+			ManualLock(const ManualLock&) = delete;
+			auto operator=(const ManualLock&) = delete;
+
+			/**
+			 * Lock all lockable objects
+			 */
+			auto Lock() noexcept -> void;
+			/**
+			 * Unlock all lockable objects
+			 */
+			auto Unlock() noexcept -> void;
+		private:
+			template<Lockable U, Lockable... V>
+			friend class ManualLock;
+
+			ManualLock() noexcept;
+
+			T& m_lock;
+		};
+	}
+
 	/**
 	 * Lock a Lockable object for the current scope
 	 * \tparam T Lockable object to lock
+	 * \tparam Others Additional lockable object to lock
 	 */
-	template<Lockable T>
+	template<Lockable T, Lockable... Others>
 	class Lock
 	{
 	public:
-		explicit Lock(T& lock);
-		~Lock();
+		explicit Lock(T& lock, Others&... others) noexcept;
+		~Lock() noexcept;
 
-		Lock(Lock<T>&) = delete;
-		auto operator=(Lock<T>&) = delete;
+		Lock(const Lock&) = delete;
+		auto operator=(const Lock&) = delete;
 	private:
-		T& m_lock;
+		Detail::ManualLock<T, Others...> m_lock;
 	};
-
-	// TODO: Add version of Lock for multiple Lockables ???
-	
 }
 
 #include "Sync.inl"
