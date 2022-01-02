@@ -41,31 +41,31 @@ namespace Core::Threading
 		return *this;
 	}
 
-	auto Thread::Resume() noexcept -> Error
+	auto Thread::Resume() noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		DWORD count = ::ResumeThread(m_handle);
 		if (count == DWORD(-1))
-			return TranslateError();
+			return TranslateSystemError();
 
 		m_attribs.suspended = count > 1;
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::Suspend() noexcept -> Error
+	auto Thread::Suspend() noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		// We are writing for 64-bit only, so use the 64-bit version
 		u32 count = ::Wow64SuspendThread(m_handle);
 		if (count == DWORD(-1))
-			return TranslateError();
+			return TranslateSystemError();
 
 		m_attribs.suspended = count > 1;
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 
 	}
 
@@ -83,10 +83,10 @@ namespace Core::Threading
 			::CloseHandle(m_handle);
 	}
 
-	auto Thread::SetDescription(const String& desc) noexcept -> Error
+	auto Thread::SetDescription(const String& desc) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		m_attribs.desc = desc;
 		if (!desc.IsEmpty())
@@ -94,15 +94,15 @@ namespace Core::Threading
 			DynArray<char16_t> utf16 = m_attribs.desc.ToUtf16();
 			HRESULT hr = ::SetThreadDescription(m_handle, reinterpret_cast<PCWSTR>(utf16.Data()));
 			if (FAILED(hr))
-				return ErrorCode::CouldNotSetDesc;
+				return { SystemErrorCode::CouldNotSetDesc, "Could not set the thread description" };
 		}
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::SetPriority(ThreadPriority priority) noexcept -> Error
+	auto Thread::SetPriority(ThreadPriority priority) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		i32 winPriority;
 		switch (priority)
@@ -119,16 +119,16 @@ namespace Core::Threading
 
 		bool res = ::SetThreadPriority(m_handle, winPriority);
 		if (!res)
-			return TranslateError();
+			return TranslateSystemError();
 
 		m_attribs.priority = priority;
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::SetMemoryPriority(ThreadMemoryPriority priority) noexcept -> Error
+	auto Thread::SetMemoryPriority(ThreadMemoryPriority priority) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		MEMORY_PRIORITY_INFORMATION info;
 		switch (priority)
@@ -144,16 +144,16 @@ namespace Core::Threading
 
 		bool res = ::SetThreadInformation(m_handle, _THREAD_INFORMATION_CLASS::ThreadMemoryPriority, &info, sizeof(MEMORY_PRIORITY_INFORMATION));
 		if (!res)
-			return TranslateError();
+			return TranslateSystemError();
 
 		m_attribs.memPriority = priority;
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::SetPowerThrottlingState(ThreadPowerThrottling throttling) noexcept -> Error
+	auto Thread::SetPowerThrottlingState(ThreadPowerThrottling throttling) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		THREAD_POWER_THROTTLING_STATE info;
 		info.Version = THREAD_POWER_THROTTLING_CURRENT_VERSION;
@@ -177,71 +177,71 @@ namespace Core::Threading
 
 		bool res = ::SetThreadInformation(m_handle, _THREAD_INFORMATION_CLASS::ThreadPowerThrottling, &info, sizeof(THREAD_POWER_THROTTLING_STATE));
 		if (!res)
-			return TranslateError();
+			return TranslateSystemError();
 
 		m_attribs.powerThrottling = throttling;
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::SetPriorityBoost(bool allow) noexcept -> Error
+	auto Thread::SetPriorityBoost(bool allow) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		bool res = ::SetThreadPriorityBoost(m_handle, m_attribs.priorityBoost);
 		if (!res)
-			return TranslateError();
+			return TranslateSystemError();
 
 		m_attribs.priorityBoost = allow;
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::SetLogicalAffinity(u32 core, u32 processor) noexcept -> Error
+	auto Thread::SetLogicalAffinity(u32 core, u32 processor) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		ULONG id = g_SystemInfo.GetCpuSetIdForCore(core, processor);
 		bool res = ::SetThreadSelectedCpuSets(m_handle, &id, 1);
 		if (!res)
-			return TranslateError();
+			return TranslateSystemError();
 
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::SetLogicalAffinity(const DynArray<u32>& cores, u32 processor) noexcept -> Error
+	auto Thread::SetLogicalAffinity(const DynArray<u32>& cores, u32 processor) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		DynArray<ULONG> ids{ cores.Size(), g_GlobalAlloc };
 		for (u32 core : cores)
 			ids.Add(g_SystemInfo.GetCpuSetIdForCore(core, processor));
 		bool res = ::SetThreadSelectedCpuSets(m_handle, ids.Data(), ULONG(ids.Size()));
 		if (!res)
-			return TranslateError();
+			return TranslateSystemError();
 
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::SetPhysicalAffinity(u32 core, u32 processor) noexcept -> Error
+	auto Thread::SetPhysicalAffinity(u32 core, u32 processor) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		STATIC_ASSERT(sizeof(u32) == sizeof(ULONG), "types need to match");
 		DynArray<u32> ids = g_SystemInfo.GetCpuSetIdsForPhysicalCore(core, processor);
 		bool res = ::SetThreadSelectedCpuSets(m_handle, reinterpret_cast<const ULONG*>(ids.Data()), ULONG(ids.Size()));
 		if (!res)
-			return TranslateError();
+			return TranslateSystemError();
 
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::SetPhysicalAffinity(const DynArray<u32>& cores, u32 processor) noexcept -> Error
+	auto Thread::SetPhysicalAffinity(const DynArray<u32>& cores, u32 processor) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		STATIC_ASSERT(sizeof(u32) == sizeof(ULONG), "types need to match");
 
@@ -251,21 +251,21 @@ namespace Core::Threading
 
 		bool res = ::SetThreadSelectedCpuSets(m_handle, reinterpret_cast<const ULONG*>(ids.Data()), ULONG(ids.Size()));
 		if (!res)
-			return TranslateError();
+			return TranslateSystemError();
 
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
-	auto Thread::ResetAffinity() noexcept -> Error
+	auto Thread::ResetAffinity() noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return ErrorCode::InvalidHandle;
+			return SystemErrorCode::InvalidHandle;
 
 		bool res = ::SetThreadSelectedCpuSets(m_handle, nullptr, 0);
 		if (!res)
-			return TranslateError();
+			return TranslateSystemError();
 
-		return ErrorCode::Success;
+		return SystemErrorCode::Success;
 	}
 
 	auto Thread::GetCoreIndex() const noexcept -> usize
@@ -289,7 +289,71 @@ namespace Core::Threading
 					  m_threadId);
 	}
 
-	auto Thread::FromCurrent() -> Thread
+	auto Thread::FromNativeHandle(NativeHandle handle) noexcept -> Thread
+	{
+		Thread thread;
+		thread.m_handle = handle;
+		thread.m_threadId = ::GetThreadId(handle);
+		thread.m_current = true;
+
+		UINT_PTR stackStart;
+		UINT_PTR stackEnd;
+		::GetCurrentThreadStackLimits(&stackStart, &stackEnd);
+		thread.m_attribs.stackSize = usize(stackEnd - stackStart);
+
+		PWSTR pDesc;
+		HRESULT hr = ::GetThreadDescription(handle, &pDesc);
+		if (SUCCEEDED(hr))
+		{
+			thread.m_attribs.desc.Assign(reinterpret_cast<char16_t*>(pDesc));
+			LocalFree(pDesc);
+		}
+
+		i32 threadPriority = ::GetThreadPriority(handle);
+		switch (threadPriority)
+		{
+		case THREAD_PRIORITY_IDLE:          thread.m_attribs.priority = ThreadPriority::Idle;         break;
+		case THREAD_PRIORITY_LOWEST:        thread.m_attribs.priority = ThreadPriority::VeryLow;      break;
+		case THREAD_PRIORITY_BELOW_NORMAL:  thread.m_attribs.priority = ThreadPriority::Low;          break;
+		case THREAD_PRIORITY_NORMAL:        thread.m_attribs.priority = ThreadPriority::Normal;       break;
+		case THREAD_PRIORITY_ABOVE_NORMAL:  thread.m_attribs.priority = ThreadPriority::High;         break;
+		case THREAD_PRIORITY_HIGHEST:       thread.m_attribs.priority = ThreadPriority::VeryHigh;     break;
+		case THREAD_PRIORITY_TIME_CRITICAL: thread.m_attribs.priority = ThreadPriority::TimeCritical; break;
+		default: break;
+		}
+
+		MEMORY_PRIORITY_INFORMATION memInfo;
+		bool res = ::GetThreadInformation(handle, _THREAD_INFORMATION_CLASS::ThreadMemoryPriority, &memInfo, sizeof(MEMORY_PRIORITY_INFORMATION));
+		if (res)
+		{
+			switch (memInfo.MemoryPriority)
+			{
+			case MEMORY_PRIORITY_LOWEST:       thread.m_attribs.memPriority = ThreadMemoryPriority::Lowest;  break;
+			case MEMORY_PRIORITY_VERY_LOW:     thread.m_attribs.memPriority = ThreadMemoryPriority::VeryLow; break;
+			case MEMORY_PRIORITY_LOW:          thread.m_attribs.memPriority = ThreadMemoryPriority::Low;     break;
+			case MEMORY_PRIORITY_MEDIUM:       thread.m_attribs.memPriority = ThreadMemoryPriority::Medium;  break;
+			case MEMORY_PRIORITY_BELOW_NORMAL: thread.m_attribs.memPriority = ThreadMemoryPriority::High;    break;
+			case MEMORY_PRIORITY_NORMAL:       thread.m_attribs.memPriority = ThreadMemoryPriority::Default; break;
+			default:;
+			}
+		}
+
+		THREAD_POWER_THROTTLING_STATE powerState;
+		res = ::GetThreadInformation(handle, _THREAD_INFORMATION_CLASS::ThreadPowerThrottling, &powerState, sizeof(THREAD_POWER_THROTTLING_STATE));
+		if (res)
+		{
+			if (powerState.ControlMask == 0)
+				thread.m_attribs.powerThrottling = ThreadPowerThrottling::Auto;
+			else if (powerState.StateMask == 0)
+				thread.m_attribs.powerThrottling = ThreadPowerThrottling::Disabled;
+			else
+				thread.m_attribs.powerThrottling = ThreadPowerThrottling::Enabled;
+		}
+
+		return thread;
+	}
+
+	auto Thread::FromCurrent() noexcept -> Thread
 	{
 		Thread thread;
 		thread.m_handle = ::GetCurrentThread();

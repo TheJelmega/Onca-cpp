@@ -13,12 +13,12 @@ namespace Core::FileSystem
 			if (!pData)
 				return;
 
-			pData->error.code = ErrorCode::Success;
+			pData->error.code = SystemErrorCode::Success;
 			if (errCode)
 			{
 				const u32 curErr = ::GetLastError();
 				::SetLastError(errCode);
-				pData->error = TranslateFSError();
+				pData->error = TranslateSystemError();
 				::SetLastError(curErr);
 			}
 			else
@@ -29,7 +29,7 @@ namespace Core::FileSystem
 												       &dummyBytesTransferred,
 												       true);
 				if (!res)
-					pData->error = TranslateFSError();
+					pData->error = TranslateSystemError();
 			}
 
 			pData->validData = true;
@@ -43,12 +43,12 @@ namespace Core::FileSystem
 			if (!pData)
 				return;
 
-			pData->error.code = ErrorCode::Success;
+			pData->error.code = SystemErrorCode::Success;
 			if (errCode)
 			{
 				const u32 curErr = ::GetLastError();
 				::SetLastError(errCode);
-				pData->error = TranslateFSError();
+				pData->error = TranslateSystemError();
 				::SetLastError(curErr);
 			}
 			else
@@ -59,7 +59,7 @@ namespace Core::FileSystem
 												       &dummyBytesTransferred,
 												       true);
 				if (!res)
-					pData->error = TranslateFSError();
+					pData->error = TranslateSystemError();
 			}
 
 			pData->buffer.GetContainer().Clear(true);
@@ -107,29 +107,29 @@ namespace Core::FileSystem
 		return *this;
 	}
 
-	auto File::ReOpen(AccessMode access, ShareMode share, FileFlags flags) noexcept -> Error
+	auto File::ReOpen(AccessMode access, ShareMode share, FileFlags flags) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return Error{ ErrorCode::InvalidHandle };
+			return SystemErrorCode::InvalidHandle;
 
 		m_handle = ::ReOpenFile(m_handle, u32(access), u32(share), u32(flags) << 16);
-		return m_handle == INVALID_HANDLE_VALUE ? Error{} : TranslateFSError();
+		return m_handle == INVALID_HANDLE_VALUE ? SystemError{} : TranslateSystemError();
 	}
 
-	auto File::Close() noexcept -> Error
+	auto File::Close() noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return Error{ ErrorCode::InvalidHandle };
+			return SystemErrorCode::InvalidHandle;
 
 		const bool res = ::CloseHandle(reinterpret_cast<HANDLE>(m_handle));
 		m_handle = INVALID_HANDLE_VALUE;
-		return res ? Error{} : TranslateFSError();
+		return res ? SystemError{} : TranslateSystemError();
 	}
 
-	auto File::Seek(isize offset, SeekDir dir) noexcept -> Error
+	auto File::Seek(isize offset, SeekDir dir) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return Error{ ErrorCode::InvalidHandle };
+			return SystemErrorCode::InvalidHandle;
 
 		const usize fileSize = GetFileSize();
 		switch (dir)
@@ -151,7 +151,7 @@ namespace Core::FileSystem
 
 		LONG upper = LONG(offset >> 32);
 		::SetFilePointer(m_handle, u32(offset), &upper, DWORD(dir));
-		return ::GetLastError() == NO_ERROR ? Error{} : TranslateFSError();
+		return ::GetLastError() == NO_ERROR ? SystemError{} : TranslateSystemError();
 	}
 
 	auto File::GetFileOffset() const noexcept -> usize
@@ -168,20 +168,20 @@ namespace Core::FileSystem
 		return (isize(upper) << 32) | lower;
 	}
 
-	auto File::Lock(bool shared, bool waitForLock) noexcept -> Error
+	auto File::Lock(bool shared, bool waitForLock) noexcept -> SystemError
 	{
 		return Lock({ .offset = 0, .size = Math::Consts::MaxVal<u64> }, shared, waitForLock);
 	}
 
-	auto File::Lock(const FileRegion& region, bool shared, bool waitForLock) noexcept -> Error
+	auto File::Lock(const FileRegion& region, bool shared, bool waitForLock) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return { ErrorCode::InvalidHandle };
+			return { SystemErrorCode::InvalidHandle };
 
 		const usize fileSize = GetFileSize();
 		const usize offset = GetFileOffset() + region.offset;
 		if (offset >= fileSize)
-			return Error{ ErrorCode::OffOutOfRange };
+			return SystemErrorCode::OffOutOfRange;
 
 		const usize maxSize = Math::Min(Math::Consts::MaxVal<u32>, fileSize) - offset;
 		const usize bytesToLock = Math::Min(region.size, maxSize);
@@ -193,23 +193,23 @@ namespace Core::FileSystem
 			                           0,
 			                           u32(bytesToLock), u32(bytesToLock >> 32),
 			                           &overlapped);
-		return res ? Error{} : TranslateFSError();
+		return res ? SystemError{} : TranslateSystemError();
 	}
 	
-	auto File::Unlock() noexcept -> Error
+	auto File::Unlock() noexcept -> SystemError
 	{
 		return Unlock({ .offset = 0, .size = Math::Consts::MaxVal<u64> });
 	}
 
-	auto File::Unlock(const FileRegion& region) noexcept -> Error
+	auto File::Unlock(const FileRegion& region) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return { ErrorCode::InvalidHandle };
+			return SystemErrorCode::InvalidHandle;
 
 		const usize fileSize = GetFileSize();
 		const usize offset = GetFileOffset() + region.offset;
 		if (offset >= fileSize)
-			return Error{ ErrorCode::OffOutOfRange };
+			return SystemErrorCode::OffOutOfRange;
 
 		const usize maxSize = Math::Min(Math::Consts::MaxVal<u32>, fileSize) - offset;
 		const usize bytesToUnlock = Math::Min(region.size, maxSize);
@@ -217,25 +217,25 @@ namespace Core::FileSystem
 		bool res = ::UnlockFile(m_handle,
 								u32(offset), u32(offset >> 32),
 								u32(bytesToUnlock), u32(bytesToUnlock >> 32));
-		return res ? Error{} : TranslateFSError();
+		return res ? SystemError{} : TranslateSystemError();
 	}
 
-	auto File::Read() const noexcept -> Result<ByteBuffer, Error>
+	auto File::Read() const noexcept -> Result<ByteBuffer, SystemError>
 	{
 		return Read({ .offset = 0, .size = Math::Consts::MaxVal<u64> });
 	}
 
-	auto File::Read(const FileRegion& region) const noexcept -> Result<ByteBuffer, Error>
+	auto File::Read(const FileRegion& region) const noexcept -> Result<ByteBuffer, SystemError>
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return Error{ ErrorCode::InvalidHandle };
+			return SystemError{ SystemErrorCode::InvalidHandle };
 		if (!(m_access & AccessMode::Read))
-			return Error{ ErrorCode::NoReadPerms };
+			return SystemError{ SystemErrorCode::NoReadPerms };
 
 		const usize fileSize = GetFileSize();
 		const usize offset = GetFileOffset() + region.offset;
 		if (offset >= fileSize)
-			return Error{ ErrorCode::OffOutOfRange };
+			return SystemError{ SystemErrorCode::OffOutOfRange };
 
 		const usize maxSize = Math::Min(Math::Consts::MaxVal<u32>, GetFileSize()) - offset;
 		const usize bytesToRead = Math::Min(region.size, maxSize);
@@ -250,7 +250,7 @@ namespace Core::FileSystem
 		{
 			syncEvent = CreateEventW(nullptr, false, false, nullptr);
 			if (syncEvent == INVALID_HANDLE_VALUE)
-				return Error { ErrorCode::Unknown, "Failed to create wait event handle for sync operation on async file"_s };
+				return SystemError{ SystemErrorCode::Unknown, "Failed to create wait event handle for sync operation on async file"_s };
 
 			overlapped.hEvent = syncEvent;
 		}
@@ -276,7 +276,7 @@ namespace Core::FileSystem
 		}
 
 		if (!res)
-			return TranslateFSError();
+			return TranslateSystemError();
 		return buffer;
 	}
 
@@ -289,17 +289,17 @@ namespace Core::FileSystem
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
 		{
-			callback.TryInvoke(ByteBuffer{}, { ErrorCode::InvalidHandle });
+			callback.TryInvoke(ByteBuffer{}, { SystemErrorCode::InvalidHandle });
 			return IOReadTask{};
 		}
 		if (!(m_flags & FileFlag::AllowAsync))
 		{
-			callback.TryInvoke(ByteBuffer{}, { ErrorCode::NoAsyncSupport });
+			callback.TryInvoke(ByteBuffer{}, { SystemErrorCode::NoAsyncSupport });
 			return IOReadTask{};
 		}
 		if (!(m_access & AccessMode::Read))
 		{
-			callback.TryInvoke(ByteBuffer{}, { ErrorCode::NoReadPerms });
+			callback.TryInvoke(ByteBuffer{}, { SystemErrorCode::NoReadPerms });
 			return IOReadTask{};
 		}
 
@@ -307,7 +307,7 @@ namespace Core::FileSystem
 		const usize offset = GetFileOffset() + region.offset;
 		if (offset >= fileSize)
 		{
-			callback.TryInvoke(ByteBuffer{}, { ErrorCode::OffOutOfRange });
+			callback.TryInvoke(ByteBuffer{}, { SystemErrorCode::OffOutOfRange });
 			return IOReadTask{};
 		}
 
@@ -328,18 +328,18 @@ namespace Core::FileSystem
 								      &Windows::AsyncReadCallback);
 		if (!res)
 		{
-			callback.TryInvoke(ByteBuffer{}, TranslateFSError());
+			callback.TryInvoke(ByteBuffer{}, TranslateSystemError());
 			return IOReadTask{};
 		}
 		return task;
 	}
 
-	auto File::Write(const ByteBuffer& buffer, usize offset) noexcept -> Error
+	auto File::Write(const ByteBuffer& buffer, usize offset) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
-			return Error{ ErrorCode::InvalidHandle };
+			return SystemErrorCode::InvalidHandle;
 		if (!(m_access & AccessMode::Write))
-			return Error{ ErrorCode::NoWritePerms };
+			return SystemErrorCode::NoWritePerms;
 
 		const usize fileSize = GetFileSize();
 		if (offset == usize(-1))
@@ -347,7 +347,7 @@ namespace Core::FileSystem
 		offset += GetFileOffset();
 
 		if (offset > fileSize)
-			return Error{ ErrorCode::OffOutOfRange };
+			return SystemErrorCode::OffOutOfRange;
 
 		OVERLAPPED overlapped = { .Pointer = reinterpret_cast<PVOID>(offset) };
 
@@ -356,7 +356,7 @@ namespace Core::FileSystem
 		{
 			syncEvent = CreateEventW(nullptr, false, false, nullptr);
 			if (syncEvent == INVALID_HANDLE_VALUE)
-				return Error{ ErrorCode::Unknown, "Failed to create wait event handle for sync operation on async file"_s };
+				return SystemError{ SystemErrorCode::Unknown, "Failed to create wait event handle for sync operation on async file"_s };
 
 			overlapped.hEvent = syncEvent;
 		}
@@ -381,24 +381,24 @@ namespace Core::FileSystem
 			::CloseHandle(syncEvent);
 		}
 
-		return res ? Error{} : TranslateFSError();
+		return res ? SystemError{} : TranslateSystemError();
 	}
 
 	auto File::WriteAsync(const ByteBuffer& buffer, AsyncWriteCallback callback, usize offset) const noexcept -> IOWriteTask
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
 		{
-			callback.TryInvoke({ ErrorCode::InvalidHandle });
+			callback.TryInvoke({ SystemErrorCode::InvalidHandle });
 			return IOWriteTask{};
 		}
 		if (!(m_flags & FileFlag::AllowAsync))
 		{
-			callback.TryInvoke({ ErrorCode::NoAsyncSupport });
+			callback.TryInvoke({ SystemErrorCode::NoAsyncSupport });
 			return IOWriteTask{};
 		}
 		if (!(m_access & AccessMode::Write))
 		{
-			callback.TryInvoke({ ErrorCode::NoWritePerms });
+			callback.TryInvoke({ SystemErrorCode::NoWritePerms });
 			return IOWriteTask{};
 		}
 
@@ -406,7 +406,7 @@ namespace Core::FileSystem
 		offset += GetFileOffset();
 		if (offset >= fileSize)
 		{
-			callback.TryInvoke({ ErrorCode::OffOutOfRange });
+			callback.TryInvoke({ SystemErrorCode::OffOutOfRange });
 			return IOWriteTask{};
 		}
 
@@ -425,7 +425,7 @@ namespace Core::FileSystem
 								       &Windows::AsyncWriteCallback);
 		if (!res)
 		{
-			callback.TryInvoke(TranslateFSError());
+			callback.TryInvoke(TranslateSystemError());
 			return IOWriteTask{};
 		}
 		return task;
@@ -501,7 +501,7 @@ namespace Core::FileSystem
 		return res ? info.AllocationSize.QuadPart : 0;
 	}
 
-	auto File::Create(const Path& path, FileCreateKind createKind, AccessMode access, ShareModes share, FileAttributes attribs, FileFlags flags) noexcept -> Result<File, Error>
+	auto File::Create(const Path& path, FileCreateKind createKind, AccessMode access, ShareModes share, FileAttributes attribs, FileFlags flags) noexcept -> Result<File, SystemError>
 	{
 		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 
@@ -518,12 +518,12 @@ namespace Core::FileSystem
 			                                nullptr);
 
 		if (handle == INVALID_HANDLE_VALUE)
-			return TranslateFSError();
+			return TranslateSystemError();
 
 		return File{ path.AsAbsolute(), reinterpret_cast<NativeHandle>(handle), access, share, flags};
 	}
 
-	auto File::Open(const Path& path, bool truncate, AccessMode access, ShareModes share, FileFlags flags) noexcept -> Result<File, Error>
+	auto File::Open(const Path& path, bool truncate, AccessMode access, ShareModes share, FileFlags flags) noexcept -> Result<File, SystemError>
 	{
 		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 
@@ -540,7 +540,7 @@ namespace Core::FileSystem
 			                                nullptr);
 
 		if (handle == INVALID_HANDLE_VALUE)
-			return TranslateFSError();
+			return TranslateSystemError();
 
 		return File{ path, reinterpret_cast<NativeHandle>(handle), access, share, flags };
 	}
@@ -562,11 +562,11 @@ namespace Core::FileSystem
 		return attribs != INVALID_FILE_ATTRIBUTES && !(attribs & FILE_ATTRIBUTE_DIRECTORY);
 	}
 
-	auto DeleteFile(const Path& path) noexcept -> Error
+	auto DeleteFile(const Path& path) noexcept -> SystemError
 	{
 		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const bool res = ::DeleteFileW(reinterpret_cast<LPCWSTR>(utf16.Data()));
-		return res ? Error{} : TranslateFSError();
+		return res ? SystemError{} : TranslateSystemError();
 	}
 }
 

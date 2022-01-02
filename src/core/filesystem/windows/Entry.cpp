@@ -6,25 +6,25 @@
 
 namespace Core::FileSystem
 {
-	auto EnumerateFiles(Delegate<void(const Entry&)>& del, const Path& path, bool recursive) noexcept -> Error
+	auto EnumerateFiles(Delegate<void(const Entry&)>& del, const Path& path, bool recursive) noexcept -> SystemError
 	{
 		const EnumerationOptions options{ .recurseSubDirs = recursive, .onlyVisitFiles = true };
 		return EnumerateFileSystem(del, path, ""_path, options);
 	}
 
-	auto EnumerateDirectories(Delegate<void(const Entry&)>& del, const Path& path, bool recursive) noexcept -> Error
+	auto EnumerateDirectories(Delegate<void(const Entry&)>& del, const Path& path, bool recursive) noexcept -> SystemError
 	{
 		const EnumerationOptions options{ .recurseSubDirs = recursive, .onlyVisitDirs = true };
 		return EnumerateFileSystem(del, path, ""_path, options);
 	}
 
-	auto EnumerateFileSystem(Delegate<void(const Entry&)>& del, const Path& path, bool recursive) noexcept -> Error
+	auto EnumerateFileSystem(Delegate<void(const Entry&)>& del, const Path& path, bool recursive) noexcept -> SystemError
 	{ 
 		const EnumerationOptions options{ .recurseSubDirs = recursive };
 		return EnumerateFileSystem(del, path, ""_path, options);
 	}
 
-	auto EnumerateFileSystem(Delegate<void(const Entry&)>& del, const Path& path, const Path& pattern, EnumerationOptions options) noexcept -> Error
+	auto EnumerateFileSystem(Delegate<void(const Entry&)>& del, const Path& path, const Path& pattern, EnumerationOptions options) noexcept -> SystemError
 	{
 		Path searchPath = "\\\\?\\"_path + path;
 		if (!pattern.IsEmpty())
@@ -45,7 +45,7 @@ namespace Core::FileSystem
 			options.matchCase ? FIND_FIRST_EX_CASE_SENSITIVE : 0
 		);
 		if (handle == INVALID_HANDLE_VALUE)
-			return TranslateFSError();
+			return TranslateSystemError();
 
 		while (true)
 		{
@@ -121,9 +121,9 @@ namespace Core::FileSystem
 
 				u32 error = ::GetLastError();
 				if (error == ERROR_NO_MORE_FILES)
-					return Error{};
+					return SystemErrorCode::Success;
 				::SetLastError(error);
-				return TranslateFSError();
+				return TranslateSystemError();
 			}
 		}
 	}
@@ -177,14 +177,14 @@ namespace Core::FileSystem
 		return res ? (u64(data.ftLastWriteTime.dwHighDateTime) << 32) | data.ftLastWriteTime.dwLowDateTime : 0;
 	}
 
-	auto Move(const Path& from, const Path& to, MoveFlags flags) noexcept -> Error
+	auto Move(const Path& from, const Path& to, MoveFlags flags) noexcept -> SystemError
 	{
 		const DynArray<char16_t> fromUtf16 = ("\\\\?\\"_path + from.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const DynArray<char16_t> toUtf16 = ("\\\\?\\"_path + to.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const bool res = ::MoveFileExW(reinterpret_cast<LPCWSTR>(fromUtf16.Data()), 
 								       reinterpret_cast<LPCWSTR>(toUtf16.Data()), 
 								       (DWORD)flags);
-		return res ? Error{} : TranslateFSError();
+		return res ? SystemError{} : TranslateSystemError();
 	}
 }
 

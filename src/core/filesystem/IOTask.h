@@ -1,16 +1,16 @@
 #pragma once
 #include "core/utils/Result.h"
 #include "core/containers/ByteBuffer.h"
-#include "Error.h"
 #include "core/memory/Unique.h"
+#include "core/platform/SystemError.h"
 #include "core/utils/Delegate.h"
 
 namespace Core::FileSystem
 {
 	// TODO: when implementing memory defragmentations, make sure the data in the tasks are pinned to a fixed location
 
-	using AsyncReadCallback = Delegate<void(const ByteBuffer&, const Error&)>;
-	using AsyncWriteCallback = Delegate<void(const Error&)>;
+	using AsyncReadCallback = Delegate<void(const ByteBuffer&, const SystemError&)>;
+	using AsyncWriteCallback = Delegate<void(const SystemError&)>;
 
 	class CORE_API IOReadTask
 	{
@@ -26,7 +26,7 @@ namespace Core::FileSystem
 			NativeHandle      fileHandle;    ///< File handle
 			NativeHandle      waitHandle;    ///< Handle to wait for the task
 			ByteBuffer        buffer;        ///< Byte buffer
-			Error             error;         ///< Error
+			SystemError       error;         ///< Error
 			NativeDataHandle  nData;         ///< Native data
 			AsyncReadCallback callback;      ///< Callback
 			
@@ -50,7 +50,7 @@ namespace Core::FileSystem
 		 * \return Error
 		 */
 		NO_DISCARD("Error should be checked and handled")
-		auto Await() noexcept -> Error;
+		auto Await() noexcept -> SystemError;
 		/**
 		 * Check if the task is valid
 		 * \return Whether the task is valid
@@ -67,7 +67,7 @@ namespace Core::FileSystem
 		 * \note Getting the result will move the value out of the task, therefore this function can only be called once per task
 		 */
 		NO_DISCARD("Cannot discard the result, as it is moved out of the task!")
-		auto GetResult() noexcept -> Result<ByteBuffer, Error>;
+		auto GetResult() noexcept -> Result<ByteBuffer, SystemError>;
 
 	private:
 		/**
@@ -94,7 +94,7 @@ namespace Core::FileSystem
 			NativeHandle      fileHandle;    ///< File handle
 			NativeHandle      waitHandle;    ///< Handle to wait for the task
 			ByteBuffer        buffer;        ///< Byte buffer
-			Error             error;         ///< Error
+			SystemError       error;         ///< Error
 			NativeDataHandle  nData;         ///< Native data
 			AsyncWriteCallback callback;     ///< Callback
 		};
@@ -116,7 +116,7 @@ namespace Core::FileSystem
 		 * \return Error
 		 */
 		NO_DISCARD("Error should be checked and handled")
-		auto Await() noexcept -> Error;
+		auto Await() noexcept -> SystemError;
 		/**
 		 * Check if the task is valid
 		 * \return Whether the task is valid
@@ -131,7 +131,7 @@ namespace Core::FileSystem
 		 * Get the result of the I/O task
 		 * \return Error
 		 */
-		auto GetResult() noexcept -> Error;
+		auto GetResult() noexcept -> SystemError;
 
 	private:
 		/**

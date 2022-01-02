@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "Enums.h"
 #include "Path.h"
-#include "Error.h"
+#include "core/platform/SystemError.h"
 
 namespace Core::FileSystem
 {
@@ -48,7 +48,7 @@ namespace Core::FileSystem
 	 * \return Result
 	 * \note For more option, use EnumerateFileSystem using EnumerationOptions::onlyVisitFiles = true
 	 */
-	CORE_API auto EnumerateFiles(Delegate<void(const Entry&)>& del, const Path& path, bool recursive = false) noexcept -> Error;
+	CORE_API auto EnumerateFiles(Delegate<void(const Entry&)>& del, const Path& path, bool recursive = false) noexcept -> SystemError;
 	/**
 	 * Enumerate over all directories using the provided delegate
 	 * \param[in] del Delegate
@@ -57,7 +57,7 @@ namespace Core::FileSystem
 	 * \return Result
 	 * \note For more option, use EnumerateFileSystem using EnumerationOptions::onlyVisitDirs = true
 	 */
-	CORE_API auto EnumerateDirectories(Delegate<void(const Entry&)>& del, const Path& path, bool recursive = false) noexcept -> Error;
+	CORE_API auto EnumerateDirectories(Delegate<void(const Entry&)>& del, const Path& path, bool recursive = false) noexcept -> SystemError;
 	/**
 	 * Enumerate over all entries using the provided delegate
 	 * \param[in] del Delegate
@@ -65,7 +65,7 @@ namespace Core::FileSystem
 	 * \param[in] recursive Whether to recursively iterate over all directories
 	 * \return Result
 	 */
-	CORE_API auto EnumerateFileSystem(Delegate<void(const Entry&)>& del, const Path& path, bool recursive = false) noexcept -> Error;
+	CORE_API auto EnumerateFileSystem(Delegate<void(const Entry&)>& del, const Path& path, bool recursive = false) noexcept -> SystemError;
 	/**
 	 * Enumerate over all entries using the provided delegate
 	 * \param[in] del Delegate
@@ -74,7 +74,7 @@ namespace Core::FileSystem
 	 * \param options Enumeration options
 	 * \return Result
 	 */
-	CORE_API auto EnumerateFileSystem(Delegate<void(const Entry&)>& del, const Path& path, const Path& pattern, EnumerationOptions options = {}) noexcept -> Error;
+	CORE_API auto EnumerateFileSystem(Delegate<void(const Entry&)>& del, const Path& path, const Path& pattern, EnumerationOptions options = {}) noexcept -> SystemError;
 
 	/**
 	 * Check if the path points to a valid file or directory
@@ -115,7 +115,7 @@ namespace Core::FileSystem
 	 * \param[in] flags Move flags
 	 * \return Result
 	 */
-	CORE_API auto Move(const Path& from, const Path& to, MoveFlags flags) noexcept -> Error;
+	CORE_API auto Move(const Path& from, const Path& to, MoveFlags flags) noexcept -> SystemError;
 }
 
 DEFINE_ENUM_FLAG_OPS(Core::FileSystem::MoveFlags);

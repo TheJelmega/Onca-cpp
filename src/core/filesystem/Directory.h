@@ -1,7 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
-#include "Error.h"
 #include "Path.h"
+#include "core/platform/SystemError.h"
 
 namespace Core::FileSystem
 {
@@ -15,21 +15,21 @@ namespace Core::FileSystem
 	 * \param[in] path New working directory
 	 * \return Result
 	 */
-	CORE_API auto SetCurrentWorkingDirectory(const Path& path) noexcept -> Error;
+	CORE_API auto SetCurrentWorkingDirectory(const Path& path) noexcept -> SystemError;
 
 	/**
 	 * Create a new directory
 	 * \param[in] path Path to directory
 	 * \return Result
 	 */
-	CORE_API auto CreateDirectory(const Path& path) noexcept -> Error;
+	CORE_API auto CreateDirectory(const Path& path) noexcept -> SystemError;
 	/**
 	 * Delete a directory (optionally only when empty)
 	 * \param[in] path Path to directory
 	 * \param[in] recursively Whether to recursively delete the content of the directory
 	 * \return Result
 	 */
-	CORE_API auto DeleteDirectory(const Path& path, bool recursively = false) noexcept -> Error;
+	CORE_API auto DeleteDirectory(const Path& path, bool recursively = false) noexcept -> SystemError;
 
 	/**
 	 * Check if a path points to a directory

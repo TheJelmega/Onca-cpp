@@ -15,21 +15,21 @@ namespace Core::FileSystem
 		return Path{ String{ rawChars.Data(), len - 1 } + '\\' }.ToGeneral();
 	}
 
-	auto SetCurrentWorkingDirectory(const Path& path) noexcept -> Error
+	auto SetCurrentWorkingDirectory(const Path& path) noexcept -> SystemError
 	{
 		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const bool res = ::SetCurrentDirectoryW(reinterpret_cast<LPCWSTR>(utf16.Data()));
-		return res ? Error{} : TranslateFSError();
+		return res ? SystemError{} : TranslateSystemError();
 	}
 
-	auto CreateDirectory(const Path& path) noexcept -> Error
+	auto CreateDirectory(const Path& path) noexcept -> SystemError
 	{
 		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		const bool res = ::CreateDirectoryW(reinterpret_cast<LPCWSTR>(utf16.Data()), nullptr);
-		return res ? Error{} : TranslateFSError();
+		return res ? SystemError{} : TranslateSystemError();
 	}
 
-	auto DeleteDirectory(const Path& path, bool recursively) noexcept -> Error
+	auto DeleteDirectory(const Path& path, bool recursively) noexcept -> SystemError
 	{
 		const DynArray<char16_t> utf16 = ("\\\\?\\"_path + path.AsAbsolute()).ToNative().GetString().ToUtf16();
 		if (recursively)
@@ -38,7 +38,7 @@ namespace Core::FileSystem
 		}
 
 		const bool res = ::RemoveDirectoryW(reinterpret_cast<LPCWSTR>(utf16.Data()));
-		return res ? Error{} : TranslateFSError();
+		return res ? SystemError{} : TranslateSystemError();
 	}
 
 	auto IsDirectory(const Path& path) noexcept -> bool

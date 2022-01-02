@@ -25,17 +25,17 @@ namespace Core::FileSystem
 		return *this;
 	}
 
-	auto IOReadTask::Await() noexcept -> Error
+	auto IOReadTask::Await() noexcept -> SystemError
 	{
 		ASSERT(IsValid(), "Cannot call Await() on an invalid IOReadTask");
 		u32 res = WAIT_IO_COMPLETION;
 		while (res == WAIT_IO_COMPLETION)
 			res = ::WaitForSingleObjectEx(m_data->waitHandle, INFINITE, true);
 		if (res == WAIT_OBJECT_0)
-			return Error{};
+			return SystemErrorCode::Success;
 		if (res == WAIT_ABANDONED)
-			return Error{ ErrorCode::AsyncAbandoned };
-		return TranslateFSError();
+			return SystemErrorCode::AsyncAbandoned;
+		return TranslateSystemError();
 	}
 
 	auto IOReadTask::IsCompleted() const noexcept -> bool
@@ -45,12 +45,12 @@ namespace Core::FileSystem
 		return res == WAIT_OBJECT_0;
 	}
 
-	auto IOReadTask::GetResult() noexcept -> Result<ByteBuffer, Error>
+	auto IOReadTask::GetResult() noexcept -> Result<ByteBuffer, SystemError>
 	{
 		ASSERT(IsValid(), "Cannot call GetResult() on an invalid IOReadTask");
 		ASSERT(IsCompleted(), "Cannot get the result of a task when it hasn't completed");
 		ASSERT(m_data->validData, "Cannot get the result of a task when it hasn't completed");
-		if (m_data->error.code == ErrorCode::Success)
+		if (m_data->error.code == SystemErrorCode::Success)
 			return Move(m_data->buffer);
 		return Move(m_data->error);
 	}
@@ -62,7 +62,7 @@ namespace Core::FileSystem
 		m_data->waitHandle = ::CreateEventW(nullptr, true, false, nullptr);
 		m_data->buffer.Resize(bufferSize);
 		m_data->callback = callback;
-		m_data->error.code = ErrorCode::AsyncIncomplete;
+		m_data->error.code = SystemErrorCode::AsyncIncomplete;
 	}
 	
 	IOWriteTask::~IOWriteTask()
@@ -85,17 +85,17 @@ namespace Core::FileSystem
 		return *this;
 	}
 
-	auto IOWriteTask::Await() noexcept -> Error
+	auto IOWriteTask::Await() noexcept -> SystemError
 	{
 		ASSERT(IsValid(), "Cannot call Await() on an invalid IOWriteTask");
 		u32 res = WAIT_IO_COMPLETION;
 		while (res == WAIT_IO_COMPLETION)
 			res = ::WaitForSingleObjectEx(m_data->waitHandle, INFINITE, true);
 		if (res == WAIT_OBJECT_0)
-			return Error{};
+			return SystemErrorCode::Success;
 		if (res == WAIT_ABANDONED)
-			return Error{ ErrorCode::AsyncAbandoned };
-		return TranslateFSError();
+			return SystemErrorCode::AsyncAbandoned;
+		return TranslateSystemError();
 	}
 
 	auto IOWriteTask::IsCompleted() const noexcept -> bool
@@ -105,7 +105,7 @@ namespace Core::FileSystem
 		return res == WAIT_OBJECT_0;
 	}
 
-	auto IOWriteTask::GetResult() noexcept -> Error
+	auto IOWriteTask::GetResult() noexcept -> SystemError
 	{
 		ASSERT(IsValid(), "Cannot call GetResult() on an invalid IOWriteTask");
 		ASSERT(IsCompleted(), "Cannot get the result of a task when it hasn't completed");
@@ -119,7 +119,7 @@ namespace Core::FileSystem
 		m_data->waitHandle = ::CreateEventW(nullptr, true, false, nullptr);
 		m_data->buffer = buffer;
 		m_data->callback = callback;
-		m_data->error.code = ErrorCode::AsyncIncomplete;
+		m_data->error.code = SystemErrorCode::AsyncIncomplete;
 	}
 }
 

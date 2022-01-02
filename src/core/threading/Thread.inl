@@ -58,7 +58,7 @@ namespace Core::Threading
 	}
 
 	template <typename ... Args>
-	auto Thread::Create(ThreadAttribs attribs, const Delegate<void(Args...)>& delegate, Args&&... args) noexcept -> Result<Thread, Error>
+	auto Thread::Create(ThreadAttribs attribs, const Delegate<void(Args...)>& delegate, Args&&... args) noexcept -> Result<Thread, SystemError>
 	{
 		Thread thread;
 		thread.m_attribs = attribs;
@@ -69,6 +69,6 @@ namespace Core::Threading
 
 		if (thread.IsValid())
 			return thread;
-		return TranslateError();
+		return TranslateSystemError();
 	}
 }

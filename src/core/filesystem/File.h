@@ -4,7 +4,6 @@
 #include "core/containers/ByteBuffer.h"
 #include "Enums.h"
 #include "Path.h"
-#include "Error.h"
 #include "IOTask.h"
 
 namespace Core::FileSystem
@@ -40,12 +39,12 @@ namespace Core::FileSystem
 		 * \param[in] flags Flags
 		 * \return Error
 		 */
-		auto ReOpen(AccessMode access, ShareMode share, FileFlags flags) noexcept -> Error;
+		auto ReOpen(AccessMode access, ShareMode share, FileFlags flags) noexcept -> SystemError;
 		/**
 		 * Close the file
 		 * \return Error
 		 */
-		auto Close() noexcept -> Error;
+		auto Close() noexcept -> SystemError;
 
 		/**
 		 * Seek to an offset in the file
@@ -53,7 +52,7 @@ namespace Core::FileSystem
 		 * \param[in] dir Seek direction
 		 * \return Error
 		 */
-		auto Seek(isize offset, SeekDir dir) noexcept -> Error;
+		auto Seek(isize offset, SeekDir dir) noexcept -> SystemError;
 		/**
 		 * Get the current offset in the file
 		 * \return Current offset in the file, or usize(-1) if the file is not valid
@@ -67,7 +66,7 @@ namespace Core::FileSystem
 		 * \return Error
 		 * \note The user needs to keep track of what files they have locked
 		 */
-		auto Lock(bool shared = false, bool waitForLock = false) noexcept -> Error;
+		auto Lock(bool shared = false, bool waitForLock = false) noexcept -> SystemError;
 		/**
 		 * Lock a region in the file for reading/writing
 		 * \param[in] region File region to lock
@@ -76,33 +75,33 @@ namespace Core::FileSystem
 		 * \return Error
 		 * \note The user needs to keep track of what regions they have locked
 		 */
-		auto Lock(const FileRegion& region, bool shared = false, bool waitForLock = false) noexcept -> Error;
+		auto Lock(const FileRegion& region, bool shared = false, bool waitForLock = false) noexcept -> SystemError;
 
 		/**
 		 * Unlock a previously locked file
 		 * \return Result
 		 */
-		auto Unlock() noexcept -> Error;
+		auto Unlock() noexcept -> SystemError;
 		/**
 		 * Unlock a previously locked file
 		 * \param[in] region File region to lock
 		 * \return Result
 		 */
-		auto Unlock(const FileRegion& region) noexcept -> Error;
+		auto Unlock(const FileRegion& region) noexcept -> SystemError;
 
 		/**
 		 * Read the entire file into a byte buffer
 		 * \return Result
 		 * \note Reads are currently limited to 4GiB, this might change in the future
 		 */
-		auto Read() const noexcept -> Result<ByteBuffer, Error>;
+		auto Read() const noexcept -> Result<ByteBuffer, SystemError>;
 		/**
 		 * Read a region of the file into a byte buffer
 		 * \param[in] region File region to read
 		 * \return Result
 		 * \note Reads are currently limited to 4GiB, this might change in the future
 		 */
-		auto Read(const FileRegion& region) const noexcept -> Result<ByteBuffer, Error>;
+		auto Read(const FileRegion& region) const noexcept -> Result<ByteBuffer, SystemError>;
 
 		/**
 		 * Initiate an async I/O read operation
@@ -125,7 +124,7 @@ namespace Core::FileSystem
 		 * \return Error
 		 * \note Writing to a file will overwrite the data that is currently at that location
 		 */
-		auto Write(const ByteBuffer& buffer, usize offset = Math::Consts::MaxVal<usize>) noexcept -> Error;
+		auto Write(const ByteBuffer& buffer, usize offset = Math::Consts::MaxVal<usize>) noexcept -> SystemError;
 		
 		/**
 		 * Initiate an async I/O write operation
@@ -266,7 +265,7 @@ namespace Core::FileSystem
 		 */
 		static auto Create(const Path& path, FileCreateKind createKind, AccessMode access = AccessMode::ReadWrite, 
 						   ShareModes share = ShareMode::None, FileAttributes attribs = FileAttribute::None, 
-						   FileFlags flags = FileFlag::None) noexcept -> Result<File, Error>;
+						   FileFlags flags = FileFlag::None) noexcept -> Result<File, SystemError>;
 		/**
 		 * Open a file
 		 * \param[in] path Path to file
@@ -277,7 +276,7 @@ namespace Core::FileSystem
 		 * \return Result with opened file or error
 		 */
 		static auto Open(const Path& path, bool truncate = false, AccessMode access = AccessMode::ReadWrite, 
-						 ShareModes share = ShareMode::None, FileFlags flags = FileFlag::None) noexcept -> Result<File, Error>;
+						 ShareModes share = ShareMode::None, FileFlags flags = FileFlag::None) noexcept -> Result<File, SystemError>;
 
 	private:
 
@@ -307,6 +306,6 @@ namespace Core::FileSystem
 	 * \param[in] path Path to file
 	 * \return Result
 	 */
-	auto DeleteFile(const Path& path) noexcept -> Error;
+	auto DeleteFile(const Path& path) noexcept -> SystemError;
 }
 

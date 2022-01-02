@@ -1,7 +1,7 @@
 #pragma once
-#include "Common.h"
-#include "Error.h"
 #include "core/MinInclude.h"
+#include "Common.h"
+#include "core/platform/SystemError.h"
 #include "core/utils/Delegate.h"
 #include "core/utils/Result.h"
 
@@ -87,13 +87,13 @@ namespace Core::Threading
 		 * Resume the thread from a suspended state
 		 * \return Error
 		 */
-		auto Resume() noexcept -> Error;
+		auto Resume() noexcept -> SystemError;
 		/**
 		 * Suspend the thread
 		 * \return Error
 		 * \note Use of this function should be carefully considered, if this thread holds a sync primitive, it could cause a deadlock to appear in the program
 		 */
-		auto Suspend() noexcept -> Error;
+		auto Suspend() noexcept -> SystemError;
 		/**
 		 * Wait for the thread to exit
 		 */
@@ -108,65 +108,65 @@ namespace Core::Threading
 		 * \param[in] desc Thread description
 		 * \return Error
 		 */
-		auto SetDescription(const String& desc) noexcept -> Error;
+		auto SetDescription(const String& desc) noexcept -> SystemError;
 		/**
 		 * Set the thread priority
 		 * \param[in] priority Thread priority
 		 * \return Error
 		 */
-		auto SetPriority(ThreadPriority priority) noexcept -> Error;
+		auto SetPriority(ThreadPriority priority) noexcept -> SystemError;
 		/**
 		 * Set the thread memory priority
 		 * \param[in] priority Thread memory priority
 		 * \return Error
 		 */
-		auto SetMemoryPriority(ThreadMemoryPriority priority) noexcept -> Error;
+		auto SetMemoryPriority(ThreadMemoryPriority priority) noexcept -> SystemError;
 		/**
 		 * Set the thread power throttling state
 		 * \param[in] throttling Thread power throttling state
 		 * \return Error
 		 */
-		auto SetPowerThrottlingState(ThreadPowerThrottling throttling) noexcept -> Error;
+		auto SetPowerThrottlingState(ThreadPowerThrottling throttling) noexcept -> SystemError;
 		/**
 		 * Set if the thread allows priority boost
 		 * \param[in] allow Allow thread priority boost
 		 * \return Error
 		 * \note Currently only has an effect on windows
 		 */
-		auto SetPriorityBoost(bool allow) noexcept -> Error;
+		auto SetPriorityBoost(bool allow) noexcept -> SystemError;
 		/**
 		 * Set the core affinity only to the given logical core
 		 * \param[in] core Logical core index
 		 * \param[in] processor Processor index
 		 * \return Error
 		 */
-		auto SetLogicalAffinity(u32 core, u32 processor) noexcept -> Error;
+		auto SetLogicalAffinity(u32 core, u32 processor) noexcept -> SystemError;
 		/**
 		 * Set the core affinity to the given logical cores
 		 * \param[in] cores Logical core indices
 		 * \param[in] processor Processor index
 		 * \return Error
 		 */
-		auto SetLogicalAffinity(const DynArray<u32>& cores, u32 processor) noexcept -> Error;
+		auto SetLogicalAffinity(const DynArray<u32>& cores, u32 processor) noexcept -> SystemError;
 		/**
 		 * Set the core affinity only to the given physical core
 		 * \param[in] core Logical core index
 		 * \param[in] processor Processor index
 		 * \return Error
 		 */
-		auto SetPhysicalAffinity(u32 core, u32 processor) noexcept -> Error;
+		auto SetPhysicalAffinity(u32 core, u32 processor) noexcept -> SystemError;
 		/**
 		 * Set the core affinity to the given physical cores
 		 * \param[in] cores Logical core indices
 		 * \param[in] processor Processor index
 		 * \return Error
 		 */
-		auto SetPhysicalAffinity(const DynArray<u32>& cores, u32 processor) noexcept -> Error;
+		auto SetPhysicalAffinity(const DynArray<u32>& cores, u32 processor) noexcept -> SystemError;
 		/**
 		 * Reset the thread to its default core affinity
 		 * \return Error
 		 */
-		auto ResetAffinity() noexcept -> Error;
+		auto ResetAffinity() noexcept -> SystemError;
 		/**
 		 * Get the thread description
 		 * \return Thread description
@@ -244,14 +244,18 @@ namespace Core::Threading
 		 * \return A result with the thread or error
 		 */
 		template<typename... Args>
-		static auto Create(ThreadAttribs attribs, const Delegate<void(Args...)>& delegate, Args&&... args) noexcept -> Result<Thread, Error>;
-
+		static auto Create(ThreadAttribs attribs, const Delegate<void(Args...)>& delegate, Args&&... args) noexcept -> Result<Thread, SystemError>;
+		/**
+		 * Create a a thread based on an existing handle
+		 * \return Thread
+		 */
+		static auto FromNativeHandle(NativeHandle handle) noexcept -> Thread;
 		/**
 		 * Get the current thread
 		 * \return Current thread
 		 * \note not all functionality is allowed on the returned thread
 		 */
-		static auto FromCurrent() -> Thread;
+		static auto FromCurrent() noexcept -> Thread;
 
 	private:
 		auto Init(void* pInvoke, void* pData) noexcept -> void;

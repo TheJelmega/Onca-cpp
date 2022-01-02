@@ -1,7 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 #include "Path.h"
-#include "Error.h"
+#include "core/platform/SystemError.h"
 
 namespace Core::FileSystem
 {
@@ -13,7 +13,7 @@ namespace Core::FileSystem
 	 * \return Error
 	 * \note Symlinks can be used in the other filesystem functions
 	 */
-	CORE_API auto CreateSymLink(const Path& path, const Path& target) noexcept -> Error;
+	CORE_API auto CreateSymLink(const Path& path, const Path& target) noexcept -> SystemError;
 
 	/**
 	 * Create a hardlink to a file
@@ -23,6 +23,6 @@ namespace Core::FileSystem
 	 * \note This function can only be used for files
 	 * \note On systems that do not distinguish between sym or hard links, this will create a symlink
 	 */
-	CORE_API auto CreateHardLink(const Path& path, const Path& target) noexcept -> Error;
+	CORE_API auto CreateHardLink(const Path& path, const Path& target) noexcept -> SystemError;
 	
 }
