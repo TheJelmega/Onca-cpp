@@ -72,7 +72,7 @@ namespace Core
 		/**
 		 * Create a delegate from a lambda
 		 * \tparam L Lambda type
-		 * \param[in] lambda Lambda
+		 * \param[in] lambda Lambda 
 		 */
 		template<Lambda L>
 		Delegate(const L& lambda) noexcept;
@@ -95,6 +95,7 @@ namespace Core
 		explicit operator bool() const noexcept;
 
 		auto operator()(Args&&... args) noexcept -> R;
+		auto operator()(const Tuple<Args...>& tup) noexcept -> R;
 
 		/**
 		 * Set the object of the delegate
@@ -114,6 +115,12 @@ namespace Core
 		 * \return Return value
 		 */
 		auto Invoke(Args&&... args) noexcept -> R;
+		/**
+		 * Invoke the delegate without any safety checks
+		 * \param[in] args Arguments
+		 * \return Return value
+		 */
+		auto Invoke(const Tuple<Args...>& args) noexcept -> R;
 		/**
 		 * Try to invoke the delegate if it is valid, if not, return the default constructed R value
 		 * \param[in] args Arguments
@@ -206,6 +213,17 @@ namespace Core
 		static Delegate From(L& lambda);
 
 	private:
+
+		/**
+		 * Invoke the delegate without any safety checks
+		 * \param[in] args Arguments
+		 * \return Return value
+		 */
+		template<typename TupleType, usize... Idx>
+		auto Invoke(TupleType&& tup, IndexSequence<Idx...>) noexcept -> R
+		{
+			return Invoke(std::get<Idx>(tup)...);
+		}
 
 		/**
 		 * Stub to call free functions

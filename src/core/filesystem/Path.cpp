@@ -388,6 +388,11 @@ namespace Core::FileSystem
 		return m_string;
 	}
 
+	auto Path::ToString() const noexcept -> String
+	{
+		return AsAbsolute().m_string;
+	}
+
 	auto Path::Begin() const noexcept -> String::ConstIterator
 	{
 		return m_string.Begin();

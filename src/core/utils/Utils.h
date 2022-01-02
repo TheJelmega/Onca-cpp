@@ -49,14 +49,13 @@ namespace Core
 	auto CountElems(const T& begin, const T& end) noexcept -> usize;
 
 	/**
-	 * Bitcast a value from one type to another
-	 * \tparam To Type to cast to
-	 * \tparam From Type to cast from
-	 * \param from Value to cast
-	 * \return Bitcasted value
+	 * Get the size of an array
+	 * \tparam T Array type
+	 * \tparam N Array size
+	 * \return Size of the array
 	 */
-	template<typename To, typename From>
-	constexpr auto Bitcast(From& from) noexcept -> To;
+	template<typename T, usize N>
+	constexpr  auto ArraySize(const T (&)[N]) noexcept -> usize;
 }
 
 #include "Utils.inl"

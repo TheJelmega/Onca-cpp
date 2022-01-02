@@ -1,6 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 #include "Tuple.h"
+#include "core/Assert.h"
 
 namespace Core
 {

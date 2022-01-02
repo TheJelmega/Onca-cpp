@@ -1,6 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 #include "core/string/Include.h"
+#include "core/utils/Utils.h"
 
 namespace Core::FileSystem
 {
@@ -9,7 +10,6 @@ namespace Core::FileSystem
 	{
 		// Success
 		Success        , ///< No error
-		
 
 		// Errors
 		InvalidHandle  , ///< Invalid file handle
@@ -64,12 +64,18 @@ namespace Core::FileSystem
 		"Could not copy the directory or file"                  , ///< CannotCopy
 		"A delete of the directory or file is pending"          , ///< DeletePending
 	}; 
-	constexpr usize NumDefErrMessages = sizeof(DefaultErrorMessages) / sizeof(const char*);
+	constexpr usize NumDefErrMessages = ArraySize(DefaultErrorMessages);
 
 	struct Error
 	{
 		Error() noexcept {}
-		Error(ErrorCode code) noexcept : code(code) {}
+		Error(ErrorCode code) noexcept
+			: code(code)
+		{
+			if (u8(code) < NumDefErrMessages)
+				info = DefaultErrorMessages[u8(code)];
+		}
+
 		Error(ErrorCode code, const String& str) noexcept : code(code), info(str) {}
 
 		ErrorCode code = ErrorCode::Success;

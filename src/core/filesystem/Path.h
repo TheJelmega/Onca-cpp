@@ -257,6 +257,11 @@ namespace Core::FileSystem
 		 * \return Underlying string
 		 */
 		auto GetString() noexcept -> String&;
+		/**
+		 * Get the underlying string
+		 * \return Underlying string
+		 */
+		auto ToString() const noexcept -> String;
 
 		/**
 		 * Get the iterator to the first character of the underlying string
@@ -278,6 +283,7 @@ namespace Core::FileSystem
 		 * \return Iterator to the end of the underlying string
 		 */
 		auto End() noexcept -> String::Iterator;
+
 
 	private:
 		String m_string;

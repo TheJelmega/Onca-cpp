@@ -13,8 +13,10 @@ namespace Core
 		, m_logToFile(false)
 		, m_logToDebugger(Debugger::IsAttached())
 		, m_ignoreMaxLevelForFile(true)
+		, m_prevLevel(LogLevel::None)
 		, m_prevPrefixLen(0)
 	{
+		Info(LogCategories::CORE, "Logger intialized"_s);
 	}
 
 	Logger::Logger(const FileSystem::Path& filePath, bool logToConsole) noexcept
@@ -23,6 +25,7 @@ namespace Core
 		, m_logToFile(true)
 		, m_logToDebugger(Debugger::IsAttached())
 		, m_ignoreMaxLevelForFile(true)
+		, m_prevLevel(LogLevel::None)
 		, m_prevPrefixLen(0)
 	{
 		auto res = FileSystem::File::Create(filePath, FileSystem::FileCreateKind::CreateAlways);
@@ -31,10 +34,14 @@ namespace Core
 			m_file = Move(res.MoveValue());
 		else
 			m_logToFile = false;
+
+		Info(LogCategories::CORE, "Logger intialized with file: {}"_s, filePath);
 	}
 
 	auto Logger::Shutdown() noexcept -> void
 	{
+		Info(LogCategories::CORE, "Logger Shutdown"_s);
+
 		if (m_file)
 			m_file.~File();
 	}
@@ -49,6 +56,8 @@ namespace Core
 		{
 			m_file = Move(res.MoveValue());
 			m_logToFile = true;
+
+			Info(LogCategories::CORE, "Logger file path set: {}"_s, filePath);
 		}
 		else
 		{

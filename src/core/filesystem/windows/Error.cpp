@@ -11,6 +11,7 @@ namespace Core::FileSystem
 		Error err;
 		switch (winErrorCode)
 		{
+		case NO_ERROR:                      err.code = ErrorCode::Success;         break;
 		case ERROR_FILE_NOT_FOUND:          err.code = ErrorCode::InvalidPath;     break;
 		case ERROR_PATH_NOT_FOUND:          err.code = ErrorCode::InvalidPath;     break;
 		case ERROR_TOO_MANY_OPEN_FILES:     err.code = ErrorCode::CouldNotOpen;    break;
@@ -36,9 +37,10 @@ namespace Core::FileSystem
 			if (u8(err.code) < NumDefErrMessages)
 			{
 				err.info = DefaultErrorMessages[u8(err.code)];
+				err.info += ", "_s;
 			}
 
-			err.info += ", Win32 Error: "_s;
+			err.info += "Win32 Error: "_s;
 			do
 			{
 				LPWSTR winStr;

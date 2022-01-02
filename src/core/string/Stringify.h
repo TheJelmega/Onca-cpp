@@ -13,6 +13,7 @@ namespace Core
 
 	template<typename T>
 	concept Stringifyable =
+		ToStringMethod<T> ||
 		requires(const T& t)
 	{
 		{ ToString(t) } noexcept -> SameAs<String>;
@@ -27,6 +28,7 @@ namespace Core
 
 	template<typename T>
 	concept DebugStringifyable =
+		ToDebugStringMethod<T> ||
 		requires(const T & t)
 	{
 		{ ToDebugString(t) } noexcept -> SameAs<String>;

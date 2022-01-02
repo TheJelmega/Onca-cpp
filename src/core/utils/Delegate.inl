@@ -4,6 +4,7 @@
 #endif
 
 #include "Assert.h"
+#include "Meta.h"
 
 namespace Core
 {
@@ -143,7 +144,13 @@ namespace Core
 	template <typename R, typename ... Args>
 	auto Delegate<R(Args...)>::operator()(Args&&... args) noexcept -> R
 	{
-		return Invoke(args...);
+		return Invoke(Forward<Args>(args)...);
+	}
+
+	template <typename R, typename ... Args>
+	auto Delegate<R(Args...)>::operator()(const Tuple<Args...>& tup) noexcept -> R
+	{
+		return Invoke(tup);
 	}
 
 	template <typename R, typename ... Args>
@@ -165,6 +172,12 @@ namespace Core
 		if (m_pData)
 			return m_stub(&m_pObj, Forward<Args>(args)...);
 		return m_stub(m_pObj, Forward<Args>(args)...);
+	}
+
+	template <typename R, typename ... Args>
+	auto Delegate<R(Args...)>::Invoke(const Tuple<Args...>& args) noexcept -> R
+	{
+		return Invoke(args, MakeIndexSequence<sizeof...(Args)>{});
 	}
 
 	template <typename R, typename ... Args>
@@ -248,7 +261,7 @@ namespace Core
 	{
 		return { lambda };
 	}
-
+	
 	template <typename R, typename ... Args>
 	template <R(* Func)(Args...)>
 	auto Delegate<R(Args...)>::FuncStub(void*, Args&&... args) noexcept -> R

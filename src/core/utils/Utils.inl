@@ -65,13 +65,11 @@ namespace Core
 			++cnt;
 		return cnt;
 	}
-
-	template<typename To, typename From>
-	constexpr auto Bitcast(From& from) noexcept -> To
+	
+	template <typename T, usize N>
+	constexpr auto ArraySize(const T(&)[N]) noexcept -> usize
 	{
-		To to;
-		MemCpy(to, from);
-		return to;
+		return N;
 	}
 	
 }

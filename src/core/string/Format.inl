@@ -127,7 +127,7 @@ namespace Core
 		{
 			const char* nibbles[] =
 			{
-				"0000", "0001", "0010", "0011"
+				"0000", "0001", "0010", "0011",
 				"0100", "0101", "0110", "0111",
 				"1000", "1001", "1010", "1011",
 				"1100", "1101", "1110", "1111",
@@ -618,7 +618,16 @@ namespace Core
 		auto FormatArg(usize idx, const String& options, const First& first, const Args&... other) noexcept -> String
 		{
 			if (idx == 0)
-				return ToFormat(first, options);
+			{
+				if constexpr (Formatable<First>)
+					return ToFormat(first, options);
+				else if constexpr (Stringifyable<First>)
+					return ToString(first);
+				else if constexpr (DebugStringifyable<First>)
+					return ToDebugString(first);
+				else
+					return "<NO_DEBUG_STRING>";
+			}
 
 			if constexpr (sizeof...(Args) == 0)
 				return "<INVALID>";
@@ -768,7 +777,7 @@ namespace Core
 		return Detail::Format::FormatIntegerHex(usize(val), options.Length() != 1 || options[0] != 'x');
 	}
 
-	template <Formatable ... Args>
+	template <typename ... Args>
 	auto Format(const String& format, Args... args) noexcept -> String
 	{
 		if constexpr (sizeof...(Args) == 0)

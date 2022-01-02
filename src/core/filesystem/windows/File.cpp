@@ -89,7 +89,8 @@ namespace Core::FileSystem
 
 	File::~File()
 	{
-		Close();
+		if (IsValid())
+			Close();
 	}
 
 	auto File::operator=(File&& other) noexcept -> File&

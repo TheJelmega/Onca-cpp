@@ -15,6 +15,7 @@ namespace Core
 
 	template<typename T>
 	concept Formatable =
+		ToFormatableMethod<T> ||
 		requires(const T & t, const String & options)
 	{
 		{ ToFormat(t, options) } noexcept -> SameAs<String>;
@@ -312,6 +313,6 @@ namespace Core
 	 * \return Formatted string
 	 * \note If no arguments are passed, the format string will be returned
 	 */
-	template<Formatable... Args>
+	template<typename... Args>
 	auto Format(const String& format, Args... args) noexcept -> String;
 }
