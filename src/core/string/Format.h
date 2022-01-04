@@ -314,5 +314,5 @@ namespace Core
 	 * \note If no arguments are passed, the format string will be returned
 	 */
 	template<typename... Args>
-	auto Format(const String& format, Args... args) noexcept -> String;
+	auto Format(const String& format, const Args&... args) noexcept -> String;
 }

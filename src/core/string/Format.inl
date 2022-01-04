@@ -778,7 +778,7 @@ namespace Core
 	}
 
 	template <typename ... Args>
-	auto Format(const String& format, Args... args) noexcept -> String
+	auto Format(const String& format, const Args&... args) noexcept -> String
 	{
 		if constexpr (sizeof...(Args) == 0)
 			return format;

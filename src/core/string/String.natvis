@@ -6,6 +6,7 @@
 		<DisplayString Condition="!m_data.m_mem.m_pAddr">""</DisplayString>
 		<DisplayString>{m_data.m_mem.m_pAddr,s8}</DisplayString>
 		<Expand>
+			<Item Name="[text]">m_data.m_mem.m_pAddr,s8</Item>
 			<ArrayItems>
 				<Size>m_length</Size>
 				<ValuePointer>m_data.m_mem.m_pAddr</ValuePointer>
