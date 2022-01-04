@@ -204,6 +204,58 @@ namespace Core
 		return ids;
 	}
 
+	auto SystemInfo::GetLogicalCoresForCpuSetIds(const DynArray<u32>& ids) const noexcept -> DynArray<DynArray<u32>>
+	{
+		DynArray<DynArray<u32>> arrs;
+		arrs.Resize(m_processorInfo.Size(), DynArray<u32>{});
+
+		usize curIdx = 0;
+		for (usize i = 0; i < m_processorInfo.Size(); ++i)
+		{
+			for (const CPUSetInfo& set : m_processorInfo[i].cpuSets)
+			{
+				for (u32 id : ids)
+				{
+					if (id != set.id)
+						continue;
+
+					arrs[i].Add(GroupRelativeToCoreIndex(set.group, set.core));
+					++curIdx;
+					if (curIdx == ids.Size())
+						return arrs;
+					break;
+				}
+			}
+		}
+		return arrs;
+	}
+
+	auto SystemInfo::GetPhysicalCoresForCpuSetIds(const DynArray<u32>& ids) const noexcept -> DynArray<DynArray<u32>>
+	{
+		DynArray<DynArray<u32>> arrs;
+		arrs.Resize(m_processorInfo.Size(), DynArray<u32>{});
+
+		usize curIdx = 0;
+		for (usize i = 0; i < m_processorInfo.Size(); ++i)
+		{
+			for (const CPUSetInfo& set : m_processorInfo[i].cpuSets)
+			{
+				for (u32 id : ids)
+				{
+					if (id != set.id)
+						continue;
+
+					arrs[i].Add(set.physicalCore);
+					++curIdx;
+					if (curIdx == ids.Size())
+						return arrs;
+					break;
+				}
+			}
+		}
+		return arrs;
+	}
+
 	auto SystemInfo::CoreIndexToGroupRelative(u32 core, u32 processor) const noexcept -> Pair<u32, u32>
 	{
 		if (processor >= m_processorInfo.Size())

@@ -328,7 +328,18 @@ namespace Core
 		 * \return CPU set ids for the core
 		 */
 		auto GetCpuSetIdsForPhysicalCore(u32 core, u32 processor = 0) const noexcept -> DynArray<u32>;
-
+		/**
+		 * Convert CPU set ids to their logical core indices, relative to their processor indices
+		 * \param[in] ids CPU set ids
+		 * \return DynArray with element per processor and it's associated logical core indices
+		 */
+		auto GetLogicalCoresForCpuSetIds(const DynArray<u32>& ids) const noexcept -> DynArray<DynArray<u32>>;
+		/**
+		 * Convert CPU set ids to their physical core indices, relative to their processor indices
+		 * \param[in] ids CPU set ids
+		 * \return DynArray with element per processor and it's associated physical core indices
+		 */
+		auto GetPhysicalCoresForCpuSetIds(const DynArray<u32>& ids) const noexcept -> DynArray<DynArray<u32>>;
 		/**
 		 * Convert a core index to a group index and a relative core index
 		 * \param[in] core Core index

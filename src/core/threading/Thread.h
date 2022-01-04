@@ -63,7 +63,7 @@ namespace Core::Threading
 		template<typename... Args>
 		struct InvokeData
 		{
-			Delegate<void(Args...)> delegate;
+			Delegate<u32(Args...)> delegate;
 			Tuple<Args...> arguments;
 		};
 
@@ -81,7 +81,6 @@ namespace Core::Threading
 
 		auto operator=(const Thread&) = delete;
 		auto operator=(Thread&& other) noexcept -> Thread&;
-
 
 		/**
 		 * Resume the thread from a suspended state
@@ -126,7 +125,7 @@ namespace Core::Threading
 		 * \param[in] throttling Thread power throttling state
 		 * \return Error
 		 */
-		auto SetPowerThrottlingState(ThreadPowerThrottling throttling) noexcept -> SystemError;
+		auto SetPowerThrottling(ThreadPowerThrottling throttling) noexcept -> SystemError;
 		/**
 		 * Set if the thread allows priority boost
 		 * \param[in] allow Allow thread priority boost
@@ -134,6 +133,12 @@ namespace Core::Threading
 		 * \note Currently only has an effect on windows
 		 */
 		auto SetPriorityBoost(bool allow) noexcept -> SystemError;
+		/**
+		 * Set the core affinity only to the given CPU set ids
+		 * \param[in] ids CPU set ids
+		 * \return Error
+		 */
+		auto SetCpuSetAffinity(const DynArray<u32>& ids) noexcept -> SystemError;
 		/**
 		 * Set the core affinity only to the given logical core
 		 * \param[in] core Logical core index
@@ -208,6 +213,31 @@ namespace Core::Threading
 		 */
 		auto GetPowerThrottling() const noexcept -> ThreadPowerThrottling;
 		/**
+		 * Get the CPU set ids of the assigned CPU set ids
+		 * \return CPU set ids of the assigned CPU set ids
+		 */
+		auto GetCpuSetAffinity() const noexcept -> DynArray<u32>;
+		/**
+		 * Get the CPU set ids of the assigned logical cores
+		 * \return CPU set ids of the assigned logical cores
+		 */
+		auto GetLogicalAffinity() const noexcept -> DynArray<DynArray<u32>>;
+		/**
+		 * Get the CPU set ids of the assigned physical cores
+		 * \return CPU set ids of the assigned physical cores
+		 */
+		auto GetPhysicalAffinity() const noexcept -> DynArray<DynArray<u32>>;
+		/**
+		 * Get the exit code of the thread, a null optional will be returned if the thread has not yet exited
+		 * \return Optional with value
+		 */
+		auto GetExitCode() const noexcept -> Optional<u32>;
+		/**
+		 * Get the process id of the process associated with the thread
+		 * \return Process id of the process associated with the thread
+		 */
+		auto GetProcessId() const noexcept -> u32;
+		/**
 		 * Check if the thread is valid
 		 * \return Whether the thread is valid
 		 */
@@ -244,7 +274,7 @@ namespace Core::Threading
 		 * \return A result with the thread or error
 		 */
 		template<typename... Args>
-		static auto Create(ThreadAttribs attribs, const Delegate<void(Args...)>& delegate, Args&&... args) noexcept -> Result<Thread, SystemError>;
+		static auto Create(ThreadAttribs attribs, const Delegate<u32(Args...)>& delegate, Args&&... args) noexcept -> Result<Thread, SystemError>;
 		/**
 		 * Create a a thread based on an existing handle
 		 * \return Thread
@@ -261,7 +291,7 @@ namespace Core::Threading
 		auto Init(void* pInvoke, void* pData) noexcept -> void;
 
 		template<typename... Args>
-		static auto Invoke(void* pData) noexcept -> void;
+		static auto Invoke(void* pData) noexcept -> u32;
 
 		ThreadAttribs    m_attribs;  ///< Thread attributes
 		NativeHandle     m_handle;   ///< Native handle

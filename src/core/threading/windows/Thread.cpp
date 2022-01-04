@@ -150,7 +150,7 @@ namespace Core::Threading
 		return SystemErrorCode::Success;
 	}
 
-	auto Thread::SetPowerThrottlingState(ThreadPowerThrottling throttling) noexcept -> SystemError
+	auto Thread::SetPowerThrottling(ThreadPowerThrottling throttling) noexcept -> SystemError
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
 			return SystemErrorCode::InvalidHandle;
@@ -188,11 +188,23 @@ namespace Core::Threading
 		if (m_handle == INVALID_HANDLE_VALUE)
 			return SystemErrorCode::InvalidHandle;
 
-		bool res = ::SetThreadPriorityBoost(m_handle, m_attribs.priorityBoost);
+		bool res = ::SetThreadPriorityBoost(m_handle, !allow);
 		if (!res)
 			return TranslateSystemError();
 
 		m_attribs.priorityBoost = allow;
+		return SystemErrorCode::Success;
+	}
+
+	auto Thread::SetCpuSetAffinity(const DynArray<u32>& ids) noexcept -> SystemError
+	{
+		if (m_handle == INVALID_HANDLE_VALUE)
+			return SystemErrorCode::InvalidHandle;
+
+		bool res = ::SetThreadSelectedCpuSets(m_handle, reinterpret_cast<const ULONG*>(ids.Data()), ULONG(ids.Size()));
+		if (!res)
+			return TranslateSystemError();
+
 		return SystemErrorCode::Success;
 	}
 
@@ -214,14 +226,10 @@ namespace Core::Threading
 		if (m_handle == INVALID_HANDLE_VALUE)
 			return SystemErrorCode::InvalidHandle;
 
-		DynArray<ULONG> ids{ cores.Size(), g_GlobalAlloc };
+		DynArray<u32> ids{ cores.Size(), g_GlobalAlloc };
 		for (u32 core : cores)
 			ids.Add(g_SystemInfo.GetCpuSetIdForCore(core, processor));
-		bool res = ::SetThreadSelectedCpuSets(m_handle, ids.Data(), ULONG(ids.Size()));
-		if (!res)
-			return TranslateSystemError();
-
-		return SystemErrorCode::Success;
+		return SetCpuSetAffinity(ids);
 	}
 
 	auto Thread::SetPhysicalAffinity(u32 core, u32 processor) noexcept -> SystemError
@@ -231,11 +239,7 @@ namespace Core::Threading
 
 		STATIC_ASSERT(sizeof(u32) == sizeof(ULONG), "types need to match");
 		DynArray<u32> ids = g_SystemInfo.GetCpuSetIdsForPhysicalCore(core, processor);
-		bool res = ::SetThreadSelectedCpuSets(m_handle, reinterpret_cast<const ULONG*>(ids.Data()), ULONG(ids.Size()));
-		if (!res)
-			return TranslateSystemError();
-
-		return SystemErrorCode::Success;
+		return SetCpuSetAffinity(ids);
 	}
 
 	auto Thread::SetPhysicalAffinity(const DynArray<u32>& cores, u32 processor) noexcept -> SystemError
@@ -248,12 +252,7 @@ namespace Core::Threading
 		DynArray<u32> ids{ cores.Size() * 2, g_GlobalAlloc };
 		for (u32 core : cores)
 			ids.Add(g_SystemInfo.GetCpuSetIdsForPhysicalCore(core, processor));
-
-		bool res = ::SetThreadSelectedCpuSets(m_handle, reinterpret_cast<const ULONG*>(ids.Data()), ULONG(ids.Size()));
-		if (!res)
-			return TranslateSystemError();
-
-		return SystemErrorCode::Success;
+		return SetCpuSetAffinity(ids);
 	}
 
 	auto Thread::ResetAffinity() noexcept -> SystemError
@@ -278,6 +277,52 @@ namespace Core::Threading
 		return g_SystemInfo.GroupRelativeToCoreIndex(processorNumber.Group, processorNumber.Number);
 	}
 
+	auto Thread::GetCpuSetAffinity() const noexcept -> DynArray<u32>
+	{
+		if (m_handle == INVALID_HANDLE_VALUE)
+			return DynArray<u32>{};
+
+		ULONG len;
+		::GetThreadSelectedCpuSets(m_handle, nullptr, 0, &len);
+
+		DynArray<u32> ids;
+		ids.Resize(len);
+		::GetThreadSelectedCpuSets(m_handle, reinterpret_cast<PULONG>(ids.Data()), len, &len);
+		return ids;
+	}
+
+	auto Thread::GetLogicalAffinity() const noexcept -> DynArray<DynArray<u32>>
+	{
+		DynArray<u32> ids = GetCpuSetAffinity();
+		return g_SystemInfo.GetLogicalCoresForCpuSetIds(ids);
+	}
+
+	auto Thread::GetPhysicalAffinity() const noexcept -> DynArray<DynArray<u32>>
+	{
+		DynArray<u32> ids = GetCpuSetAffinity();
+		return g_SystemInfo.GetPhysicalCoresForCpuSetIds(ids);
+	}
+
+	auto Thread::GetExitCode() const noexcept -> Optional<u32>
+	{
+		if (m_handle == INVALID_HANDLE_VALUE)
+			return NullOpt;
+
+		DWORD exitCode;
+		bool res = ::GetExitCodeThread(m_handle, &exitCode);
+		if (!res || exitCode == STILL_ACTIVE)
+			return NullOpt;
+		return exitCode;
+	}
+
+	auto Thread::GetProcessId() const noexcept -> u32
+	{
+		if (m_handle == INVALID_HANDLE_VALUE)
+			return u32(-1);
+
+		return ::GetProcessIdOfThread(m_handle);
+	}
+
 	inline auto Thread::IsValid() const noexcept -> bool
 	{
 		return m_handle != INVALID_HANDLE_VALUE;
@@ -285,8 +330,67 @@ namespace Core::Threading
 
 	auto Thread::ToDebugString() const noexcept -> String
 	{
-		return Format("Thread: tid={} processor={} core={}"_s,
-					  m_threadId);
+		String coreInfo;
+		DynArray<DynArray<u32>> cores = GetLogicalAffinity();
+		for (usize i = 0; i < cores.Size(); ++i)
+		{
+			if (i != 0)
+				coreInfo += ' ';
+
+			coreInfo += Format("processor={} cores=["_s, i);
+			for (usize j = 0; j < cores[i].Size(); ++j)
+			{
+				if (j != 0)
+					coreInfo += ", "_s;
+				coreInfo += ToString(cores[i][j]);
+			}
+			coreInfo += ']';
+		}
+
+		String priority;
+		switch (m_attribs.priority)
+		{
+		case ThreadPriority::Idle:         priority = "Idle"_s;         break;
+		case ThreadPriority::VeryLow:      priority = "VeryLow"_s;      break;
+		case ThreadPriority::Low:          priority = "Low"_s;          break;
+		case ThreadPriority::Normal:       priority = "Normal"_s;       break;
+		case ThreadPriority::High:         priority = "High"_s;         break;
+		case ThreadPriority::VeryHigh:     priority = "VeryHigh"_s;     break;
+		case ThreadPriority::TimeCritical: priority = "TimeCritical"_s; break;
+		default: break;
+		}
+
+		String memPriority;
+		switch (m_attribs.memPriority)
+		{
+		case ThreadMemoryPriority::Lowest:  memPriority = "Lowest"_s;           break;
+		case ThreadMemoryPriority::VeryLow: memPriority = "VeryLow"_s;          break;
+		case ThreadMemoryPriority::Low:     memPriority = "Low"_s;              break;
+		case ThreadMemoryPriority::Medium:  memPriority = "Medium"_s;           break;
+		case ThreadMemoryPriority::High:    memPriority = "High"_s;             break;
+		case ThreadMemoryPriority::Default: memPriority = "VeryHigh/Default"_s; break;
+		default: break;
+		}
+
+		String powerThrottling;
+		switch (m_attribs.powerThrottling)
+		{
+		case ThreadPowerThrottling::Disabled: powerThrottling = "Disabled"_s; break;
+		case ThreadPowerThrottling::Auto:     powerThrottling = "Auto"_s;     break;
+		case ThreadPowerThrottling::Enabled:  powerThrottling = "Enabled"_s;  break;
+		default: break;
+		}
+
+		return Format("Thread: tid={} desc=\"{}\" {} stacksize={} suspended={} priorityBost={} priority={} memoryPriority={} powerThrottling={}"_s,
+		              m_threadId,
+		              m_attribs.desc,
+		              coreInfo,
+		              m_attribs.stackSize,
+		              m_attribs.suspended,
+		              m_attribs.priorityBoost,
+		              priority,
+					  memPriority,
+					  powerThrottling);
 	}
 
 	auto Thread::FromNativeHandle(NativeHandle handle) noexcept -> Thread
@@ -294,7 +398,7 @@ namespace Core::Threading
 		Thread thread;
 		thread.m_handle = handle;
 		thread.m_threadId = ::GetThreadId(handle);
-		thread.m_current = true;
+		thread.m_current = handle == ::GetCurrentThread();
 
 		UINT_PTR stackStart;
 		UINT_PTR stackEnd;
@@ -355,66 +459,7 @@ namespace Core::Threading
 
 	auto Thread::FromCurrent() noexcept -> Thread
 	{
-		Thread thread;
-		thread.m_handle = ::GetCurrentThread();
-		thread.m_threadId = GetCurrentThreadId();
-		thread.m_current = true;
-
-		UINT_PTR stackStart;
-		UINT_PTR stackEnd;
-		::GetCurrentThreadStackLimits(&stackStart, &stackEnd);
-		thread.m_attribs.stackSize = usize(stackEnd - stackStart);
-
-		PWSTR pDesc;
-		HRESULT hr = ::GetThreadDescription(thread.m_handle, &pDesc);
-		if (SUCCEEDED(hr))
-		{
-			thread.m_attribs.desc.Assign(reinterpret_cast<char16_t*>(pDesc));
-			LocalFree(pDesc);
-		}
-
-		i32 threadPriority = ::GetThreadPriority(thread.m_handle);
-		switch (threadPriority)
-		{
-		case THREAD_PRIORITY_IDLE:          thread.m_attribs.priority = ThreadPriority::Idle;         break;
-		case THREAD_PRIORITY_LOWEST:        thread.m_attribs.priority = ThreadPriority::VeryLow;      break;
-		case THREAD_PRIORITY_BELOW_NORMAL:  thread.m_attribs.priority = ThreadPriority::Low;          break;
-		case THREAD_PRIORITY_NORMAL:        thread.m_attribs.priority = ThreadPriority::Normal;       break;
-		case THREAD_PRIORITY_ABOVE_NORMAL:  thread.m_attribs.priority = ThreadPriority::High;         break;
-		case THREAD_PRIORITY_HIGHEST:       thread.m_attribs.priority = ThreadPriority::VeryHigh;     break;
-		case THREAD_PRIORITY_TIME_CRITICAL: thread.m_attribs.priority = ThreadPriority::TimeCritical; break;
-		default: break;
-		}
-
-		MEMORY_PRIORITY_INFORMATION memInfo;
-		bool res = ::GetThreadInformation(thread.m_handle, _THREAD_INFORMATION_CLASS::ThreadMemoryPriority, &memInfo, sizeof(MEMORY_PRIORITY_INFORMATION));
-		if (res)
-		{
-			switch (memInfo.MemoryPriority)
-			{
-			case MEMORY_PRIORITY_LOWEST:       thread.m_attribs.memPriority = ThreadMemoryPriority::Lowest;  break;
-			case MEMORY_PRIORITY_VERY_LOW:     thread.m_attribs.memPriority = ThreadMemoryPriority::VeryLow; break;
-			case MEMORY_PRIORITY_LOW:          thread.m_attribs.memPriority = ThreadMemoryPriority::Low;     break;
-			case MEMORY_PRIORITY_MEDIUM:       thread.m_attribs.memPriority = ThreadMemoryPriority::Medium;  break;
-			case MEMORY_PRIORITY_BELOW_NORMAL: thread.m_attribs.memPriority = ThreadMemoryPriority::High;    break;
-			case MEMORY_PRIORITY_NORMAL:       thread.m_attribs.memPriority = ThreadMemoryPriority::Default; break;
-			default:;
-			}
-		}
-
-		THREAD_POWER_THROTTLING_STATE powerState;
-		res = ::GetThreadInformation(thread.m_handle, _THREAD_INFORMATION_CLASS::ThreadPowerThrottling, &powerState, sizeof(THREAD_POWER_THROTTLING_STATE));
-		if (res)
-		{
-			if (powerState.ControlMask == 0)
-				thread.m_attribs.powerThrottling = ThreadPowerThrottling::Auto;
-			else if (powerState.StateMask == 0)
-				thread.m_attribs.powerThrottling = ThreadPowerThrottling::Disabled;
-			else
-				thread.m_attribs.powerThrottling = ThreadPowerThrottling::Enabled;
-		}
-
-		return thread;
+		return FromNativeHandle(::GetCurrentThread());
 	}
 
 	auto Thread::Init(void* pInvoke, void* pData) noexcept -> void
@@ -438,7 +483,7 @@ namespace Core::Threading
 		SetPriority(m_attribs.priority);
 		SetPriorityBoost(m_attribs.priorityBoost);
 		SetMemoryPriority(m_attribs.memPriority);
-		SetPowerThrottlingState(m_attribs.powerThrottling);
+		SetPowerThrottling(m_attribs.powerThrottling);
 	}
 
 	auto Thread::HasIOPending() const noexcept -> bool

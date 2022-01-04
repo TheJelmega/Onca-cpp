@@ -6,10 +6,10 @@
 namespace Core::Threading
 {
 	template <typename ... Args>
-	auto Thread::Invoke(void* pData) noexcept -> void
+	auto Thread::Invoke(void* pData) noexcept -> u32
 	{
 		InvokeData<Args...>& data = *static_cast<InvokeData<Args...>*>(pData);
-		data.delegate(data.arguments);
+		return data.delegate(data.arguments);
 	}
 
 	inline auto Thread::GetDescription() const noexcept -> String
@@ -58,7 +58,7 @@ namespace Core::Threading
 	}
 
 	template <typename ... Args>
-	auto Thread::Create(ThreadAttribs attribs, const Delegate<void(Args...)>& delegate, Args&&... args) noexcept -> Result<Thread, SystemError>
+	auto Thread::Create(ThreadAttribs attribs, const Delegate<u32(Args...)>& delegate, Args&&... args) noexcept -> Result<Thread, SystemError>
 	{
 		Thread thread;
 		thread.m_attribs = attribs;
