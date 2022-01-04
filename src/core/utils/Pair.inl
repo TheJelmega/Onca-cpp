@@ -21,6 +21,13 @@ namespace Core
 	}
 
 	template <typename T0, typename T1>
+	constexpr Pair<T0, T1>::Pair(T0&& first, T1&& second) noexcept requires MoveConstructible<T0> && MoveConstructible<T1>
+		: first(Move(first))
+		, second(Move(second))
+	{
+	}
+
+	template <typename T0, typename T1>
 	template <typename U0, typename U1> requires ConstructableFrom<T0, U0> && ConstructableFrom<T1, U1>
 	constexpr Pair<T0, T1>::Pair(U0&& first, const U1&& second) noexcept
 		: first(Move(first))

@@ -260,7 +260,7 @@ namespace Core::Threading
 		auto HasPriorityBoost() const noexcept -> bool;
 
 		/**
-		 * Get a string with the debug representation of the string
+		 * Get a string with the debug representation of the thread
 		 * \return Debug string
 		 */
 		auto ToDebugString() const noexcept -> String;

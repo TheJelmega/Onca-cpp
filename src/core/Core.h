@@ -51,5 +51,6 @@
 
 #include "filesystem/FileSystem.h"
 #include "platform/Console.h"
+#include "platform/Process.h"
 #include "logging/Logger.h"
 #include "misc/CmdLine.h"
