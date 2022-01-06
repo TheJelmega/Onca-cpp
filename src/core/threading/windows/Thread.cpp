@@ -31,6 +31,8 @@ namespace Core::Threading
 
 	auto Thread::operator=(Thread&& other) noexcept -> Thread&
 	{
+		this->~Thread();
+
 		m_attribs = other.m_attribs;
 		m_handle = other.m_handle;
 		m_threadId = other.m_threadId;

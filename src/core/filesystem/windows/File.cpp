@@ -95,6 +95,8 @@ namespace Core::FileSystem
 
 	auto File::operator=(File&& other) noexcept -> File&
 	{
+		this->~File();
+
 		m_path = other.m_path;
 
 		m_handle = other.m_handle;

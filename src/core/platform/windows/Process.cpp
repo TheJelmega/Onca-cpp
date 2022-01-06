@@ -40,6 +40,8 @@ namespace Core
 
 	auto Process::operator=(Process&& other) noexcept -> Process&
 	{
+		this->~Process();
+
 		m_handle = other.m_handle;
 		m_path = Move(other.m_path);
 		m_workingDir = Move(other.m_workingDir);
