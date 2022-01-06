@@ -9,7 +9,7 @@ namespace Core
 	/**
 	 * Dynamic Library (dll/so)
 	 */
-	class DynLib
+	class CORE_API DynLib
 	{
 	public:
 		DEFINE_OPAQUE_HANDLE(NativeHandle);
