@@ -7,7 +7,7 @@
 #include "Constants.h"
 #include "Mat2.h"
 #include "core/Assert.h"
-#include "utils/Algo.h"
+#include "core/utils/Algo.h"
 
 namespace Core::Math
 {
