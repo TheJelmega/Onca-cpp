@@ -1,6 +1,6 @@
 #pragma once
 
-#include "threading/Common.h"
-#include "threading/Sync.h"
-#include "threading/Guarded.h"
-#include "threading/Thread.h"
+#include "Common.h"
+#include "Sync.h"
+#include "Guarded.h"
+#include "Thread.h"
