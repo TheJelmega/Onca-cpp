@@ -19,3 +19,6 @@
 #include "SortedSet.h"
 
 #include "ByteBuffer.h"
+
+#include "BitSet.h"
+#include "InplaceBitSet.h"

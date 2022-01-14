@@ -74,7 +74,7 @@ namespace Core
 		 * \tparam L Lambda type
 		 * \param[in] lambda Lambda 
 		 */
-		template<Lambda L>
+		template<Lambda<R, Args...> L>
 		Delegate(const L& lambda) noexcept;
 		/**
 		 * Create a delegate set to nullptr
@@ -85,7 +85,7 @@ namespace Core
 		auto operator=(R(*pFunc)(Args...)) noexcept -> Delegate&;
 		template<Functor<R, Args...> F>
 		auto operator=(F* pFunctor) noexcept -> Delegate&;
-		template<Lambda L>
+		template<Lambda<R, Args...> L>
 		auto operator=(const L& lambda) noexcept -> Delegate&;
 
 		auto operator==(const Delegate& other) const noexcept -> bool;
@@ -94,7 +94,7 @@ namespace Core
 
 		explicit operator bool() const noexcept;
 
-		auto operator()(Args&&... args) noexcept -> R;
+		auto operator()(Args... args) noexcept -> R;
 		auto operator()(const Tuple<Args...>& tup) noexcept -> R;
 
 		/**
@@ -108,6 +108,12 @@ namespace Core
 		 * \return Whether the delegate has an object assigned to it
 		 */
 		auto HasObject() const noexcept -> bool;
+		/**
+		 * Check if the delegate is called on the given object
+		 * \param[in] ptr Pointer
+		 * \return Whether the delegate is called on the given object
+		 */
+		auto IsCalledOn(void* ptr) const noexcept -> bool;
 
 		/**
 		 * Invoke the delegate without any safety checks
@@ -216,7 +222,7 @@ namespace Core
 
 		/**
 		 * Invoke the delegate without any safety checks
-		 * \param[in] args Arguments
+		 * \param[in] tup Arguments tuple
 		 * \return Return value
 		 */
 		template<typename TupleType, usize... Idx>

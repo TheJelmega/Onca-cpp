@@ -4,6 +4,7 @@
 #include "core/Assert.h"
 #include "core/memory/MemUtils.h"
 #include "core/utils/Meta.h"
+#include "core/utils/Utils.h"
 
 namespace Core::Intrin
 {

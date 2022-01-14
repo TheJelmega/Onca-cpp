@@ -202,7 +202,8 @@ namespace Core
 
 	// Context sensitive
 	// TODO: better concept for this
-	template<typename T>
+	template<typename T, typename R, typename... Args>
 	concept Lambda =
-		SameAs<T, Decay<T>>;
+		SameAs<T, Decay<T>> &&
+		!IsPointer<T>;
 }

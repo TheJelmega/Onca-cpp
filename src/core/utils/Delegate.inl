@@ -51,7 +51,7 @@ namespace Core
 	Delegate<R(Args...)>::Delegate(R(* pFunc)(Args...)) noexcept
 		: m_pObj(reinterpret_cast<void*>(pFunc))
 		, m_pData(nullptr)
-		, m_stub(&FunctorStub<R(*)(Args&&...)>)
+		, m_stub(&FunctorStub<R(*)(Args...)>)
 	{
 	}
 
@@ -65,7 +65,7 @@ namespace Core
 	}
 
 	template <typename R, typename ... Args>
-	template <Lambda L>
+	template <Lambda<R, Args...> L>
 	Delegate<R(Args...)>::Delegate(const L& lambda) noexcept
 		: m_pObj(const_cast<void*>(reinterpret_cast<const void*>(&lambda)))
 		, m_pData(nullptr)
@@ -108,7 +108,7 @@ namespace Core
 	}
 
 	template <typename R, typename ... Args>
-	template <Lambda L>
+	template <Lambda<R, Args...> L>
 	auto Delegate<R(Args...)>::operator=(const L& lambda) noexcept -> Delegate&
 	{
 		m_pObj = const_cast<void*>(reinterpret_cast<const void*>(&lambda));
@@ -142,11 +142,11 @@ namespace Core
 	}
 
 	template <typename R, typename ... Args>
-	auto Delegate<R(Args...)>::operator()(Args&&... args) noexcept -> R
+	auto Delegate<R(Args...)>::operator()(Args... args) noexcept -> R
 	{
 		return Invoke(Forward<Args>(args)...);
 	}
-
+	
 	template <typename R, typename ... Args>
 	auto Delegate<R(Args...)>::operator()(const Tuple<Args...>& tup) noexcept -> R
 	{
@@ -163,6 +163,12 @@ namespace Core
 	auto Delegate<R(Args...)>::HasObject() const noexcept -> bool
 	{
 		return m_pObj;
+	}
+
+	template <typename R, typename ... Args>
+	auto Delegate<R(Args...)>::IsCalledOn(void* ptr) const noexcept -> bool
+	{
+		return m_pObj == ptr;
 	}
 
 	template <typename R, typename ... Args>

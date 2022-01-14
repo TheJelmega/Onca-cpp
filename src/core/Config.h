@@ -105,7 +105,7 @@
 #define KB(x) ((x) << 10)
 #define MB(x) ((x) << 20)
 
-#define BIT(x) (1 << (x))
+#define BIT(x) (1ull << (x))
 
 #define DEFINE_OPAQUE_HANDLE(name) using name = void*;
 #define DEFINE_SIZED_OPAQUE_HANDLE(name, size) struct name { u8 _[size]; };
