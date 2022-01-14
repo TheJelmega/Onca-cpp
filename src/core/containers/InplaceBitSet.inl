@@ -23,7 +23,7 @@ namespace Core
 	}
 
 	template <usize Bits>
-	constexpr auto InplaceBitSet<Bits>::operator~() const noexcept -> BitSet
+	constexpr auto InplaceBitSet<Bits>::operator~() const noexcept -> InplaceBitSet
 	{
 		InplaceBitSet res;
 		for (usize i = 0; i < DataSize(); ++i)
@@ -217,13 +217,13 @@ namespace Core
 	}
 
 	template <usize Bits>
-	constexpr auto InplaceBitSet<Bits>::Data() noexcept -> u8*
+	constexpr auto InplaceBitSet<Bits>::Data() noexcept -> usize*
 	{
 		return m_data.Data();
 	}
 
 	template <usize Bits>
-	constexpr auto InplaceBitSet<Bits>::Data() const noexcept -> const u8*
+	constexpr auto InplaceBitSet<Bits>::Data() const noexcept -> const usize*
 	{
 		return m_data.Data();
 	}

@@ -1,7 +1,6 @@
 #pragma once
 #include "core/MinInclude.h"
-#include "allocator/IAllocator.h"
-#include "allocator/GlobalAlloc.h"
+#include "Array.h"
 
 namespace Core
 {
@@ -27,7 +26,7 @@ namespace Core
 		 */
 		constexpr InplaceBitSet(InplaceBitSet&& other) noexcept;
 
-		constexpr auto operator~() const noexcept -> BitSet;
+		constexpr auto operator~() const noexcept -> InplaceBitSet;
 
 		constexpr auto operator|(const InplaceBitSet& other) const noexcept -> InplaceBitSet;
 		constexpr auto operator^(const InplaceBitSet& other) const noexcept -> InplaceBitSet;
@@ -107,12 +106,12 @@ namespace Core
 		 * Get a pointer to the DynArray's data
 		 * \return Pointer to the DynArray's data
 		 */
-		constexpr auto Data() noexcept -> u8*;
+		constexpr auto Data() noexcept -> usize*;
 		/**
 		 * Get a pointer to the DynArray's data
 		 * \return Pointer to the DynArray's data
 		 */
-		constexpr auto Data() const noexcept -> const u8*;
+		constexpr auto Data() const noexcept -> const usize*;
 		/**
 		 * Get the size of the data (in bytes)
 		 * \return Size of the data
