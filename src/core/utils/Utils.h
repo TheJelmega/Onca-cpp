@@ -14,6 +14,9 @@ namespace Core
 	{
 		auto operator()(MemRef<T>&& ref) noexcept -> void;
 
+		DefaultDeleter() noexcept {}
+		template<typename U>
+		DefaultDeleter(DefaultDeleter<U>&&) noexcept {}
 		template<typename U>
 		auto operator=(DefaultDeleter<U>&&) noexcept -> DefaultDeleter& { return *this; }
 	};

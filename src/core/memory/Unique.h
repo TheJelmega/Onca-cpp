@@ -27,7 +27,7 @@ namespace Core
 		explicit Unique(MemRef<T>&& ref) noexcept;
 
 		template<typename U, MemRefDeleter<U> D2>
-		explicit Unique(Unique<U, D2>&& unique);
+		Unique(Unique<U, D2>&& unique);
 		Unique(Unique&&) noexcept = default;
 		Unique(const Unique&) = delete;
 
@@ -111,8 +111,8 @@ namespace Core
 		template<typename U, MemRefDeleter<U> D2>
 		friend class Unique;
 
-		MemRef<T>         m_mem;       ///< Managed memory
-		NO_UNIQUE_ADDRESS D m_Deleter; ///< Deleter when memory is discarded
+		MemRef<T>           m_mem;     ///< Managed memory
+		NO_UNIQUE_ADDRESS D m_deleter; ///< Deleter when memory is discarded
 	};
 
 }

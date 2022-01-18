@@ -18,6 +18,17 @@ namespace Core
 		 */
 		explicit constexpr StringId(u64 id) noexcept;
 		/**
+		 * Create a string id from a c-string
+		 * \param[in] str C-string
+		 */
+		explicit constexpr StringId(const char* str) noexcept;
+		/**
+		 * Create a string id from a c-string
+		 * \param[in] str C-string
+		 * \param[in] len String length
+		 */
+		constexpr StringId(const char* str, usize len) noexcept;
+		/**
 		 * Create a string id from a string
 		 * \param[in] str String
 		 */
@@ -33,6 +44,19 @@ namespace Core
 		constexpr operator u64() const noexcept;
 
 	private:
+		/**
+		 * Reimplementation of FNV1A_64, because casting from char to u8 is not allowed at compile time
+		 * \param[in] str C
+		 * \param[in] len Lenght of the string
+		 * \return Hash
+		 */
+		constexpr auto Hash(const char* str, usize len) noexcept -> u64;
+
 		u64 m_id;
 	};
+}
+
+namespace Literals
+{
+	constexpr auto operator""_sid(const char* cstr, usize size) noexcept -> Core::StringId;
 }

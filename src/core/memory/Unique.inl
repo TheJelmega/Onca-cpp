@@ -32,21 +32,21 @@ namespace Core
 	template <typename T, MemRefDeleter<T> D>
 	template <typename U, MemRefDeleter<U> D2>
 	Unique<T, D>::Unique(Unique<U, D2>&& unique)
-		: m_mem(Move(unique.m_mem).As<T>)
-		, m_Deleter(Move(unique.m_Deleter))
+		: m_mem(Move(unique.m_mem).As<T>())
+		, m_deleter(Move(unique.m_deleter))
 	{
 	}
 
 	template <typename T, MemRefDeleter<T> D>
 	Unique<T, D>::~Unique() noexcept
 	{
-		m_Deleter(Move(m_mem));
+		m_deleter(Move(m_mem));
 	}
 
 	template <typename T, MemRefDeleter<T> D>
 	auto Unique<T, D>::operator=(nullptr_t) noexcept -> Unique<T, D>&
 	{
-		m_Deleter(Move(m_mem));
+		m_deleter(Move(m_mem));
 		return *this;
 	}
 
@@ -54,9 +54,9 @@ namespace Core
 	template <typename U, MemRefDeleter<U> D2>
 	auto Unique<T, D>::operator=(Unique<U, D2>&& unique) noexcept -> Unique<T, D>&
 	{
-		m_Deleter(Move(m_mem));
+		m_deleter(Move(m_mem));
 		m_mem = Move(unique.m_mem).template As<T>();
-		m_Deleter = Move(unique.m_Deleter);
+		m_deleter = Move(unique.m_deleter);
 		return *this;
 	}
 
@@ -76,7 +76,7 @@ namespace Core
 	template <typename T, MemRefDeleter<T> D>
 	auto Unique<T, D>::Reset(MemRef<T>&& ref) noexcept -> void
 	{
-		m_Deleter(Move(m_mem));
+		m_deleter(Move(m_mem));
 		m_mem = std::move(ref);
 	}
 
@@ -109,7 +109,7 @@ namespace Core
 	template <typename T, MemRefDeleter<T> D>
 	auto Unique<T, D>::GetDeleter() const noexcept -> D
 	{
-		return m_Deleter;
+		return m_deleter;
 	}
 
 	template <typename T, MemRefDeleter<T> D>

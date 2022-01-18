@@ -42,6 +42,10 @@ namespace Core
 				return buffer;
 			}
 
+			if constexpr (SignedIntegral<I>)
+				if (val < 0)
+					val = -val;
+
 			usize digits = CountDecDigits(val);
 			char* bufferPtr = buffer + digits;
 			char* bufferEnd = bufferPtr;
@@ -150,7 +154,7 @@ namespace Core
 		template <Integral I>
 		auto FormatIntegerDec(I val) noexcept -> String
 		{
-			constexpr u8 bufferSize = Math::Consts::Digits10<I>;
+			constexpr u8 bufferSize = Math::Consts::Digits10<I> + 1;
 			char buffer[bufferSize];
 
 			char* bufferEnd = FormatIntegerDecToBuf(val, buffer);
@@ -163,7 +167,7 @@ namespace Core
 			if (val == 0)
 				return "0e0"_s;
 
-			constexpr u8 bufferSize = Math::Consts::Digits10<I> + 3;
+			constexpr u8 bufferSize = Math::Consts::Digits10<I> + 32;
 			char buffer[bufferSize];
 
 			usize digits = CountDecDigits(val);
