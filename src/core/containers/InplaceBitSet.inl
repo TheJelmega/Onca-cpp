@@ -8,6 +8,7 @@ namespace Core
 	template <usize Bits>
 	constexpr InplaceBitSet<Bits>::InplaceBitSet() noexcept
 	{
+		Clear();
 	}
 
 	template <usize Bits>
@@ -26,7 +27,7 @@ namespace Core
 	constexpr auto InplaceBitSet<Bits>::operator~() const noexcept -> InplaceBitSet
 	{
 		InplaceBitSet res;
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 			res.m_data[i] = ~m_data[i];
 		return res;
 	}
@@ -35,7 +36,7 @@ namespace Core
 	constexpr auto InplaceBitSet<Bits>::operator|(const InplaceBitSet& other) const noexcept -> InplaceBitSet
 	{
 		InplaceBitSet res;
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 			res.m_data[i] = m_data[i] | other.m_data[i];
 		return res;
 	}
@@ -44,7 +45,7 @@ namespace Core
 	constexpr auto InplaceBitSet<Bits>::operator^(const InplaceBitSet& other) const noexcept -> InplaceBitSet
 	{
 		InplaceBitSet res;
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 			res.m_data[i] = m_data[i] ^ other.m_data[i];
 		return res;
 	}
@@ -53,7 +54,7 @@ namespace Core
 	constexpr auto InplaceBitSet<Bits>::operator&(const InplaceBitSet& other) const noexcept -> InplaceBitSet
 	{
 		InplaceBitSet res;
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 			res.m_data[i] = m_data[i] & other.m_data[i];
 		return res;
 	}
@@ -75,7 +76,7 @@ namespace Core
 	template <usize Bits>
 	constexpr auto InplaceBitSet<Bits>::operator|=(const InplaceBitSet& other) noexcept -> InplaceBitSet&
 	{
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 			m_data[i] |= other.m_data[i];
 		return *this;
 	}
@@ -83,7 +84,7 @@ namespace Core
 	template <usize Bits>
 	constexpr auto InplaceBitSet<Bits>::operator^=(const InplaceBitSet& other) noexcept -> InplaceBitSet&
 	{
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 			m_data[i] ^= other.m_data[i];
 		return *this;
 	}
@@ -91,7 +92,7 @@ namespace Core
 	template <usize Bits>
 	constexpr auto InplaceBitSet<Bits>::operator&=(const InplaceBitSet& other) noexcept -> InplaceBitSet&
 	{
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 			m_data[i] &= other.m_data[i];
 		return *this;
 	}
@@ -102,15 +103,15 @@ namespace Core
 		if (idx >= Bits)
 			return false;
 
-		const usize byteIdx = idx / BitsPerElem;
+		const usize elemIdx = idx / BitsPerElem;
 		const usize bitIdx = idx & BitIdxMask;
-		return (m_data[byteIdx] >> (BitIdxMask - bitIdx)) & 0x1;
+		return (m_data[elemIdx] >> (BitIdxMask - bitIdx)) & 0x1;
 	}
 
 	template <usize Bits>
 	constexpr auto InplaceBitSet<Bits>::operator==(const InplaceBitSet& other) const noexcept -> bool
 	{
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 		{
 			if (m_data[i] != other.m_data[i])
 				return false;
@@ -139,9 +140,9 @@ namespace Core
 		if (idx >= Bits)
 			return;
 
-		const usize byteIdx = idx / BitsPerElem;
+		const usize elemIdx = idx / BitsPerElem;
 		const usize bitIdx = idx & BitIdxMask;
-		m_data[byteIdx] |= usize(1) << (BitIdxMask - bitIdx);
+		m_data[elemIdx] |= usize(1) << (BitIdxMask - bitIdx);
 	}
 
 	template <usize Bits>
@@ -150,21 +151,21 @@ namespace Core
 		if (idx >= Bits)
 			return;
 
-		const usize byteIdx = idx / BitsPerElem;
+		const usize elemIdx = idx / BitsPerElem;
 		const usize bitIdx = idx & BitIdxMask;
-		m_data[byteIdx] &= ~(usize(1) << (BitIdxMask - bitIdx));
+		m_data[elemIdx] &= ~(usize(1) << (BitIdxMask - bitIdx));
 	}
 
 	template <usize Bits>
 	constexpr auto InplaceBitSet<Bits>::Clear() noexcept -> void
 	{
-		MemClear(Data(), DataSize());
+		MemClear(Data(), NumElems * sizeof(usize));
 	}
 
 	template <usize Bits>
 	constexpr auto InplaceBitSet<Bits>::Flip() noexcept -> void
 	{
-		for (usize i = 0; i < NumBytes; ++i)
+		for (usize i = 0; i < NumElems; ++i)
 			m_data[i] = ~m_data[i];
 	}
 
@@ -172,7 +173,7 @@ namespace Core
 	constexpr auto InplaceBitSet<Bits>::Count() const noexcept -> usize
 	{
 		usize cnt = 0;
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 			cnt += Intrin::PopCnt(m_data[i]);
 		return cnt;
 	}
@@ -180,7 +181,7 @@ namespace Core
 	template <usize Bits>
 	constexpr auto InplaceBitSet<Bits>::None() const noexcept -> bool
 	{
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 		{
 			if (m_data[i])
 				return false;
@@ -191,7 +192,7 @@ namespace Core
 	template <usize Bits>
 	constexpr auto InplaceBitSet<Bits>::Any() const noexcept -> bool
 	{
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 		{
 			if (m_data[i])
 				return true;
@@ -202,7 +203,7 @@ namespace Core
 	template <usize Bits>
 	constexpr auto InplaceBitSet<Bits>::All() const noexcept -> bool
 	{
-		for (usize i = 0; i < DataSize(); ++i)
+		for (usize i = 0; i < NumElems; ++i)
 		{
 			if (m_data[i] != 0xFF)
 				return false;

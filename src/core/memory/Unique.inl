@@ -32,9 +32,10 @@ namespace Core
 	template <typename T, MemRefDeleter<T> D>
 	template <typename U, MemRefDeleter<U> D2>
 	Unique<T, D>::Unique(Unique<U, D2>&& unique)
-		: m_mem(Move(unique.m_mem).As<T>())
+		: m_mem(unique.m_mem.As<T>())
 		, m_deleter(Move(unique.m_deleter))
 	{
+		unique.m_mem = MemRef<U>{};
 	}
 
 	template <typename T, MemRefDeleter<T> D>
@@ -55,8 +56,9 @@ namespace Core
 	auto Unique<T, D>::operator=(Unique<U, D2>&& unique) noexcept -> Unique<T, D>&
 	{
 		m_deleter(Move(m_mem));
-		m_mem = Move(unique.m_mem).template As<T>();
+		m_mem = unique.m_mem.template As<T>();
 		m_deleter = Move(unique.m_deleter);
+		unique.m_mem = MemRef<U>{};
 		return *this;
 	}
 

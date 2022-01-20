@@ -119,11 +119,11 @@ namespace Core
 		constexpr auto DataSize() const noexcept -> usize;
 
 	private:
-		static constexpr usize BitsPerElem = sizeof(usize);
+		static constexpr usize BitsPerElem = sizeof(usize) * 8;
 		static constexpr usize BitIdxMask = BitsPerElem - 1;
-		static constexpr usize NumBytes = (Bits + BitIdxMask) / BitsPerElem;
+		static constexpr usize NumElems = (Bits + BitIdxMask) / BitsPerElem;
 
-		Array<usize, NumBytes> m_data;    ///< Data
+		Array<usize, NumElems> m_data;    ///< Data
 	};
 
 	

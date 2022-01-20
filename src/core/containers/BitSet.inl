@@ -54,14 +54,15 @@ namespace Core
 	{
 		BitSet res{ Math::Max(m_numBits, other.m_numBits), *m_data.GetAllocator() };
 
-		const usize minBytes = Math::Min(DataSize(), other.DataSize());
-		for (usize i = 0; i < minBytes; ++i)
+		const usize minElems = Math::Min(DataSize(), other.DataSize());
+		for (usize i = 0; i < minElems; ++i)
 			res.m_data[i] = m_data[i] | other.m_data[i];
 
-		if (DataSize() > minBytes)
-			MemCpy(res.Data() + minBytes, Data() + minBytes, DataSize() - minBytes);
-		else if (other.DataSize() > minBytes)
-			MemCpy(res.Data() + minBytes, other.Data() + minBytes, other.DataSize() - minBytes);
+		const usize byteOffset = minElems * sizeof(usize);
+		if (DataSize() > minElems)
+			MemCpy(res.Data() + byteOffset, Data() + byteOffset, (DataSize() - minElems) * sizeof(usize));
+		else if (other.DataSize() > minElems)
+			MemCpy(res.Data() + byteOffset, other.Data() + byteOffset, (other.DataSize() - minElems) * sizeof(usize));
 		return res;
 	}
 
@@ -69,14 +70,15 @@ namespace Core
 	{
 		BitSet res{ Math::Max(m_numBits, other.m_numBits), *m_data.GetAllocator() };
 
-		const usize minBytes = Math::Min(DataSize(), other.DataSize());
-		for (usize i = 0; i < minBytes; ++i)
+		const usize minElems = Math::Min(DataSize(), other.DataSize());
+		for (usize i = 0; i < minElems; ++i)
 			res.m_data[i] = m_data[i] ^ other.m_data[i];
 
-		if (DataSize() > minBytes)
-			MemCpy(res.Data() + minBytes, Data() + minBytes, DataSize() - minBytes);
-		else if (other.DataSize() > minBytes)
-			MemCpy(res.Data() + minBytes, other.Data() + minBytes, other.DataSize() - minBytes);
+		const usize byteOffset = minElems * sizeof(usize);
+		if (DataSize() > minElems)
+			MemCpy(res.Data() + byteOffset, Data() + byteOffset, DataSize() - minElems);
+		else if (other.DataSize() > minElems)
+			MemCpy(res.Data() + byteOffset, other.Data() + byteOffset, other.DataSize() - minElems);
 		return res;
 	}
 
@@ -84,8 +86,8 @@ namespace Core
 	{
 		BitSet res{ Math::Max(m_numBits, other.m_numBits), *m_data.GetAllocator() };
 
-		const usize minBytes = Math::Min(DataSize(), other.DataSize());
-		for (usize i = 0; i < minBytes; ++i)
+		const usize minElems = Math::Min(DataSize(), other.DataSize());
+		for (usize i = 0; i < minElems; ++i)
 			res.m_data[i] = m_data[i] & other.m_data[i];
 		return res;
 	}
@@ -107,18 +109,19 @@ namespace Core
 
 	inline auto BitSet::operator|=(const BitSet& other) noexcept -> BitSet&
 	{
-		const usize numBytes = DataSize();
-		const usize numOtherBytes = other.DataSize();
-		if (numOtherBytes > numBytes)
-			m_data.Resize(other.DataSize());
+		usize numElems = DataSize();
+		usize numOtherElems = other.DataSize();
+		if (numOtherElems > numElems)
+			m_data.Resize(numOtherElems);
 		
-		const usize minBytes = Math::Min(DataSize(), numOtherBytes);
-		for (usize i = 0; i < minBytes; ++i)
-			m_data[i] |= other.m_numBits;
+		const usize minElems = Math::Min(numElems, numOtherElems);
+		for (usize i = 0; i < minElems; ++i)
+			m_data[i] |= other.m_data[i];
 
-		if (other.DataSize() > numBytes)
+		if (numOtherElems > numElems)
 		{
-			MemCpy(Data() + numBytes, other.Data() + numBytes, numOtherBytes - numBytes);
+			const usize byteOffset = minElems * sizeof(usize);
+			MemCpy(Data() + byteOffset, other.Data() + byteOffset, (numOtherElems - numElems) * sizeof(usize));
 		}
 		else
 		{
@@ -130,16 +133,18 @@ namespace Core
 
 	inline auto BitSet::operator^=(const BitSet& other) noexcept -> BitSet&
 	{
-		if (other.DataSize() > DataSize())
-			m_data.Resize(other.DataSize());
+		usize numElems = DataSize();
+		usize numOtherElems = other.DataSize();
+		if (numOtherElems > numElems)
+			m_data.Resize(numOtherElems);
 
-		usize minSize = Math::Min(DataSize(), other.DataSize());
-		for (usize i = 0; i < minSize; ++i)
-			m_data[i] ^= other.m_numBits;
+		usize minElems = Math::Min(numElems, numOtherElems);
+		for (usize i = 0; i < minElems; ++i)
+			m_data[i] ^= other.m_data[i];
 
-		if (other.DataSize() > DataSize())
+		if (numOtherElems > numElems)
 		{
-			for (usize i = DataSize(); i < other.DataSize(); ++i)
+			for (usize i = DataSize(); i < numOtherElems; ++i)
 				m_data[i] = other.m_data[i];
 		}
 		return *this;
@@ -147,12 +152,14 @@ namespace Core
 
 	inline auto BitSet::operator&=(const BitSet& other) noexcept -> BitSet&
 	{
-		if (other.DataSize() > DataSize())
-			m_data.Resize(other.DataSize());
+		usize numElems = DataSize();
+		usize numOtherElems = other.DataSize();
+		if (numOtherElems > numElems)
+			m_data.Resize(numOtherElems);
 
-		const usize minSize = Math::Min(DataSize(), other.DataSize());
+		const usize minSize = Math::Min(numElems, numOtherElems);
 		for (usize i = 0; i < minSize; ++i)
-			m_data[i] &= other.m_numBits;
+			m_data[i] &= other.m_data[i];
 		return *this;
 	}
 
@@ -161,9 +168,9 @@ namespace Core
 		if (idx >= m_numBits)
 			return false;
 
-		const usize byteIdx = idx / BitsPerElem;
+		const usize elemIdx = idx / BitsPerElem;
 		const usize bitIdx = idx & BitIdxMask;
-		return (m_data[byteIdx] >> (BitIdxMask - bitIdx)) & 0x1;
+		return (m_data[elemIdx] >> (BitIdxMask - bitIdx)) & 0x1;
 	}
 
 	inline auto BitSet::operator==(const BitSet& other) const noexcept -> bool
@@ -203,9 +210,9 @@ namespace Core
 		if (idx >= m_numBits)
 			return;
 
-		const usize byteIdx = idx / BitsPerElem;
+		const usize elemIdx = idx / BitsPerElem;
 		const usize bitIdx = idx & BitIdxMask;
-		m_data[byteIdx] |= usize(1) << (BitIdxMask - bitIdx);
+		m_data[elemIdx] |= usize(1) << (BitIdxMask - bitIdx);
 	}
 
 	inline auto BitSet::Unset(usize idx) noexcept -> void
@@ -213,9 +220,9 @@ namespace Core
 		if (idx >= m_numBits)
 			return;
 
-		const usize byteIdx = idx / BitsPerElem;
+		const usize elemIdx = idx / BitsPerElem;
 		const usize bitIdx = idx & BitIdxMask;
-		m_data[byteIdx] &= ~(usize(1) << (BitIdxMask - bitIdx));
+		m_data[elemIdx] &= ~(usize(1) << (BitIdxMask - bitIdx));
 	}
 
 	inline auto BitSet::Clear() noexcept -> void
@@ -278,7 +285,7 @@ namespace Core
 		}
 
 		const usize finalBits = m_numBits & BitIdxMask;
-		const u8 bitMask = 0xFF << (BitIdxMask - finalBits);
+		const u8 bitMask = usize(-1) << (BitIdxMask - finalBits);
 		return (m_data.Back() & bitMask) == bitMask;
 	}
 
@@ -286,20 +293,10 @@ namespace Core
 	{
 		m_data.Resize((numBits + BitIdxMask) / BitsPerElem);
 
-		if (numBits < m_numBits)
-		{
-			usize byteIdx = numBits / BitsPerElem;
-			usize bitIdx = numBits & BitsPerElem;
-			usize mask = 0xFF >> (BitIdxMask - bitIdx);
-			m_data[byteIdx] &= mask;
-		}
-		else
-		{
-			usize byteIdx = m_numBits / BitsPerElem;
-			usize bitIdx = m_numBits & BitsPerElem;
-			usize mask = 0xFF >> (BitIdxMask - bitIdx);
-			m_data[byteIdx] &= mask;
-		}
+		const usize bits = numBits < m_numBits ? numBits : m_numBits;
+		const usize elemIdx = bits / BitsPerElem;
+		const usize bitIdx = bits & BitsPerElem;
+		m_data[elemIdx] &= usize(-1) >> (BitIdxMask - bitIdx);
 	}
 
 	inline auto BitSet::NumBits() const noexcept -> usize

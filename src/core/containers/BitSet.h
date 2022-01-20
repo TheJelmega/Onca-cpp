@@ -148,7 +148,7 @@ namespace Core
 		auto GetAllocator() const noexcept -> Alloc::IAllocator*;
 
 	private:
-		static constexpr usize BitsPerElem = sizeof(usize);
+		static constexpr usize BitsPerElem = sizeof(usize) * 8;
 		static constexpr usize BitIdxMask = BitsPerElem - 1;
 
 		DynArray<usize> m_data;    ///< Data
