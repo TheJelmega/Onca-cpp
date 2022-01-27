@@ -5,15 +5,15 @@
 namespace Core
 {
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator->() const noexcept -> Pair<K, V>*
+	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator->() const noexcept -> Pair<const K, V>*
 	{
-		return &m_node->pair;
+		return reinterpret_cast<Pair<const K, V>*>(&m_node->pair);
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator*() const noexcept -> Pair<K, V>&
+	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator*() const noexcept -> Pair<const K, V>&
 	{
-		return m_node->pair;
+		return *reinterpret_cast<Pair<const K, V>*>(&m_node->pair);
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>

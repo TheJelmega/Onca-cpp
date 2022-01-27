@@ -43,8 +43,8 @@ namespace Core
 		public:
 			Iterator() noexcept = default;
 
-			auto operator->() const noexcept -> Pair<K, V>*;
-			auto operator*() const noexcept -> Pair<K, V>&;
+			auto operator->() const noexcept -> Pair<const K, V>*;
+			auto operator*() const noexcept -> Pair<const K, V>&;
 
 			auto operator++() noexcept -> Iterator;
 			auto operator++(int) noexcept -> Iterator;

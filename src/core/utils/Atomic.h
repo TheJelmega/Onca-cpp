@@ -1,5 +1,5 @@
 #pragma once
-#include "MinInclude.h"
+#include "core/MinInclude.h"
 #include <atomic>
 
 namespace Core
