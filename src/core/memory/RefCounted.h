@@ -174,7 +174,7 @@ namespace Core
 			 */
 			auto UseCount() const noexcept -> u32;
 
-			explicit operator bool() noexcept;
+			explicit operator bool() const noexcept;
 
 			auto operator->() const noexcept -> const T*;
 			auto operator->() noexcept -> T*;
@@ -275,7 +275,7 @@ namespace Core
 			 */
 			auto IsValid() const noexcept -> bool;
 
-			explicit operator bool() noexcept;
+			explicit operator bool() const noexcept;
 
 			auto operator->() const noexcept -> const T*;
 			auto operator->() noexcept -> T*;

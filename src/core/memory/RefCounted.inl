@@ -242,7 +242,7 @@ namespace Core
 		}
 
 		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		RefCounted<T, D, ControlBlock>::operator bool() noexcept
+		RefCounted<T, D, ControlBlock>::operator bool() const noexcept
 		{
 			return m_control && m_control->strongCount;
 		}
@@ -422,7 +422,7 @@ namespace Core
 		}
 
 		template <typename T, typename ControlBlock>
-		Weak<T, ControlBlock>::operator bool() noexcept
+		Weak<T, ControlBlock>::operator bool() const noexcept
 		{
 			return IsValid();
 		}
