@@ -113,27 +113,44 @@ namespace Core
 				; // Intentionally left empty
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		RefCounted<T, D, ControlBlock>::RefCounted() noexcept
+		template<typename T>
+		auto DefaultRefCountedDeleter(MemRef<T>&& memref) noexcept -> void
+		{
+			static DefaultDeleter<T> deleter;
+			deleter(Move(memref));
+		}
+
+		template <typename T, typename ControlBlock>
+		RefCounted<T, ControlBlock>::RefCounted() noexcept
 		{
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		RefCounted<T, D, ControlBlock>::RefCounted(nullptr_t) noexcept
+		template <typename T, typename ControlBlock>
+		RefCounted<T, ControlBlock>::RefCounted(nullptr_t) noexcept
 		{
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		RefCounted<T, D, ControlBlock>::RefCounted(MemRef<T>&& memref) noexcept
+		template <typename T, typename ControlBlock>
+		RefCounted<T, ControlBlock>::RefCounted(MemRef<T>&& memref) noexcept
 			: m_data(Move(memref))
+			, m_deleter(&DefaultRefCountedDeleter)
 		{
 			m_control = m_data.GetAlloc()->template Allocate<ControlBlock>();
 			AcquireAndIncRef();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		template <typename U, MemRefDeleter<U> D2>
-		RefCounted<T, D, ControlBlock>::RefCounted(RefCounted<U, D2, ControlBlock>&& rc) noexcept
+		template <typename T, typename ControlBlock>
+		RefCounted<T, ControlBlock>::RefCounted(MemRef<T>&& memref, Delegate<void(MemRef<T>&)> deleter) noexcept
+			: m_data(Move(memref))
+			, m_deleter(deleter)
+		{
+			m_control = m_data.GetAlloc()->template Allocate<ControlBlock>();
+			AcquireAndIncRef();
+		}
+
+		template <typename T, typename ControlBlock>
+		template <typename U>
+		RefCounted<T, ControlBlock>::RefCounted(RefCounted<U, ControlBlock>&& rc) noexcept
 		{
 			DecRefAndRelease();
 			m_data = Move(rc.m_data);
@@ -141,8 +158,8 @@ namespace Core
 			m_deleter = Move(rc.m_deleter);
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		RefCounted<T, D, ControlBlock>::RefCounted(const RefCounted& rc) noexcept
+		template <typename T, typename ControlBlock>
+		RefCounted<T, ControlBlock>::RefCounted(const RefCounted& rc) noexcept
 		{
 			DecRefAndRelease();
 			m_data = rc.m_data;
@@ -151,8 +168,8 @@ namespace Core
 			AcquireAndIncRef();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		RefCounted<T, D, ControlBlock>::RefCounted(RefCounted&& rc) noexcept
+		template <typename T, typename ControlBlock>
+		RefCounted<T, ControlBlock>::RefCounted(RefCounted&& rc) noexcept
 		{
 			DecRefAndRelease();
 			m_data = Move(rc.m_data);
@@ -160,14 +177,14 @@ namespace Core
 			m_deleter = Move(rc.m_deleter);
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		RefCounted<T, D, ControlBlock>::~RefCounted() noexcept
+		template <typename T, typename ControlBlock>
+		RefCounted<T, ControlBlock>::~RefCounted() noexcept
 		{
 			DecRefAndRelease();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::operator=(const RefCounted& rc) noexcept -> RefCounted&
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::operator=(const RefCounted& rc) noexcept -> RefCounted&
 		{
 			DecRefAndRelease();
 			m_data = rc.m_data;
@@ -177,8 +194,8 @@ namespace Core
 			return *this;
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::operator=(RefCounted&& rc) noexcept -> RefCounted&
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::operator=(RefCounted&& rc) noexcept -> RefCounted&
 		{
 			DecRefAndRelease();
 			m_data = Move(m_data);
@@ -187,15 +204,15 @@ namespace Core
 			return *this;
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::Release() noexcept -> MemRef<T>
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::Release() noexcept -> MemRef<T>
 		{
 			m_control->ReleaseData();
 			return Move(m_data);
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::Reset(MemRef<T>&& ref) noexcept -> void
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::Reset(MemRef<T>&& ref) noexcept -> void
 		{
 			DecRefAndRelease();
 			m_data = Move(ref);
@@ -203,98 +220,98 @@ namespace Core
 			AcquireAndIncRef();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::Swap(RefCounted& other) noexcept -> void
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::Swap(RefCounted& other) noexcept -> void
 		{
 			Algo::Swap(m_data, other.m_data);
 			Algo::Swap(m_control, other.m_control);
 			Algo::Swap(m_deleter, other.m_deleter);
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::Get() const noexcept -> const T*
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::Get() const noexcept -> const T*
 		{
 			return *m_data.Ptr();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::Get() noexcept -> T*
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::Get() noexcept -> T*
 		{
 			return *m_data.Ptr();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::GetMemRef() const noexcept -> const MemRef<T>&
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::GetMemRef() const noexcept -> const MemRef<T>&
 		{
 			return m_data;
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::GetDeleter() const noexcept -> D
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::GetDeleter() const noexcept -> Delegate<void(MemRef<T>&&)>
 		{
 			return m_deleter;
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::UseCount() const noexcept -> u32
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::UseCount() const noexcept -> u32
 		{
 			return m_control->strongCount;
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		RefCounted<T, D, ControlBlock>::operator bool() const noexcept
+		template <typename T, typename ControlBlock>
+		RefCounted<T, ControlBlock>::operator bool() const noexcept
 		{
 			return m_control && m_control->strongCount;
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::operator->() const noexcept -> const T*
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::operator->() const noexcept -> const T*
 		{
 			return m_data.Ptr();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::operator->() noexcept -> T*
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::operator->() noexcept -> T*
 		{
 			return m_data.Ptr();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::operator*() const noexcept -> const T&
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::operator*() const noexcept -> const T&
 		{
 			return *m_data.Ptr();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::operator*() noexcept -> T&
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::operator*() noexcept -> T&
 		{
 			return *m_data.Ptr();
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::operator==(const RefCounted& other) const noexcept -> bool
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::operator==(const RefCounted& other) const noexcept -> bool
 		{
 			return m_data == other.m_data;
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
+		template <typename T, typename ControlBlock>
 		template <typename ... Args>
-		auto RefCounted<T, D, ControlBlock>::Create(Args&&... args) noexcept -> RefCounted
+		auto RefCounted<T, ControlBlock>::Create(Args&&... args) noexcept -> RefCounted
 		{
 			return CreateWitAlloc(g_GlobalAlloc, Forward<Args>(args)...);
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
+		template <typename T, typename ControlBlock>
 		template <typename ... Args>
-		auto RefCounted<T, D, ControlBlock>::CreateWitAlloc(Alloc::IAllocator& alloc, Args&&... args) noexcept -> RefCounted
+		auto RefCounted<T, ControlBlock>::CreateWitAlloc(Alloc::IAllocator& alloc, Args&&... args) noexcept -> RefCounted
 		{
 			MemRef<T> memRef = alloc.Allocate<T>();
 			new (memRef.Ptr()) T{ Forward<Args>(args)... };
 			return RefCounted{ Move(memRef) };
 		}
 
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::AcquireAndIncRef() noexcept -> void
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::AcquireAndIncRef() noexcept -> void
 		{
 			if (!m_control)
 				return;
@@ -303,8 +320,8 @@ namespace Core
 			m_control->IncStrongRef();
 		}
 		
-		template <typename T, MemRefDeleter<T> D, typename ControlBlock>
-		auto RefCounted<T, D, ControlBlock>::DecRefAndRelease() noexcept -> void
+		template <typename T, typename ControlBlock>
+		auto RefCounted<T, ControlBlock>::DecRefAndRelease() noexcept -> void
 		{
 			if (!m_control)
 				return;
@@ -327,8 +344,7 @@ namespace Core
 		}
 
 		template <typename T, typename ControlBlock>
-		template <MemRefDeleter<T> D>
-		Weak<T, ControlBlock>::Weak(const RefCounted<T, D, ControlBlock>& rc) noexcept
+		Weak<T, ControlBlock>::Weak(const RefCounted<T, ControlBlock>& rc) noexcept
 			: m_data(rc.m_data)
 			, m_control(rc.m_control)
 		{

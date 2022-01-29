@@ -492,6 +492,19 @@ namespace Core
 	}
 
 	template <typename T>
+	template<EqualComparable<T> U>
+	auto DynArray<T>::Contains(const U& value) const noexcept -> bool
+	{
+		T* pBegin = m_mem.Ptr();
+		for (auto it = pBegin, end = pBegin + m_size; it != end; ++it)
+		{
+			if (*it == value)
+				return true;
+		}
+		return false;
+	}
+
+	template <typename T>
 	auto DynArray<T>::At(usize idx) const noexcept -> Optional<T>
 	{
 		if (idx < m_size) LIKELY

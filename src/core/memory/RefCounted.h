@@ -1,6 +1,7 @@
 #pragma once
 #include "MemRef.h"
 #include "core/utils/Atomic.h"
+#include "core/utils/Delegate.h"
 #include "core/utils/Utils.h"
 
 namespace Core
@@ -103,8 +104,11 @@ namespace Core
 			auto ReleaseData() noexcept -> void;
 		};
 
-		template<typename T, MemRefDeleter<T> D, typename ControlBlock>
-		struct RefCounted
+		template<typename T>
+		auto DefaultRefCountedDeleter(MemRef<T>&& memref) noexcept -> void;
+
+		template<typename T, typename ControlBlock>
+		class RefCounted
 		{
 		public:
 			/**
@@ -120,9 +124,15 @@ namespace Core
 			 * \param[in] memref MemRef
 			 */
 			RefCounted(MemRef<T>&& memref) noexcept;
+			/**
+			 * Create a ref counted pointer from a MemRef and a custom deleter
+			 * \param[in] memref MemRef
+			 * \param[in] deleter Deleter
+			 */
+			RefCounted(MemRef<T>&& memref, Delegate<void(MemRef<T>&)> deleter) noexcept;
 
-			template<typename U, MemRefDeleter<U> D2>
-			explicit RefCounted(RefCounted<U, D2, ControlBlock>&& rc) noexcept;
+			template<typename U>
+			explicit RefCounted(RefCounted<U, ControlBlock>&& rc) noexcept;
 			RefCounted(const RefCounted& rc) noexcept;
 			RefCounted(RefCounted&& rc) noexcept;
 
@@ -167,7 +177,7 @@ namespace Core
 			 * \brief Get the deleter for this unique
 			 * \return Deleter for this unique
 			 */
-			auto GetDeleter() const noexcept -> D;
+			auto GetDeleter() const noexcept -> Delegate<void(MemRef<T>&&)>;
 			/**
 			 * Get the number of ref counted pointer that reference the data
 			 * \return Use count
@@ -201,6 +211,9 @@ namespace Core
 			template<typename ...Args>
 			static auto CreateWitAlloc(Alloc::IAllocator& alloc, Args&&... args) noexcept -> RefCounted;
 		private:
+			template<typename U, typename C>
+			friend class Weak;
+
 			/**
 			 * Acquire the control block and increment the reference count of the object
 			 */
@@ -210,14 +223,15 @@ namespace Core
 			 */
 			auto DecRefAndRelease() noexcept -> void;
 
-			MemRef<T>            m_data;    ///< Data
-			MemRef<ControlBlock> m_control; ///< Control block
-			NO_UNIQUE_ADDRESS D  m_deleter; ///< Deleter
+			MemRef<T>                   m_data;    ///< Data
+			MemRef<ControlBlock>        m_control; ///< Control block
+			Delegate<void(MemRef<T>&&)> m_deleter;  ///< Deleter
 		};
 
 		template<typename T, typename ControlBlock>
-		struct Weak
+		class Weak
 		{
+		public:
 			/**
 			 * Create a null ref counted pointer
 			 */
@@ -228,10 +242,9 @@ namespace Core
 			Weak(nullptr_t) noexcept;
 			/**
 			 * Create a ref counted pointer from a MemRef
-			 * \param[in] memref MemRef
+			 * \param[in] rc Ref counted pointer
 			 */
-			template<MemRefDeleter<T> D>
-			Weak(const RefCounted<T, D, ControlBlock>& rc) noexcept;
+			Weak(const RefCounted<T, ControlBlock>& rc) noexcept;
 
 			template<typename U>
 			explicit Weak(Weak<U, ControlBlock>&& weak) noexcept;
@@ -284,6 +297,9 @@ namespace Core
 
 			auto operator==(const Weak& other) const noexcept -> bool;
 		private:
+			template<typename U, typename C>
+			friend class RefCounted;
+
 			/**
 			 * Acquire the control block and increment the reference count of the object
 			 */
@@ -298,13 +314,13 @@ namespace Core
 		};
 	}
 
-	template<typename T, MemRefDeleter<T> D = DefaultDeleter<T>>
-	using Rc = Detail::RefCounted<T, D, Detail::RefCountedControlBlock>;
+	template<typename T>
+	using Rc = Detail::RefCounted<T, Detail::RefCountedControlBlock>;
 	template<typename T>
 	using Weak = Detail::Weak<T, Detail::RefCountedControlBlock>;
 
-	template<typename T, MemRefDeleter<T> D = DefaultDeleter<T>>
-	using Arc = Detail::RefCounted<T, D, Detail::AtomicRefCountedControlBlock>;
+	template<typename T>
+	using Arc = Detail::RefCounted<T, Detail::AtomicRefCountedControlBlock>;
 	template<typename T>
 	using AWeak = Detail::Weak<T, Detail::AtomicRefCountedControlBlock>;
 

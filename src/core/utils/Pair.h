@@ -17,19 +17,31 @@ namespace Core
 		/**
 		 * Create an empty Pair
 		 */
-		constexpr Pair() noexcept requires NoThrowDefaultConstructible<T0>&& NoThrowDefaultConstructible<T1>;
+		constexpr Pair() noexcept requires NoThrowDefaultConstructible<T0> && NoThrowDefaultConstructible<T1>;
 		/**
 		 * Create a Pair with 2 values
 		 * \param first First value
 		 * \param second Second value
 		 */
-		constexpr Pair(const T0& first, const T1& second) noexcept requires CopyConstructible<T0>&& CopyConstructible<T1>;
+		constexpr Pair(const T0& first, const T1& second) noexcept requires CopyConstructible<T0> && CopyConstructible<T1>;
 		/**
 		 * Create a Pair with 2 values
 		 * \param first First value
 		 * \param second Second value
 		 */
-		constexpr Pair(T0&& first, T1&& second) noexcept requires MoveConstructible<T0>&& MoveConstructible<T1>;
+		constexpr Pair(T0&& first, const T1& second) noexcept requires MoveConstructible<T0> && CopyConstructible<T1>;
+		/**
+		 * Create a Pair with 2 values
+		 * \param first First value
+		 * \param second Second value
+		 */
+		constexpr Pair(const T0& first, T1&& second) noexcept requires CopyConstructible<T0> && MoveConstructible<T1>;
+		/**
+		 * Create a Pair with 2 values
+		 * \param first First value
+		 * \param second Second value
+		 */
+		constexpr Pair(T0&& first, T1&& second) noexcept requires MoveConstructible<T0> && MoveConstructible<T1>;
 
 		/**
 		 * Create a Pair with 2 moved values
@@ -40,7 +52,7 @@ namespace Core
 		 */
 		template<typename U0, typename U1>
 			requires ConstructableFrom<T0, U0> && ConstructableFrom<T1, U1>
-		constexpr Pair(U0&& first, const U1&& second) noexcept;
+		constexpr Pair(U0&& first, U1&& second) noexcept;
 
 		/**
 		 * Convert a Pair to this Pair

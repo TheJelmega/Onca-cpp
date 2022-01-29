@@ -265,6 +265,15 @@ namespace Core
 		 */
 		template<EqualComparable<T> U>
 		auto Find(const U& value) const noexcept -> ConstIterator;
+
+		/**
+		 * Check if the DynArray contains a value
+		 * \tparam U Type to compare with
+		 * \param[in] value Value to find
+		 * \return Whether the DynArray contains the value
+		 */
+		template<EqualComparable<T> U>
+		auto Contains(const U& value) const noexcept -> bool;
 		
 		/**
 		 * Get the element at an index

@@ -348,6 +348,14 @@ namespace Core
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
+	auto HashMap<K, V, H, C, IsMultiMap>::Insert(const K& key, V&& val) noexcept -> Pair<Iterator, bool> requires CopyConstructible<K>
+	{
+		Reserve(m_size + 1);
+		u64 hash = m_hash(key);
+		return InsertNode<true>(CreateNode(hash, Pair<K, V>{ key, Move(val) }));
+	}
+
+	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Insert(K&& key, V&& val) noexcept -> Pair<Iterator, bool>
 	{
 		Reserve(m_size + 1);
@@ -873,35 +881,24 @@ namespace Core
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::RemoveNode(NodeRef node) noexcept -> void
 	{
-		auto [found, prev, next] = FindForInsertOrErase(node->hash, node->pair.first);
-		if (prev)
+		u64 mask = u64(m_bucketCount) - 1;
+		usize bucketIdx = node->hash & mask;
+		NodeRef bucket = m_buckets.Ptr()[bucketIdx];
+
+		if (bucket == node)
 		{
-			prev->next = next;
-			NodeRef tmp = node;
-
-			u64 mask = u64(m_bucketCount) - 1;
-			usize bucketIdx = node->hash & mask;
-			NodeRef bucketNode = *(m_buckets.Ptr() + bucketIdx);
-			if (node == bucketNode && next && next->hash & mask == bucketIdx)
-			{
-				new (m_buckets.Ptr() + bucketIdx) NodeRef{ Move(next) };
-			}
-
-			tmp.Dealloc();
+			m_buckets.Ptr()[bucketIdx] = node->next;
 		}
 		else
 		{
-			NodeRef tmp = node;
-
-			u64 mask = u64(m_bucketCount) - 1;
-			usize bucketIdx = node->hash & mask;
-			if (next && (next->hash & mask) == bucketIdx)
-			{
-				new (m_buckets.Ptr() + bucketIdx) NodeRef{ Move(next) };
-			}
-
-			tmp.Dealloc();
+			NodeRef prev = bucket;
+			while (prev->next != node)
+				prev = prev->next;
+			prev->next = node->next;
 		}
+
+		node->pair.~Pair();
+		node.Dealloc();
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
