@@ -44,6 +44,7 @@ namespace Core::Alloc
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
+		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	private:
 		MemRef<u8> m_mem;  ///< Managed memory

@@ -53,4 +53,12 @@ namespace Core::Alloc
 	{
 		UNUSED(mem);
 	}
+
+	template <usize Size, usize BaseAlignment>
+	bool LinearAllocator<Size, BaseAlignment>::OwnsInternal(const MemRef<u8>& mem) noexcept
+	{
+		u8* ptr = mem.Ptr();
+		u8* buffer = m_mem.Ptr();
+		return ptr >= buffer && ptr < buffer + m_mem.Size();
+	}
 }

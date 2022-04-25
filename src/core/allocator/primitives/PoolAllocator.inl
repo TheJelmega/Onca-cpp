@@ -92,4 +92,12 @@ namespace Core::Alloc
 		m_stats.RemoveAlloc(size, overhead, mem.IsBackingMem());
 #endif
 	}
+
+	template <usize BlockSize, usize NumBlocks>
+	bool PoolAllocator<BlockSize, NumBlocks>::OwnsInternal(const MemRef<u8>& mem) noexcept
+	{
+		u8* ptr = mem.Ptr();
+		u8* buffer = m_mem.Ptr();
+		return ptr >= buffer && ptr < buffer + m_mem.Size();
+	}
 }

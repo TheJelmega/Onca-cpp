@@ -60,4 +60,12 @@ namespace Core::Alloc
 		m_stats.RemoveAlloc(size, padding, mem.IsBackingMem());
 #endif
 	}
+
+	template <usize Size, usize MaxAlignment>
+	bool InPlaceStackAllocator<Size, MaxAlignment>::OwnsInternal(const MemRef<u8>& mem) noexcept
+	{
+		u8* ptr = mem.Ptr();
+		u8* buffer = m_mem.Ptr();
+		return ptr >= buffer && ptr < buffer + m_mem.Size();
+	}
 }

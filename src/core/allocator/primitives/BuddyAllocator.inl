@@ -70,11 +70,19 @@ namespace Core::Alloc
 		m_stats.AddAlloc(mem.Size(), overHead, mem.IsBackingMem());
 #endif
 	}
-	
+
+	template <usize Size, u8 MaxSubDivisions>
+	bool BuddyAllocator<Size, MaxSubDivisions>::OwnsInternal(const MemRef<u8>& mem) noexcept
+	{
+		u8* ptr = mem.Ptr();
+		u8* buffer = m_mem.Ptr();
+		return ptr >= buffer && ptr < buffer + m_mem.Size();
+	}
+
 	template<usize Size, u8 MaxSubDivisions>
 	auto BuddyAllocator<Size, MaxSubDivisions>::CalculateSizeClassAndBlockSize(usize size) noexcept -> Tuple<usize, usize>
 	{
-		const usize sizeClass = MaxSubDivisions - Math::Log2((size + SmallestBlockSize - 1) / SmallestBlockSize) - 1;
+		const usize sizeClass = usize(MaxSubDivisions - Math::Log2((size + SmallestBlockSize - 1) / SmallestBlockSize) - 1);
 		const usize sizeClassBlockSize = Size >> sizeClass;
 		return { sizeClass, sizeClassBlockSize };
 	}

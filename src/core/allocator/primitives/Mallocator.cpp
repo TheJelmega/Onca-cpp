@@ -54,4 +54,9 @@ namespace Core::Alloc
 		m_stats.RemoveAlloc(mem.Size(), mem.Align(), mem.IsBackingMem());
 #endif
 	}
+
+	bool Mallocator::OwnsInternal(const MemRef<u8>& mem) noexcept
+	{
+		return true;
+	}
 }

@@ -82,7 +82,15 @@ namespace Core::Alloc
 		m_stats.RemoveAlloc(size, overhead, mem.IsBackingMem());
 #endif
 	}
-	
+
+	template <usize BlockSize, usize NumBlocks>
+	bool BitmapAllocator<BlockSize, NumBlocks>::OwnsInternal(const MemRef<u8>& mem) noexcept
+	{
+		u8* ptr = mem.Ptr();
+		u8* buffer = m_mem.Ptr();
+		return ptr >= buffer && ptr < buffer + m_mem.Size();
+	}
+
 	template<usize BlockSize, usize NumBlocks>
 	auto BitmapAllocator<BlockSize, NumBlocks>::MarkBits(usize startIdx, usize numBlocks, bool set) noexcept -> void
 	{

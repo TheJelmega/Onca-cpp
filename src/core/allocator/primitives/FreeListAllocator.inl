@@ -73,6 +73,14 @@ namespace Core::Alloc
 #endif
 	}
 
+	template <usize Size>
+	bool FreeListAllocator<Size>::OwnsInternal(const MemRef<u8>& mem) noexcept
+	{
+		u8* ptr = mem.Ptr();
+		u8* buffer = m_mem.Ptr();
+		return ptr >= buffer && ptr < buffer + m_mem.Size();
+	}
+
 	template<usize Size>
 	auto FreeListAllocator<Size>::AllocFirst(usize size, u16 align, bool isBacking) noexcept -> u8*
 	{
@@ -80,17 +88,18 @@ namespace Core::Alloc
 
 		const usize mask = align - 1;
 
-		while (m_head)
+		u8* pHead = m_head;
+		while (pHead)
 		{
-			FreeHeader* pHeader = reinterpret_cast<FreeHeader*>(m_head);
+			FreeHeader* pHeader = reinterpret_cast<FreeHeader*>(pHead);
 
-			u8* pAllocStart = m_head + sizeof(AllocHeader);
+			u8* pAllocStart = pHead + sizeof(AllocHeader);
 			const usize offset = usize(pAllocStart) & mask;
 			usize padding = sizeof(AllocHeader) + (offset == 0 ? 0 : align - offset);
 			const usize paddedSize = size + padding;
-			u8* ptr = m_head + padding;
+			u8* ptr = pHead + padding;
 
-			if  (paddedSize < pHeader->size)
+			if (paddedSize < pHeader->size)
 			{
 				const usize newHeaderSize = pHeader->size - paddedSize;
 
@@ -98,7 +107,7 @@ namespace Core::Alloc
 				if (newHeaderSize > sizeof(FreeHeader))
 				{
 					u8* next = pHeader->next;
-					newLoc = m_head + paddedSize;
+					newLoc = pHead + paddedSize;
 
 					FreeHeader* pNewHeader = reinterpret_cast<FreeHeader*>(newLoc);
 					pNewHeader->next = next;
@@ -138,8 +147,8 @@ namespace Core::Alloc
 				return ptr;
 			}
 
-			prevHead = m_head;
-			m_head = pHeader->next;
+			prevHead = pHead;
+			pHead = pHeader->next;
 		}
 		return nullptr;
 	}
