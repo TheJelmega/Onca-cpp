@@ -450,6 +450,14 @@ namespace Core::Math
 		template<usize Idx0, usize Idx1>
 		constexpr auto Swizzle() const noexcept -> Vec2;
 
+		/**
+		 * Get a vector with swizzled components
+		 * \param[in] idx0 Index of first component
+		 * \param[in] idx1 Index of second component
+		 * \return Swizzled vector
+		 */
+		constexpr auto Swizzle(u8 idx0, u8 idx1) const noexcept -> Vec2;
+
 #define SWIZZLE_DECL(xy, uv, st) \
 		constexpr auto xy() const noexcept -> Vec2; \
 		constexpr auto uv() const noexcept -> Vec2; \

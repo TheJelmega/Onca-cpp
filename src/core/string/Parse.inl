@@ -137,7 +137,7 @@ namespace Core
 	template<typename T>
 	auto Parse(const String& str) noexcept -> T
 	{
-		STATIC_ASSERT(false, "Cannot parse type");
+		ASSERT(false, "Cannot parse type");
 		return T{};
 	}
 

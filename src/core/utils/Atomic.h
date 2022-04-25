@@ -27,6 +27,8 @@ namespace Core
 		STATIC_ASSERT(sizeof(T) <= sizeof(usize), "Cannot manage a type larger than usize");
 		STATIC_ASSERT(std::atomic<T>::is_always_lock_free, "Underlying atomic implementation needs to be always lock free");
 	public:
+		DISABLE_COPY(Atomic);
+
 		/**
 		 * Initialize the atomic with it's default value 'T{}'
 		 */

@@ -14,13 +14,13 @@ namespace Core
 	public:
 		DEFINE_OPAQUE_HANDLE(NativeHandle);
 
-		DynLib();
+		DISABLE_COPY(DynLib);
 
-		DynLib(const DynLib&) = delete;
+		DynLib();
+		
 		DynLib(DynLib&& other) noexcept;
 		~DynLib();
-
-		auto operator=(const DynLib&) = delete;
+		
 		auto operator=(DynLib&& other) noexcept -> DynLib&;
 
 		/**

@@ -130,7 +130,7 @@ namespace std
 		else if constexpr (Idx == 1)
 			return pair.second;
 		else
-			STATIC_ASSERT(false, "Index out of range");
+			STATIC_ASSERT(Idx >= 2, "Index out of range");
 	}
 
 	template<usize Idx, typename T0, typename T1>
@@ -141,7 +141,7 @@ namespace std
 		else if constexpr (Idx == 1)
 			return pair.second;
 		else
-			STATIC_ASSERT(false, "Index out of range");
+			STATIC_ASSERT(Idx < 2, "Index out of range");
 	}
 
 	template<usize Idx, typename T0, typename T1>
@@ -152,7 +152,7 @@ namespace std
 		else if constexpr (Idx == 1)
 			return pair.second;
 		else
-			STATIC_ASSERT(false, "Index out of range");
+			STATIC_ASSERT(Idx < 2, "Index out of range");
 	}
 
 	template<usize Idx, typename T0, typename T1>
@@ -163,6 +163,6 @@ namespace std
 		else if constexpr (Idx == 1)
 			return pair.second;
 		else
-			STATIC_ASSERT(false, "Index out of range");
+			STATIC_ASSERT(Idx < 2, "Index out of range");
 	}
 }

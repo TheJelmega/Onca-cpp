@@ -23,6 +23,9 @@ namespace Core
 	class CORE_API Logger
 	{
 	public:
+		DISABLE_COPY(Logger);
+		DISABLE_MOVE(Logger);
+
 		/**
 		 * Create a console only logger
 		 */
@@ -33,12 +36,6 @@ namespace Core
 		 * \param[in] logToConsole Whether to log the output to the console
 		 */
 		Logger(const FileSystem::Path& filePath, bool logToConsole = true) noexcept;
-
-		Logger(const Logger&) = delete;
-		Logger(Logger&&) = delete;
-
-		auto operator=(const Logger&) = delete;
-		auto operator=(Logger&) = delete;
 
 		/**
 		 * Shutdown the logger

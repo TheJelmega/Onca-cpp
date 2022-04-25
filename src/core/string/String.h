@@ -188,7 +188,7 @@ namespace Core
 		 * \param codepoint Codepoint to assign
 		 * \param count Number of codepoints to assign
 		 */
-		auto  Assign(UCodepoint codepoint, usize count) noexcept -> void;
+		auto Assign(UCodepoint codepoint, usize count) noexcept -> void;
 		/**
 		 * Assign a substring of another String to this String
 		 * \param other String to get substring from

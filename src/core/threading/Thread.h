@@ -70,16 +70,16 @@ namespace Core::Threading
 	public:
 		DEFINE_OPAQUE_HANDLE(NativeHandle);
 
+		DISABLE_COPY(Thread);
+
 		/**
 		 * Create an invalid thread
 		 */
 		Thread() noexcept;
-
-		Thread(const Thread&) = default;
+		
 		Thread(Thread&& other) noexcept;
 		~Thread() noexcept;
-
-		auto operator=(const Thread&) = delete;
+		
 		auto operator=(Thread&& other) noexcept -> Thread&;
 
 		/**

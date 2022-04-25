@@ -286,11 +286,10 @@ namespace Core::Threading
 		class ManualLock
 		{
 		public:
+			DISABLE_COPY(ManualLock);
+
 			explicit ManualLock(T& ManualLock, Others&... others) noexcept;
 			~ManualLock() noexcept;
-
-			ManualLock(const ManualLock&) = delete;
-			auto operator=(const ManualLock&) = delete;
 
 			/**
 			 * Lock all lockable objects
@@ -314,11 +313,10 @@ namespace Core::Threading
 		class ManualLock<T>
 		{
 		public:
+			DISABLE_COPY(ManualLock);
+
 			explicit ManualLock(T& ManualLock) noexcept;
 			~ManualLock() noexcept;
-
-			ManualLock(const ManualLock&) = delete;
-			auto operator=(const ManualLock&) = delete;
 
 			/**
 			 * Lock all lockable objects
@@ -347,11 +345,10 @@ namespace Core::Threading
 	class Lock
 	{
 	public:
+		DISABLE_COPY(Lock);
+
 		explicit Lock(T& lock, Others&... others) noexcept;
 		~Lock() noexcept;
-
-		Lock(const Lock&) = delete;
-		auto operator=(const Lock&) = delete;
 	private:
 		Detail::ManualLock<T, Others...> m_lock;
 	};

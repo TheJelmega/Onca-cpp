@@ -98,6 +98,20 @@ namespace Core
 		using I = UnderlyingType<E>;
 		return { E(I(a) | I(b)) };
 	}
+
+	template<Detail::SupportsEnumFlagOps E>
+	constexpr auto operator&(E a, E b) noexcept -> Flags<E>
+	{
+		using I = UnderlyingType<E>;
+		return { E(I(a) & I(b)) };
+	}
+
+	template<Detail::SupportsEnumFlagOps E>
+	constexpr auto operator~(E a) noexcept -> Flags<E>
+	{
+		using I = UnderlyingType<E>;
+		return { E(~I(1)) };
+	}
 	
 }
 

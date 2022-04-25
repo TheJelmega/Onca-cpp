@@ -473,6 +473,16 @@ namespace Core::Math
 		template<usize Idx0, usize Idx1, usize Idx2, usize Idx3>
 		constexpr auto Swizzle() const noexcept -> Vec4;
 
+		/**
+		 * Get a vector with swizzled components
+		 * \param[in] idx0 Index of first component
+		 * \param[in] idx1 Index of second component
+		 * \param[in] idx2 Index of third component
+		 * \param[in] idx3 Index of fourth component
+		 * \return Swizzled vector
+		 */
+		constexpr auto Swizzle(u8 idx0, u8 idx1, u8 idx2, u8 idx3) const noexcept -> Vec4;
+
 #define CONCAT_SWIZZLE_(x,y,z,w) x ## y ## z ## w
 #define CONCAT_SWIZZLE(x,y,z,w) CONCAT_SWIZZLE_(x,y,z,w)
 

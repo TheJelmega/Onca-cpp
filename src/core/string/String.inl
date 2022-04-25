@@ -260,6 +260,7 @@ namespace Core
 	{
 		m_data = other.m_data;
 		m_length = other.m_length;
+		NullTerminate();
 		return *this;
 	}
 

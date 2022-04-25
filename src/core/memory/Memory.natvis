@@ -22,4 +22,20 @@
 		</Expand>
 	</Type>
 
+	<Type Name="Core::Detail::RefCounted&lt;*,*&gt;">
+		<DisplayString Condition="m_data.m_pAddr">{m_data.m_pAddr}</DisplayString>
+		<DisplayString>&lt;NULL&gt;</DisplayString>
+		<Expand>
+			<Item Name="[ptr]">m_data.m_pAddr</Item>
+		</Expand>
+	</Type>
+
+	<Type Name="Core::Detail::Weak&lt;*&gt;">
+		<DisplayString Condition="m_data.m_pAddr">weak {{ {m_data.m_pAddr} }}</DisplayString>
+		<DisplayString>&lt;NULL&gt;</DisplayString>
+		<Expand>
+			<Item Name="[ptr]">m_data.m_pAddr</Item>
+		</Expand>
+	</Type>
+
 </AutoVisualizer>

@@ -83,10 +83,7 @@ namespace Core
 		TriviallyCopyable<T>;
 
 	template<typename T, typename... Args>
-	concept ConstructableFrom = requires (Args... args)
-	{
-		{ T{ args... } } noexcept;
-	};
+	concept ConstructableFrom = std::constructible_from<T, Args...>;
 
 
 	template<typename T, typename U>
@@ -195,7 +192,7 @@ namespace Core
 	template<typename T, typename R, typename... Args>
 	concept Functor =
 		DefaultConstructible<T> &&
-		requires(T t, Args... args)
+		requires(Args... args)
 	{
 		{ T{}(args...) } noexcept -> SameAs<R>;
 	};
@@ -206,4 +203,11 @@ namespace Core
 	concept Lambda =
 		SameAs<T, Decay<T>> &&
 		!IsPointer<T>;
+
+	template<typename T, typename R, typename... Args>
+	concept Callable =
+		requires(T t, Args... args)
+	{
+		{ t(args...) } -> SameAs<R>;
+	};
 }

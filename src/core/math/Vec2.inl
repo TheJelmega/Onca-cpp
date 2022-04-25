@@ -810,6 +810,25 @@ namespace Core::Math
 		return res;
 	}
 
+	template <Numeric Ty>
+	constexpr auto Vec2<Ty>::Swizzle(u8 idx0, u8 idx1) const noexcept -> Vec2
+	{
+		Vec2 res;
+		switch (idx0)
+		{
+		case X: res.x = x; break;
+		case Y: res.x = y; break;
+		default: break;
+		}
+		switch (idx1)
+		{
+		case X: res.y = x; break;
+		case Y: res.y = y; break;
+		default: break;
+		}
+		return res;
+	}
+
 #define SWIZZLE_IMPL(xy, uv, st, x, y) \
 	template<Numeric Ty> constexpr auto Vec2<Ty>::xy() const noexcept -> Vec2<Ty> { return { x, y }; } \
 	template<Numeric Ty> constexpr auto Vec2<Ty>::uv() const noexcept -> Vec2<Ty> { return { x, y }; } \

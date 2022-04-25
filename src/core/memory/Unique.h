@@ -12,6 +12,8 @@ namespace Core
 	class Unique
 	{
 	public:
+		DISABLE_COPY(Unique);
+
 		/**
 		 * Create a null unique pointer
 		 */
@@ -29,7 +31,6 @@ namespace Core
 		template<typename U, MemRefDeleter<U> D2>
 		Unique(Unique<U, D2>&& unique);
 		Unique(Unique&&) noexcept = default;
-		Unique(const Unique&) = delete;
 
 		~Unique() noexcept;
 
@@ -38,7 +39,6 @@ namespace Core
 		auto operator=(Unique<U, D2>&& unique) noexcept -> Unique<T, D>&;
 		
 		auto operator=(Unique&&) noexcept -> Unique<T, D>& = default;
-		auto operator=(const Unique&) -> Unique<T, D>& = delete;
 
 		operator bool() const noexcept;
 
@@ -92,7 +92,7 @@ namespace Core
 		/**
 		 * Create a Unique with a constructed type and the global allocator
 		 * \tparam Args Argument types
-		 * \param[in] args Arguments to constuct type
+		 * \param[in] args Arguments to construct type
 		 * \return Unique with the constructed type
 		 */
 		template<typename ...Args>

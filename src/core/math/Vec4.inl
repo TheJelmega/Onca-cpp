@@ -1245,7 +1245,46 @@ namespace Core::Math
 		}
 		return res;
 	}
-	
+
+	template <Numeric Ty>
+	constexpr auto Vec4<Ty>::Swizzle(u8 idx0, u8 idx1, u8 idx2, u8 idx3) const noexcept -> Vec4
+	{
+		Vec4 res;
+		switch (idx0)
+		{
+		case X: res.x = x; break;
+		case Y: res.x = y; break;
+		case Z: res.x = z; break;
+		case W: res.x = w; break;
+		default: break;
+		}
+		switch (idx1)
+		{
+		case X: res.y = x; break;
+		case Y: res.y = y; break;
+		case Z: res.y = z; break;
+		case W: res.y = w; break;
+		default: break;
+		}
+		switch (idx2)
+		{
+		case X: res.z = x; break;
+		case Y: res.z = y; break;
+		case Z: res.z = z; break;
+		case W: res.z = w; break;
+		default: break;
+		}
+		switch (idx3)
+		{
+		case X: res.w = x; break;
+		case Y: res.w = y; break;
+		case Z: res.w = z; break;
+		case W: res.w = w; break;
+		default: break;
+		}
+		return res;
+	}
+
 #define CONCAT_SWIZZLE_(x,y,z,w) x ## y ## z ## w
 #define CONCAT_SWIZZLE(x,y,z,w) CONCAT_SWIZZLE_(x,y,z,w)
 

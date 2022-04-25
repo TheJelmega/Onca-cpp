@@ -10,8 +10,7 @@ namespace Core::Threading
 	class LockedGuard
 	{
 	public:
-		LockedGuard(const LockedGuard&) = delete;
-		auto operator=(const LockedGuard&) = delete;
+		DISABLE_COPY(LockedGuard);
 
 		LockedGuard(LockedGuard&& other) noexcept;
 		auto operator=(LockedGuard&& other) noexcept -> LockedGuard&;

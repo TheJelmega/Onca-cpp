@@ -40,7 +40,7 @@ namespace Core
 	template <EnumType E>
 	constexpr auto Flags<E>::operator~() const noexcept -> Flags
 	{
-		return { ~m_data };
+		return { I(~m_data) };
 	}
 
 	template <EnumType E>

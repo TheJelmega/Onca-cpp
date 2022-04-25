@@ -66,13 +66,13 @@ namespace Core
 	public:
 		DEFINE_OPAQUE_HANDLE(NativeHandle);
 
-		Process();
+		DISABLE_COPY(Process);
 
-		Process(const Process&) = delete;
+		Process();
+		
 		Process(Process&& other) noexcept;
 		~Process();
-
-		auto operator=(const Process&) = delete;
+		
 		auto operator=(Process&& other) noexcept -> Process&;
 
 		/**

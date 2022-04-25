@@ -136,6 +136,7 @@ namespace Core
 			, m_deleter(&DefaultRefCountedDeleter)
 		{
 			m_control = m_data.GetAlloc()->template Allocate<ControlBlock>();
+			new (m_control.Ptr()) ControlBlock{};
 			AcquireAndIncRef();
 		}
 
@@ -145,6 +146,7 @@ namespace Core
 			, m_deleter(deleter)
 		{
 			m_control = m_data.GetAlloc()->template Allocate<ControlBlock>();
+			new (m_control.Ptr()) ControlBlock{};
 			AcquireAndIncRef();
 		}
 
@@ -198,9 +200,9 @@ namespace Core
 		auto RefCounted<T, ControlBlock>::operator=(RefCounted&& rc) noexcept -> RefCounted&
 		{
 			DecRefAndRelease();
-			m_data = Move(m_data);
-			m_control = Move(m_control);
-			m_deleter = Move(m_deleter);
+			m_data = Move(rc.m_data);
+			m_control = Move(rc.m_control);
+			m_deleter = Move(rc.m_deleter);
 			return *this;
 		}
 
@@ -480,6 +482,9 @@ namespace Core
 		template <typename T, typename ControlBlock>
 		auto Weak<T, ControlBlock>::AcquireAndIncRef() noexcept -> void
 		{
+			if (!m_control)
+				return;
+
 			m_control->Acquire();
 			m_control->IncWeakRef();
 		}
@@ -487,6 +492,9 @@ namespace Core
 		template <typename T, typename ControlBlock>
 		auto Weak<T, ControlBlock>::DecRefAndRelease() noexcept -> void
 		{
+			if (!m_control)
+				return;
+
 			m_control->DecWeakRef();
 			if (m_control->Release())
 				m_control.Dealloc();

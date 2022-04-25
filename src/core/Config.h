@@ -118,6 +118,14 @@
 #	define IF_NOT_CONSTEVAL if (!std::is_constant_evaluated())
 #endif
 
+#define DISABLE_COPY(type) \
+	type(const type&) = delete; \
+	auto operator=(const type&) = delete
+
+#define DISABLE_MOVE(type) \
+	type(type&&) = delete; \
+	auto operator=(type&&) = delete
+
 /**
  * \def EXPORT_API
  * Defines dynamic library linkage for export
