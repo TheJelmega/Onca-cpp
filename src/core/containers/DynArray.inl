@@ -309,6 +309,28 @@ namespace Core
 	}
 
 	template <typename T>
+	auto DynArray<T>::AddUnique(const T& val) noexcept -> bool requires CopyConstructible<T>
+	{
+		if (!Contains(val))
+		{
+			Add(val);
+			return true;
+		}
+		return false;
+	}
+
+	template <typename T>
+	auto DynArray<T>::AddUnique(T&& val) noexcept -> bool
+	{
+		if (!Contains(val))
+		{
+			Add(Move(val));
+			return  true;
+		}
+		return false;
+	}
+
+	template <typename T>
 	template <typename ...Args>
 		requires ConstructableFrom<T, Args...>
 	auto DynArray<T>::EmplaceBack(Args&&... args) noexcept -> void
@@ -442,7 +464,7 @@ namespace Core
 	auto DynArray<T>::Erase(ConstIterator& it, usize count) noexcept -> void
 	{
 		const usize offset = usize(it - m_mem.Ptr());
-		ASSERT(offset <= m_size, "Iterator out of range");
+		ASSERT(offset < m_size, "Iterator out of range");
 
 		const usize maxCount = m_size - offset;
 		count = maxCount < count ? maxCount : count;
@@ -460,35 +482,124 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Erase(ConstIterator& begin, const Iterator& end) noexcept -> void
+	auto DynArray<T>::Erase(ConstIterator& begin, ConstIterator& end) noexcept -> void
 	{
 		Erase(begin, usize(end - begin));
 	}
 
 	template <typename T>
 	template <EqualComparable<T> U>
+	auto DynArray<T>::Erase(const U& val, bool onlyFirst) noexcept -> void
+	{
+		if (onlyFirst)
+		{
+			auto it = Find(val);
+			if (it != End())
+				Erase(it);
+		}
+		else
+		{
+			auto it = Find(val);
+			while (it != End())
+			{
+				Erase(it);
+				it = Find(val);
+			}
+		}
+	}
+
+	template <typename T>
+	template <Callable<bool, const T&> F>
+	auto DynArray<T>::EraseIf(F fun) noexcept -> void
+	{
+		for (auto it = Begin(); it != End();)
+		{
+			if (fun(*it))
+				Erase(it);
+			else
+				++it;
+		}
+	}
+
+	template <typename T>
+	auto DynArray<T>::Extract(ConstIterator& it) noexcept -> T
+	{
+		const usize offset = usize(it - m_mem.Ptr());
+		ASSERT(offset < m_size, "Iterator out of range");
+
+		T* pIt = const_cast<T*>(it);
+		T tmp = Move(*pIt);
+
+		const usize moveSize = m_size - offset - 1;
+		if (moveSize)
+			MemMove(pIt, pIt + 1, moveSize * sizeof(T));
+		--m_size;
+
+		return tmp;
+	}
+
+	template <typename T>
+	auto DynArray<T>::Extract(usize idx) noexcept -> T
+	{
+		ASSERT(idx < m_size, "Index out of range");
+
+		T* pIt = m_mem.Ptr() + idx;
+		T tmp = Move(*pIt);
+
+		const usize moveSize = m_size - idx - 1;
+		if (moveSize)
+			MemMove(pIt, pIt + 1, moveSize * sizeof(T));
+		--m_size;
+
+		return tmp;
+	}
+
+	template <typename T>
+	template <EqualComparable<T> U>
 	auto DynArray<T>::Find(const U& value) noexcept -> Iterator
 	{
-		T* pBegin = m_mem.Ptr();
-		for (auto it = pBegin, end = pBegin + m_size; it != end; ++it)
+		for (auto it = Begin(), end = End(); it != end; ++it)
 		{
 			if (*it == value)
 				return it;
 		}
-		return pBegin + m_size;
+		return End();
 	}
 
 	template <typename T>
 	template <EqualComparable<T> U>
 	auto DynArray<T>::Find(const U& value) const noexcept -> ConstIterator
 	{
-		T* pBegin = m_mem.Ptr();
-		for (auto it = pBegin, end = pBegin + m_size; it != end; ++it)
+		for (auto it = Begin(), end = End(); it != end; ++it)
 		{
 			if (*it == value)
 				return it;
 		}
-		return pBegin + m_size;
+		return End();
+	}
+
+	template <typename T>
+	template <Callable<bool, const T&> F>
+	auto DynArray<T>::FindIf(F fun) noexcept -> Iterator
+	{
+		for (auto it = Begin(), end = End(); it != end; ++it)
+		{
+			if (fun(*it))
+				return it;
+		}
+		return End();
+	}
+
+	template <typename T>
+	template <Callable<bool, const T&> F>
+	auto DynArray<T>::FindIf(F fun) const noexcept -> ConstIterator
+	{
+		for (auto it = Begin(), end = End(); it != end; ++it)
+		{
+			if (fun(*it))
+				return it;
+		}
+		return End();
 	}
 
 	template <typename T>
@@ -499,6 +610,18 @@ namespace Core
 		for (auto it = pBegin, end = pBegin + m_size; it != end; ++it)
 		{
 			if (*it == value)
+				return true;
+		}
+		return false;
+	}
+
+	template <typename T>
+	template <Callable<bool, const T&> F>
+	auto DynArray<T>::ContainsIf(F fun) const noexcept -> bool
+	{
+		for (auto it = Begin(), end = End(); it != end; ++it)
+		{
+			if (fun(*it))
 				return true;
 		}
 		return false;

@@ -57,12 +57,11 @@ namespace Core
 		const usize minElems = Math::Min(DataSize(), other.DataSize());
 		for (usize i = 0; i < minElems; ++i)
 			res.m_data[i] = m_data[i] | other.m_data[i];
-
-		const usize byteOffset = minElems * sizeof(usize);
+		
 		if (DataSize() > minElems)
-			MemCpy(res.Data() + byteOffset, Data() + byteOffset, (DataSize() - minElems) * sizeof(usize));
+			MemCpy(res.Data() + minElems, Data() + minElems, (DataSize() - minElems) * sizeof(usize));
 		else if (other.DataSize() > minElems)
-			MemCpy(res.Data() + byteOffset, other.Data() + byteOffset, (other.DataSize() - minElems) * sizeof(usize));
+			MemCpy(res.Data() + minElems, other.Data() + minElems, (other.DataSize() - minElems) * sizeof(usize));
 		return res;
 	}
 
@@ -73,12 +72,11 @@ namespace Core
 		const usize minElems = Math::Min(DataSize(), other.DataSize());
 		for (usize i = 0; i < minElems; ++i)
 			res.m_data[i] = m_data[i] ^ other.m_data[i];
-
-		const usize byteOffset = minElems * sizeof(usize);
+		
 		if (DataSize() > minElems)
-			MemCpy(res.Data() + byteOffset, Data() + byteOffset, DataSize() - minElems);
+			MemCpy(res.Data() + minElems, Data() + minElems, DataSize() - minElems);
 		else if (other.DataSize() > minElems)
-			MemCpy(res.Data() + byteOffset, other.Data() + byteOffset, other.DataSize() - minElems);
+			MemCpy(res.Data() + minElems, other.Data() + minElems, other.DataSize() - minElems);
 		return res;
 	}
 
@@ -120,8 +118,7 @@ namespace Core
 
 		if (numOtherElems > numElems)
 		{
-			const usize byteOffset = minElems * sizeof(usize);
-			MemCpy(Data() + byteOffset, other.Data() + byteOffset, (numOtherElems - numElems) * sizeof(usize));
+			MemCpy(Data() + minElems, other.Data() + minElems, (numOtherElems - numElems) * sizeof(usize));
 		}
 		else
 		{

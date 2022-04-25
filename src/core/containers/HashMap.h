@@ -27,6 +27,8 @@ namespace Core
 		 */
 		struct Node
 		{
+			Node() : hash(0) {}
+
 			MemRef<Node> next; ///< Reference to next node in the bucket
 			u64          hash; ///< Hash of the key
 			Pair<K, V>   pair; ///< Key-value pair
@@ -291,6 +293,13 @@ namespace Core
 		 * \return Number of elements removed
 		 */
 		auto Erase(const K& key) noexcept -> usize;
+		/**
+		 * Erase all elements for which the functor return true
+		 * \tparam F Functor type
+		 * \param[in] fun Functor
+		 */
+		template<Callable<bool, const K&, const V&> F>
+		auto EraseIf(F fun) noexcept -> void;
 
 		/**
 		 * Get an iterator to the elements with a key
@@ -552,7 +561,7 @@ namespace Core
 		 * \param[in] key Key to find
 		 * \return Iterator to the found element (first element in case of a MultiMap), or to end when the key wasn't found
 		 */
-		auto FindWithHash(u64 hash, const K& key) const noexcept -> Iterator;
+		auto FindInternal(const K& key) const noexcept -> Iterator;
 		/**
 		 * Get an iterator to the elements with a key
 		 * \tparam K2 Type of a value that can be compared to K
@@ -593,7 +602,7 @@ namespace Core
 		MemRef<NodeRef>     m_buckets;       ///< Managed memory with buckets
 		usize               m_bucketCount;   ///< Number of buckets
 		usize               m_size;          ///< Number of elements
-		float               m_maxLoadFactor; ///< Maximum load factor
+		f32                 m_maxLoadFactor; ///< Maximum load factor
 		NO_UNIQUE_ADDRESS H m_hash;          ///< Hasher for keys
 		NO_UNIQUE_ADDRESS C m_comp;          ///< Comparator for keys
 	};

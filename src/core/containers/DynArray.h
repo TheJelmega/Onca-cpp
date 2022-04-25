@@ -15,7 +15,7 @@ namespace Core
 	class DynArray
 	{
 		// static assert to get around incomplete type issues when a class can return a DynArray of itself
-		STATIC_ASSERT(Movable<T>, "Type needs to be move constructable to be used in a DynArray");
+		STATIC_ASSERT(Movable<T>, "Type needs to be moveable to be used in a DynArray");
 	public:
 		using Iterator = T*;
 		using ConstIterator = const T* const;
@@ -150,6 +150,19 @@ namespace Core
 		auto Add(DynArray&& other) -> void;
 
 		/**
+		 * Add a unique element to the DynArray (only add when not in the DynArray)
+		 * \param[in] val Element to add
+		 * \return Whether the value was added
+		 */
+		auto AddUnique(const T& val) noexcept -> bool requires CopyConstructible<T>;
+		/**
+		 * Add a unique element to the DynArray (only add when not in the DynArray)
+		 * \param[in] val Element to add
+		 * \return Whether the value was added
+		 */
+		auto AddUnique(T&& val) noexcept -> bool;
+
+		/**
 		 * Emplace an element at the back of the DynArray
 		 * \tparam Args Type of arguments
 		 * \param[in] args Arguments
@@ -247,13 +260,41 @@ namespace Core
 		 * \param[in] begin Iterator to first element to erase
 		 * \param[in] end Iterator to last element to erase
 		 */
-		auto Erase(ConstIterator& begin, const Iterator& end) noexcept -> void;
+		auto Erase(ConstIterator& begin, ConstIterator& end) noexcept -> void;
+		/**
+		 * Remove all occurrences that are equal to a given value from the DynArray
+		 * \tparam U Type to compare with
+		 * \param[in] val Value to remove
+		 * \param[in] onlyFirst Whether to only remove the first occurrence of the value
+		 */
+		template<EqualComparable<T> U>
+		auto Erase(const U& val, bool onlyFirst = false) noexcept -> void;
+		/**
+		 * Erase all elements for which the functor returns true
+		 * \tparam F Functor type
+		 * \param[in] fun Functor
+		 */
+		template<Callable<bool, const T&> F>
+		auto EraseIf(F fun) noexcept -> void;
+
+		/**
+		 * Move the element out of the DynArray and erase the invalid data at its iterator
+		 * \param[in] it Iterator to element
+		 * \return Extracted element
+		 */
+		auto Extract(ConstIterator& it) noexcept -> T;
+		/**
+		 * Move the element out of the DynArray and erase the invalid data at its iterator
+		 * \param[in] idx index of the element
+		 * \return Extracted element
+		 */
+		auto Extract(usize idx) noexcept -> T;
 
 		/**
 		 * Find the first element that matches the looked for value
 		 * \tparam U Type to compare with
 		 * \param[in] value Value to find
-		 * \return Iterator to found element
+		 * \return Iterator to the found element
 		 */
 		template<EqualComparable<T> U>
 		auto Find(const U& value) noexcept -> Iterator;
@@ -261,10 +302,26 @@ namespace Core
 		 * Find the first element that matches the looked for value
 		 * \tparam U Type to compare with
 		 * \param[in] value Value to find
-		 * \return Iterator to found element
+		 * \return Iterator to the found element
 		 */
 		template<EqualComparable<T> U>
 		auto Find(const U& value) const noexcept -> ConstIterator;
+		/**
+		 * Find the first element where the functor returns true
+		 * \tparam F Functor type
+		 * \param[in] fun Functor
+		 * \return Iterator to the found element
+		 */
+		template<Callable<bool, const T&> F>
+		auto FindIf(F fun) noexcept -> Iterator;
+		/**
+		 * Find the first element where the functor returns true
+		 * \tparam F Functor type
+		 * \param[in] fun Functor
+		 * \return Iterator to the found element
+		 */
+		template<Callable<bool, const T&> F>
+		auto FindIf(F fun) const noexcept -> ConstIterator;
 
 		/**
 		 * Check if the DynArray contains a value
@@ -274,6 +331,14 @@ namespace Core
 		 */
 		template<EqualComparable<T> U>
 		auto Contains(const U& value) const noexcept -> bool;
+		/**
+		 * Check if the DynArray contains a value where the functor returns true
+		 * \tparam F Functor type
+		 * \param[in] fun Functor
+		 * \return Whether the DynArray contains the value
+		 */
+		template<Callable<bool, const T&> F>
+		auto ContainsIf(F fun) const noexcept -> bool;
 		
 		/**
 		 * Get the element at an index
@@ -287,6 +352,7 @@ namespace Core
 		 * \param[in] idx Index to get iterator to
 		 * \return Iterator to element at idx
 		 */
+		// TODO: Allow functions that take its to also use an index, avoiding a verbose call to this
 		auto IteratorAt(usize idx) noexcept -> Iterator;
 		/**
 		 * Get an iterator to the element at an index

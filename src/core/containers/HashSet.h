@@ -3,7 +3,7 @@
 #include "core/memory/MemRef.h"
 #include "core/allocator/GlobalAlloc.h"
 #include "core/utils/Utils.h"
-#include "core/containers/HashSet.h"
+#include "core/containers/HashMap.h"
 #include "core/utils/Pair.h"
 
 namespace Core
@@ -17,7 +17,7 @@ namespace Core
 	 * \tparam IsMultiMap Whether the HashSet is a MultiMap or not
 	 * \note Hash function are expected to have a high amount of randomness, especially in lower bits, since the Hashmap relies on a power of 2 to distribute values
 	 */
-	template<typename K, Hasher<K> H = Hash<K>, EqualsComparator<K, K> C = DefaultEqualComparator<K>, bool IsMultiMap = false>
+	template<typename K, Hasher<K> H = Hash<K>, EqualsComparator<K> C = DefaultEqualComparator<K>, bool IsMultiMap = false>
 	class HashSet
 	{
 		// static assert to get around incomplete type issues when a class can return a HashSet of itself
@@ -223,6 +223,13 @@ namespace Core
 		 * \return Number of elements removed
 		 */
 		auto Erase(const K& key) noexcept -> usize;
+		/**
+		 * Erase all elements for which the functor return true
+		 * \tparam F Functor type
+		 * \param[in] fun Functor
+		 */
+		template<Callable<bool, const K&> F>
+		auto EraseIf(F fun) noexcept -> void;
 		
 		/**
 		 * Get an iterator to the elements with a key

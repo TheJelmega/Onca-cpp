@@ -307,9 +307,12 @@ namespace Core
 			new (pBegin + i) NodeRef{};
 
 		m_size = 0;
-		for (; it != end; ++it)
+		for (; it != end;)
 		{
-			InsertNode<true>(it.m_node);
+			Iterator cur = it;
+			++it;
+			cur.m_node->next = nullptr;
+			InsertNode<true>(cur.m_node);
 		}
 
 		oldData.Dealloc();
@@ -481,17 +484,29 @@ namespace Core
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
+	template <Callable<bool, const K&, const V&> F>
+	auto HashMap<K, V, H, C, IsMultiMap>::EraseIf(F fun) noexcept -> void
+	{
+		Iterator it = Begin();
+		while (it.m_node)
+		{
+			if (fun(it->first, it->second))
+				it = Erase(it);
+			else
+				++it;
+		}
+	}
+
+	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Find(const K& key) noexcept -> Iterator
 	{
-		u64 hash = m_hash(key);
-		return FindWithHash(hash, key);
+		return FindInternal(key);
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Find(const K& key) const noexcept -> ConstIterator
 	{
-		u64 hash = m_hash(key);
-		return FindWithHash(hash, key);
+		return FindInternal(key);
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
@@ -874,7 +889,7 @@ namespace Core
 
 			bucket->next = Move(node);
 			++m_size;
-			return { Iterator{ m_buckets, bucketIdx, bucket->next }, false };
+			return { Iterator{ m_buckets, bucketIdx, bucket->next }, true };
 		}
 	}
 
@@ -922,14 +937,17 @@ namespace Core
 		m_size = 0;
 
 		if (clearMemory)
-		{
 			m_buckets.Dealloc();
-		}
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::FindWithHash(u64 hash, const K& key) const noexcept -> Iterator
+	auto HashMap<K, V, H, C, IsMultiMap>::FindInternal(const K& key) const noexcept -> Iterator
 	{
+		if (IsEmpty())
+			return Iterator{};
+
+		u64 hash = m_hash(key);
+
 		u64 mask = u64(m_bucketCount) - 1;
 		usize bucketIdx = hash & mask;
 		NodeRef node = *(m_buckets.Ptr() + bucketIdx);
