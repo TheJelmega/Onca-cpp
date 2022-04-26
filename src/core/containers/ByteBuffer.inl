@@ -4,7 +4,7 @@
 #include "ByteBuffer.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	inline ByteBuffer::ByteBuffer(Alloc::IAllocator& alloc) noexcept
 		: m_data(alloc)

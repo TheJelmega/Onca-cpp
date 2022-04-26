@@ -3,12 +3,12 @@
 #include "core/allocator/GlobalAlloc.h"
 #include "core/allocator/IAllocator.h"
 
-namespace Core
+namespace Onca
 {
 
 	/**
 	 * Dynamically sized array
-	 * \tparam T Stored type (needs to conform to Core::Movable)
+	 * \tparam T Stored type (needs to conform to Onca::Movable)
 	 * \note Iterators are invalidated after certain container modifications
 	 */
 	template<typename T>

@@ -1,7 +1,7 @@
 #pragma once
 #include "DynArray.h"
 
-namespace Core
+namespace Onca
 {
 	class ByteBuffer
 	{

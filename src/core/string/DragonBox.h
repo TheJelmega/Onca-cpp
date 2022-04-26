@@ -4,7 +4,7 @@
 #include "core/math/Constants.h"
 #include "core/math/FloatUtils.h"
 
-namespace Core::DragonBox
+namespace Onca::DragonBox
 {
 	namespace Log
 	{

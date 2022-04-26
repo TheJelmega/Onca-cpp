@@ -3,7 +3,7 @@
 #include "StringId.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	constexpr StringId::StringId() noexcept
 		: m_id(0)
@@ -54,7 +54,7 @@ namespace Core
 	}
 }
 
-constexpr auto Literals::operator ""_sid(const char* cstr, usize size) noexcept -> Core::StringId
+constexpr auto Literals::operator ""_sid(const char* cstr, usize size) noexcept -> Onca::StringId
 {
-	return Core::StringId{ cstr, size };
+	return Onca::StringId{ cstr, size };
 }

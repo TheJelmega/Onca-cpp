@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "StringConstants.generated.h"
 
-namespace Core::Unicode
+namespace Onca::Unicode
 {
     // 0xxx xxxx == 1
     // 110x xxxx == 2

@@ -1,17 +1,17 @@
 #include "GlobalAlloc.h"
 
-namespace Core::Detail
+namespace Onca::Detail
 {
-	auto GetGlobalAllocAddr() -> Core::Alloc::IAllocator*&
+	auto GetGlobalAllocAddr() -> Onca::Alloc::IAllocator*&
 	{
 		static Alloc::IAllocator* pAlloc;
 		return pAlloc;
 	}
 }
 
-namespace Core
+namespace Onca
 {
-	CORE_API auto GetGlobalAlloc() -> Core::Alloc::IAllocator&
+	CORE_API auto GetGlobalAlloc() -> Onca::Alloc::IAllocator&
 	{
 		return *Detail::GetGlobalAllocAddr();
 	}

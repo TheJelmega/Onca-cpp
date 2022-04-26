@@ -13,7 +13,7 @@
 #include "Mouse.h"
 #include "User.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	class MappingContext;
 	class InternalMapping;

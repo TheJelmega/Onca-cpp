@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include <numeric>
 
-namespace Core::Math::Consts
+namespace Onca::Math::Consts
 {
 	template<typename T>
 	constexpr i32 Digits          = u32(std::numeric_limits<T>::digits);

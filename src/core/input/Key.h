@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "core/memory/RefCounted.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	struct KeyDetails;
 	/// Key path exists of multiple parts
@@ -174,7 +174,7 @@ namespace Core::Input
 
 }
 
-namespace Core
+namespace Onca
 {
 	template<>
 	struct Hash<Input::Key>
@@ -187,4 +187,4 @@ namespace Core
 	};
 }
 
-DEFINE_ENUM_FLAG_OPS(Core::Input::KeyFlag)
+DEFINE_ENUM_FLAG_OPS(Onca::Input::KeyFlag)

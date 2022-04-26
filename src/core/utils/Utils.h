@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/memory/MemRef.h"
 
-namespace Core
+namespace Onca
 {
 	struct Empty {};
 

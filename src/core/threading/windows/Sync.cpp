@@ -5,7 +5,7 @@
 #include "core/threading/Sync.h"
 #include "core/platform/Platform.h"
 
-namespace Core::Threading
+namespace Onca::Threading
 {
 	Mutex::Mutex() noexcept
 	{

@@ -2,7 +2,7 @@
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 
 	<!--MemRef<T> visualization-->
-	<Type Name="Core::MemRef&lt;*&gt;">
+	<Type Name="Onca::MemRef&lt;*&gt;">
 		<DisplayString>{m_pAddr}</DisplayString>
 		<Expand>
 			<Item Name="[handle]">m_handle</Item>
@@ -14,7 +14,7 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::Unique&lt;*&gt;">
+	<Type Name="Onca::Unique&lt;*&gt;">
 		<DisplayString>{m_mem}</DisplayString>
 		<Expand>
 			<Item Name="[ptr]">m_mem.m_pAddr</Item>
@@ -22,7 +22,7 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::Detail::RefCounted&lt;*,*&gt;">
+	<Type Name="Onca::Detail::RefCounted&lt;*,*&gt;">
 		<DisplayString Condition="m_data.m_pAddr">{m_data.m_pAddr}</DisplayString>
 		<DisplayString>&lt;NULL&gt;</DisplayString>
 		<Expand>
@@ -30,7 +30,7 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::Detail::Weak&lt;*&gt;">
+	<Type Name="Onca::Detail::Weak&lt;*&gt;">
 		<DisplayString Condition="m_data.m_pAddr">weak {{ {m_data.m_pAddr} }}</DisplayString>
 		<DisplayString>&lt;NULL&gt;</DisplayString>
 		<Expand>

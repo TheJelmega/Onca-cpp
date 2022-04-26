@@ -3,7 +3,7 @@
 #include "core/string/Include.h"
 #include "core/utils/Delegate.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 	/**
 	 * File path
@@ -291,7 +291,7 @@ namespace Core::FileSystem
 
 }
 
-namespace Core
+namespace Onca
 {
 	template<>
 	inline auto Parse<FileSystem::Path>(const String& str) noexcept -> FileSystem::Path
@@ -308,7 +308,7 @@ namespace Core
 
 namespace Literals
 {
-	CORE_API auto operator""_path(const char* cstr, usize size) noexcept -> Core::FileSystem::Path;
-	CORE_API auto operator""_path(const char16_t* cstr, usize size) noexcept -> Core::FileSystem::Path;
-	CORE_API auto operator""_path(const char32_t* cstr, usize size) noexcept -> Core::FileSystem::Path;
+	CORE_API auto operator""_path(const char* cstr, usize size) noexcept -> Onca::FileSystem::Path;
+	CORE_API auto operator""_path(const char16_t* cstr, usize size) noexcept -> Onca::FileSystem::Path;
+	CORE_API auto operator""_path(const char32_t* cstr, usize size) noexcept -> Onca::FileSystem::Path;
 }

@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/string/Include.h"
 
-namespace Core::Chrono
+namespace Onca::Chrono
 {
 	struct CORE_API DateTime
 	{

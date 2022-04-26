@@ -5,7 +5,7 @@
 #include "core/utils/Algo.h"
 #include "core/allocator/GlobalAlloc.h"
 
-namespace Core
+namespace Onca
 {
 	namespace Detail
 	{

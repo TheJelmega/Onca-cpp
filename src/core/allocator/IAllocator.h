@@ -3,7 +3,7 @@
 #include "core/memory/MemRef.h"
 #include "core/threading/Sync.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	/**
 	 * Contains statistics about an allocator

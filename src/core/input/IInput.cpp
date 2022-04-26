@@ -3,7 +3,7 @@
 #include "InputManager.h"
 #include "User.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	auto ITimedTrigger::Tick(User& user, Value value, Chrono::DeltaTime dt) noexcept -> TriggerState
 	{

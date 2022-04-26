@@ -1,6 +1,6 @@
 #include "Key.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	Key::Key(const String& path) noexcept
 		: path(path)

@@ -6,7 +6,7 @@
 #include "core/containers/HashMap.h"
 #include "core/containers/HashSet.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	class RebindContext;
 	class ITrigger;

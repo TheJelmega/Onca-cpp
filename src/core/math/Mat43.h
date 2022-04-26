@@ -9,7 +9,7 @@
 #include "Quaternion.h"
 #include "Mat3.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 
 	/**

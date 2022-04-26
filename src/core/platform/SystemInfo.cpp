@@ -2,7 +2,7 @@
 
 #include "core/logging/Logger.h"
 
-namespace Core
+namespace Onca
 {
 	void SystemInfo::Shutdown() noexcept
 	{

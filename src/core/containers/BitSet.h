@@ -3,7 +3,7 @@
 #include "allocator/IAllocator.h"
 #include "allocator/GlobalAlloc.h"
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * Dynamically sized bitset

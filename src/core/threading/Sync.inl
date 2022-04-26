@@ -3,7 +3,7 @@
 #include "Sync.h"
 #endif
 
-namespace Core::Threading
+namespace Onca::Threading
 {
 	namespace Detail
 	{

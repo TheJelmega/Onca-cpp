@@ -3,7 +3,7 @@
 #include "Mapping.h"
 #include "core/logging/Logger.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	InputManager::InputManager(bool createKbM)
 		: m_pKeyboard(nullptr)

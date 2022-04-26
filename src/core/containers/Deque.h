@@ -3,12 +3,12 @@
 #include "core/allocator/GlobalAlloc.h"
 #include "core/memory/MemRef.h"
 
-namespace Core
+namespace Onca
 {
 
 	/**
 	 * A double-ended queue
-	 * \tparam T Underlying type (needs to conform to Core::Movable)
+	 * \tparam T Underlying type (needs to conform to Onca::Movable)
 	 * \tparam BlockSize Size of a block allocated by the Deque
 	 */
 	// TODO: Balance MemRefs in base array to be centered (less moving on PushFront)

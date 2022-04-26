@@ -5,7 +5,7 @@
 
 #include "core/Assert.h"
 
-namespace Core
+namespace Onca
 {
 	template <typename Owner>
 	IntrusiveDListNode<Owner>::IntrusiveDListNode(usize memberOffset) noexcept

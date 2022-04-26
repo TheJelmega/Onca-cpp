@@ -5,7 +5,7 @@
 
 #include "StringConstants.h"
 
-namespace Core
+namespace Onca
 {
 	template<CharacterType C>
 	constexpr auto StrLen(const C* str) noexcept -> usize
@@ -17,7 +17,7 @@ namespace Core
 	
 }
 
-namespace Core::Unicode
+namespace Onca::Unicode
 {
 	constexpr auto MatchChar(const u8* pCh0, const u8* pCh1) noexcept -> bool
 	{

@@ -8,7 +8,7 @@
 #include "Quaternion.h"
 #include "Mat2.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 
 	/**

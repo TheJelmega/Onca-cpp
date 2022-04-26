@@ -4,7 +4,7 @@
 #endif
 
 
-namespace Core
+namespace Onca
 {
 	template <typename T>
 	List<T>::Iterator::Iterator() noexcept

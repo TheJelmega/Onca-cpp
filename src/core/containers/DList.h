@@ -3,11 +3,11 @@
 #include "core/allocator/IAllocator.h"
 #include "core/allocator/GlobalAlloc.h"
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * Doubly linked List
-	 * \tparam T Stored type (needs to conform to Core::Movable)
+	 * \tparam T Stored type (needs to conform to Onca::Movable)
 	 */
 	template<typename T>
 	class DList

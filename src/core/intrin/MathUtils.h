@@ -5,7 +5,7 @@
 #include "core/Math/Constants.h"
 #include "core/utils/Pair.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template<FloatingPoint F>
 	using FloatIntType = Conditional<SameAs<F, f32>, i32, i64>;

@@ -2,7 +2,7 @@
 #include "HashMap.h"
 #include "core/math/MathUtils.h"
 
-namespace Core
+namespace Onca
 {
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashMap<K, V, H, C, IsMultiMap>::Iterator::operator->() const noexcept -> Pair<const K, V>*

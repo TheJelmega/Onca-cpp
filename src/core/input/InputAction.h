@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "core/utils/Delegate.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	class User;
 	class InputManager;

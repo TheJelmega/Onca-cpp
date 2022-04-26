@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/utils/Utils.h"
 
-namespace Core
+namespace Onca
 {
 	namespace Detail
 	{
@@ -118,14 +118,14 @@ namespace Core
 #include "Flags.inl"
 
 #define DEFINE_ENUM_FLAG_OPS(enum) \
-namespace Core::Detail \
+namespace Onca::Detail \
 { \
 	template<> \
 	constexpr bool DoesSupportEnumFlagOps<enum> = true; \
 }
 
 #define DEFINE_FLAGS(enum) \
-	using enum##s = ::Core::Flags<enum>;
+	using enum##s = ::Onca::Flags<enum>;
 
 
 

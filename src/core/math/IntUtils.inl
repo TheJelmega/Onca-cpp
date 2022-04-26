@@ -4,7 +4,7 @@
 #endif
 #include <intrin.h>
 
-namespace Core
+namespace Onca
 {
 	constexpr U128::U128() noexcept
 		: low(0)

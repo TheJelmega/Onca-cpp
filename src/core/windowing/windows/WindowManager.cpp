@@ -3,7 +3,7 @@
 #if PLATFORM_WINDOWS
 #include "core/platform/Platform.h"
 
-namespace Core
+namespace Onca
 {
 	auto EnumMonitors(HMONITOR monitor, HDC, LPRECT, LPARAM userData) -> BOOL
 	{

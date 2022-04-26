@@ -7,7 +7,7 @@
 #include "Constants.h"
 #include "MathUtils.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template <Numeric T>
 	constexpr AABB<T>::AABB() noexcept

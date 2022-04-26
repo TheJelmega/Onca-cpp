@@ -6,7 +6,7 @@
 #include "core/threading/Thread.h"
 #include "core/utils/Result.h"
 
-namespace Core
+namespace Onca
 {
 	using ProcessID = u32;
 
@@ -228,4 +228,4 @@ namespace Core
 	};
 }
 
-DEFINE_ENUM_FLAG_OPS(Core::ProcessCreateFlag);
+DEFINE_ENUM_FLAG_OPS(Onca::ProcessCreateFlag);

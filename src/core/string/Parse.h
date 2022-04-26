@@ -3,7 +3,7 @@
 #include "core/utils/Pair.h"
 #include "String.h"
 
-namespace Core
+namespace Onca
 {
 	namespace Detail::Parse
 	{

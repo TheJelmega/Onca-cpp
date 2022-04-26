@@ -5,7 +5,7 @@
 #if PLATFORM_WINDOWS
 #include "core/platform/Platform.h"
 
-namespace Core
+namespace Onca
 {
 	void SystemInfo::Init() noexcept
 	{

@@ -5,7 +5,7 @@
 
 #include "core/platform/Platform.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	auto FillDevInfoForDevice(DeviceInfo& info, HANDLE hDevice) noexcept -> bool
 	{

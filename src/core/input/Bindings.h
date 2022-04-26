@@ -3,7 +3,7 @@
 #include "Key.h"
 #include "core/memory/Unique.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	class InputManager;
 	class User;

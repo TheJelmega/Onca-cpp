@@ -2,28 +2,28 @@
 
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 
-	<Type Name="Core::Math::Angle&lt;*,0&gt;">
+	<Type Name="Onca::Math::Angle&lt;*,0&gt;">
 		<DisplayString>{{ {val} rads }}</DisplayString>
 	</Type>
-	<Type Name="Core::Math::Angle&lt;*,1&gt;">
+	<Type Name="Onca::Math::Angle&lt;*,1&gt;">
 		<DisplayString>{{ {val} degs }}</DisplayString>
 	</Type>
 
-	<Type Name="Core::Math::EulerAngles&lt;*,0&gt;">
+	<Type Name="Onca::Math::EulerAngles&lt;*,0&gt;">
 		<DisplayString>{{ pitch: {pitch.val} rads, yaw: {yaw.val} rads, roll: {roll.val} rads }}</DisplayString>
 	</Type>
-	<Type Name="Core::Math::EulerAngles&lt;*,1&gt;">
+	<Type Name="Onca::Math::EulerAngles&lt;*,1&gt;">
 		<DisplayString>{{ pitch: {pitch.val} degs, yaw: {yaw.val} degs, roll: {roll.val} degs }}</DisplayString>
 	</Type>
 
-	<Type Name="Core::Math::Vec2&lt;*&gt;">
+	<Type Name="Onca::Math::Vec2&lt;*&gt;">
 		<DisplayString>{{ x: {x}, y: {y} }}</DisplayString>
 		<Expand>
 			<Item Name="[x]">x</Item>
 			<Item Name="[y]">y</Item>
 		</Expand>
 	</Type>
-	<Type Name="Core::Math::Vec3&lt;*&gt;">
+	<Type Name="Onca::Math::Vec3&lt;*&gt;">
 		<DisplayString>{{ x: {x}, y: {y}, z: {z} }}</DisplayString>
 		<Expand>
 			<Item Name="[x]">x</Item>
@@ -31,7 +31,7 @@
 			<Item Name="[z]">z</Item>
 		</Expand>
 	</Type>
-	<Type Name="Core::Math::Vec4&lt;*&gt;">
+	<Type Name="Onca::Math::Vec4&lt;*&gt;">
 		<DisplayString>{{ x: {x}, y: {y}, z: {z}, w: {w} }}</DisplayString>
 		<Expand>
 			<Item Name="[x]">x</Item>
@@ -41,7 +41,7 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::Math::Quaternion&lt;*&gt;">
+	<Type Name="Onca::Math::Quaternion&lt;*&gt;">
 		<DisplayString>{{ w: {w}, x: {x}, y: {y}, z: {z} }}</DisplayString>
 		<Expand>
 			<Item Name="[w]">w</Item>
@@ -51,7 +51,7 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::Math::Mat2&lt;*&gt;">
+	<Type Name="Onca::Math::Mat2&lt;*&gt;">
 		<DisplayString>{{ {{{m00}, {m01}}}, {{{m10}, {m11}}} }}</DisplayString>
 		<Expand>
 			<Item Name="[0,0]">m00</Item>
@@ -60,7 +60,7 @@
 			<Item Name="[1,1]">m11</Item>
 		</Expand>
 	</Type>
-	<Type Name="Core::Math::Mat3&lt;*&gt;">
+	<Type Name="Onca::Math::Mat3&lt;*&gt;">
 		<DisplayString>{{ {{{m00}, {m01}, {m02}}}, {{{m10}, {m11}, {m12}}}, {{{m20}, {m21}, {m22}}} }}</DisplayString>
 		<Expand>
 			<Item Name="[0,0]">m00</Item>
@@ -74,7 +74,7 @@
 			<Item Name="[2,2]">m22</Item>
 		</Expand>
 	</Type>
-	<Type Name="Core::Math::Mat4&lt;*&gt;">
+	<Type Name="Onca::Math::Mat4&lt;*&gt;">
 		<DisplayString>{{ {{{m00}, {m01}, {m02}, {m03}}}, {{{m10}, {m11}, {m12}, {m13}}}, {{{m20}, {m21}, {m22}, {m23}}}, {{{m30}, {m31}, {m32}, {m33}}} }}</DisplayString>
 		<Expand>
 			<Item Name="[0,0]">m00</Item>
@@ -96,7 +96,7 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::Math::Ray&lt;*&gt;">
+	<Type Name="Onca::Math::Ray&lt;*&gt;">
 		<DisplayString>Ray {{{orig}, {dir}}}</DisplayString>
 		<Expand>
 			<Item Name="[origin]">orig</Item>
@@ -106,14 +106,14 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::Math::Rect&lt;*&gt;">
+	<Type Name="Onca::Math::Rect&lt;*&gt;">
 		<DisplayString>Rect {{{min}, {max}}}</DisplayString>
 		<Expand>
 			<Item Name="[min]">min</Item>
 			<Item Name="[max]">max</Item>
 		</Expand>
 	</Type>
-	<Type Name="Core::Math::AABB&lt;*&gt;">
+	<Type Name="Onca::Math::AABB&lt;*&gt;">
 		<DisplayString>AABB {{{min}, {max}}}</DisplayString>
 		<Expand>
 			<Item Name="[min]">min</Item>
@@ -121,14 +121,14 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::Math::Circle&lt;*&gt;">
+	<Type Name="Onca::Math::Circle&lt;*&gt;">
 		<DisplayString>Circle {{{center}, {radius}}}</DisplayString>
 		<Expand>
 			<Item Name="[center]">center</Item>
 			<Item Name="[radius]">radius</Item>
 		</Expand>
 	</Type>
-	<Type Name="Core::Math::Sphere&lt;*&gt;">
+	<Type Name="Onca::Math::Sphere&lt;*&gt;">
 		<DisplayString>Sphere {{{center}, {radius}}}</DisplayString>
 		<Expand>
 			<Item Name="[center]">center</Item>
@@ -136,7 +136,7 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::Math::Plane&lt;*&gt;">
+	<Type Name="Onca::Math::Plane&lt;*&gt;">
 		<DisplayString>Plane {{{normal}, {planeDist}}}</DisplayString>
 		<Expand>
 			<Item Name="[normal]">normal</Item>

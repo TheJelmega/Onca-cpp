@@ -3,7 +3,7 @@
 #include "Atomic.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	template <typename T>
 	constexpr Atomic<T>::Atomic() noexcept

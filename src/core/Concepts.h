@@ -2,7 +2,7 @@
 #include <concepts>
 #include "Traits.h"
 
-namespace Core
+namespace Onca
 {
 	template<typename A, typename B>
 	concept SameAs = std::same_as<A, B>;

@@ -3,7 +3,7 @@
 #include "core/allocator/IAllocator.h"
 #include "core/utils/Pair.h"
 
-namespace Core
+namespace Onca
 {
 	template<typename T, Comparator<T> C = DefaultComparator<T>, bool AllowMultiple = false>
 	class RedBlackTree;
@@ -116,13 +116,13 @@ namespace Core
 			NodeRef m_node;
 			usize m_Idx;
 
-			friend class Core::RedBlackTree<T, C, AllowMultiple>;
+			friend class Onca::RedBlackTree<T, C, AllowMultiple>;
 		};
 	}
 
 	/**
 	 * A red-black tree
-	 * \tparam T Underlying type (needs to conform to Core::Movable)
+	 * \tparam T Underlying type (needs to conform to Onca::Movable)
 	 * \tparam C Comparator
 	 * \tparam AllowMultiple Whether to allow multiple values per node
 	 */

@@ -1,42 +1,42 @@
 #include "DateTime.h"
 
-namespace Core::Chrono
+namespace Onca::Chrono
 {
 	auto DateTime::ToString() const noexcept -> String
 	{
 		String res{ 22 };
 		res.PadRight((year < 1000) + (year < 100) + (year < 10), '0');
-		res += Core::ToString(year);
+		res += Onca::ToString(year);
 
 		res += '-';
 		
 		res.PadRight(month < 10, '0');
-		res += Core::ToString(month);
+		res += Onca::ToString(month);
 
 		res += '-';
 
 		res.PadRight(day < 10, '0');
-		res += Core::ToString(day);
+		res += Onca::ToString(day);
 
 		res += ' ';
 
 		res.PadRight(hour < 10, '0');
-		res += Core::ToString(hour);
+		res += Onca::ToString(hour);
 
 		res += ':';
 
 		res.PadRight(minute < 10, '0');
-		res += Core::ToString(minute);
+		res += Onca::ToString(minute);
 
 		res += ':';
 
 		res.PadRight(second < 10, '0');
-		res += Core::ToString(second);
+		res += Onca::ToString(second);
 
 		res += '.';
 		
 		res.PadRight((millisecond < 100) + (millisecond < 10), '0');
-		res += Core::ToString(millisecond);
+		res += Onca::ToString(millisecond);
 
 		return res;
 	}
@@ -58,20 +58,20 @@ namespace Core::Chrono
 					if (i + 3 < len && options[i + 2] == 'y' && options[i + 3] == 'y')
 					{
 						res.PadRight((year < 1000) + (year < 100) + (year < 10), '0');
-						res += Core::ToString(year);
+						res += Onca::ToString(year);
 						i += 3;
 					}
 					else
 					{
 						u16 tmp = year % 100;
 						res.PadRight((tmp < 10), '0');
-						res += Core::ToString(tmp);
+						res += Onca::ToString(tmp);
 						++i;
 					}
 				}
 				else
 				{
-					res += Core::ToString(year % 100);
+					res += Onca::ToString(year % 100);
 				}
 				break;
 			}
@@ -80,12 +80,12 @@ namespace Core::Chrono
 				if (i + 1 < len && options[i + 1] == 'M')
 				{
 					res.PadRight((month < 10), '0');
-					res += Core::ToString(month);
+					res += Onca::ToString(month);
 					++i;
 				}
 				else
 				{
-					res += Core::ToString(month);
+					res += Onca::ToString(month);
 				}
 				break;
 			}
@@ -94,12 +94,12 @@ namespace Core::Chrono
 				if (i + 1 < len && options[i + 1] == 'd')
 				{
 					res.PadRight((day < 10), '0');
-					res += Core::ToString(day);
+					res += Onca::ToString(day);
 					++i;
 				}
 				else
 				{
-					res += Core::ToString(day);
+					res += Onca::ToString(day);
 				}
 				break;
 			}
@@ -109,12 +109,12 @@ namespace Core::Chrono
 				if (i + 1 < len && options[i + 1] == 'h')
 				{
 					res.PadRight((tmp < 10), '0');
-					res += Core::ToString(tmp);
+					res += Onca::ToString(tmp);
 					++i;
 				}
 				else
 				{
-					res += Core::ToString(tmp);
+					res += Onca::ToString(tmp);
 				}
 				break;
 			}
@@ -123,12 +123,12 @@ namespace Core::Chrono
 				if (i + 1 < len && options[i + 1] == 'H')
 				{
 					res.PadRight((hour < 10), '0');
-					res += Core::ToString(hour);
+					res += Onca::ToString(hour);
 					++i;
 				}
 				else
 				{
-					res += Core::ToString(hour);
+					res += Onca::ToString(hour);
 				}
 				break;
 			}
@@ -137,12 +137,12 @@ namespace Core::Chrono
 				if (i + 1 < len && options[i + 1] == 'd')
 				{
 					res.PadRight((minute < 10), '0');
-					res += Core::ToString(minute);
+					res += Onca::ToString(minute);
 					++i;
 				}
 				else
 				{
-					res += Core::ToString(minute);
+					res += Onca::ToString(minute);
 				}
 				break;
 			}
@@ -151,12 +151,12 @@ namespace Core::Chrono
 				if (i + 1 < len && options[i + 1] == 'd')
 				{
 					res.PadRight((day < 10), '0');
-					res += Core::ToString(day);
+					res += Onca::ToString(day);
 					++i;
 				}
 				else
 				{
-					res += Core::ToString(day);
+					res += Onca::ToString(day);
 				}
 				break;
 			}
@@ -165,12 +165,12 @@ namespace Core::Chrono
 				if (i + 1 < len && options[i + 1] == 'u' && options[i + 2] == 'u')
 				{
 					res.PadRight((millisecond < 100) + (millisecond < 10), '0');
-					res += Core::ToString(millisecond);
+					res += Onca::ToString(millisecond);
 					i += 2;
 				}
 				else
 				{
-					res += Core::ToString(millisecond);
+					res += Onca::ToString(millisecond);
 				}
 				break;
 			}

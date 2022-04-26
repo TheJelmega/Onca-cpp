@@ -3,7 +3,7 @@
 #include "PoolAllocator.h"
 #endif
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	template<usize BlockSize, usize NumBlocks>
 	PoolAllocator<BlockSize, NumBlocks>::PoolAllocator(IAllocator* pBackingAlloc) noexcept

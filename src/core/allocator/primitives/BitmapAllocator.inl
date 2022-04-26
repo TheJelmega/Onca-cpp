@@ -5,7 +5,7 @@
 
 #include "core/memory/MemUtils.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	template<usize BlockSize, usize NumBlocks>
 	BitmapAllocator<BlockSize, NumBlocks>::BitmapAllocator(IAllocator* pBackingAlloc) noexcept

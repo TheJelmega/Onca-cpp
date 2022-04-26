@@ -1,6 +1,6 @@
 #include "Window.h"
 
-namespace Core
+namespace Onca
 {
 	template<typename T>
 	void RemoveForObject(DynArray<T>& callbacks, void* ptr) noexcept

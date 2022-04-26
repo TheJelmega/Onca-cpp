@@ -4,7 +4,7 @@
 #include "Key.h"
 #include "core/containers/InplaceBitSet.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	enum class MouseCode : u8
 	{

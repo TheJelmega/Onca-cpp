@@ -2,7 +2,7 @@
 #include "Pair.h"
 #include "core/MinInclude.h"
 
-namespace Core
+namespace Onca
 {
 	template<typename T>
 	class Delegate;

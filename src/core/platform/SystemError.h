@@ -3,7 +3,7 @@
 #include "core/string/Include.h"
 #include "core/utils/Utils.h"
 
-namespace Core
+namespace Onca
 {
 	// There might be a couple error codes missing
 	enum class SystemErrorCode : u8

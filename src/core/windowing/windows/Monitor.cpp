@@ -3,7 +3,7 @@
 #if PLATFORM_WINDOWS
 #include "core/platform/Platform.h"
 
-namespace Core
+namespace Onca
 {
 	Monitor::Monitor() noexcept
 		: m_handle(nullptr)

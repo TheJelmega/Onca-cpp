@@ -3,7 +3,7 @@
 
 #include "Win.h"
 
-namespace Core
+namespace Onca
 {
 	SystemConsole::NativeHandle SystemConsole::StdOutHandle = INVALID_HANDLE_VALUE;
 	SystemConsole::NativeHandle SystemConsole::StdErrHandle = INVALID_HANDLE_VALUE;

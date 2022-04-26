@@ -7,7 +7,7 @@
 #include "Constants.h"
 #include "Angle.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template <Numeric T>
 	constexpr Quaternion<T>::Quaternion() noexcept

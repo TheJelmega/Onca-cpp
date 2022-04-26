@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "Array.h"
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * Dynamically sized bitset

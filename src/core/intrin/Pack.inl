@@ -3,7 +3,7 @@
 #include "Pack.h"
 #endif
 
-namespace Core::Intrin
+namespace Onca::Intrin
 {
 	template <SimdBaseType T, usize Width>
 	constexpr Pack<T, Width>::Pack() noexcept

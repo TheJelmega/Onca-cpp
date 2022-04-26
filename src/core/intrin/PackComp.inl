@@ -4,7 +4,7 @@
 #include "Pack.h"
 #endif
 
-namespace Core::Intrin
+namespace Onca::Intrin
 {
 #if HAS_AVX
 	constexpr u8 AvxCmpImm8Mapping[] =

@@ -4,7 +4,7 @@
 #include "core/logging/Logger.h"
 
 
-namespace Core::Input
+namespace Onca::Input
 {
 	auto ToString(KeyCode key) noexcept -> String
 	{

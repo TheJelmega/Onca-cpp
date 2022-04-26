@@ -3,7 +3,7 @@
 #include "FreeListAllocator.h"
 #endif
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	template<usize Size>
 	FreeListAllocator<Size>::FreeListAllocator(IAllocator* pBackingAllocator) noexcept

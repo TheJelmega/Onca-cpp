@@ -4,7 +4,7 @@
 #endif
 
 
-namespace Core
+namespace Onca
 {
 	template <typename K, Comparator<K, K> C, bool IsMultiSet>
 	auto SortedSet<K, C, IsMultiSet>::Iterator::operator->() const noexcept -> const K*

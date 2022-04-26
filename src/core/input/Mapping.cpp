@@ -5,7 +5,7 @@
 #include "InputManager.h"
 #include "core/logging/Logger.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	InternalMapping::InternalMapping(const Rc<InputAction>& action, Unique<Binding>&& binding, const DynArray<u32>& validSchemes, DynArray<Unique<ITrigger>>&& triggers,
 	                                 DynArray<Unique<IModifier>>&& modifiers) noexcept

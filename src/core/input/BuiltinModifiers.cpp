@@ -1,6 +1,6 @@
 #include "BuiltinModifiers.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	NegateModifier::NegateModifier(bool x, bool y, bool z)
 		: m_negX(x)

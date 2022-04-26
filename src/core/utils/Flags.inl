@@ -3,7 +3,7 @@
 #include "Flags.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	template <EnumType E>
 	constexpr Flags<E>::Flags() noexcept

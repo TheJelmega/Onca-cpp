@@ -5,7 +5,7 @@
 #include "core/utils/Delegate.h"
 #include "core/utils/Result.h"
 
-namespace Core::Threading
+namespace Onca::Threading
 {
 	/**
 	 * Thread priority, hints to the scheduler to when to run the thread

@@ -5,7 +5,7 @@
 
 #include "core/hash/Hash.h"
 
-namespace Core
+namespace Onca
 {
 	template <typename T>
 	void DefaultDeleter<T>::operator()(MemRef<T>&& ref) noexcept

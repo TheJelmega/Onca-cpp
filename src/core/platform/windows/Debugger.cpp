@@ -2,7 +2,7 @@
 #if PLATFORM_WINDOWS
 #include "Win.h"
 
-namespace Core::Debugger
+namespace Onca::Debugger
 {
 	auto IsAttached() noexcept -> bool
 	{

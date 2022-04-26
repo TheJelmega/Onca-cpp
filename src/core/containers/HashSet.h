@@ -6,12 +6,12 @@
 #include "core/containers/HashMap.h"
 #include "core/utils/Pair.h"
 
-namespace Core
+namespace Onca
 {
 
 	/**
 	 * A bucketed hash map
-	 * \tparam K Key type (needs to conform to Core::Movable)
+	 * \tparam K Key type (needs to conform to Onca::Movable)
 	 * \tparam H Hasher type
 	 * \tparam C Comparator type
 	 * \tparam IsMultiMap Whether the HashSet is a MultiMap or not

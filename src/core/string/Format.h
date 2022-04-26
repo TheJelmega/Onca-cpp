@@ -4,7 +4,7 @@
 #include "core/math/FloatUtils.h"
 #include "DragonBox.h"
 
-namespace Core
+namespace Onca
 {
 	template<typename T>
 	concept ToFormatableMethod =

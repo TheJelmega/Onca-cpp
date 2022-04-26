@@ -6,12 +6,12 @@
 #include "core/containers/RedBlackTree.h"
 #include "core/utils/Pair.h"
 
-namespace Core
+namespace Onca
 {
 
 	/**
 	 * A sorted hash set
-	 * \tparam K Key type (needs to conform to Core::Movable)
+	 * \tparam K Key type (needs to conform to Onca::Movable)
 	 * \tparam C Comparator type
 	 */
 	template<typename K, Comparator<K, K> C = DefaultComparator<K>, bool IsMultiSet = false>

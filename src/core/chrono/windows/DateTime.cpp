@@ -2,7 +2,7 @@
 #if PLATFORM_WINDOWS
 #include "core/platform/Platform.h"
 
-namespace Core::Chrono
+namespace Onca::Chrono
 {
 	auto DateTime::Now() noexcept -> DateTime
 	{

@@ -2,7 +2,7 @@
 #include "core/Concepts.h"
 #include "core/Defines.h"
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * Sequence of integers

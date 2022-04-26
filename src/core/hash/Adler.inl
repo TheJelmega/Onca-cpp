@@ -3,7 +3,7 @@
 #include "Adler.h"
 #endif
 
-namespace Core::Hashing
+namespace Onca::Hashing
 {
 	constexpr auto Adler32::operator()(const u8* pData, usize size) const noexcept -> u32
 	{

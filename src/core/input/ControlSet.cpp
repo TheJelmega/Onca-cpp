@@ -3,7 +3,7 @@
 #include "IInput.h"
 #include "InputManager.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	ControlScheme::ControlScheme() noexcept
 	{

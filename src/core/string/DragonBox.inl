@@ -5,7 +5,7 @@
 
 #include "core/Assert.h"
 
-namespace Core::DragonBox
+namespace Onca::DragonBox
 {
 	namespace Log
 	{

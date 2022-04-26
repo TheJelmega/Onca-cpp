@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "MemRef.h"
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * Copy a region of memory from one location to another

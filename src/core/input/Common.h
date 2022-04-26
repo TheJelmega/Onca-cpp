@@ -8,7 +8,7 @@ namespace LogCategories
 	DEFINE_LOG_CATEGORY(INPUT);
 }
 
-namespace Core::Input
+namespace Onca::Input
 {
 	constexpr u32 InvalidId = u32(-1);
 
@@ -130,6 +130,6 @@ namespace Core::Input
 	auto CalculateEvent(TriggerState prev, TriggerState cur) noexcept -> TriggerEvent;
 }
 
-DEFINE_ENUM_FLAG_OPS(Core::Input::TriggerEvent);
+DEFINE_ENUM_FLAG_OPS(Onca::Input::TriggerEvent);
 
 #include "Common.inl"

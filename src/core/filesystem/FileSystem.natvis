@@ -2,14 +2,14 @@
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 
 	<!--Path visualization-->
-	<Type Name="Core::FileSystem::Path">
+	<Type Name="Onca::FileSystem::Path">
 		<DisplayString>{m_string}</DisplayString>
 		<Expand>
 			<ExpandedItem>m_string</ExpandedItem>
 		</Expand>
 	</Type>
 
-	<Type Name="Core::FileSystem::Result">
+	<Type Name="Onca::FileSystem::Result">
 		<DisplayString>[{code}]: {info}</DisplayString>
 		<Expand>
 			<Item Name="[code]">code</Item>

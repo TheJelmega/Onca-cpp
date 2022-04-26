@@ -7,7 +7,7 @@
 #include "Constants.h"
 #include "core/Assert.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template <Numeric Ty>
 	constexpr Vec3<Ty>::Vec3() noexcept

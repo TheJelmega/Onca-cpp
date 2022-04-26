@@ -6,7 +6,7 @@
 #include "IInput.h"
 #include "core/string/Include.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	/**
 	 * Keyboard key codes

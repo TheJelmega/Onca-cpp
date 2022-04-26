@@ -3,7 +3,7 @@
 #include "HashSet.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	auto HashSet<K, H, C, IsMultiMap>::Iterator::operator->() const noexcept -> const K*

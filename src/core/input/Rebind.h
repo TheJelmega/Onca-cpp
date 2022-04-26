@@ -3,7 +3,7 @@
 #include "Key.h"
 #include "core/containers/HashSet.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	struct RebindState;
 	class MappingContext;

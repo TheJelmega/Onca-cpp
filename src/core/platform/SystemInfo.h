@@ -8,7 +8,7 @@ namespace LogCategories
 	DEFINE_LOG_CATEGORY(SYSINFO);
 }
 
-namespace Core
+namespace Onca
 {
 	class CORE_API SystemInfo
 	{
@@ -399,4 +399,4 @@ namespace Core
 	CORE_API auto GetSystemInfo() noexcept -> SystemInfo&;
 }
 
-#define g_SystemInfo (Core::GetSystemInfo())
+#define g_SystemInfo (Onca::GetSystemInfo())

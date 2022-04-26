@@ -4,7 +4,7 @@
 #include "MathUtils.h"
 #endif
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template<Intrin::SimdBaseType T, usize Width>
 	constexpr auto Min(const Intrin::Pack<T, Width>& a, const Intrin::Pack<T, Width>& b) noexcept -> Intrin::Pack<T, Width>

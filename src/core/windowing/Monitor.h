@@ -3,7 +3,7 @@
 #include "core/string/Include.h"
 #include "core/math/Math.h"
 
-namespace Core
+namespace Onca
 {
 	class Monitor
 	{

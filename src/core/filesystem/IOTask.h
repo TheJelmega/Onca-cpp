@@ -5,7 +5,7 @@
 #include "core/platform/SystemError.h"
 #include "core/utils/Delegate.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 	// TODO: when implementing memory defragmentations, make sure the data in the tasks are pinned to a fixed location
 

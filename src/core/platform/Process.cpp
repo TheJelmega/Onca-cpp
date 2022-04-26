@@ -1,6 +1,6 @@
 #include "Process.h"
 
-namespace Core
+namespace Onca
 {
 	auto Process::GetPath() const noexcept -> const FileSystem::Path&
 	{

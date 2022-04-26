@@ -6,7 +6,7 @@
 #if PLATFORM_WINDOWS
 #include "core/platform/Platform.h"
 
-namespace Core
+namespace Onca
 {
 	Process::Process()
 		: m_handle(INVALID_HANDLE_VALUE)

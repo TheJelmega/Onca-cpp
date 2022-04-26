@@ -3,7 +3,7 @@
 #include "DeltaTime.h"
 #endif
 
-namespace Core::Chrono
+namespace Onca::Chrono
 {
 	inline DeltaTime::DeltaTime() noexcept
 		: m_time(0.f)

@@ -3,7 +3,7 @@
 #include "ControlSet.h"
 #include "InputManager.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	InputAction::InputAction(const String& name, ValueType valueType, bool consumeInput) noexcept
 		: m_name(name)

@@ -1,7 +1,7 @@
 #pragma once
 #include "Sync.h"
 
-namespace Core::Threading
+namespace Onca::Threading
 {
 	template<typename T, Lockable LockT = Mutex>
 	class Guarded;

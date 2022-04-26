@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 
 // Currently only has implementations needed for DragonBox
-namespace Core
+namespace Onca
 {
 	// TODO: Signed 128-bit int
 

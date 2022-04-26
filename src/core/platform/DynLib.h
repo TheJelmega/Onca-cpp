@@ -4,7 +4,7 @@
 #include "core/filesystem/Path.h"
 #include "core/utils/Result.h"
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * Dynamic Library (dll/so)

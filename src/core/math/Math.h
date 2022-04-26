@@ -54,7 +54,7 @@
 #include "Plane.inl"
 
 // Angle types
-namespace Core::Math
+namespace Onca::Math
 {
 	template<Numeric T>
 	using Radians = Angle<T, AngleKind::Radians>;
@@ -62,46 +62,46 @@ namespace Core::Math
 	using Degrees = Angle<T, AngleKind::Degrees>;
 }
 
-using f32rad = Core::Math::Radians<f32>;
-using f64rad = Core::Math::Radians<f64>;
-using f32deg = Core::Math::Degrees<f32>;
-using f64deg = Core::Math::Degrees<f64>;
+using f32rad = Onca::Math::Radians<f32>;
+using f64rad = Onca::Math::Radians<f64>;
+using f32deg = Onca::Math::Degrees<f32>;
+using f64deg = Onca::Math::Degrees<f64>;
 
 // Vec2 types
-using i8v2  = Core::Math::Vec2<i8>;
-using i16v2 = Core::Math::Vec2<i16>;
-using i32v2 = Core::Math::Vec2<i32>;
-using i64v2 = Core::Math::Vec2<i64>;
-using u8v2  = Core::Math::Vec2<u8>;
-using u16v2 = Core::Math::Vec2<u16>;
-using u32v2 = Core::Math::Vec2<u32>;
-using u64v2 = Core::Math::Vec2<u64>;
-using f32v2 = Core::Math::Vec2<f32>;
-using f64v2 = Core::Math::Vec2<f64>;
+using i8v2  = Onca::Math::Vec2<i8>;
+using i16v2 = Onca::Math::Vec2<i16>;
+using i32v2 = Onca::Math::Vec2<i32>;
+using i64v2 = Onca::Math::Vec2<i64>;
+using u8v2  = Onca::Math::Vec2<u8>;
+using u16v2 = Onca::Math::Vec2<u16>;
+using u32v2 = Onca::Math::Vec2<u32>;
+using u64v2 = Onca::Math::Vec2<u64>;
+using f32v2 = Onca::Math::Vec2<f32>;
+using f64v2 = Onca::Math::Vec2<f64>;
 
 // Vec3 types
-using i8v3  = Core::Math::Vec3<i8>;
-using i16v3 = Core::Math::Vec3<i16>;
-using i32v3 = Core::Math::Vec3<i32>;
-using i64v3 = Core::Math::Vec3<i64>;
-using u8v3  = Core::Math::Vec3<u8>;
-using u16v3 = Core::Math::Vec3<u16>;
-using u32v3 = Core::Math::Vec3<u32>;
-using u64v3 = Core::Math::Vec3<u64>;
-using f32v3 = Core::Math::Vec3<f32>;
-using f64v3 = Core::Math::Vec3<f64>;
+using i8v3  = Onca::Math::Vec3<i8>;
+using i16v3 = Onca::Math::Vec3<i16>;
+using i32v3 = Onca::Math::Vec3<i32>;
+using i64v3 = Onca::Math::Vec3<i64>;
+using u8v3  = Onca::Math::Vec3<u8>;
+using u16v3 = Onca::Math::Vec3<u16>;
+using u32v3 = Onca::Math::Vec3<u32>;
+using u64v3 = Onca::Math::Vec3<u64>;
+using f32v3 = Onca::Math::Vec3<f32>;
+using f64v3 = Onca::Math::Vec3<f64>;
 
 // Vec4 types
-using i8v4 = Core::Math::Vec4<i8>;
-using i16v4 = Core::Math::Vec4<i16>;
-using i32v4 = Core::Math::Vec4<i32>;
-using i64v4 = Core::Math::Vec4<i64>;
-using u8v4 = Core::Math::Vec4<u8>;
-using u16v4 = Core::Math::Vec4<u16>;
-using u32v4 = Core::Math::Vec4<u32>;
-using u64v4 = Core::Math::Vec4<u64>;
-using f32v4 = Core::Math::Vec4<f32>;
-using f64v4 = Core::Math::Vec4<f64>;
+using i8v4 = Onca::Math::Vec4<i8>;
+using i16v4 = Onca::Math::Vec4<i16>;
+using i32v4 = Onca::Math::Vec4<i32>;
+using i64v4 = Onca::Math::Vec4<i64>;
+using u8v4 = Onca::Math::Vec4<u8>;
+using u16v4 = Onca::Math::Vec4<u16>;
+using u32v4 = Onca::Math::Vec4<u32>;
+using u64v4 = Onca::Math::Vec4<u64>;
+using f32v4 = Onca::Math::Vec4<f32>;
+using f64v4 = Onca::Math::Vec4<f64>;
 
 // Point2 (Vec2) types
 using i8p2  = i8v2;
@@ -140,53 +140,53 @@ using f32p4 = f32v4;
 using f64p4 = f64v4;
 
 // Quaternion types
-using f64q = Core::Math::Quaternion<f64>;
-using f32q = Core::Math::Quaternion<f32>;
+using f64q = Onca::Math::Quaternion<f64>;
+using f32q = Onca::Math::Quaternion<f32>;
 
 // Mat2 types
-using i8m2  = Core::Math::Mat2<i8>;
-using i16m2 = Core::Math::Mat2<i16>;
-using i32m2 = Core::Math::Mat2<i32>;
-using i64m2 = Core::Math::Mat2<i64>;
-using u8m2  = Core::Math::Mat2<u8>;
-using u16m2 = Core::Math::Mat2<u16>;
-using u32m2 = Core::Math::Mat2<u32>;
-using u64m2 = Core::Math::Mat2<u64>;
-using f32m2 = Core::Math::Mat2<f32>;
-using f64m2 = Core::Math::Mat2<f64>;
+using i8m2  = Onca::Math::Mat2<i8>;
+using i16m2 = Onca::Math::Mat2<i16>;
+using i32m2 = Onca::Math::Mat2<i32>;
+using i64m2 = Onca::Math::Mat2<i64>;
+using u8m2  = Onca::Math::Mat2<u8>;
+using u16m2 = Onca::Math::Mat2<u16>;
+using u32m2 = Onca::Math::Mat2<u32>;
+using u64m2 = Onca::Math::Mat2<u64>;
+using f32m2 = Onca::Math::Mat2<f32>;
+using f64m2 = Onca::Math::Mat2<f64>;
 
 // Mat3 types
-using i8m3  = Core::Math::Mat3<i8>;
-using i16m3 = Core::Math::Mat3<i16>;
-using i32m3 = Core::Math::Mat3<i32>;
-using i64m3 = Core::Math::Mat3<i64>;
-using u8m3  = Core::Math::Mat3<u8>;
-using u16m3 = Core::Math::Mat3<u16>;
-using u32m3 = Core::Math::Mat3<u32>;
-using u64m3 = Core::Math::Mat3<u64>;
-using f32m3 = Core::Math::Mat3<f32>;
-using f64m3 = Core::Math::Mat3<f64>;
+using i8m3  = Onca::Math::Mat3<i8>;
+using i16m3 = Onca::Math::Mat3<i16>;
+using i32m3 = Onca::Math::Mat3<i32>;
+using i64m3 = Onca::Math::Mat3<i64>;
+using u8m3  = Onca::Math::Mat3<u8>;
+using u16m3 = Onca::Math::Mat3<u16>;
+using u32m3 = Onca::Math::Mat3<u32>;
+using u64m3 = Onca::Math::Mat3<u64>;
+using f32m3 = Onca::Math::Mat3<f32>;
+using f64m3 = Onca::Math::Mat3<f64>;
 
 // Mat43 types
-using i8m43 = Core::Math::Mat43<i8>;
-using i16m43 = Core::Math::Mat43<i16>;
-using i32m43 = Core::Math::Mat43<i32>;
-using i64m43 = Core::Math::Mat43<i64>;
-using u8m43 = Core::Math::Mat43<u8>;
-using u16m43 = Core::Math::Mat43<u16>;
-using u32m43 = Core::Math::Mat43<u32>;
-using u64m43 = Core::Math::Mat43<u64>;
-using f32m43 = Core::Math::Mat43<f32>;
-using f64m43 = Core::Math::Mat43<f64>;
+using i8m43 = Onca::Math::Mat43<i8>;
+using i16m43 = Onca::Math::Mat43<i16>;
+using i32m43 = Onca::Math::Mat43<i32>;
+using i64m43 = Onca::Math::Mat43<i64>;
+using u8m43 = Onca::Math::Mat43<u8>;
+using u16m43 = Onca::Math::Mat43<u16>;
+using u32m43 = Onca::Math::Mat43<u32>;
+using u64m43 = Onca::Math::Mat43<u64>;
+using f32m43 = Onca::Math::Mat43<f32>;
+using f64m43 = Onca::Math::Mat43<f64>;
 
 // Mat4 types
-using i8m4  = Core::Math::Mat4<i8>;
-using i16m4 = Core::Math::Mat4<i16>;
-using i32m4 = Core::Math::Mat4<i32>;
-using i64m4 = Core::Math::Mat4<i64>;
-using u8m4  = Core::Math::Mat4<u8>;
-using u16m4 = Core::Math::Mat4<u16>;
-using u32m4 = Core::Math::Mat4<u32>;
-using u64m4 = Core::Math::Mat4<u64>;
-using f32m4 = Core::Math::Mat4<f32>;
-using f64m4 = Core::Math::Mat4<f64>;
+using i8m4  = Onca::Math::Mat4<i8>;
+using i16m4 = Onca::Math::Mat4<i16>;
+using i32m4 = Onca::Math::Mat4<i32>;
+using i64m4 = Onca::Math::Mat4<i64>;
+using u8m4  = Onca::Math::Mat4<u8>;
+using u16m4 = Onca::Math::Mat4<u16>;
+using u32m4 = Onca::Math::Mat4<u32>;
+using u64m4 = Onca::Math::Mat4<u64>;
+using f32m4 = Onca::Math::Mat4<f32>;
+using f64m4 = Onca::Math::Mat4<f64>;

@@ -1,7 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 
-namespace Core::Chrono
+namespace Onca::Chrono
 {
 	/**
 	 * Delta time with dilation

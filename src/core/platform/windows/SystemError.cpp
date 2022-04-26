@@ -3,7 +3,7 @@
 
 #include "Windows.h" 
 
-namespace Core
+namespace Onca
 {
 	auto TranslateSystemError() noexcept -> SystemError
 	{

@@ -4,7 +4,7 @@
 #include "core/utils/Delegate.h"
 #include "core/utils/Utils.h"
 
-namespace Core
+namespace Onca
 {
 	namespace Detail
 	{

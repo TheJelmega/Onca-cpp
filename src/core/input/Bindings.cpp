@@ -3,7 +3,7 @@
 #include "InputManager.h"
 #include "User.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	KeyBinding::KeyBinding(const Key& key) noexcept
 		: m_key(key)

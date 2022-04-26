@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Traits.h"
 
-namespace Core
+namespace Onca
 {
 	// Reimplementation since we cannot do function aliases
 	/**

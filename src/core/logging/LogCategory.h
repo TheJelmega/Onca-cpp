@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/string/Include.h"
 
-namespace Core
+namespace Onca
 {
 	struct LogCategory
 	{
@@ -16,7 +16,7 @@ namespace Core
 	
 }
 
-#define DEFINE_LOG_CATEGORY(name) constexpr Core::LogCategory name{ #name };
+#define DEFINE_LOG_CATEGORY(name) constexpr Onca::LogCategory name{ #name };
 
 namespace LogCategories
 {

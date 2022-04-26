@@ -6,7 +6,7 @@
 #include "core/utils/Meta.h"
 #include "core/utils/Utils.h"
 
-namespace Core::Intrin
+namespace Onca::Intrin
 {
 	namespace Detail
 	{
@@ -613,7 +613,7 @@ namespace Core::Intrin
 #include "PackConvert.inl"
 #include "Pack.inl"
 
-namespace Core
+namespace Onca
 {
 	using f64x2 = Intrin::Pack<f64, 2>;
 	using f64x4 = Intrin::Pack<f64, 4>;

@@ -6,7 +6,7 @@
 #include <charconv>
 #include "core/math/IntUtils.h"
 
-namespace Core
+namespace Onca
 {
 	namespace Detail::Parse
 	{

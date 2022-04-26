@@ -3,7 +3,7 @@
 #include "core/logging/Logger.h"
 
 
-namespace Core
+namespace Onca
 {
 	WindowManager::WindowManager() noexcept
 		: m_threadId(Threading::GetCurrentThreadId())

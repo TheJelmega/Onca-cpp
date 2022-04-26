@@ -6,7 +6,7 @@
 #include "core/platform/Platform.h"
 #include "../Enums.h"
 
-namespace Core::FileSystem::Windows
+namespace Onca::FileSystem::Windows
 {
 	struct NativeIOEventData
 	{

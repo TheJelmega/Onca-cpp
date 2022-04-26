@@ -5,7 +5,7 @@
 
 #include "core/Assert.h"
 
-namespace Core
+namespace Onca
 {
 	template <typename T, usize N>
 	auto Array<T, N>::At(usize idx) const noexcept -> Optional<T>

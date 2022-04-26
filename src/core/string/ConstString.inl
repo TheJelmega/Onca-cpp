@@ -4,7 +4,7 @@
 #endif
 #include "ConstString.h"
 
-namespace Core
+namespace Onca
 {
 	template<usize Cap>
 	constexpr ConstString<Cap>::Iterator::Iterator() noexcept

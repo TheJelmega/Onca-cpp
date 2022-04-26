@@ -3,7 +3,7 @@
 #include "BitSet.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	inline BitSet::BitSet(Alloc::IAllocator& alloc) noexcept
 		: m_data(alloc)

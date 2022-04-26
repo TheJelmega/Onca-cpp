@@ -3,7 +3,7 @@
 #include "FallbackArena.h"
 #endif
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	template <ImplementsIAllocator MainAlloc, ImplementsIAllocator Fallback>
 	FallbackArena<MainAlloc, Fallback>::FallbackArena(MainAlloc&& main, Fallback&& fallback)

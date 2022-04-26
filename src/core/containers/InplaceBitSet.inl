@@ -3,7 +3,7 @@
 #include "InplaceBitSet.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	template <usize Bits>
 	constexpr InplaceBitSet<Bits>::InplaceBitSet() noexcept

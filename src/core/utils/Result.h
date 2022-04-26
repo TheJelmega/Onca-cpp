@@ -1,7 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 
-namespace Core
+namespace Onca
 {
 
 	/**

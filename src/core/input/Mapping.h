@@ -8,7 +8,7 @@
 #include "core/memory/RefCounted.h"
 #include "core/memory/Unique.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	struct RebindState;
 

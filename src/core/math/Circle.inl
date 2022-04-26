@@ -6,7 +6,7 @@
 
 #include "MathUtils.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template <Numeric T>
 	constexpr Circle<T>::Circle() noexcept

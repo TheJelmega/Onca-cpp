@@ -3,7 +3,7 @@
 #include "Concepts.h"
 #include "Constants.h"
 
-namespace Core::FloatUtils
+namespace Onca::FloatUtils
 {
 	template<FloatingPoint F>
 	using Carrier = UnsignedOfSameSize<F>;

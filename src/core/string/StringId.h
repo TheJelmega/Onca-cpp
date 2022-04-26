@@ -3,7 +3,7 @@
 #include "String.h"
 #include "ConstString.h"
 
-namespace Core
+namespace Onca
 {
 	class StringId
 	{
@@ -58,5 +58,5 @@ namespace Core
 
 namespace Literals
 {
-	constexpr auto operator""_sid(const char* cstr, usize size) noexcept -> Core::StringId;
+	constexpr auto operator""_sid(const char* cstr, usize size) noexcept -> Onca::StringId;
 }

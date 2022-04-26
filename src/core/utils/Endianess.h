@@ -2,7 +2,7 @@
 #include "Defines.h"
 #include "Config.h"
 
-namespace Core
+namespace Onca
 {
 	constexpr auto SwitchEndianess(u16 val) noexcept -> u16;
 	constexpr auto SwitchEndianess(u32 val) noexcept -> u32;

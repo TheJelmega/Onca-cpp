@@ -3,7 +3,7 @@
 #include "Thread.h"
 #include "core/utils/Meta.h"
 
-namespace Core::Threading
+namespace Onca::Threading
 {
 	template <typename ... Args>
 	auto Thread::Invoke(void* pData) noexcept -> u32

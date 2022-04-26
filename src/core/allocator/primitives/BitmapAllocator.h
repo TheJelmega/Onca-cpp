@@ -2,7 +2,7 @@
 #include "core/allocator/IAllocator.h"
 #include "core/threading/Sync.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	/**
 	 * \brief An allocator that uses a bitmap to keep track of allocations

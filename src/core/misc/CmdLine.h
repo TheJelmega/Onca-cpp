@@ -4,7 +4,7 @@
 #include "core/containers/HashMap.h"
 #include "core/string/Include.h"
 
-namespace Core
+namespace Onca
 {
 	namespace Detail::LogCategories
 	{

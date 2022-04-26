@@ -3,7 +3,7 @@
 #include "Concepts.h"
 #include "Angle.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	namespace Detail
 	{

@@ -3,14 +3,14 @@
 #include "Algo.h"
 #endif
 
-namespace Core::Algo
+namespace Onca::Algo
 {
 	template <Movable T>
 	constexpr void Swap(T& a, T& b) noexcept
 	{
-		T tmp{ Core::Move(a) };
-		a = Core::Move(b);
-		b = Core::Move(tmp);
+		T tmp{ Onca::Move(a) };
+		a = Onca::Move(b);
+		b = Onca::Move(tmp);
 	}
 
 	template <ForwardIterator It>
@@ -19,9 +19,9 @@ namespace Core::Algo
 		STATIC_ASSERT(Movable<Decay<decltype(*a)>>, "Value contained in iterator should be movable");
 		using UnderlyingType = Decay<decltype(*a)>;
 
-		UnderlyingType tmp{ Core::Move(a) };
-		a = Core::Move(b);
-		b = Core::Move(tmp);
+		UnderlyingType tmp{ Onca::Move(a) };
+		a = Onca::Move(b);
+		b = Onca::Move(tmp);
 	}
 
 	template <ForwardIterator InIt, ForwardIterator OutIt>
@@ -45,7 +45,7 @@ namespace Core::Algo
 			from += size - 1;
 			to += size - 1;
 			for (usize i = 0; i < size; ++i)
-				new (&*to--) UnderlyingType{ Core::Move(*from--) };
+				new (&*to--) UnderlyingType{ Onca::Move(*from--) };
 		}
 		else
 		{
@@ -61,7 +61,7 @@ namespace Core::Algo
 		using UnderlyingType = Decay<decltype(*to)>;
 
 		for (usize i = 0; i < size; ++i)
-			new (&*to++) UnderlyingType{ Core::Move(*from++) };
+			new (&*to++) UnderlyingType{ Onca::Move(*from++) };
 	}
 
 	template <RandomAccessIterator InIt, RandomAccessIterator OutIt>
@@ -75,12 +75,12 @@ namespace Core::Algo
 			from += size - 1;
 			to += size - 1;
 			for (usize i = 0; i < size; ++i)
-				new (&*to--) UnderlyingType{ Core::Move(*from--) };
+				new (&*to--) UnderlyingType{ Onca::Move(*from--) };
 		}
 		else
 		{
 			for (usize i = 0; i < size; ++i)
-				new (&*to++) UnderlyingType{ Core::Move(*from++) };
+				new (&*to++) UnderlyingType{ Onca::Move(*from++) };
 		}
 	}
 

@@ -9,7 +9,7 @@
 #pragma warning(disable: 4309) // 'argument': truncation of constant value <- for _mm*_set_epi8 calls
 #endif
 
-namespace Core::Intrin
+namespace Onca::Intrin
 {
 	template<SimdBaseType From, SimdBaseType T, usize Width>
 	void SignExtend(Pack<T, Width>& pack) noexcept

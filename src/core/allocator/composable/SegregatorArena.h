@@ -2,7 +2,7 @@
 
 #include "core/allocator/IAllocator.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	/**
 	 * An allocator that selects 1 of 2 underlying allocators, depending on the size of the allocation

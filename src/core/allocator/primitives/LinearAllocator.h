@@ -1,7 +1,7 @@
 #pragma once
 #include "core/allocator/IAllocator.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	/**
 	 * \brief A linear allocator (can not deallocate, only can reset) (NOT threadsafe)

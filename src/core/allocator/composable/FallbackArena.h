@@ -1,7 +1,7 @@
 #pragma once
 #include "core/allocator/IAllocator.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	/**
 	 * An allocator that can fallback to another allocator if the main allcoator fails to allocate

@@ -3,12 +3,12 @@
 #include "core/allocator/GlobalAlloc.h"
 #include "core/memory/MemRef.h"
 
-namespace Core
+namespace Onca
 {
 
 	/**
 	 * Linked List
-	 * \tparam T Stored type (needs to conform to Core::Movable)
+	 * \tparam T Stored type (needs to conform to Onca::Movable)
 	 */
 	template<typename T>
 	class List

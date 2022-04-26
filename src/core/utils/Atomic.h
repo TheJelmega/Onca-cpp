@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include <atomic>
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * Wrapper around std::memory_order

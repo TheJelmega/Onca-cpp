@@ -3,7 +3,7 @@
 #include "Path.h"
 #include "core/platform/SystemError.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 
 	/**

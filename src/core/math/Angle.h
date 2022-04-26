@@ -3,7 +3,7 @@
 #include "Concepts.h"
 #include "FwdDecl.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	/**
 	* Type representing angles, which also handles conversions
@@ -122,9 +122,9 @@ namespace Core::Math
 
 inline namespace Literals
 {
-	constexpr auto operator""_deg(long double val) noexcept -> Core::Math::Angle<f64, Core::Math::AngleKind::Degrees>;
-	constexpr auto operator""_deg(unsigned long long int val) noexcept -> Core::Math::Angle<f64, Core::Math::AngleKind::Degrees>;
+	constexpr auto operator""_deg(long double val) noexcept -> Onca::Math::Angle<f64, Onca::Math::AngleKind::Degrees>;
+	constexpr auto operator""_deg(unsigned long long int val) noexcept -> Onca::Math::Angle<f64, Onca::Math::AngleKind::Degrees>;
 
-	constexpr auto operator""_rad(long double val) noexcept -> Core::Math::Angle<f64, Core::Math::AngleKind::Radians>;
-	constexpr auto operator""_rad(unsigned long long int val) noexcept -> Core::Math::Angle<f64, Core::Math::AngleKind::Radians>;
+	constexpr auto operator""_rad(long double val) noexcept -> Onca::Math::Angle<f64, Onca::Math::AngleKind::Radians>;
+	constexpr auto operator""_rad(unsigned long long int val) noexcept -> Onca::Math::Angle<f64, Onca::Math::AngleKind::Radians>;
 }

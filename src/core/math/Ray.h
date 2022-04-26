@@ -5,7 +5,7 @@
 #include "Vec3.h"
 #include "VecConsts.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	/**
 	 * Ray

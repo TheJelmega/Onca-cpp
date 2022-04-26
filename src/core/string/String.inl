@@ -3,7 +3,7 @@
 #include "String.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	inline String::Iterator::Iterator() noexcept
 		: m_pData(nullptr)
@@ -1725,18 +1725,18 @@ namespace Core
 
 inline namespace Literals
 {
-	inline auto operator ""_s(const char* cstr, usize size) noexcept -> Core::String
+	inline auto operator ""_s(const char* cstr, usize size) noexcept -> Onca::String
 	{
-		return Core::String{ cstr, size };
+		return Onca::String{ cstr, size };
 	}
 
-	inline auto operator ""_s(const char16_t* cstr, usize size) noexcept -> Core::String
+	inline auto operator ""_s(const char16_t* cstr, usize size) noexcept -> Onca::String
 	{
-		return Core::String{ cstr, size };
+		return Onca::String{ cstr, size };
 	}
 
-	inline auto operator ""_s(const char32_t* cstr, usize size) noexcept -> Core::String
+	inline auto operator ""_s(const char32_t* cstr, usize size) noexcept -> Onca::String
 	{
-		return Core::String{ cstr, size };
+		return Onca::String{ cstr, size };
 	}
 }

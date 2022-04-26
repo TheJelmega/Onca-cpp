@@ -2,7 +2,7 @@
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 
 	<!--DynArray<T> visualization-->
-	<Type Name="Core::DynArray&lt;*&gt;">
+	<Type Name="Onca::DynArray&lt;*&gt;">
 		<DisplayString>{{ Size = {m_size} }}</DisplayString>
 		<Expand>
 			<ArrayItems>
@@ -15,7 +15,7 @@
 	</Type>
 
 	<!--HashMap<T> visualization-->
-	<Type Name="Core::HashMap&lt;*,*,*,*,*&gt;">
+	<Type Name="Onca::HashMap&lt;*,*,*,*,*&gt;">
 		<DisplayString>{{ size = {m_size} }}</DisplayString>
 		<Expand>
 			<CustomListItems>
@@ -40,7 +40,7 @@
 		</Expand>
 	</Type>
 
-	<Type Name="Core::HashMap&lt;*,*,*,*,*&gt;::Iterator">
+	<Type Name="Onca::HashMap&lt;*,*,*,*,*&gt;::Iterator">
 		<DisplayString>{m_node.m_pAddr->pair}</DisplayString>
 		<Expand>
 			<Item Name="[key]">m_node.m_pAddr->pair.first</Item>

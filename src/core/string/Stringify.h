@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "String.h"
 
-namespace Core
+namespace Onca
 {
 	template<typename T>
 	concept ToStringMethod =

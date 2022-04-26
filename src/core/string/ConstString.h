@@ -3,7 +3,7 @@
 #include "core/containers/InplaceDynArray.h"
 #include "StringUtils.h"
 
-namespace Core
+namespace Onca
 {
 	// TODO: Unittest
 	/**

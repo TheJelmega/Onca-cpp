@@ -2,12 +2,12 @@
 #include "core/MinInclude.h"
 #include "core/Assert.h"
 
-namespace Core
+namespace Onca
 {
 
 	/**
 	 * Inplace dynamically sized array (Memory is on stack)
-	 * \tparam T Stored type (needs to conform to Core::Movable)
+	 * \tparam T Stored type (needs to conform to Onca::Movable)
 	 * \tparam Cap Capacity (max number of elements)
 	 * \note Iterators are invalidated after certain container modifications
 	 */

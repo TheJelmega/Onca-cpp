@@ -2,7 +2,7 @@
 
 #include "InputManager.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	auto ToString(MouseCode code) noexcept -> String
 	{

@@ -6,7 +6,7 @@
 
 #include "Constants.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template <Numeric T>
 	constexpr Ray<T>::Ray() noexcept

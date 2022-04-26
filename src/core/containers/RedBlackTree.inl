@@ -3,7 +3,7 @@
 #include "RedBlackTree.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	namespace Detail
 	{

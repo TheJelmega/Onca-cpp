@@ -5,7 +5,7 @@
 #include "MathUtils.h"
 #include "Vec2.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 
 	/**

@@ -3,7 +3,7 @@
 #include "ExpandableArena.h"
 #endif
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	template<ExtendableAlloc Alloc>
 	ExpandableArena<Alloc>::ExpandableArena(IAllocator* expandAlloc)

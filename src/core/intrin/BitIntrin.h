@@ -2,7 +2,7 @@
 #include "Base.h"
 #include "Concepts.h"
 
-namespace Core::Intrin
+namespace Onca::Intrin
 {
 
 	/**

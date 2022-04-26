@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "Concepts.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	enum class AngleKind
 	{

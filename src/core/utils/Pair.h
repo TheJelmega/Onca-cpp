@@ -3,7 +3,7 @@
 #include "Tuple.h"
 #include "core/Assert.h"
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * A pair of 2 values
@@ -118,13 +118,13 @@ namespace Core
 namespace std
 {
 	template<usize Idx, typename T0, typename T1>
-	constexpr auto get(Core::Pair<T0, T1>& pair) noexcept -> Core::TupleElement<Idx, Core::Pair<T0, T1>>&;
+	constexpr auto get(Onca::Pair<T0, T1>& pair) noexcept -> Onca::TupleElement<Idx, Onca::Pair<T0, T1>>&;
 	template<usize Idx, typename T0, typename T1>
-	constexpr auto get(const Core::Pair<T0, T1>& pair) noexcept -> const Core::TupleElement<Idx, Core::Pair<T0, T1>>&;
+	constexpr auto get(const Onca::Pair<T0, T1>& pair) noexcept -> const Onca::TupleElement<Idx, Onca::Pair<T0, T1>>&;
 	template<usize Idx, typename T0, typename T1>
-	constexpr auto get(Core::Pair<T0, T1>&& pair) noexcept -> Core::TupleElement<Idx, Core::Pair<T0, T1>>&&;
+	constexpr auto get(Onca::Pair<T0, T1>&& pair) noexcept -> Onca::TupleElement<Idx, Onca::Pair<T0, T1>>&&;
 	template<usize Idx, typename T0, typename T1>
-	constexpr auto get(const Core::Pair<T0, T1>&& pair) noexcept -> const Core::TupleElement<Idx, Core::Pair<T0, T1>>&&;
+	constexpr auto get(const Onca::Pair<T0, T1>&& pair) noexcept -> const Onca::TupleElement<Idx, Onca::Pair<T0, T1>>&&;
 }
 
 #include "Pair.inl"

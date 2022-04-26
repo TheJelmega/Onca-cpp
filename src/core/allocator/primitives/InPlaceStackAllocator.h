@@ -1,7 +1,7 @@
 #pragma once
 #include "core/allocator/IAllocator.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	/**
 	 * \brief An allocator that allows the allocation of items on a stack (NOT threadsafe)

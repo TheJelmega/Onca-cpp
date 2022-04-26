@@ -2,7 +2,7 @@
 #include <type_traits>
 #include "Config.h"
 
-namespace Core
+namespace Onca
 {
 	namespace Detail
 	{

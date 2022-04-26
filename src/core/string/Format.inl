@@ -6,7 +6,7 @@
 #include "Format.h"
 #include "core/math/MathUtils.h"
 
-namespace Core
+namespace Onca
 {
 	namespace Detail::Format
 	{

@@ -3,7 +3,7 @@
 #if PLATFORM_WINDOWS
 #include "Win.h"
 
-namespace Core
+namespace Onca
 {
 	DynLib::DynLib()
 		: m_handle(nullptr)

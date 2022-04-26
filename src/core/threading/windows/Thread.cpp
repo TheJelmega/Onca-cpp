@@ -5,7 +5,7 @@
 #if PLATFORM_WINDOWS
 #include "core/platform/Platform.h"
 
-namespace Core::Threading
+namespace Onca::Threading
 {
 	Thread::Thread() noexcept
 		: m_handle(INVALID_HANDLE_VALUE)

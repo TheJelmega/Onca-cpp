@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/utils/Flags.h"
 
-namespace Core::Unicode
+namespace Onca::Unicode
 {
 	struct Utf8Char
 	{
@@ -17,7 +17,7 @@ namespace Core::Unicode
 	};
 }
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * Options of String::Split

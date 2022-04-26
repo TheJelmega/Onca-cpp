@@ -5,7 +5,7 @@
 
 #include "core/utils/Endianess.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	template<usize Size, u8 MaxSubDivisions>
 	BuddyAllocator<Size, MaxSubDivisions>::BuddyAllocator(IAllocator* pBackingAlloc) noexcept

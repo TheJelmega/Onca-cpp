@@ -5,7 +5,7 @@
 
 #include "core/utils/Algo.h"
 
-namespace Core
+namespace Onca
 {
 	template <typename T>
 	DynArray<T>::DynArray(Alloc::IAllocator& alloc) noexcept

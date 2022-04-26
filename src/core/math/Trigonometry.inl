@@ -2,7 +2,7 @@
 #include "Trigonometry.h"
 #include "MathUtils.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	namespace Detail
 	{

@@ -3,7 +3,7 @@
 #include "core/containers/DynArray.h"
 #include "core/memory/Unique.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	/**
 	 * An interface defining the requirements an allocator needs to be able to be used in an expandable allocator

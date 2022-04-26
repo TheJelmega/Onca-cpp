@@ -1,7 +1,7 @@
 #pragma once
 #include "IAllocator.h"
 
-namespace Core::Detail
+namespace Onca::Detail
 {
 	/**
 	 * Get the address of the pointer pointing to a global alloc
@@ -10,7 +10,7 @@ namespace Core::Detail
 	auto GetGlobalAllocAddr() ->Alloc::IAllocator*&;
 }
 
-namespace Core
+namespace Onca
 {
 	/**
 	* Get the global allocator
@@ -26,4 +26,4 @@ namespace Core
 	CORE_API void SetGlobalAlloc(Alloc::IAllocator& alloc);
 }
 
-#define g_GlobalAlloc (::Core::GetGlobalAlloc())
+#define g_GlobalAlloc (::Onca::GetGlobalAlloc())

@@ -1,7 +1,7 @@
 #include "Utils.h"
 #if PLATFORM_WINDOWS
 
-namespace Core::FileSystem::Windows
+namespace Onca::FileSystem::Windows
 {
 	auto TranslateToFileAttribs(u32 winAttribs) noexcept -> FileAttributes
 	{

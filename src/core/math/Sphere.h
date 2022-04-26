@@ -4,7 +4,7 @@
 #include "Concepts.h"
 #include "Vec3.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template<Numeric T>
 	struct Sphere

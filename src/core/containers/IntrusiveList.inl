@@ -4,7 +4,7 @@
 #endif
 
 
-namespace Core
+namespace Onca
 {
 	template <typename Owner>
 	IntrusiveListNode<Owner>::IntrusiveListNode(usize memberOffset) noexcept

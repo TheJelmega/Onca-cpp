@@ -3,7 +3,7 @@
 #include "Device.h"
 #include "core/memory/RefCounted.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	class Device;
 	class InputManager;

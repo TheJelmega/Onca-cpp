@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/containers/Array.h"
 
-namespace Core::Hashing
+namespace Onca::Hashing
 {
 	namespace Detail
 	{

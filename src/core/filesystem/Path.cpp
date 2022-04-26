@@ -2,7 +2,7 @@
 
 #include "Directory.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 	Path::Path(Alloc::IAllocator& alloc) noexcept
 		: m_string(alloc)
@@ -416,18 +416,18 @@ namespace Core::FileSystem
 
 namespace Literals
 {
-	auto operator ""_path(const char* cstr, usize size) noexcept -> Core::FileSystem::Path
+	auto operator ""_path(const char* cstr, usize size) noexcept -> Onca::FileSystem::Path
 	{
-		return Core::FileSystem::Path{ Core::String{ cstr, size } };
+		return Onca::FileSystem::Path{ Onca::String{ cstr, size } };
 	}
 
-	auto operator ""_path(const char16_t* cstr, usize size) noexcept -> Core::FileSystem::Path
+	auto operator ""_path(const char16_t* cstr, usize size) noexcept -> Onca::FileSystem::Path
 	{
-		return Core::FileSystem::Path{ Core::String{ cstr, size } };
+		return Onca::FileSystem::Path{ Onca::String{ cstr, size } };
 	}
 
-	auto operator ""_path(const char32_t* cstr, usize size) noexcept -> Core::FileSystem::Path
+	auto operator ""_path(const char32_t* cstr, usize size) noexcept -> Onca::FileSystem::Path
 	{
-		return Core::FileSystem::Path{ Core::String{ cstr, size } };
+		return Onca::FileSystem::Path{ Onca::String{ cstr, size } };
 	}
 }

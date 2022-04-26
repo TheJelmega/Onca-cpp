@@ -5,7 +5,7 @@
 #include "Vec3.h"
 #include "Vec4.h"
 
-namespace Core::Math::Consts
+namespace Onca::Math::Consts
 {
 	template <Numeric T>
 	constexpr T XAxis = T(1);

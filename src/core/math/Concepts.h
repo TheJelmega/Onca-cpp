@@ -1,7 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template<typename T>
 	concept Incrementable = requires(T t)

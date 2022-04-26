@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "StringUtilTypes.h"
 
-namespace Core
+namespace Onca
 {
 	template<typename T>
 	concept ConvertableToUnicode =

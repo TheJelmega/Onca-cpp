@@ -3,7 +3,7 @@
 
 #include "core/platform/Platform.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 	namespace Windows
 	{

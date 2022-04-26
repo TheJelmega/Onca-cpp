@@ -7,7 +7,7 @@
 #if PLATFORM_WINDOWS
 #include "core/platform/Platform.h"
 
-namespace Core
+namespace Onca
 {
 	void HandleVirtualKey(bool down, WPARAM wParam, LPARAM lParam, Input::InputManager* pInputManager) noexcept
 	{

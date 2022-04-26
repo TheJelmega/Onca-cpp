@@ -3,7 +3,7 @@
 #include "LinearAllocator.h"
 #endif
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	template<usize Size, usize BaseAlignment>
 	LinearAllocator<Size, BaseAlignment>::LinearAllocator(IAllocator* pBackingAlloc)

@@ -3,7 +3,7 @@
 #include "Endianess.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	constexpr auto SwitchEndianess(u16 val) noexcept -> u16
 	{

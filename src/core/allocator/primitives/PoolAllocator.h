@@ -2,7 +2,7 @@
 #include "core/allocator/IAllocator.h"
 #include "core/utils/Atomic.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	/**
 	 * \brief An allocator that allocates memory from fixed-size block in the allocator

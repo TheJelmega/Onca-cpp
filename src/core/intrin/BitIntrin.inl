@@ -4,7 +4,7 @@
 #include "BitIntrin.h"
 #endif
 
-namespace Core::Intrin
+namespace Onca::Intrin
 {
 	template<Integral T>
 	constexpr auto BitScanLSB(T t) noexcept -> u8

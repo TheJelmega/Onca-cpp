@@ -7,7 +7,7 @@
 #include "core/utils/Utils.h"
 #include "core/utils/Algo.h"
 
-namespace Core
+namespace Onca
 {
 	template <typename T, usize Cap>
 	constexpr InplaceDynArray<T, Cap>::InplaceDynArray() noexcept

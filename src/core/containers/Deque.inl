@@ -3,7 +3,7 @@
 #include "Deque.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	template <typename T, usize BlockSize>
 	Deque<T, BlockSize>::Iterator::Iterator()

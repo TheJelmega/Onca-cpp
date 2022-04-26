@@ -2,7 +2,7 @@
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 
 	<!--String visualization-->
-	<Type Name="Core::String">
+	<Type Name="Onca::String">
 		<DisplayString Condition="!m_data.m_mem.m_pAddr">""</DisplayString>
 		<DisplayString>{m_data.m_mem.m_pAddr,s8}</DisplayString>
 		<Expand>

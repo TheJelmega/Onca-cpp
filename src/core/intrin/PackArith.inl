@@ -3,7 +3,7 @@
 #include "Pack.h"
 #endif
 
-namespace Core::Intrin
+namespace Onca::Intrin
 {
 	template <SimdBaseType T, usize Width>
 	constexpr auto Pack<T, Width>::Neg() const noexcept -> Pack
@@ -741,7 +741,7 @@ namespace Core::Intrin
 
 		for (usize i = 0; i < Width; ++i)
 		{
-			if (Core::Math::Consts::LowestVal<T> + other.data.raw[i] > data.raw[i])
+			if (Onca::Math::Consts::LowestVal<T> + other.data.raw[i] > data.raw[i])
 				pack.data.raw[i] = Math::Consts::LowestVal<T>;
 			else
 				pack.data.raw[i] = data.raw[i] - other.data.raw[i];

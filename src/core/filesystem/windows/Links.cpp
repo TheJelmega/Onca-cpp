@@ -4,7 +4,7 @@
 #include "core/platform/Platform.h"
 #include "../Entry.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 	auto CreateSymLink(const Path& path, const Path& target) noexcept -> SystemError
 	{

@@ -2,7 +2,7 @@
 
 #include "InputManager.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	Device::Device(const String& name)
 		: m_deviceId(InvalidId)

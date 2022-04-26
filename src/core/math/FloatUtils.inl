@@ -3,7 +3,7 @@
 #include "FloatUtils.h"
 #endif
 
-namespace Core::FloatUtils
+namespace Onca::FloatUtils
 {
 	template <Integral I>
 	constexpr auto ExtractExpBits(I bits) noexcept -> u32

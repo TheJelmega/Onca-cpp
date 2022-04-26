@@ -4,7 +4,7 @@
 #endif
 
 
-namespace Core
+namespace Onca
 {
 	template <typename K, typename V, Comparator<K> C, bool IsMultiMap>
 	auto SortedMap<K, V, C, IsMultiMap>::KeyValueComparator::operator()(const Pair<K, V>& p0, const Pair<K, V>& p1) noexcept -> i8

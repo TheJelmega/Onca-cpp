@@ -4,7 +4,7 @@
 #include "Path.h"
 #include "core/platform/SystemError.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 	/**
 	 * Options for filesystem entry iterations
@@ -118,4 +118,4 @@ namespace Core::FileSystem
 	CORE_API auto Move(const Path& from, const Path& to, MoveFlags flags) noexcept -> SystemError;
 }
 
-DEFINE_ENUM_FLAG_OPS(Core::FileSystem::MoveFlags);
+DEFINE_ENUM_FLAG_OPS(Onca::FileSystem::MoveFlags);

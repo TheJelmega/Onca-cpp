@@ -3,7 +3,7 @@
 #include "core/chrono/DeltaTime.h"
 #include "core/memory/Unique.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	class User;
 	class InputManager;

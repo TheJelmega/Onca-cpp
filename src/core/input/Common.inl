@@ -4,7 +4,7 @@
 #include "Common.h"
 #endif
 
-namespace Core::Input
+namespace Onca::Input
 {
 	inline Value::Value() noexcept
 		: type(ValueType::Axis)

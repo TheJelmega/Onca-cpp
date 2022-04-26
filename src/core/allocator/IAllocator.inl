@@ -6,7 +6,7 @@
 #include "core/Assert.h"
 #include "core/math/MathUtils.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {	
 	template <typename T>
 	auto IAllocator::Allocate(usize size, u16 align, bool isBacking) noexcept -> MemRef<T>

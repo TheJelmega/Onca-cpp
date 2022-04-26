@@ -4,7 +4,7 @@
 #include "core/platform/Platform.h"
 #include "Utils.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 	auto GetCurrentWorkingDirectory() noexcept -> Path
 	{

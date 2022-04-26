@@ -6,7 +6,7 @@
 #pragma diag_suppress 438 // supress bogus "expected a ''" due to concepts
 #endif
 
-namespace Core
+namespace Onca
 {
 	template<typename T, MemRefDeleter<T> D = DefaultDeleter<T>>
 	class Unique

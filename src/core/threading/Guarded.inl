@@ -3,7 +3,7 @@
 #endif
 #include "Guarded.h"
 
-namespace Core::Threading
+namespace Onca::Threading
 {
 	template <typename T, Lockable LockT>
 	LockedGuard<T, LockT>::LockedGuard(LockedGuard&& other) noexcept

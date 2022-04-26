@@ -7,7 +7,7 @@
 #include "core/utils/Delegate.h"
 #include "core/utils/Result.h"
 
-namespace Core
+namespace Onca
 {
 	class Window;
 	class WindowManager;
@@ -396,4 +396,4 @@ namespace Core
 	};
 }
 
-DEFINE_ENUM_FLAG_OPS(Core::WindowStyle);
+DEFINE_ENUM_FLAG_OPS(Onca::WindowStyle);

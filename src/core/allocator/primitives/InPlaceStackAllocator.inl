@@ -5,7 +5,7 @@
 
 #include "core/Assert.h"
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	template<usize Size, usize MaxAlignment>
 	InPlaceStackAllocator<Size, MaxAlignment>::InPlaceStackAllocator() noexcept

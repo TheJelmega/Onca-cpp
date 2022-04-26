@@ -3,7 +3,7 @@
 #include "BuiltinTriggers.h"
 #include "Rebind.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	User::User() noexcept
 		: m_id(InvalidId)

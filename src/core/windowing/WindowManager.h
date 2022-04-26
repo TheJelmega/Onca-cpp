@@ -9,7 +9,7 @@ namespace LogCategories
 	DEFINE_LOG_CATEGORY(WINDOWING);
 }
 
-namespace Core
+namespace Onca
 {
 	namespace Input
 	{

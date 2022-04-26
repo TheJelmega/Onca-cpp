@@ -6,7 +6,7 @@
 #include "core/Assert.h"
 #include "core/math/MathUtils.h"
 
-namespace Core
+namespace Onca
 {
 	template<typename T>
 	constexpr void MemCpy(T* dst, const T* src, usize numBytes) noexcept

@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/logging/LogCategory.h"
 
-namespace Core::Threading
+namespace Onca::Threading
 {
 	using ThreadID = u32;
 }

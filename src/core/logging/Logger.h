@@ -2,7 +2,7 @@
 #include "LogCategory.h"
 #include "core/filesystem/FileSystem.h"
 
-namespace Core
+namespace Onca
 {
 	enum class LogLevel
 	{
@@ -188,6 +188,6 @@ namespace Core
 	CORE_API auto GetLogger() noexcept -> Logger&;
 }
 
-#define g_Logger (Core::GetLogger())
+#define g_Logger (Onca::GetLogger())
 
 #include "Logger.inl"

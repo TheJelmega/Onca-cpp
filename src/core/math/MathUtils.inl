@@ -9,7 +9,7 @@
 #pragma diag_suppress 438 // supress bogus "expected a ''" due to concepts
 #endif
 
-namespace Core::Math
+namespace Onca::Math
 {
 	namespace Detail
 	{

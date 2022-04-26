@@ -3,7 +3,7 @@
 #include "Dlist.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	template <typename T>
 	DList<T>::Iterator::Iterator() noexcept

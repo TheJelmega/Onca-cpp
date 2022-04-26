@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/utils/Flags.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 	enum class FileAttribute : u32
 	{
@@ -78,7 +78,7 @@ namespace Core::FileSystem
 
 }
 
-DEFINE_ENUM_FLAG_OPS(Core::FileSystem::FileAttribute);
-DEFINE_ENUM_FLAG_OPS(Core::FileSystem::AccessMode);
-DEFINE_ENUM_FLAG_OPS(Core::FileSystem::ShareMode);
-DEFINE_ENUM_FLAG_OPS(Core::FileSystem::FileFlag);
+DEFINE_ENUM_FLAG_OPS(Onca::FileSystem::FileAttribute);
+DEFINE_ENUM_FLAG_OPS(Onca::FileSystem::AccessMode);
+DEFINE_ENUM_FLAG_OPS(Onca::FileSystem::ShareMode);
+DEFINE_ENUM_FLAG_OPS(Onca::FileSystem::FileFlag);

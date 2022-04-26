@@ -1,7 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 
-namespace Core::Threading
+namespace Onca::Threading
 {
 	/**
 	 * Synchronization primitive to only allow access to a mutually exclusive resource

@@ -5,7 +5,7 @@
 
 #include "core/chrono/DateTime.h"
 
-namespace Core
+namespace Onca
 {
 	Logger::Logger() noexcept
 		: m_maxLevel(LogLevel::Verbose)

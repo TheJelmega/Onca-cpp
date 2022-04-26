@@ -8,7 +8,7 @@
 #include "MathUtils.h"
 #include "VecConsts.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 
 	template <Numeric T>

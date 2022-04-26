@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "StringUtilTypes.h"
 
-namespace Core::Unicode
+namespace Onca::Unicode
 {
 	constexpr usize UnicodeCaseTableSize = 1454;
 	constexpr UCodepoint UnicodeCaseLowerTable[UnicodeCaseTableSize] =

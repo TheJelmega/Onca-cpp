@@ -1,6 +1,6 @@
 #include "Rebind.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	RebindContext::RebindContext()
 		: m_timeout(0.f)

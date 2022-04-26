@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include <tuple>
 
-namespace Core
+namespace Onca
 {
 	template<typename... Args>
 	using Tuple = std::tuple<Args...>;

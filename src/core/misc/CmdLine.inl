@@ -5,7 +5,7 @@
 
 #include "core/logging/Logger.h"
 
-namespace Core
+namespace Onca
 {
 	template <TryParsable T>
 	CmdLine::Value<T>::Value(T& val)

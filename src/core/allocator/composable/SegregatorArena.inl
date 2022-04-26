@@ -3,7 +3,7 @@
 #include "SegregatorArena.h"
 #endif
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	template <ImplementsIAllocator GtAlloc, ImplementsIAllocator LeAlloc>
 	SegregatorAllocator<GtAlloc, LeAlloc>::SegregatorAllocator(usize bound, GtAlloc&& gtAlloc, LeAlloc&& leAlloc)

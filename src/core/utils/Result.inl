@@ -4,7 +4,7 @@
 #endif
 #include "core/Assert.h"
 
-namespace Core
+namespace Onca
 {
 	template <typename T, NotSameAs<T> E>
 	constexpr Result<T, E>::Result(T&& val) noexcept

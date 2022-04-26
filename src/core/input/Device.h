@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "Key.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	class InputManager;
 	

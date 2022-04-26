@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "IInput.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 
 	/**

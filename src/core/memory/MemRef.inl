@@ -6,7 +6,7 @@
 #include "MemUtils.h"
 #include "core/allocator/IAllocator.h"
 
-namespace Core
+namespace Onca
 {
 	template <typename T>
 	MemRef<T>::MemRef() noexcept

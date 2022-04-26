@@ -4,7 +4,7 @@
 #include "core/utils/Flags.h"
 #include "StringUtils.h"
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * Utf8 string
@@ -815,7 +815,7 @@ namespace Core
 
 inline namespace Literals
 {
-	auto operator""_s(const char* cstr, usize size) noexcept -> Core::String;
-	auto operator""_s(const char16_t* cstr, usize size) noexcept -> Core::String;
-	auto operator""_s(const char32_t* cstr, usize size) noexcept -> Core::String;
+	auto operator""_s(const char* cstr, usize size) noexcept -> Onca::String;
+	auto operator""_s(const char16_t* cstr, usize size) noexcept -> Onca::String;
+	auto operator""_s(const char32_t* cstr, usize size) noexcept -> Onca::String;
 }

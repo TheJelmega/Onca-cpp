@@ -2,7 +2,7 @@
 
 #include "User.h"
 
-namespace Core::Input
+namespace Onca::Input
 {
 	PressedTrigger::PressedTrigger(f32 threshold)
 		: ITrigger(threshold)

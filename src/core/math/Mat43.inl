@@ -9,7 +9,7 @@
 #include "core/Assert.h"
 #include "core/utils/Algo.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	template <Numeric T>
 	constexpr Mat43<T>::Mat43() noexcept

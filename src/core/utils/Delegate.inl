@@ -6,7 +6,7 @@
 #include "Assert.h"
 #include "Meta.h"
 
-namespace Core
+namespace Onca
 {
 	template <typename R, typename ... Args>
 	Delegate<R(Args...)>::Delegate(void* pObj, StubPtr stub) noexcept

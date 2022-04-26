@@ -1,7 +1,7 @@
 #include "Mallocator.h"
 #include <cstdlib>
 
-namespace Core::Alloc
+namespace Onca::Alloc
 {
 	Mallocator::~Mallocator() noexcept
 	{

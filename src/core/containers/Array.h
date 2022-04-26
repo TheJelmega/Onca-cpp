@@ -1,11 +1,11 @@
 #pragma once
 #include "core/MinInclude.h"
 
-namespace Core
+namespace Onca
 {
 	/**
 	 * A fixed size array
-	 * \tparam T Underlying type (needs to conform to Core::Movable)
+	 * \tparam T Underlying type (needs to conform to Onca::Movable)
 	 * \tparam N Size of the array
 	 */
 	template<typename T, usize N>

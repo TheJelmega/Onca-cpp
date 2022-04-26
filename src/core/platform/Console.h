@@ -2,7 +2,7 @@
 #include "core/MinInclude.h"
 #include "core/string/Include.h"
 
-namespace Core
+namespace Onca
 {
 	enum class SystemConsoleColor
 	{

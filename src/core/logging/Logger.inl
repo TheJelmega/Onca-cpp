@@ -3,7 +3,7 @@
 #include "Logger.h"
 #endif
 
-namespace Core
+namespace Onca
 {
 	template <typename ... Args>
 	void Logger::Log(LogLevel level, const LogCategory& category, const String& format, const Args&... args) noexcept

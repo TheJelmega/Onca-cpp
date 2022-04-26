@@ -6,7 +6,7 @@
 #include "Path.h"
 #include "IOTask.h"
 
-namespace Core::FileSystem
+namespace Onca::FileSystem
 {
 	struct FileRegion
 	{

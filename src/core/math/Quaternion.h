@@ -4,7 +4,7 @@
 #include "FwdDecl.h"
 #include "Vec3.h"
 
-namespace Core::Math
+namespace Onca::Math
 {
 	/**
 	 * Quaternion

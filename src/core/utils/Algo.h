@@ -1,7 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 
-namespace Core::Algo
+namespace Onca::Algo
 {
 	/**
 	 * Swap the value in 2 references
