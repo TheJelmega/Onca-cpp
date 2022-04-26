@@ -49,9 +49,13 @@
 
 #include "math/Math.h"
 
+#include "chrono/Chrono.h"
+
 #include "filesystem/FileSystem.h"
 #include "platform/Console.h"
 #include "platform/Process.h"
 #include "platform/DynLib.h"
 #include "logging/Logger.h"
 #include "misc/CmdLine.h"
+
+#include "windowing/WindowManager.h"
