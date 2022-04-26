@@ -102,9 +102,6 @@
 #define UNUSED(val) ((void)(val))
 #define EMPTY_FOR_BODY UNUSED(0)
 
-#define KB(x) ((x) << 10)
-#define MB(x) ((x) << 20)
-
 #define BIT(x) (1ull << (x))
 
 #define DEFINE_OPAQUE_HANDLE(name) using name = void*;

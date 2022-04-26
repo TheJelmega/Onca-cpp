@@ -99,4 +99,14 @@ namespace Onca
 	
 }
 
+inline namespace Literals
+{
+	constexpr auto operator""_KiB(u64 val) noexcept -> u64;
+	constexpr auto operator""_MiB(u64 val) noexcept -> u64;
+	constexpr auto operator""_GiB(u64 val) noexcept -> u64;
+	constexpr auto operator""_KB(u64 val) noexcept -> u64;
+	constexpr auto operator""_MB(u64 val) noexcept -> u64;
+	constexpr auto operator""_GB(u64 val) noexcept -> u64;
+}
+
 #include "MemUtils.inl"

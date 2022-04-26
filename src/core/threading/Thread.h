@@ -45,7 +45,7 @@ namespace Onca::Threading
 	{
 		bool                  suspended       = false;                         ///< Whether the thread starts in a suspended state
 		bool                  priorityBoost   = true;                          ///< Whether to allow thread priority boost (dynamically increase priority)
-		usize                 stackSize       = MB(1);                         ///< Stack size of the thread
+		usize                 stackSize       = 1_MiB;                         ///< Stack size of the thread
 		String                desc;                                            ///< Thread description
 		ThreadPriority        priority        = ThreadPriority::Normal;        ///< Thread priority
 		ThreadMemoryPriority  memPriority     = ThreadMemoryPriority::Default; ///< Thread memory priority

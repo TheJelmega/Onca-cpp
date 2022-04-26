@@ -56,7 +56,7 @@ namespace Onca
 	};
 }
 
-namespace Literals
+inline namespace Literals
 {
 	constexpr auto operator""_sid(const char* cstr, usize size) noexcept -> Onca::StringId;
 }

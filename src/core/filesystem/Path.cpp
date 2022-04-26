@@ -414,7 +414,7 @@ namespace Onca::FileSystem
 	}
 }
 
-namespace Literals
+inline namespace Literals
 {
 	auto operator ""_path(const char* cstr, usize size) noexcept -> Onca::FileSystem::Path
 	{

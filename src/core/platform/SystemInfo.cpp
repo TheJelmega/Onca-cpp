@@ -350,7 +350,7 @@ namespace Onca
 		g_Logger.Append("Memory end       : {:X}"_s, usize(m_appMemoryEnd));
 		g_Logger.Append("Memory size      : {}"_s, usize(m_appMemoryEnd) - usize(m_appMemoryStart));
 		g_Logger.Append("Alloc granularity: {}"_s, m_virtAllocGranulariy);
-		g_Logger.Append("Installed memory : {}MiB"_s, m_installedMemory / MB(1));
+		g_Logger.Append("Installed memory : {}MiB"_s, m_installedMemory / 1_MiB);
 
 		String cpuArch = m_processorArchitecture == ProcessorArch::X86_64 ? "x86-64"_s :
 			m_processorArchitecture == ProcessorArch::ARM64 ? "ARM64"_s :

@@ -306,7 +306,7 @@ namespace Onca
 	}
 }
 
-namespace Literals
+inline namespace Literals
 {
 	CORE_API auto operator""_path(const char* cstr, usize size) noexcept -> Onca::FileSystem::Path;
 	CORE_API auto operator""_path(const char16_t* cstr, usize size) noexcept -> Onca::FileSystem::Path;

@@ -97,3 +97,37 @@ namespace Onca
 	}
 
 }
+
+
+inline namespace Literals
+{
+	constexpr auto operator""_KiB(u64 val) noexcept -> u64
+	{
+		return val * 1024;
+	}
+
+	constexpr auto operator""_MiB(u64 val) noexcept -> u64
+	{
+		return val * 1024 * 1024;
+	}
+
+	constexpr auto operator""_GiB(u64 val) noexcept -> u64
+	{
+		return val * 1024 * 1024 * 1024;
+	}
+
+	constexpr auto operator""_KB(u64 val) noexcept -> u64
+	{
+		return val * 1000;
+	}
+
+	constexpr auto operator""_MB(u64 val) noexcept -> u64
+	{
+		return val * 1000 * 1000;
+	}
+
+	constexpr auto operator""_GB(u64 val) noexcept -> u64
+	{
+		return val * 1000 * 1000 * 1000;
+	}
+}
