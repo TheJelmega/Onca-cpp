@@ -10,10 +10,9 @@ cd ../../../
 
 :: Google benchmark
 git clone https://github.com/google/benchmark.git third-party/googlebench
-git clone https://github.com/google/googletest.git third-party/googlebench/googletest
+robocopy third-party/googletest third-party/googlebench/googletest /E
 cd third-party/googlebench
 mkdir build
 cmake -DCMAKE_BUILD_TYPE=Release -S . -B "build"
 cmake --build "build" --config Release
-
-
+cd ../../

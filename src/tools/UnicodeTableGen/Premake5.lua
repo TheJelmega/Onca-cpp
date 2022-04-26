@@ -26,10 +26,10 @@ project "UnicodeTableGen"
 
     debugdir "data/"
 
+    removeplatforms { "Windows" }
+    removedefines { "DEBUG", "NDEBUG", "RELEASE_" }
     configmap {
         ["Profile"] = "Debug"
     }
-    removeplatforms { "Windows" }
-    removedefines { "DEBUG", "NDEBUG", "RELEASE_" }
 
     CreateLaunchSettings()
