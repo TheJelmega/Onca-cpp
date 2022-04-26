@@ -19,17 +19,17 @@ namespace Core::FileSystem
 	public:
 		DEFINE_OPAQUE_HANDLE(NativeHandle);
 
+		DISABLE_COPY(File);
+
 		/**
 		 * Create a null file
 		 */
 		File();
-
-		File(const File&) = delete;
+		
 		File(File&& other) noexcept;
 
 		~File();
-
-		auto operator=(const File&) = delete;
+		
 		auto operator=(File&& other) noexcept -> File&;
 
 		/**

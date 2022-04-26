@@ -33,16 +33,16 @@ namespace Core::FileSystem
 			bool              validData : 1; ///< Whether the data in the I/O read task is valid
 		};
 
+		DISABLE_COPY(IOReadTask);
+
 		/**
 		 * Create an invalid IO read task
 		 */
 		IOReadTask() = default;
 		~IOReadTask();
 
-		IOReadTask(const IOReadTask&) = delete;
 		IOReadTask(IOReadTask&& other) noexcept;
-
-		auto operator=(const IOReadTask&) = delete;
+		
 		auto operator=(IOReadTask&& other) noexcept -> IOReadTask&;
 
 		/**
@@ -99,16 +99,16 @@ namespace Core::FileSystem
 			AsyncWriteCallback callback;     ///< Callback
 		};
 
+		DISABLE_COPY(IOWriteTask);
+
 		/**
 		 * Create an invalid IO read task
 		 */
 		IOWriteTask() = default;
 		~IOWriteTask();
-
-		IOWriteTask(const IOWriteTask&) = delete;
+		
 		IOWriteTask(IOWriteTask&& other) noexcept;
-
-		auto operator=(const IOWriteTask&) = delete;
+		
 		auto operator=(IOWriteTask&& other) noexcept -> IOWriteTask&;
 
 		/**
