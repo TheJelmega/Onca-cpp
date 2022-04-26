@@ -194,7 +194,7 @@ namespace Core
 		return true;
 	}
 
-	inline auto BitSet::Set(usize idx, bool val) noexcept -> void
+	inline void BitSet::Set(usize idx, bool val) noexcept
 	{
 		if (val)
 			Set(idx);
@@ -202,7 +202,7 @@ namespace Core
 			Unset(idx);
 	}
 
-	inline auto BitSet::Set(usize idx) noexcept -> void
+	inline void BitSet::Set(usize idx) noexcept
 	{
 		if (idx >= m_numBits)
 			return;
@@ -212,7 +212,7 @@ namespace Core
 		m_data[elemIdx] |= usize(1) << (BitIdxMask - bitIdx);
 	}
 
-	inline auto BitSet::Unset(usize idx) noexcept -> void
+	inline void BitSet::Unset(usize idx) noexcept
 	{
 		if (idx >= m_numBits)
 			return;
@@ -222,12 +222,12 @@ namespace Core
 		m_data[elemIdx] &= ~(usize(1) << (BitIdxMask - bitIdx));
 	}
 
-	inline auto BitSet::Clear() noexcept -> void
+	inline void BitSet::Clear() noexcept
 	{
 		MemClear(Data(), DataSize() * sizeof(usize));
 	}
 
-	inline auto BitSet::Flip() noexcept -> void
+	inline void BitSet::Flip() noexcept
 	{
 		for (usize i = 0; i < DataSize(); ++i)
 			m_data[i] = ~m_data[i];
@@ -286,7 +286,7 @@ namespace Core
 		return (m_data.Back() & bitMask) == bitMask;
 	}
 
-	inline auto BitSet::Resize(usize numBits) noexcept -> void
+	inline void BitSet::Resize(usize numBits) noexcept
 	{
 		m_data.Resize((numBits + BitIdxMask) / BitsPerElem);
 

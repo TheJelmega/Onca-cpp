@@ -73,7 +73,7 @@ namespace Core::FileSystem
 		/**
 		 * Clear the contents of the path
 		 */
-		auto Clear() noexcept -> void;
+		void Clear() noexcept;
 
 		/**
 		 * Remove the file name from the path

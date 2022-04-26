@@ -102,7 +102,7 @@ namespace Core
 		 * \param[in] pObj Pointer to object
 		 * \warning The user is responsible for passing the correct type to the function
 		 */
-		auto SetObject(void* pObj) noexcept -> void;
+		void SetObject(void* pObj) noexcept;
 		/**
 		 * Check if the delegate has an object assigned to it
 		 * \return Whether the delegate has an object assigned to it

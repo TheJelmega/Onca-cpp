@@ -49,7 +49,7 @@ namespace Core
 		 * \param[in] memOrder Memory order constraints to enforce
 		 * \note 'memOrder' must be one of the following: Relaxed, Consume, Acquire, or SeqCst
 		 */
-		auto Store(T val, MemOrder memOrder = MemOrder::SeqCst) noexcept -> void;
+		void Store(T val, MemOrder memOrder = MemOrder::SeqCst) noexcept;
 		/**
 		 * Atomically load and return the current value
 		 * \param[in] memOrder Memory order constraints to enforce
@@ -94,16 +94,16 @@ namespace Core
 		 * \param[in] memOrder Memory order constraints to enforce
 		 * \note 'memOrder' cannot be Release of AcqRel
 		 */
-		auto Wait(T old, MemOrder memOrder = MemOrder::SeqCst) noexcept -> void;
+		void Wait(T old, MemOrder memOrder = MemOrder::SeqCst) noexcept;
 
 		/**
 		 * If a thread is waiting on the atomic, notify a single thread that is waiting for it, otherwise do nothing
 		 */
-		auto NotifyOne() noexcept -> void;
+		void NotifyOne() noexcept;
 		/**
 		 * If a thread is waiting on the atomic, notify all threads that is waiting for it, otherwise do nothing
 		 */
-		auto NotifyAll() noexcept -> void;
+		void NotifyAll() noexcept;
 
 		/**
 		 * Atomically add a value to the atomic and return the value it had before modification

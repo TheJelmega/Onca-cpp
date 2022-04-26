@@ -353,7 +353,7 @@ namespace Core
 	}
 
 	template<usize Cap>
-	constexpr auto ConstString<Cap>::Assign(UCodepoint codepoint, usize count) noexcept -> void
+	constexpr void ConstString<Cap>::Assign(UCodepoint codepoint, usize count) noexcept
 	{
 		m_data.Clear();
 		m_length = 0;
@@ -361,7 +361,7 @@ namespace Core
 	}
 
 	template<usize Cap>
-	constexpr auto ConstString<Cap>::Assign(const ConstString& other, usize pos, usize length) noexcept -> void
+	constexpr void ConstString<Cap>::Assign(const ConstString& other, usize pos, usize length) noexcept
 	{
 		m_data.Clear();
 		m_length = 0;
@@ -370,14 +370,14 @@ namespace Core
 
 	template<usize Cap>
 	template <CharacterType C>
-	constexpr auto ConstString<Cap>::Assign(const C* str) noexcept -> void
+	constexpr void ConstString<Cap>::Assign(const C* str) noexcept
 	{
 		Assign(str, StrLen(str));
 	}
 
 	template<usize Cap>
 	template <CharacterType C>
-	constexpr auto ConstString<Cap>::Assign(const C* str, usize length) noexcept -> void
+	constexpr void ConstString<Cap>::Assign(const C* str, usize length) noexcept
 	{
 		m_data.Clear();
 		m_length = 0;
@@ -398,7 +398,7 @@ namespace Core
 
 	template<usize Cap>
 	template <ConvertableToUnicode T>
-	constexpr auto ConstString<Cap>::Assign(const InitializerList<T>& il) noexcept -> void
+	constexpr void ConstString<Cap>::Assign(const InitializerList<T>& il) noexcept
 	{
 		m_data.Clear();
 		Assign(il.begin(), il.end());
@@ -406,7 +406,7 @@ namespace Core
 
 	template<usize Cap>
 	template <ForwardIterator It> requires DereferencableToUnicode<It>
-	constexpr auto ConstString<Cap>::Assign(const It& begin, const It& end) noexcept -> void
+	constexpr void ConstString<Cap>::Assign(const It& begin, const It& end) noexcept
 	{
 		m_data.Clear();
 		m_length = 0;
@@ -427,7 +427,7 @@ namespace Core
 	}
 	
 	template<usize Cap>
-	constexpr auto ConstString<Cap>::Resize(usize newSize, UCodepoint codepoint) noexcept -> void
+	constexpr void ConstString<Cap>::Resize(usize newSize, UCodepoint codepoint) noexcept
 	{
 		if (newSize > m_length)
 		{
@@ -1633,7 +1633,7 @@ namespace Core
 	}
 
 	template<usize Cap>
-	constexpr auto ConstString<Cap>::AssignSubConstString(const ConstString& other, usize idx, usize pos, usize size, usize length) noexcept -> void
+	constexpr void ConstString<Cap>::AssignSubConstString(const ConstString& other, usize idx, usize pos, usize size, usize length) noexcept
 	{
 		if (size > other.DataSize() - idx)
 			size = other.DataSize() - idx;
@@ -1832,7 +1832,7 @@ namespace Core
 	}
 
 	template<usize Cap>
-	constexpr auto ConstString<Cap>::NullTerminate() noexcept -> void
+	constexpr void ConstString<Cap>::NullTerminate() noexcept
 	{
 		const usize size = m_data.Size();
 		m_data.Data()[size] = 0;

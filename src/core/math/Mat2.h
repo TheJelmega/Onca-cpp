@@ -145,7 +145,7 @@ namespace Core::Math
 		 * \param row Row
 		 * \return Row
 		 */
-		constexpr auto SetRow(usize idx, const Vec2<T>& row) noexcept -> void;
+		constexpr void SetRow(usize idx, const Vec2<T>& row) noexcept;
 		/**
 		 * Get the column at the given index
 		 * \param idx Index
@@ -158,7 +158,7 @@ namespace Core::Math
 		 * \param column Column
 		 * \return Column
 		 */
-		constexpr auto SetColumn(usize idx, const Vec2<T>& column) noexcept -> void;
+		constexpr void SetColumn(usize idx, const Vec2<T>& column) noexcept;
 		/**
 		 * Get the diagonal of the matrix
 		 * \return Diagonal

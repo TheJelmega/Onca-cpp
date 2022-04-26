@@ -186,7 +186,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveDList<T>::Add(IntrusiveDListNode<T>& val) noexcept -> void
+	void IntrusiveDList<T>::Add(IntrusiveDListNode<T>& val) noexcept
 	{
 		val.m_pPrev = m_pTail;
 		if (m_pTail)
@@ -197,7 +197,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveDList<T>::Add(IntrusiveDList&& other) -> void
+	void IntrusiveDList<T>::Add(IntrusiveDList&& other)
 	{
 		if (!other.m_pHead)
 			return;
@@ -257,7 +257,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveDList<T>::AddFront(IntrusiveDListNode<T>& val) noexcept -> void
+	void IntrusiveDList<T>::AddFront(IntrusiveDListNode<T>& val) noexcept
 	{
 		val.m_pNext = m_pHead;
 
@@ -268,7 +268,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveDList<T>::AddFront(IntrusiveDList&& other) noexcept -> void
+	void IntrusiveDList<T>::AddFront(IntrusiveDList&& other) noexcept
 	{
 		if (!other.m_pHead)
 			return;
@@ -287,7 +287,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveDList<T>::Clear() noexcept -> void
+	void IntrusiveDList<T>::Clear() noexcept
 	{
 		IntrusiveDListNode<T>* pNode = m_pHead;
 		while (pNode)
@@ -301,7 +301,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveDList<T>::Pop() noexcept -> void
+	void IntrusiveDList<T>::Pop() noexcept
 	{
 		if (!m_pHead->m_pNext)
 		{
@@ -316,7 +316,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveDList<T>::PopFront() noexcept -> void
+	void IntrusiveDList<T>::PopFront() noexcept
 	{
 		if (!m_pHead->m_pNext)
 		{
@@ -331,7 +331,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveDList<T>::Erase(Iterator& it) noexcept -> void
+	void IntrusiveDList<T>::Erase(Iterator& it) noexcept
 	{
 		ASSERT(it.m_pNode, "Iterator out of bounds");
 		IntrusiveDListNode<T>* pPrev = it.m_pNode->m_pPrev;
@@ -351,7 +351,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveDList<T>::Reverse() noexcept -> void
+	void IntrusiveDList<T>::Reverse() noexcept
 	{
 		IntrusiveDListNode<T>* pNode = m_pHead;
 

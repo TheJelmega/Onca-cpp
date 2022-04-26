@@ -115,7 +115,7 @@ namespace Core::Threading
 	}
 
 	template <typename T, Lockable LockT>
-	auto Guarded<T, LockT>::Unlock(LockedGuard<T, LockT>&& lockedGuard) noexcept -> void
+	void Guarded<T, LockT>::Unlock(LockedGuard<T, LockT>&& lockedGuard) noexcept
 	{
 		lockedGuard.~LockedGuard();
 	}

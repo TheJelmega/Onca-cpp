@@ -178,12 +178,12 @@ namespace Core
 		 * Rehash the HashMap to have a minimum number of buckets
 		 * \param[in] count Minimum number of buckets to rehash to
 		 */
-		auto Rehash(usize count) noexcept -> void;
+		void Rehash(usize count) noexcept;
 		/**
 		 * Reserve space for a number of elements and rehashes if needed
 		 * \param[in] count Number of elements to reserve
 		 */
-		auto Reserve(usize count) noexcept -> void;
+		void Reserve(usize count) noexcept;
 
 		/**
 		 * Insert a key-value pair into the HashMap, override value if it already exists
@@ -273,13 +273,13 @@ namespace Core
 		 * \param[in] other DynArray to merge
 		 */
 		template<Hasher H2, EqualsComparator C2>
-		auto Merge(HashMap<K, V, H2, C2>& other) noexcept -> void;
+		void Merge(HashMap<K, V, H2, C2>& other) noexcept;
 
 		/**
 		 * Clear the contents of the HashMap, possibly also deallocate the memory
 		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
-		auto Clear(bool clearMemory = false) noexcept -> void;
+		void Clear(bool clearMemory = false) noexcept;
 
 		/**
 		 * Erase an element from the HashMap
@@ -299,7 +299,7 @@ namespace Core
 		 * \param[in] fun Functor
 		 */
 		template<Callable<bool, const K&, const V&> F>
-		auto EraseIf(F fun) noexcept -> void;
+		void EraseIf(F fun) noexcept;
 
 		/**
 		 * Get an iterator to the elements with a key
@@ -460,7 +460,7 @@ namespace Core
 		 * Set the maximum load factor before rehashing
 		 * \param[in] ml Maximum load factor before rehashing
 		 */
-		auto SetMaxLoadFactor(f32 ml) noexcept -> void;
+		void SetMaxLoadFactor(f32 ml) noexcept;
 
 		/**
 		 * Get the allocator used by the HashMap
@@ -545,7 +545,7 @@ namespace Core
 		 * Remove a node out of the HashMap
 		 * \param[in]  node Node to remove
 		 */
-		auto RemoveNode(NodeRef node) noexcept -> void;
+		void RemoveNode(NodeRef node) noexcept;
 
 		/**
 		 * Internal clear
@@ -553,7 +553,7 @@ namespace Core
 		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
 		template<bool Destruct>
-		auto ClearInternal(bool clearMemory) noexcept -> void;
+		void ClearInternal(bool clearMemory) noexcept;
 
 		/**
 		 * Get an iterator to the elements with a hash and a key

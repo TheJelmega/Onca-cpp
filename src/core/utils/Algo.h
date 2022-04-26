@@ -10,7 +10,7 @@ namespace Core::Algo
 	 * \param b Second value
 	 */
 	template<Movable T>
-	constexpr auto Swap(T& a, T& b) noexcept -> void;
+	constexpr void Swap(T& a, T& b) noexcept;
 
 	/**
 	 * Swap the value in 2 iterators
@@ -19,7 +19,7 @@ namespace Core::Algo
 	 * \param b Second value
 	 */
 	template<ForwardIterator It>
-	constexpr auto SwapIter(It a, It b) noexcept -> void;
+	constexpr void SwapIter(It a, It b) noexcept;
 
 	/**
 	 * Copy a range of elements from an iterator to another iterator
@@ -31,7 +31,7 @@ namespace Core::Algo
 	 * \note Ranges should not overlap
 	 */
 	template<ForwardIterator InIt, ForwardIterator OutIt>
-	constexpr auto Copy(InIt from, OutIt to, usize size) noexcept -> void;
+	constexpr void Copy(InIt from, OutIt to, usize size) noexcept;
 	/**
 	 * Copy a range of elements from an iterator to another iterator
 	 * \tparam InIt Random access iterator
@@ -42,7 +42,7 @@ namespace Core::Algo
 	 * \note This version supports backwards copying
 	 */
 	template<RandomAccessIterator InIt, RandomAccessIterator OutIt>
-	constexpr auto Copy(InIt from, OutIt to, usize size) noexcept -> void;
+	constexpr void Copy(InIt from, OutIt to, usize size) noexcept;
 
 	/**
 	 * Move a range elements from an iterator to another iterator
@@ -54,7 +54,7 @@ namespace Core::Algo
 	 * \note Ranges should not overlap
 	 */
 	template<ForwardIterator InIt, ForwardIterator OutIt>
-	constexpr auto Move(InIt from, OutIt to, usize size) noexcept -> void;
+	constexpr void Move(InIt from, OutIt to, usize size) noexcept;
 	/**
 	 * Move a range elements from an iterator to another iterator
 	 * \tparam InIt Random access iterator
@@ -64,7 +64,7 @@ namespace Core::Algo
 	 * \param[in] size Number of elements to move
 	 */
 	template<RandomAccessIterator InIt, RandomAccessIterator OutIt>
-	constexpr auto Move(InIt from, OutIt to, usize size) noexcept -> void;
+	constexpr void Move(InIt from, OutIt to, usize size) noexcept;
 
 	/**
 	 * Reverse a range of values
@@ -73,7 +73,7 @@ namespace Core::Algo
 	 * \param last Iterator to last element
 	 */
 	template<BidirectionalIterator It>
-	constexpr auto Reverse(It first, It last) noexcept -> void;
+	constexpr void Reverse(It first, It last) noexcept;
 
 	/**
 	 * Reverse a range of values
@@ -82,7 +82,7 @@ namespace Core::Algo
 	 * \param last Iterator to last element
 	 */
 	template<RandomAccessIterator It>
-	constexpr auto Reverse(It first, It last) noexcept -> void;
+	constexpr void Reverse(It first, It last) noexcept;
 
 }
 

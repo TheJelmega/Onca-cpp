@@ -53,7 +53,7 @@ namespace Core::Math
 		 * Set the size of the AABB
 		 * \param[in] size Size
 		 */
-		constexpr auto SetSize(const Vec3<T>& size) noexcept -> void;
+		constexpr void SetSize(const Vec3<T>& size) noexcept;
 		/**
 		 * Get the center of the AABB
 		 * \return Center of the AABB
@@ -63,7 +63,7 @@ namespace Core::Math
 		 * Set the center of the AABB
 		 * \param[in] center Center
 		 */
-		constexpr auto SetCenter(const Vec3<T>& center) noexcept -> void;
+		constexpr void SetCenter(const Vec3<T>& center) noexcept;
 		/**
 		 * Get the volume of the AABB
 		 * \return Volume of the AABB

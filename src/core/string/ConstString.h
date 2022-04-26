@@ -162,21 +162,21 @@ namespace Core
 		 * \param codepoint Codepoint to assign
 		 * \param count Number of codepoints to assign
 		 */
-		constexpr auto  Assign(UCodepoint codepoint, usize count) noexcept -> void;
+		constexpr void Assign(UCodepoint codepoint, usize count) noexcept;
 		/**
 		 * Assign a subConstString of another ConstString to this ConstString
 		 * \param other ConstString to get subConstString from
 		 * \param pos Start position of the subConstString
 		 * \param length Length of the subConstString
 		 */
-		constexpr auto Assign(const ConstString& other, usize pos, usize length = NPos) noexcept -> void;
+		constexpr void Assign(const ConstString& other, usize pos, usize length = NPos) noexcept;
 		/**
 		 * Assign a c-ConstString to the ConstString
 		 * \tparam C Character type
 		 * \param str C-ConstString
 		 */
 		template<CharacterType C>
-		constexpr auto Assign(const C* str) noexcept -> void;
+		constexpr void Assign(const C* str) noexcept;
 		/**
 		 * Assign a c-ConstString to the ConstString
 		 * \tparam C Character type
@@ -184,14 +184,14 @@ namespace Core
 		 * \param length Length of the c-ConstString
 		 */
 		template<CharacterType C>
-		constexpr auto Assign(const C* str, usize length) noexcept -> void;
+		constexpr void Assign(const C* str, usize length) noexcept;
 		/**
 		 * Assign an initializer list to the ConstString
 		 * \tparam T Unicode compatible type
 		 * \param il Initializer list
 		 */
 		template<ConvertableToUnicode T>
-		constexpr auto Assign(const InitializerList<T>& il) noexcept -> void;
+		constexpr void Assign(const InitializerList<T>& il) noexcept;
 		/**
 		 * Assign a range of utf8 character to the ConstString
 		 * \tparam It Forward iterator
@@ -200,14 +200,14 @@ namespace Core
 		 */
 		template<ForwardIterator It>
 			requires DereferencableToUnicode<It>
-		constexpr auto Assign(const It& begin, const It& end) noexcept -> void;
+		constexpr void Assign(const It& begin, const It& end) noexcept;
 
 		/**
 		 * Resize the ConstString and fill missing elements if needed
 		 * \param[in] newSize New size of the ConstString
 		 * \param[in] codepoint codepoint to fill missing characters with
 		 */
-		constexpr auto Resize(usize newSize, UCodepoint codepoint) noexcept -> void;
+		constexpr void Resize(usize newSize, UCodepoint codepoint) noexcept;
 
 		/**
 		 * Add a number of codepoints to a ConstString
@@ -673,7 +673,7 @@ namespace Core
 		 * \param size Size in bytes
 		 * \param length Size in characters
 		 */
-		constexpr auto AssignSubConstString(const ConstString& other, usize idx, usize pos, usize size, usize length) noexcept -> void;
+		constexpr void AssignSubConstString(const ConstString& other, usize idx, usize pos, usize size, usize length) noexcept;
 
 		/**
 		 * Replace a section of the ConstString with a number of codepoints
@@ -755,7 +755,7 @@ namespace Core
 		/**
 		 * Make sure the internal ConstString is null-terminated
 		 */
-		constexpr auto NullTerminate() noexcept -> void;
+		constexpr void NullTerminate() noexcept;
 
 
 		InplaceDynArray<u8, Cap> m_data;   ///< UTF8 data

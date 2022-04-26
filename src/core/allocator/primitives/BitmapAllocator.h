@@ -35,7 +35,7 @@ namespace Core::Alloc
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
-		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
+		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
 		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	private:
@@ -59,7 +59,7 @@ namespace Core::Alloc
 		 * \param[in] numBlocks Number of blocks to mark
 		 * \param[in] set Whether to mark the bits as set or not
 		 */
-		auto MarkBits(usize startIdx, usize numBlocks, bool set) noexcept -> void;
+		void MarkBits(usize startIdx, usize numBlocks, bool set) noexcept;
 	private:
 		static constexpr usize NumManagementBlocks = CalcNumManagementBlocks();
 	

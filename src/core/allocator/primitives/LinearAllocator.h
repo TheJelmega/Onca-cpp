@@ -39,11 +39,11 @@ namespace Core::Alloc
 		 * Reset the head of the allocator
 		 * \note This will invalidate all memory owned by this allocator
 		 */
-		auto Reset() noexcept -> void;
+		void Reset() noexcept;
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
-		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
+		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
 		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	private:

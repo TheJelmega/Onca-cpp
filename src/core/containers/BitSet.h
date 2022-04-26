@@ -72,26 +72,26 @@ namespace Core
 		 * \param[in] idx Index of the bit to set
 		 * \param[in] val Value
 		 */
-		auto Set(usize idx, bool val) noexcept -> void;
+		void Set(usize idx, bool val) noexcept;
 		/**
 		 * Set a bit to true
 		 * \param[in] idx Index of the bit to set
 		 */
-		auto Set(usize idx) noexcept -> void;
+		void Set(usize idx) noexcept;
 		/**
 		 * Set a bit to false
 		 * \param[in] idx Index of the bit to set
 		 */
-		auto Unset(usize idx) noexcept -> void;
+		void Unset(usize idx) noexcept;
 		/**
 		 * Clear all bits
 		 */
-		auto Clear() noexcept -> void;
+		void Clear() noexcept;
 
 		/**
 		 * Flip all bits in the bitset
 		 */
-		auto Flip() noexcept -> void;
+		void Flip() noexcept;
 
 		/**
 		 * Count the numbers of bits that are set
@@ -118,7 +118,7 @@ namespace Core
 		 * Resize the bitset to a new number of bits
 		 * \param[in] numBits Number of bits
 		 */
-		auto Resize(usize numBits) noexcept -> void;
+		void Resize(usize numBits) noexcept;
 
 		/**
 		 * Get the number of bits in the BitSet

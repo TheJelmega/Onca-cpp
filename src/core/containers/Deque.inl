@@ -350,7 +350,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <ForwardIterator It>
-	auto Deque<T, BlockSize>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>
+	void Deque<T, BlockSize>::Assign(const It& begin, const It& end) noexcept requires CopyConstructible<T>
 	{
 		Clear(false);
 		if constexpr (ContiguousIterator<T> && MemCopyable<T>)
@@ -374,7 +374,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>
+	void Deque<T, BlockSize>::Assign(const InitializerList<T>& il) noexcept requires CopyConstructible<T>
 	{
 		Clear(false);
 		if constexpr (ContiguousIterator<T> && MemCopyable<T>)
@@ -397,7 +397,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>
+	void Deque<T, BlockSize>::Fill(usize count, const T& val) noexcept requires CopyConstructible<T>
 	{
 		Clear();
 		for (usize i = 0; i < count; ++i)
@@ -405,7 +405,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>
+	void Deque<T, BlockSize>::FillDefault(usize count) noexcept requires NoThrowDefaultConstructible<T>
 	{
 		Clear();
 		for (usize i = 0; i < count; ++i)
@@ -413,7 +413,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>
+	void Deque<T, BlockSize>::Resize(usize newSize, const T& val) noexcept requires CopyConstructible<T>
 	{
 		if (newSize < m_size)
 		{
@@ -429,7 +429,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructible<T>
+	void Deque<T, BlockSize>::Resize(usize newSize) noexcept requires NoThrowDefaultConstructible<T>
 	{
 		if (newSize < m_size)
 		{
@@ -446,13 +446,13 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::PushFront(const T& val) noexcept -> void requires CopyConstructible<T>
+	void Deque<T, BlockSize>::PushFront(const T& val) noexcept requires CopyConstructible<T>
 	{
 		PushFront(T{ val });
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::PushFront(T&& val) noexcept -> void
+	void Deque<T, BlockSize>::PushFront(T&& val) noexcept
 	{
 		if (m_initialIdx == 0)
 		{
@@ -467,7 +467,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	auto Deque<T, BlockSize>::PushFront(const Deque<T, B>& other) -> void requires CopyConstructible<T>
+	void Deque<T, BlockSize>::PushFront(const Deque<T, B>& other) requires CopyConstructible<T>
 	{
 		for (usize i = 0; i < other.m_size; ++i)
 			PushFront(other[other.m_size - i - 1]);
@@ -475,7 +475,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	auto Deque<T, BlockSize>::PushFront(Deque<T, B>&& other) -> void
+	void Deque<T, BlockSize>::PushFront(Deque<T, B>&& other)
 	{
 		for (usize i = 0; i < other.m_size; ++i)
 			PushFront(*other.GetElemAddr(other.m_size - i - 1));
@@ -485,19 +485,19 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <typename... Args> requires ConstructableFrom<T, Args...>
-	auto Deque<T, BlockSize>::EmplaceFront(Args&&... args) noexcept -> void
+	void Deque<T, BlockSize>::EmplaceFront(Args&&... args) noexcept
 	{
 		PushFront(T{ args... });
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Push(const T& val) noexcept -> void requires CopyConstructible<T>
+	void Deque<T, BlockSize>::Push(const T& val) noexcept requires CopyConstructible<T>
 	{
 		Push(T{ val });
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Push(T&& val) noexcept -> void
+	void Deque<T, BlockSize>::Push(T&& val) noexcept
 	{
 		auto [offset, idx] = GetElemOffsetIdx(m_size);
 		if (idx == 0) 
@@ -509,7 +509,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	auto Deque<T, BlockSize>::Push(const Deque<T, B>& other) -> void requires CopyConstructible<T>
+	void Deque<T, BlockSize>::Push(const Deque<T, B>& other) requires CopyConstructible<T>
 	{
 		for (Iterator it = other.Begin(), end = other.End(); it != end; ++it)
 			Push(T{ *it });
@@ -517,7 +517,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <usize B>
-	auto Deque<T, BlockSize>::Push(Deque<T, B>&& other) -> void
+	void Deque<T, BlockSize>::Push(Deque<T, B>&& other)
 	{
 		for (usize i = 0; i < other.m_size; ++i)
 			Push(Move(*other.GetElemAddr(i)));
@@ -527,7 +527,7 @@ namespace Core
 
 	template <typename T, usize BlockSize>
 	template <typename ... Args> requires ConstructableFrom<T, Args...>
-	auto Deque<T, BlockSize>::EmplaceBack(Args&&... args) noexcept -> void
+	void Deque<T, BlockSize>::EmplaceBack(Args&&... args) noexcept
 	{
 		Push(T{ args... });
 	}
@@ -609,7 +609,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Clear(bool clearMemory) noexcept -> void
+	void Deque<T, BlockSize>::Clear(bool clearMemory) noexcept
 	{
 		for (usize i = 0; i < m_size; ++i)
 			GetElemAddr(i)->~T();
@@ -631,7 +631,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::PopFront() noexcept -> void
+	void Deque<T, BlockSize>::PopFront() noexcept
 	{
 		GetElemAddr(0)->~T();
 		if (m_initialIdx == BlockSize - 1)
@@ -649,7 +649,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Pop() noexcept -> void
+	void Deque<T, BlockSize>::Pop() noexcept
 	{
 		GetElemAddr(m_size - 1)->~T();
 		usize endIdx = (m_initialIdx + m_size) & Mask;
@@ -662,13 +662,13 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Erase(const Iterator& it) noexcept -> void
+	void Deque<T, BlockSize>::Erase(const Iterator& it) noexcept
 	{
 		Erase(it, 1);
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Erase(const Iterator& it, usize count) noexcept -> void
+	void Deque<T, BlockSize>::Erase(const Iterator& it, usize count) noexcept
 	{
 		usize itIdx = it.m_blockIdx * BlockSize + it.m_idx - m_initialIdx;
 		usize center = itIdx + count / 2;
@@ -714,7 +714,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::Erase(const Iterator& begin, const Iterator& end) noexcept -> void
+	void Deque<T, BlockSize>::Erase(const Iterator& begin, const Iterator& end) noexcept
 	{
 		Erase(begin, end - begin);
 	}
@@ -934,7 +934,7 @@ namespace Core
 	}
 	
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::AddBackBlocks(usize numBlocks) noexcept -> void
+	void Deque<T, BlockSize>::AddBackBlocks(usize numBlocks) noexcept
 	{
 		ReserveBase<true>(numBlocks);
 		Alloc::IAllocator* pAlloc = m_blocks.GetAlloc();
@@ -945,7 +945,7 @@ namespace Core
 	}
 
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::AddFrontBlocks(usize numBlocks) noexcept -> void
+	void Deque<T, BlockSize>::AddFrontBlocks(usize numBlocks) noexcept
 	{
 		ReserveBase<false>(numBlocks);
 		Alloc::IAllocator* pAlloc = m_blocks.GetAlloc();
@@ -998,7 +998,7 @@ namespace Core
 
 	// TODO: optimizations for types that allow memcpy/memmove in containers
 	template <typename T, usize BlockSize>
-	auto Deque<T, BlockSize>::PrepareInsert(usize idx, usize moveOffset) noexcept -> void
+	void Deque<T, BlockSize>::PrepareInsert(usize idx, usize moveOffset) noexcept
 	{
 		usize halfSize = m_size / 2;
 		if (idx > halfSize)

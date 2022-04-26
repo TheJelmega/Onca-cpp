@@ -59,3 +59,4 @@
 #include "misc/CmdLine.h"
 
 #include "windowing/WindowManager.h"
+#include "input/InputManager.h"

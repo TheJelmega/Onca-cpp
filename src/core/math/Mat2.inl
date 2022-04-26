@@ -266,7 +266,7 @@ namespace Core::Math
 	}
 
 	template <Numeric T>
-	constexpr auto Mat2<T>::SetRow(usize idx, const Vec2<T>& row) noexcept -> void
+	constexpr void Mat2<T>::SetRow(usize idx, const Vec2<T>& row) noexcept
 	{
 		rows[idx] = row;
 	}
@@ -279,7 +279,7 @@ namespace Core::Math
 	}
 
 	template <Numeric T>
-	constexpr auto Mat2<T>::SetColumn(usize idx, const Vec2<T>& column) noexcept -> void
+	constexpr void Mat2<T>::SetColumn(usize idx, const Vec2<T>& column) noexcept
 	{
 		MATH_ASSERT(idx < 2, "Column index out of range");
 		row0[idx] = column.x;

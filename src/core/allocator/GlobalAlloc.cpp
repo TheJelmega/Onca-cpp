@@ -16,7 +16,7 @@ namespace Core
 		return *Detail::GetGlobalAllocAddr();
 	}
 
-	CORE_API auto SetGlobalAlloc(Alloc::IAllocator& alloc) -> void
+	CORE_API void SetGlobalAlloc(Alloc::IAllocator& alloc)
 	{
 		Alloc::IAllocator** ppAlloc = &Detail::GetGlobalAllocAddr();
 		*ppAlloc = &alloc;

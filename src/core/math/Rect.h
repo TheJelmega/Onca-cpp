@@ -55,7 +55,7 @@ namespace Core::Math
 		 * Set the size of the Rect
 		 * \param[in] size Size
 		 */
-		constexpr auto SetSize(const Vec2<T>& size) noexcept -> void;
+		constexpr void SetSize(const Vec2<T>& size) noexcept;
 		/**
 		 * Get the center of the rect
 		 * \return Center of the rect
@@ -65,7 +65,7 @@ namespace Core::Math
 		 * Set the center of the Rect
 		 * \param[in] center Center
 		 */
-		constexpr auto SetCenter(const Vec2<T>& center) noexcept -> void;
+		constexpr void SetCenter(const Vec2<T>& center) noexcept;
 		/**
 		 * Get the area of the Rect
 		 * \return Area of the Rect

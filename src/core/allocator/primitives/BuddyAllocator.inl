@@ -53,7 +53,7 @@ namespace Core::Alloc
 	}
 
 	template<usize Size, u8 MaxSubDivisions>
-	auto BuddyAllocator<Size, MaxSubDivisions>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void BuddyAllocator<Size, MaxSubDivisions>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 		const auto [sizeClass, sizeClassBlockSize] = CalculateSizeClassAndBlockSize(mem.Size());
 
@@ -156,7 +156,7 @@ namespace Core::Alloc
 	}
 
 	template<usize Size, u8 MaxSubDivisions>
-	auto BuddyAllocator<Size, MaxSubDivisions>::SetDivFlag(u8* pManagementInfo, usize divIdx, u8 flag) noexcept -> void
+	void BuddyAllocator<Size, MaxSubDivisions>::SetDivFlag(u8* pManagementInfo, usize divIdx, u8 flag) noexcept
 	{
 		usize bitIdx = (3 - (divIdx & 0x3)) * 2;
 		usize byteIdx = divIdx / 4;
@@ -166,7 +166,7 @@ namespace Core::Alloc
 	}
 
 	template<usize Size, u8 MaxSubDivisions>
-	auto BuddyAllocator<Size, MaxSubDivisions>::Mark(u8* pManagementInfo, usize divIdx) noexcept -> void
+	void BuddyAllocator<Size, MaxSubDivisions>::Mark(u8* pManagementInfo, usize divIdx) noexcept
 	{
 		SetDivFlag(pManagementInfo, divIdx, UsedFlag);
 		u8 ownFlag = UsedFlag;
@@ -184,7 +184,7 @@ namespace Core::Alloc
 	}
 
 	template<usize Size, u8 MaxSubDivisions>
-	auto BuddyAllocator<Size, MaxSubDivisions>::Unmark(u8* pManagementInfo, usize divIdx) noexcept -> void
+	void BuddyAllocator<Size, MaxSubDivisions>::Unmark(u8* pManagementInfo, usize divIdx) noexcept
 	{
 		SetDivFlag(pManagementInfo, divIdx, FreeFlag);
 		u8 ownFlag = FreeFlag;

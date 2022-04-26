@@ -20,23 +20,23 @@ namespace Core
 		return StdOutHandle != INVALID_HANDLE_VALUE;
 	}
 
-	auto SystemConsole::SetForeColor(SystemConsoleColor color) noexcept -> void
+	void SystemConsole::SetForeColor(SystemConsoleColor color) noexcept
 	{
 		Fore = color;
 	}
 
-	auto SystemConsole::SetBackColor(SystemConsoleColor color) noexcept -> void
+	void SystemConsole::SetBackColor(SystemConsoleColor color) noexcept
 	{
 		Back = color;
 	}
 
-	auto SystemConsole::SetColor(SystemConsoleColor fore, SystemConsoleColor back) noexcept -> void
+	void SystemConsole::SetColor(SystemConsoleColor fore, SystemConsoleColor back) noexcept
 	{
 		Fore = fore;
 		Back = back;
 	}
 
-	auto SystemConsole::Write(const String& str, bool writeToErr) noexcept -> void
+	void SystemConsole::Write(const String& str, bool writeToErr) noexcept
 	{
 		if (str.IsEmpty())
 			return;
@@ -87,13 +87,13 @@ namespace Core
 		}
 	}
 
-	auto SystemConsole::Clear() noexcept -> void
+	void SystemConsole::Clear() noexcept
 	{
 		DWORD written;
 		WriteConsoleA(StdOutHandle, "\033c", 2, &written, nullptr);
 	}
 
-	auto SystemConsole::Init() noexcept -> void
+	void SystemConsole::Init() noexcept
 	{
 		if (StdOutHandle != INVALID_HANDLE_VALUE)
 			return;
@@ -125,7 +125,7 @@ namespace Core
 		::SetConsoleMode(StdInHandle, ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT | ENABLE_VIRTUAL_TERMINAL_INPUT);
 	}
 
-	auto SystemConsole::Shutdown() noexcept -> void
+	void SystemConsole::Shutdown() noexcept
 	{
 		if (CreatedConsole)
 		{

@@ -3,7 +3,7 @@
 namespace Core
 {
 	template<typename T>
-	auto RemoveForObject(DynArray<T>& callbacks, void* ptr) noexcept -> void
+	void RemoveForObject(DynArray<T>& callbacks, void* ptr) noexcept
 	{
 		for (usize i = 0; i < callbacks.Size();)
 		{
@@ -14,7 +14,7 @@ namespace Core
 		}
 	}
 
-	auto Window::RemoveCallbacksForObject(void* ptr) noexcept -> void
+	void Window::RemoveCallbacksForObject(void* ptr) noexcept
 	{
 		RemoveForObject(m_closeCallbacks, ptr);
 		RemoveForObject(m_sizeCallbacks, ptr);
@@ -24,57 +24,57 @@ namespace Core
 		RemoveForObject(m_restoredCallbacks, ptr);
 	}
 
-	auto Window::RegisterCloseCallback(const Delegate<void(Window&)>& callback) noexcept -> void
+	void Window::RegisterCloseCallback(const Delegate<void(Window&)>& callback) noexcept
 	{
 		m_closeCallbacks.Add(callback);
 	}
 
-	auto Window::RegisterInputEnableCallback(const Delegate<void(Window&, bool)>& callback) noexcept -> void
+	void Window::RegisterInputEnableCallback(const Delegate<void(Window&, bool)>& callback) noexcept
 	{
 		m_inputEnableCallbacks.Add(callback);
 	}
 
-	auto Window::RegisterSizeCallback(const Delegate<void(Window&, u32v2, bool)>& callback) noexcept -> void
+	void Window::RegisterSizeCallback(const Delegate<void(Window&, u32v2, bool)>& callback) noexcept
 	{
 		m_sizeCallbacks.Add(callback);
 	}
 
-	auto Window::RegisterMoveCallback(const Delegate<void(Window&, i32v2, bool)>& callback) noexcept -> void
+	void Window::RegisterMoveCallback(const Delegate<void(Window&, i32v2, bool)>& callback) noexcept
 	{
 		m_moveCallbacks.Add(callback);
 	}
 
-	auto Window::RegisterMinimizedCallback(const Delegate<void(Window&)>& callback) noexcept -> void
+	void Window::RegisterMinimizedCallback(const Delegate<void(Window&)>& callback) noexcept
 	{
 		m_minimizedCallbacks.Add(callback);
 	}
 
-	auto Window::RegisterMaximizedCallback(const Delegate<void(Window&)>& callback) noexcept -> void
+	void Window::RegisterMaximizedCallback(const Delegate<void(Window&)>& callback) noexcept
 	{
 		m_maximizedCallbacks.Add(callback);
 	}
 
-	auto Window::RegisterRestoreCallback(const Delegate<void(Window&, u32v2, i32v2, bool)>& callback) noexcept -> void
+	void Window::RegisterRestoreCallback(const Delegate<void(Window&, u32v2, i32v2, bool)>& callback) noexcept
 	{
 		m_restoredCallbacks.Add(callback);
 	}
 
-	auto Window::RegisterFocusCallback(const Delegate<void(Window&, bool)>& callback) noexcept -> void
+	void Window::RegisterFocusCallback(const Delegate<void(Window&, bool)>& callback) noexcept
 	{
 		m_focusCallbacks.Add(callback);
 	}
 
-	auto Window::RegisterEnterLeaveCallback(const Delegate<void(Window&, bool)>& callback) noexcept -> void
+	void Window::RegisterEnterLeaveCallback(const Delegate<void(Window&, bool)>& callback) noexcept
 	{
 		m_enterLeaveCallbacks.Add(callback);
 	}
 
-	auto Window::RegisterShowCallback(const Delegate<void(Window&, bool)>& callback) noexcept -> void
+	void Window::RegisterShowCallback(const Delegate<void(Window&, bool)>& callback) noexcept
 	{
 		m_showCallbacks.Add(callback);
 	}
 
-	auto Window::OnClose() noexcept -> void
+	void Window::OnClose() noexcept
 	{
 		for (Delegate<void(Window&)>& callback : m_closeCallbacks)
 		{
@@ -82,7 +82,7 @@ namespace Core
 		}
 	}
 
-	auto Window::OnInputEnabled(bool enabled) noexcept -> void
+	void Window::OnInputEnabled(bool enabled) noexcept
 	{
 		m_inputEnabled = enabled;
 		for (Delegate<void(Window& , bool)>& callback : m_inputEnableCallbacks)
@@ -91,7 +91,7 @@ namespace Core
 		}
 	}
 
-	auto Window::OnResized(u32v2 size) noexcept -> void
+	void Window::OnResized(u32v2 size) noexcept
 	{
 		for (Delegate<void(Window&, u32v2, bool)>& callback : m_sizeCallbacks)
 		{
@@ -101,7 +101,7 @@ namespace Core
 		m_endedMoveSize = false;
 	}
 
-	auto Window::OnMoved(i32v2 pos) noexcept -> void
+	void Window::OnMoved(i32v2 pos) noexcept
 	{
 		for (Delegate<void(Window&, i32v2, bool)>& callback : m_moveCallbacks)
 		{
@@ -111,7 +111,7 @@ namespace Core
 		m_endedMoveSize = false;
 	}
 
-	auto Window::OnMinimized() noexcept -> void
+	void Window::OnMinimized() noexcept
 	{
 		for (Delegate<void(Window&)>& callback : m_minimizedCallbacks)
 		{
@@ -119,7 +119,7 @@ namespace Core
 		}
 	}
 
-	auto Window::OnMaximized() noexcept -> void
+	void Window::OnMaximized() noexcept
 	{
 		for (Delegate<void(Window&)>& callback : m_maximizedCallbacks)
 		{
@@ -127,7 +127,7 @@ namespace Core
 		}
 	}
 
-	auto Window::OnRestored(bool fromMaximized) noexcept -> void
+	void Window::OnRestored(bool fromMaximized) noexcept
 	{
 		for (Delegate<void(Window&, u32v2, i32v2, bool)>& callback : m_restoredCallbacks)
 		{
@@ -135,7 +135,7 @@ namespace Core
 		}
 	}
 
-	auto Window::OnFocus(bool inFocus) noexcept -> void
+	void Window::OnFocus(bool inFocus) noexcept
 	{
 		m_inFocus = inFocus;
 		for (Delegate<void(Window&, bool)>& callback : m_focusCallbacks)
@@ -144,7 +144,7 @@ namespace Core
 		}
 	}
 
-	auto Window::OnEnterLeave(bool entered) noexcept -> void
+	void Window::OnEnterLeave(bool entered) noexcept
 	{
 		m_inWindow = entered;
 		for (Delegate<void(Window&, bool)>& callback : m_enterLeaveCallbacks)
@@ -153,7 +153,7 @@ namespace Core
 		}
 	}
 
-	auto Window::OnShow(bool shown) noexcept -> void
+	void Window::OnShow(bool shown) noexcept
 	{
 		m_visible = shown;
 		for (Delegate<void(Window&, bool)>& callback : m_showCallbacks)
@@ -162,7 +162,7 @@ namespace Core
 		}
 	}
 
-	auto Window::OnEndMoveSize() noexcept -> void
+	void Window::OnEndMoveSize() noexcept
 	{
 		if (m_oldSize != m_size)
 		{

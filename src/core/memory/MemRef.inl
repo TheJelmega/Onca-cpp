@@ -134,7 +134,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto MemRef<T>::Dealloc() noexcept -> void
+	void MemRef<T>::Dealloc() noexcept
 	{
 		if (IsValid())
 			m_pAlloc->Deallocate(Move(*this));
@@ -155,7 +155,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto MemRef<T>::SetAlloc(Alloc::IAllocator* pAlloc) noexcept -> void
+	void MemRef<T>::SetAlloc(Alloc::IAllocator* pAlloc) noexcept
 	{
 		m_pAlloc = pAlloc;
 	}
@@ -194,7 +194,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto MemRefCpy(MemRef<T>& dst, const MemRef<T>& src, usize numElems) noexcept -> void
+	void MemRefCpy(MemRef<T>& dst, const MemRef<T>& src, usize numElems) noexcept
 	{
 		ASSERT(dst != src, "Destination and source need to be different, use MemMove instead");
 		numElems = Math::Min(numElems, src.Size());
@@ -203,7 +203,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto MemRefCpy(MemRef<T>& dst, usize dstOffset, const MemRef<T>& src, usize srcOffset, usize numElems) noexcept -> void
+	void MemRefCpy(MemRef<T>& dst, usize dstOffset, const MemRef<T>& src, usize srcOffset, usize numElems) noexcept
 	{
 		ASSERT(dst != src, "Destination and source need to be different, use MemMove instead");
 		ASSERT(dstOffset < dst.Size(), "Destination offset out of bounds");

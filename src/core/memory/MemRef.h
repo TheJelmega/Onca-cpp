@@ -73,7 +73,7 @@ namespace Core
 		/**
 		 * Deallocates the allocation
 		 */
-		auto Dealloc() noexcept -> void;
+		void Dealloc() noexcept;
 
 		/**
 		 * \brief Cast a MemRef to use a new underlying type
@@ -96,7 +96,7 @@ namespace Core
 		 * \warning This function should only be used in allocators that depend on sub-allocators
 		 * \warning Setting an allocator that does not match the allocation is undefined behavior
 		 */
-		auto SetAlloc(Alloc::IAllocator* pAlloc) noexcept -> void;
+		void SetAlloc(Alloc::IAllocator* pAlloc) noexcept;
 		
 		auto operator->() const noexcept -> T*;
 		auto operator*() const noexcept -> T&;
@@ -125,7 +125,7 @@ namespace Core
 	 * \note Regions cannot overlap
 	 */
 	template <typename T>
-	auto MemRefCpy(MemRef<T>& dst, const MemRef<T>& src, usize numElems) noexcept -> void;
+	void MemRefCpy(MemRef<T>& dst, const MemRef<T>& src, usize numElems) noexcept;
 	/**
 	 * Copy a region of memory from one location to another
 	 * \tparam T Type of MemRef
@@ -137,7 +137,7 @@ namespace Core
 	 * \note Regions cannot overlap
 	 */
 	template <typename T>
-	auto MemRefCpy(MemRef<T>& dst, usize dstOffset, const MemRef<T>& src, usize srcOffset, usize numElems) noexcept -> void;
+	void MemRefCpy(MemRef<T>& dst, usize dstOffset, const MemRef<T>& src, usize srcOffset, usize numElems) noexcept;
 
 	/**
 	 * \brief Concept defining a valid deleter for a memory reference

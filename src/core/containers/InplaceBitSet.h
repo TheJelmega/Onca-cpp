@@ -55,26 +55,26 @@ namespace Core
 		 * \param[in] idx Index of the bit to set
 		 * \param[in] val Value
 		 */
-		constexpr auto Set(usize idx, bool val) noexcept -> void;
+		constexpr void Set(usize idx, bool val) noexcept;
 		/**
 		 * Set a bit to true
 		 * \param[in] idx Index of the bit to set
 		 */
-		constexpr auto Set(usize idx) noexcept -> void;
+		constexpr void Set(usize idx) noexcept;
 		/**
 		 * Set a bit to false
 		 * \param[in] idx Index of the bit to set
 		 */
-		constexpr auto Unset(usize idx) noexcept -> void;
+		constexpr void Unset(usize idx) noexcept;
 		/**
 		 * Clear all bits
 		 */
-		constexpr auto Clear() noexcept -> void;
+		constexpr void Clear() noexcept;
 
 		/**
 		 * Flip all bits in the bitset
 		 */
-		constexpr auto Flip() noexcept -> void;
+		constexpr void Flip() noexcept;
 
 		/**
 		 * Count the numbers of bits that are set

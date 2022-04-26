@@ -88,66 +88,66 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
+		void Assign(const It& begin, const It& end) noexcept requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the DynArray
 		 * \param[in] il Initializer list with elements
 		 */
-		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
+		void Assign(const InitializerList<T>& il) noexcept requires CopyConstructible<T>;
 
 		/**
 		 * Fill the DynArray with a number of elements
 		 * \param[in] count Number of elements to fill
 		 * \param[in] val Value to fill elements with
 		 */
-		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
+		void Fill(usize count, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Fill the DynArray with a number of elements with a default value (via placement new)
 		 * \param[in] count Number of elements to fill
 		 */
-		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>;
+		void FillDefault(usize count) noexcept requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Reserve additional space in the DynArray
 		 * \param[in] newCap New capacity
 		 */
-		auto Reserve(usize newCap) noexcept -> void;
+		void Reserve(usize newCap) noexcept;
 		/**
 		 * Resize the DynArray and fill missing elements if needed
 		 * \param[in] newSize New size of the DynArray
 		 * \param[in] val Value to fill missing elements with
 		 */
-		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>;
+		void Resize(usize newSize, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Resize the DynArray and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the DynArray
 		 */
-		auto Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructible<T>;
+		void Resize(usize newSize) noexcept requires NoThrowDefaultConstructible<T>;
 		/**
 		 * Shrink the memory used by the DynArray to the minimum needed
 		 */
-		auto ShrinkToFit() noexcept -> void;
+		void ShrinkToFit() noexcept;
 
 		/**
 		 * Add an element to the DynArray
 		 * \param[in] val Element to add
 		 */
-		auto Add(const T& val) noexcept -> void requires CopyConstructible<T>;
+		void Add(const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add an element to the DynArray
 		 * \param[in] val Element to add
 		 */
-		auto Add(T&& val) noexcept -> void;
+		void Add(T&& val) noexcept;
 		/**
 		 * Add the contents of a DynArray to the DynArray
 		 * \param[in] other DynArray to add
 		 */
-		auto Add(const DynArray& other) -> void requires CopyConstructible<T>;
+		void Add(const DynArray& other) requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a DynArray to the DynArray
 		 * \param[in] other DynArray to add
 		 */
-		auto Add(DynArray&& other) -> void;
+		void Add(DynArray&& other);
 
 		/**
 		 * Add a unique element to the DynArray (only add when not in the DynArray)
@@ -169,7 +169,7 @@ namespace Core
 		 */
 		template<typename ...Args>
 			requires ConstructableFrom<T, Args...>
-		auto EmplaceBack(Args&&... args) noexcept -> void;
+		void EmplaceBack(Args&&... args) noexcept;
 
 		/**
 		 * Insert an element in a certain location
@@ -239,28 +239,28 @@ namespace Core
 		 * Clear the contents of the DynArray, possibly also deallocate the memory
 		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
-		auto Clear(bool clearMemory = false) noexcept -> void;
+		void Clear(bool clearMemory = false) noexcept;
 		/**
 		 * Remove the last element from the DynArray
 		 */
-		auto Pop() noexcept -> void;
+		void Pop() noexcept;
 		/**
 		 * Erase an element from the DynArray
 		 * \param[in] it Iterator to element to erase
 		 */
-		auto Erase(ConstIterator& it) noexcept -> void;
+		void Erase(ConstIterator& it) noexcept;
 		/**
 		 * Erase a number of elements from the DynArray
 		 * \param[in] it Iterator to first element to erase
 		 * \param[in] count Number of elements to erase
 		 */
-		auto Erase(ConstIterator& it, usize count) noexcept -> void;
+		void Erase(ConstIterator& it, usize count) noexcept;
 		/**
 		 * Erase a range of elements from the DynArray
 		 * \param[in] begin Iterator to first element to erase
 		 * \param[in] end Iterator to last element to erase
 		 */
-		auto Erase(ConstIterator& begin, ConstIterator& end) noexcept -> void;
+		void Erase(ConstIterator& begin, ConstIterator& end) noexcept;
 		/**
 		 * Remove all occurrences that are equal to a given value from the DynArray
 		 * \tparam U Type to compare with
@@ -268,14 +268,14 @@ namespace Core
 		 * \param[in] onlyFirst Whether to only remove the first occurrence of the value
 		 */
 		template<EqualComparable<T> U>
-		auto Erase(const U& val, bool onlyFirst = false) noexcept -> void;
+		void Erase(const U& val, bool onlyFirst = false) noexcept;
 		/**
 		 * Erase all elements for which the functor returns true
 		 * \tparam F Functor type
 		 * \param[in] fun Functor
 		 */
 		template<Callable<bool, const T&> F>
-		auto EraseIf(F fun) noexcept -> void;
+		void EraseIf(F fun) noexcept;
 
 		/**
 		 * Move the element out of the DynArray and erase the invalid data at its iterator

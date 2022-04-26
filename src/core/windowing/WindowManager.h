@@ -31,7 +31,7 @@ namespace Core
 		 * Set the input manager
 		 * \param[in] pManager Input manager
 		 */
-		auto SetInputManager(Input::InputManager* pManager) noexcept -> void { m_pInputManager = pManager; };
+		void SetInputManager(Input::InputManager* pManager) noexcept { m_pInputManager = pManager; };
 		/**
 		 * Get the input manager
 		 * \return Input manager
@@ -41,12 +41,12 @@ namespace Core
 		/**
 		 * Collect all available monitors
 		 */
-		auto CollectMonitors() noexcept -> void;
+		void CollectMonitors() noexcept;
 		/**
 		 * Add a monitor to the window manager from a native handle
 		 * \param[in] pHandle Native monitor handle
 		 */
-		auto AddMonitorFromNativeHandle(void* pHandle) noexcept -> void;
+		void AddMonitorFromNativeHandle(void* pHandle) noexcept;
 		/**
 		 * Get all available monitors
 		 * \return Available monitors
@@ -81,7 +81,7 @@ namespace Core
 		 * Tick/update the window manager
 		 * \note Should only be called from the thread that created the window manager
 		 */
-		auto Tick() noexcept -> void;
+		void Tick() noexcept;
 
 		/**
 		 * Get the id of the thread that handles window management
@@ -94,7 +94,7 @@ namespace Core
 		/**
 		 * Tick/update platform specific code
 		 */
-		auto PlatformTick() noexcept -> void;
+		void PlatformTick() noexcept;
 
 		DynArray<Monitor>    m_monitors;      ///< Available monitors
 

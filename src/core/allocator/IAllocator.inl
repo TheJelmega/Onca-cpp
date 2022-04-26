@@ -16,7 +16,7 @@ namespace Core::Alloc
 	}
 
 	template <typename T>
-	auto IAllocator::Deallocate(MemRef<T>&& ref) noexcept -> void
+	void IAllocator::Deallocate(MemRef<T>&& ref) noexcept
 	{
 		DeallocateRaw(ref.template As<u8>());
 		MemClearData(ref);
@@ -27,8 +27,8 @@ namespace Core::Alloc
 	{
 		return OwnsInternal(ref.template As<u8>());
 	}
-	
-	INL auto AllocatorStats::AddAlloc(usize memUse, usize overhead, bool isBacking) noexcept -> void
+
+	INL void AllocatorStats::AddAlloc(usize memUse, usize overhead, bool isBacking) noexcept
 	{
 		Threading::Lock lock(m_statMutex);
 		
@@ -48,7 +48,7 @@ namespace Core::Alloc
 		maxBackingMemory = Math::Max(curBackingMemory, maxBackingMemory);
 	}
 
-	INL auto AllocatorStats::RemoveAlloc(usize memUse, usize overhead, bool isBacking) noexcept -> void
+	INL void AllocatorStats::RemoveAlloc(usize memUse, usize overhead, bool isBacking) noexcept
 	{
 		Threading::Lock lock(m_statMutex);
 		
@@ -58,7 +58,7 @@ namespace Core::Alloc
 		++curAllocs;
 	}
 
-	INL auto AllocatorStats::ResetCur() noexcept -> void
+	INL void AllocatorStats::ResetCur() noexcept
 	{
 		Threading::Lock lock(m_statMutex);
 
@@ -68,8 +68,8 @@ namespace Core::Alloc
 		curAllocs = 0;
 	}
 
-	INL auto AllocatorStats::GetCurStats(usize& memUse, usize& numAllocs, usize& overhead,
-	                                     usize& backingMem) noexcept -> void
+	INL void AllocatorStats::GetCurStats(usize& memUse, usize& numAllocs, usize& overhead,
+	                                     usize& backingMem) noexcept
 	{
 		Threading::Lock lock(m_statMutex);
 

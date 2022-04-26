@@ -50,7 +50,7 @@ namespace Core::Alloc
 	}
 
 	template <ImplementsIAllocator MainAlloc, ImplementsIAllocator Fallback>
-	auto FallbackArena<MainAlloc, Fallback>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void FallbackArena<MainAlloc, Fallback>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 		if (m_main.Owns(mem))
 		{

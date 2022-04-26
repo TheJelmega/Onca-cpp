@@ -4,7 +4,7 @@
 
 namespace Core
 {
-	auto SystemInfo::Shutdown() noexcept -> void
+	void SystemInfo::Shutdown() noexcept
 	{
 		m_processorInfo.Clear(true);
 		m_numaNodes.Clear(true);
@@ -323,7 +323,7 @@ namespace Core
 		return m_processorFeatures;
 	}
 
-	auto SystemInfo::LogSystemInfo(bool logIdentifiableInfo) const noexcept -> void
+	void SystemInfo::LogSystemInfo(bool logIdentifiableInfo) const noexcept
 	{
 		g_Logger.Info(LogCategories::SYSINFO, "System info:"_s);
 

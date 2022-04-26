@@ -152,14 +152,14 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::Add(IntrusiveListNode<T>& val) noexcept -> void
+	void IntrusiveList<T>::Add(IntrusiveListNode<T>& val) noexcept
 	{
 		m_pTail->m_pNext = &val;
 		m_pTail = &val;
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::Add(IntrusiveList&& other) -> void
+	void IntrusiveList<T>::Add(IntrusiveList&& other)
 	{
 		if (!other.m_pHead)
 			return;
@@ -205,14 +205,14 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::AddFront(IntrusiveListNode<T>& val) noexcept -> void
+	void IntrusiveList<T>::AddFront(IntrusiveListNode<T>& val) noexcept
 	{
 		val.m_pNext = m_pHead;
 		m_pHead = &val;
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::AddFront(IntrusiveList&& other) noexcept -> void
+	void IntrusiveList<T>::AddFront(IntrusiveList&& other) noexcept
 	{
 		if (!other.m_pHead)
 			return;
@@ -231,7 +231,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::Clear() noexcept -> void
+	void IntrusiveList<T>::Clear() noexcept
 	{
 		IntrusiveListNode<T>* pNode = m_pHead;
 		while (pNode)
@@ -245,7 +245,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::Pop() noexcept -> void
+	void IntrusiveList<T>::Pop() noexcept
 	{
 		if (!m_pHead)
 			return;
@@ -266,7 +266,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::PopFront() noexcept -> void
+	void IntrusiveList<T>::PopFront() noexcept
 	{
 		if (!m_pHead)
 			return;
@@ -283,7 +283,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::EraseAfter(Iterator& it) noexcept -> void
+	void IntrusiveList<T>::EraseAfter(Iterator& it) noexcept
 	{
 		IntrusiveListNode<T>* pNext = it.m_pNode->m_pNext;
 		it.m_pNode->m_pNext = pNext->m_pNext;
@@ -291,7 +291,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto IntrusiveList<T>::Reverse() noexcept -> void
+	void IntrusiveList<T>::Reverse() noexcept
 	{
 		IntrusiveListNode<T>* pNode = m_pHead;
 		IntrusiveListNode<T>* pNext = pNode->m_pNext;

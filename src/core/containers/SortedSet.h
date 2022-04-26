@@ -163,13 +163,13 @@ namespace Core
 		 * \param[in] other DynArray to merge
 		 */
 		template<Comparator C2>
-		auto Merge(SortedSet<K, C2>& other) noexcept -> void;
+		void Merge(SortedSet<K, C2>& other) noexcept;
 
 		/**
 		 * Clear the contents of the SortedSet, possibly also deallocate the memory
 		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
-		auto Clear() noexcept -> void;
+		void Clear() noexcept;
 
 		/**
 		 * Erase an element from the SortedSet

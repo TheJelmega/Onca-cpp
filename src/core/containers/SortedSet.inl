@@ -191,13 +191,13 @@ namespace Core
 
 	template <typename K, Comparator<K, K> C, bool IsMultiSet>
 	template <Comparator C2>
-	auto SortedSet<K, C, IsMultiSet>::Merge(SortedSet<K, C2>& other) noexcept -> void
+	void SortedSet<K, C, IsMultiSet>::Merge(SortedSet<K, C2>& other) noexcept
 	{
 		m_tree.Merge(other.m_tree);
 	}
 
 	template <typename K, Comparator<K, K> C, bool IsMultiSet>
-	auto SortedSet<K, C, IsMultiSet>::Clear() noexcept -> void
+	void SortedSet<K, C, IsMultiSet>::Clear() noexcept
 	{
 		m_tree.Clear();
 	}

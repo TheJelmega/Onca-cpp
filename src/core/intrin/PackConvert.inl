@@ -12,7 +12,7 @@
 namespace Core::Intrin
 {
 	template<SimdBaseType From, SimdBaseType T, usize Width>
-	auto SignExtend(Pack<T, Width>& pack) noexcept -> void
+	void SignExtend(Pack<T, Width>& pack) noexcept
 	{
 		if constexpr (Pack<T, Width>::Is128Bit())
 		{

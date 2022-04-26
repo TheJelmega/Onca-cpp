@@ -8,7 +8,7 @@
 namespace Core
 {
 	template <typename T>
-	auto DefaultDeleter<T>::operator()(MemRef<T>&& ref) noexcept -> void
+	void DefaultDeleter<T>::operator()(MemRef<T>&& ref) noexcept
 	{
 		if (ref)
 		{

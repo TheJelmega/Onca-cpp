@@ -74,27 +74,27 @@ namespace Core
 		return *this;
 	}
 
-	inline auto ByteBuffer::Reserve(usize newCap) noexcept -> void
+	inline void ByteBuffer::Reserve(usize newCap) noexcept
 	{
 		m_data.Reserve(newCap);
 	}
 
-	inline auto ByteBuffer::Resize(usize newSize, u8 val) noexcept -> void
+	inline void ByteBuffer::Resize(usize newSize, u8 val) noexcept
 	{
 		m_data.Resize(newSize, val);
 	}
 
-	inline auto ByteBuffer::Resize(usize newSize) noexcept -> void
+	inline void ByteBuffer::Resize(usize newSize) noexcept
 	{
 		m_data.Resize(newSize);
 	}
 
-	inline auto ByteBuffer::ShrinkToFit() noexcept -> void
+	inline void ByteBuffer::ShrinkToFit() noexcept
 	{
 		m_data.ShrinkToFit();
 	}
 
-	inline auto ByteBuffer::Seek(usize pos) noexcept -> void
+	inline void ByteBuffer::Seek(usize pos) noexcept
 	{
 		const usize size = Size();
 		if (pos >= size)
@@ -119,7 +119,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto ByteBuffer::Write(const T& val) noexcept -> void
+	void ByteBuffer::Write(const T& val) noexcept
 	{
 		if (m_cursor + sizeof(T) >= Size())
 			m_data.Resize(m_cursor + sizeof(T));
@@ -128,7 +128,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto ByteBuffer::Insert(const T& val, usize numBytes) noexcept -> void
+	void ByteBuffer::Insert(const T& val, usize numBytes) noexcept
 	{
 		m_data.Insert(m_data.IteratorAt(m_cursor), numBytes, 0);
 		Write(val);

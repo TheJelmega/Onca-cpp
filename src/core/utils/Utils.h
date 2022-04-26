@@ -12,7 +12,7 @@ namespace Core
 	template<typename T>
 	struct DefaultDeleter
 	{
-		auto operator()(MemRef<T>&& ref) noexcept -> void;
+		void operator()(MemRef<T>&& ref) noexcept;
 
 		DefaultDeleter() noexcept {}
 		template<typename U>

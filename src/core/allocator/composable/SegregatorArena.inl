@@ -28,7 +28,7 @@ namespace Core::Alloc
 	}
 
 	template <ImplementsIAllocator GtAlloc, ImplementsIAllocator LeAlloc>
-	auto SegregatorAllocator<GtAlloc, LeAlloc>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void SegregatorAllocator<GtAlloc, LeAlloc>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 		// TODO: Alloc stats
 

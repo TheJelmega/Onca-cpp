@@ -12,12 +12,12 @@ namespace Core
 		return true;
 	}
 
-	auto WindowManager::CollectMonitors() noexcept -> void
+	void WindowManager::CollectMonitors() noexcept
 	{
 		::EnumDisplayMonitors(nullptr, nullptr, &EnumMonitors, reinterpret_cast<LPARAM>(this));
 	}
 
-	auto WindowManager::PlatformTick() noexcept -> void
+	void WindowManager::PlatformTick() noexcept
 	{
 		for (const Window& window : m_windows)
 		{

@@ -326,7 +326,7 @@ namespace Core
 
 	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template<ForwardIterator It>
-	auto RedBlackTree<T, C, AllowMultiple>::Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>
+	void RedBlackTree<T, C, AllowMultiple>::Assign(const It& begin, const It& end) noexcept requires CopyConstructible<T>
 	{
 		Clear();
 		for (It it = begin; it != end; ++it)
@@ -334,7 +334,7 @@ namespace Core
 	}
 
 	template <typename T, Comparator<T> C, bool AllowMultiple>
-	auto RedBlackTree<T, C, AllowMultiple>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>
+	void RedBlackTree<T, C, AllowMultiple>::Assign(const InitializerList<T>& il) noexcept requires CopyConstructible<T>
 	{
 		Assign(il.begin(), il.end());
 	}
@@ -420,7 +420,7 @@ namespace Core
 
 	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <Comparator C2>
-	auto RedBlackTree<T, C, AllowMultiple>::Merge(RedBlackTree<T, C2>& other) noexcept -> void
+	void RedBlackTree<T, C, AllowMultiple>::Merge(RedBlackTree<T, C2>& other) noexcept
 	{
 		if constexpr (AllowMultiple)
 		{
@@ -444,7 +444,7 @@ namespace Core
 	}
 
 	template <typename T, Comparator<T> C, bool AllowMultiple>
-	auto RedBlackTree<T, C, AllowMultiple>::Clear() noexcept -> void
+	void RedBlackTree<T, C, AllowMultiple>::Clear() noexcept
 	{
 		ClearInternal<true>();
 	}
@@ -804,7 +804,7 @@ namespace Core
 	}
 
 	template <typename T, Comparator<T> C, bool AllowMultiple>
-	auto RedBlackTree<T, C, AllowMultiple>::RebalanceInsert(NodeRef node, RotateDir dir) noexcept -> void
+	void RedBlackTree<T, C, AllowMultiple>::RebalanceInsert(NodeRef node, RotateDir dir) noexcept
 	{
 		do
 		{
@@ -852,7 +852,7 @@ namespace Core
 	
 	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template <bool Moved>
-	auto RedBlackTree<T, C, AllowMultiple>::Copy(const RedBlackTree& other) noexcept -> void
+	void RedBlackTree<T, C, AllowMultiple>::Copy(const RedBlackTree& other) noexcept
 	{
 		for (Iterator it = other.Begin(); it.m_node; ++it)
 		{
@@ -948,7 +948,7 @@ namespace Core
 	}
 
 	template <typename T, Comparator<T> C, bool AllowMultiple>
-	auto RedBlackTree<T, C, AllowMultiple>::EraseLeafNode(NodeRef node) noexcept -> void
+	void RedBlackTree<T, C, AllowMultiple>::EraseLeafNode(NodeRef node) noexcept
 	{
 		NodeRef parent = node->parent;
 		RotateDir dir = RotateDir(node == parent->right);
@@ -1024,7 +1024,7 @@ namespace Core
 
 	template <typename T, Comparator<T> C, bool AllowMultiple>
 	template<bool Destruct>
-	auto RedBlackTree<T, C, AllowMultiple>::ClearInternal() noexcept -> void
+	void RedBlackTree<T, C, AllowMultiple>::ClearInternal() noexcept
 	{
 		Alloc::IAllocator* pAlloc = m_root.GetAlloc();
 

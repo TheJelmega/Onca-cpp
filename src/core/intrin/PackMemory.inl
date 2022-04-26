@@ -436,7 +436,7 @@ namespace Core::Intrin
 	}
 
 	template<SimdBaseType T, usize Width, typename TupType, usize... Inds>
-	constexpr auto SetRDefaultHelper(Pack<T, Width>& pack, TupType&& args, IndexSequence<Inds...>) -> void
+	constexpr void SetRDefaultHelper(Pack<T, Width>& pack, TupType&& args, IndexSequence<Inds...>)
 	{
 		InitializerList<T> il = { std::get<Inds>(args)... };
 		MemCpy(&pack, il.begin(), il.size() * sizeof(T));
@@ -689,7 +689,7 @@ namespace Core::Intrin
 	}
 
 	template <SimdBaseType T, usize Width>
-	constexpr auto Pack<T, Width>::Store(T* addr) const noexcept -> void
+	constexpr void Pack<T, Width>::Store(T* addr) const noexcept
 	{
 		IF_NOT_CONSTEVAL
 		{
@@ -756,7 +756,7 @@ namespace Core::Intrin
 	}
 
 	template <SimdBaseType T, usize Width>
-	constexpr auto Pack<T, Width>::AlignedStore(T* addr) const noexcept -> void
+	constexpr void Pack<T, Width>::AlignedStore(T* addr) const noexcept
 	{
 		IF_NOT_CONSTEVAL
 		{

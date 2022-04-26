@@ -14,6 +14,6 @@ namespace Core::Debugger
 	 * Print a string to the debugger output
 	 * \param[in] str String to print
 	 */
-	CORE_API auto OutputDebugString(const String& str) noexcept -> void;
+	CORE_API void OutputDebugString(const String& str) noexcept;
 
 }

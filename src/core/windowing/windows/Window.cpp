@@ -9,7 +9,7 @@
 
 namespace Core
 {
-	auto HandleVirtualKey(bool down, WPARAM wParam, LPARAM lParam, Input::InputManager* pInputManager) noexcept -> void
+	void HandleVirtualKey(bool down, WPARAM wParam, LPARAM lParam, Input::InputManager* pInputManager) noexcept
 	{
 		if (down && (HIWORD(lParam) & KF_REPEAT) == KF_REPEAT)
 			return;
@@ -600,11 +600,12 @@ namespace Core
 		return m_handle;
 	}
 
-	auto Window::OnMouseMove() noexcept -> void
+	void Window::OnMouseMove() noexcept
 	{
 		if (m_inWindow)
 			return;
 
+		// Tell windows to generate MOUSE_LEAVE event when mouse leaves window
 		TRACKMOUSEEVENT trackEvnt;
 		trackEvnt.cbSize = sizeof(TRACKMOUSEEVENT);
 		trackEvnt.hwndTrack = static_cast<HWND>(m_handle);

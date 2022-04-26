@@ -541,7 +541,7 @@ namespace Core::DragonBox
 					static constexpr bool ReturnHasSign = false;
 
 					template<Integral SignedSignificandBits, typename Ret>
-					static constexpr auto HandleSign(SignedSignificandBits, Ret&) noexcept -> void {}
+					static constexpr void HandleSign(SignedSignificandBits, Ret&) noexcept {}
 				};
 
 				struct ReturnSign : Base
@@ -550,7 +550,7 @@ namespace Core::DragonBox
 					static constexpr bool ReturnHasSign = true;
 
 					template<Integral SignedSignificandBits, typename Ret>
-					static constexpr auto HandleSign(SignedSignificandBits s, Ret& r) noexcept -> void { r.isNegative = FloatUtils::IsNegative(s); }
+					static constexpr void HandleSign(SignedSignificandBits s, Ret& r) noexcept { r.isNegative = FloatUtils::IsNegative(s); }
 				};
 			}
 
@@ -564,10 +564,10 @@ namespace Core::DragonBox
 					static constexpr bool ReportTrailingZeros = false;
 
 					template<typename Impl, typename Ret>
-					static constexpr auto OnTrailingZeros(Ret&) noexcept -> void {}
+					static constexpr void OnTrailingZeros(Ret&) noexcept {}
 
 					template<typename Impl, typename Ret>
-					static constexpr auto NoTrailingZeros(Ret&) noexcept -> void {}
+					static constexpr void NoTrailingZeros(Ret&) noexcept {}
 				};
 
 				struct Remove : Base
@@ -576,13 +576,13 @@ namespace Core::DragonBox
 					static constexpr bool ReportTrailingZeros = false;
 
 					template<typename Impl, typename Ret>
-					static constexpr auto OnTrailingZeros(Ret& r) noexcept -> void
+					static constexpr void OnTrailingZeros(Ret& r) noexcept
 					{
 						r.exponent += Impl::RemoveTrailingZeros(r.significand);
 					}
 
 					template<typename Impl, typename Ret>
-					static constexpr auto NoTrailingZeros(Ret&) noexcept -> void {}
+					static constexpr void NoTrailingZeros(Ret&) noexcept {}
 				};
 
 				struct Report : Base
@@ -591,13 +591,13 @@ namespace Core::DragonBox
 					static constexpr bool ReportTrailingZeros = false;
 
 					template<typename Impl, typename Ret>
-					static constexpr auto OnTrailingZeros(Ret& r) noexcept -> void
+					static constexpr void OnTrailingZeros(Ret& r) noexcept
 					{
 						r.mayHaveTrailingZeros = true;
 					}
 
 					template<typename Impl, typename Ret>
-					static constexpr auto NoTrailingZeros(Ret& r) noexcept -> void
+					static constexpr void NoTrailingZeros(Ret& r) noexcept
 					{
 						r.mayHaveTrailingZeros = false;
 					}

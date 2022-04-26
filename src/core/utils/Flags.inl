@@ -217,7 +217,7 @@ namespace Core
 	}
 
 	template <EnumType E>
-	constexpr auto Flags<E>::Set(E val, bool set) noexcept -> void
+	constexpr void Flags<E>::Set(E val, bool set) noexcept
 	{
 		if (set)
 			m_data |= I(val);

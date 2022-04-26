@@ -275,12 +275,12 @@ namespace Core::Intrin
 		 * Store the elements into unaligned memory
 		 * \param addr Address to store elements to
 		 */
-		constexpr auto Store(T* addr) const noexcept -> void;
+		constexpr void Store(T* addr) const noexcept;
 		/**
 		 * Store the elements into unaligned memory
 		 * \param addr Address to store elements to
 		 */
-		constexpr auto AlignedStore(T* addr) const noexcept -> void;
+		constexpr void AlignedStore(T* addr) const noexcept;
 
 		/**
 		 * Create a copy of the pack with a value inserted into it

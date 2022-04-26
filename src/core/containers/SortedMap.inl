@@ -276,13 +276,13 @@ namespace Core
 
 	template <typename K, typename V, Comparator<K> C, bool IsMultiMap>
 	template <Comparator C2>
-	auto SortedMap<K, V, C, IsMultiMap>::Merge(SortedMap<K, V, C2>& other) noexcept -> void
+	void SortedMap<K, V, C, IsMultiMap>::Merge(SortedMap<K, V, C2>& other) noexcept
 	{
 		m_tree.Merge(other.m_tree);
 	}
 
 	template <typename K, typename V, Comparator<K> C, bool IsMultiMap>
-	auto SortedMap<K, V, C, IsMultiMap>::Clear() noexcept -> void
+	void SortedMap<K, V, C, IsMultiMap>::Clear() noexcept
 	{
 		m_tree.Clear();
 	}

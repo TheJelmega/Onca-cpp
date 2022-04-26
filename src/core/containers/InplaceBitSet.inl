@@ -126,7 +126,7 @@ namespace Core
 	}
 
 	template <usize Bits>
-	constexpr auto InplaceBitSet<Bits>::Set(usize idx, bool val) noexcept -> void
+	constexpr void InplaceBitSet<Bits>::Set(usize idx, bool val) noexcept
 	{
 		if (val)
 			Set(idx);
@@ -135,7 +135,7 @@ namespace Core
 	}
 
 	template <usize Bits>
-	constexpr auto InplaceBitSet<Bits>::Set(usize idx) noexcept -> void
+	constexpr void InplaceBitSet<Bits>::Set(usize idx) noexcept
 	{
 		if (idx >= Bits)
 			return;
@@ -146,7 +146,7 @@ namespace Core
 	}
 
 	template <usize Bits>
-	constexpr auto InplaceBitSet<Bits>::Unset(usize idx) noexcept -> void
+	constexpr void InplaceBitSet<Bits>::Unset(usize idx) noexcept
 	{
 		if (idx >= Bits)
 			return;
@@ -157,13 +157,13 @@ namespace Core
 	}
 
 	template <usize Bits>
-	constexpr auto InplaceBitSet<Bits>::Clear() noexcept -> void
+	constexpr void InplaceBitSet<Bits>::Clear() noexcept
 	{
 		MemClear(Data(), NumElems * sizeof(usize));
 	}
 
 	template <usize Bits>
-	constexpr auto InplaceBitSet<Bits>::Flip() noexcept -> void
+	constexpr void InplaceBitSet<Bits>::Flip() noexcept
 	{
 		for (usize i = 0; i < NumElems; ++i)
 			m_data[i] = ~m_data[i];

@@ -52,7 +52,7 @@ namespace Core::Alloc
 	}
 
 	template<ExtendableAlloc Alloc>
-	auto ExpandableArena<Alloc>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void ExpandableArena<Alloc>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 		Threading::Lock lock{ m_mutex };
 

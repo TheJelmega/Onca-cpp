@@ -52,12 +52,12 @@ namespace Core
 		 * \brief Reset the internal memory of the Unique<T>
 		 * \param[in] ref Memory reference to reset the Unique<T> with
 		 */
-		auto Reset(MemRef<T>&& ref) noexcept -> void;
+		void Reset(MemRef<T>&& ref) noexcept;
 		/**
 		 * \brief Swap the contents of this Unique with another
 		 * \param[in] other Unique to swap contents with
 		 */
-		auto Swap(Unique<T>& other) noexcept -> void;
+		void Swap(Unique<T>& other) noexcept;
 
 		/**
 		 * \brief Get a pointer to the managed memory

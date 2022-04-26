@@ -38,7 +38,7 @@ namespace Core::Alloc
 		return { alignedPtr, this, Math::Log2(align), size, isBacking };
 	}
 
-	auto Mallocator::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void Mallocator::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 		u8* ptr = mem.Ptr();
 		usize offset = ptr[-1];

@@ -189,13 +189,13 @@ namespace Core
 	}
 
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::Rehash(usize count) noexcept -> void
+	void HashSet<K, H, C, IsMultiMap>::Rehash(usize count) noexcept
 	{
 		m_hashMap.Rehash(count);
 	}
 
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::Reserve(usize count) noexcept -> void
+	void HashSet<K, H, C, IsMultiMap>::Reserve(usize count) noexcept
 	{
 		m_hashMap.Reserve(count);
 	}
@@ -224,13 +224,13 @@ namespace Core
 
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	template <Hasher H2, EqualsComparator C2>
-	auto HashSet<K, H, C, IsMultiMap>::Merge(HashSet<K, H2, C2>& other) noexcept -> void
+	void HashSet<K, H, C, IsMultiMap>::Merge(HashSet<K, H2, C2>& other) noexcept
 	{
 		m_hashMap.Merge(other.m_hashMap);
 	}
 
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::Clear(bool clearMemory) noexcept -> void
+	void HashSet<K, H, C, IsMultiMap>::Clear(bool clearMemory) noexcept
 	{
 		m_hashMap.Clear(clearMemory);
 	}
@@ -250,7 +250,7 @@ namespace Core
 
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	template <Callable<bool, const K&> F>
-	auto HashSet<K, H, C, IsMultiMap>::EraseIf(F fun) noexcept -> void
+	void HashSet<K, H, C, IsMultiMap>::EraseIf(F fun) noexcept
 	{
 		m_hashMap.EraseIf([&fun](const K& key, const Empty&) -> bool
 		{
@@ -357,7 +357,7 @@ namespace Core
 	}
 
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::SetMaxLoadFactor(f32 ml) noexcept -> void
+	void HashSet<K, H, C, IsMultiMap>::SetMaxLoadFactor(f32 ml) noexcept
 	{
 		m_hashMap.SetMaxLoadFactor(ml);
 	}

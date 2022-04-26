@@ -49,7 +49,7 @@ namespace Core::Alloc
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
-		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
+		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
 		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	public:
@@ -110,20 +110,20 @@ namespace Core::Alloc
 		 * \param[in]divIdx Division index
 		 * \param[in]flag Flag to se
 		 */
-		auto SetDivFlag(u8* pManagementInfo, usize divIdx, u8 flag) noexcept -> void;
+		void SetDivFlag(u8* pManagementInfo, usize divIdx, u8 flag) noexcept;
 
 		/**
 		 * Mark a division as used and update the parent divisions
 		 * \param[in]pManagementInfo Pointer to management info
 		 * \param[in]divIdx Index to mark
 		 */
-		auto Mark(u8* pManagementInfo, usize divIdx) noexcept -> void;
+		void Mark(u8* pManagementInfo, usize divIdx) noexcept;
 		/**
 		 * Unmark a division as used and update the parent divisions
 		 * \param[in]pManagementInfo Pointer to management info
 		 * \param[in]divIdx Index to unmark
 		 */
-		auto Unmark(u8* pManagementInfo, usize divIdx) noexcept -> void;
+		void Unmark(u8* pManagementInfo, usize divIdx) noexcept;
 
 		static constexpr usize SmallestBlockSize = Size >> MaxSubDivisions;
 		static constexpr usize ManagementSize = CalculateManagementSize();

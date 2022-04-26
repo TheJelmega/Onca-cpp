@@ -32,7 +32,7 @@ namespace Core::Alloc
 	}
 
 	template<usize Size>
-	auto FreeListAllocator<Size>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void FreeListAllocator<Size>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 		u8* ptr = mem.Ptr();
 
@@ -154,7 +154,7 @@ namespace Core::Alloc
 	}
 
 	template<usize Size>
-	auto FreeListAllocator<Size>::Coalesce(u8* pPrev, u8* pCur, u8* pNext) noexcept -> void
+	void FreeListAllocator<Size>::Coalesce(u8* pPrev, u8* pCur, u8* pNext) noexcept
 	{
 		FreeHeader* pPrevHeader = reinterpret_cast<FreeHeader*>(pPrev);
 		FreeHeader* pCurHeader = reinterpret_cast<FreeHeader*>(pCur);

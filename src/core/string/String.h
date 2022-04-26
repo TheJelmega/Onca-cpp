@@ -188,21 +188,21 @@ namespace Core
 		 * \param codepoint Codepoint to assign
 		 * \param count Number of codepoints to assign
 		 */
-		auto Assign(UCodepoint codepoint, usize count) noexcept -> void;
+		void Assign(UCodepoint codepoint, usize count) noexcept;
 		/**
 		 * Assign a substring of another String to this String
 		 * \param other String to get substring from
 		 * \param pos Start position of the substring
 		 * \param length Length of the substring
 		 */
-		auto Assign(const String& other, usize pos, usize length = NPos) noexcept -> void;
+		void Assign(const String& other, usize pos, usize length = NPos) noexcept;
 		/**
 		 * Assign a c-string to the String
 		 * \tparam C Character type
 		 * \param str C-string
 		 */
 		template<CharacterType C>
-		auto Assign(const C* str) noexcept -> void;
+		void Assign(const C* str) noexcept;
 		/**
 		 * Assign a c-string to the String
 		 * \tparam C Character type
@@ -210,14 +210,14 @@ namespace Core
 		 * \param length Length of the c-string
 		 */
 		template<CharacterType C>
-		auto Assign(const C* str, usize length) noexcept -> void;
+		void Assign(const C* str, usize length) noexcept;
 		/**
 		 * Assign an initializer list to the String
 		 * \tparam T Unicode compatible type
 		 * \param il Initializer list
 		 */
 		template<ConvertableToUnicode T>
-		auto Assign(const InitializerList<T>& il) noexcept -> void;
+		void Assign(const InitializerList<T>& il) noexcept;
 		/**
 		 * Assign a range of utf8 character to the string
 		 * \tparam It Forward iterator
@@ -226,29 +226,29 @@ namespace Core
 		 */
 		template<ForwardIterator It>
 			requires DereferencableToUnicode<It>
-		auto Assign(const It& begin, const It& end) noexcept -> void;
+		void Assign(const It& begin, const It& end) noexcept;
 
 		/**
 		 * Reserve capacity for the underlying utf8 data
 		 * \param capacity Capacity to reserve
 		 */
-		auto Reserve(usize capacity) noexcept -> void;
+		void Reserve(usize capacity) noexcept;
 		/**
 		 * Resize the String and fill missing elements if needed
 		 * \param[in] newSize New size of the String
 		 * \param[in] codepoint codepoint to fill missing characters with
 		 */
-		auto Resize(usize newSize, UCodepoint codepoint) noexcept -> void;
+		void Resize(usize newSize, UCodepoint codepoint) noexcept;
 		/**
 		 * Shrink the memory used by the String to the minimum needed
 		 */
-		auto ShrinkToFit() noexcept -> void;
+		void ShrinkToFit() noexcept;
 
 		/**
 		 * Clear the contents of the String, possibly also deallocate the memory
 		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
-		auto Clear(bool clearMemory = false) noexcept -> void;
+		void Clear(bool clearMemory = false) noexcept;
 		
 		/**
 		 * Add a number of codepoints to a String
@@ -717,7 +717,7 @@ namespace Core
 		 * \param size Size in bytes
 		 * \param length Size in characters
 		 */
-		auto AssignSubstring(const String& other, usize idx, usize pos, usize size, usize length) noexcept -> void;
+		void AssignSubstring(const String& other, usize idx, usize pos, usize size, usize length) noexcept;
 
 		/**
 		 * Replace a section of the String with a number of codepoints
@@ -799,7 +799,7 @@ namespace Core
 		/**
 		 * Make sure the internal string is null-terminated 
 		 */
-		auto NullTerminate() noexcept -> void;
+		void NullTerminate() noexcept;
 
 		DynArray<u8> m_data;   ///< UTF8 data
 		usize        m_length; ///< String length

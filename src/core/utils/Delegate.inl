@@ -154,7 +154,7 @@ namespace Core
 	}
 
 	template <typename R, typename ... Args>
-	auto Delegate<R(Args...)>::SetObject(void* pObj) noexcept -> void
+	void Delegate<R(Args ...)>::SetObject(void* pObj) noexcept
 	{
 		m_pObj = pObj;
 	}

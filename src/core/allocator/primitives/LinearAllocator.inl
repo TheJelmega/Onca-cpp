@@ -19,7 +19,7 @@ namespace Core::Alloc
 	}
 
 	template<usize Size, usize BaseAlignment>
-	auto LinearAllocator<Size, BaseAlignment>::Reset() noexcept -> void
+	void LinearAllocator<Size, BaseAlignment>::Reset() noexcept
 	{
 		m_head = m_mem.Ptr();
 
@@ -49,7 +49,7 @@ namespace Core::Alloc
 	}
 
 	template<usize Size, usize BaseAlignment>
-	auto LinearAllocator<Size, BaseAlignment>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void LinearAllocator<Size, BaseAlignment>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 		UNUSED(mem);
 	}

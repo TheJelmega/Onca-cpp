@@ -24,7 +24,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto Atomic<T>::Store(T val, MemOrder memOrder) noexcept -> void
+	void Atomic<T>::Store(T val, MemOrder memOrder) noexcept
 	{
 		m_atomic.store(val, static_cast<std::memory_order>(memOrder));
 	}
@@ -60,19 +60,19 @@ namespace Core
 	}
 
 	template <typename T>
-	auto Atomic<T>::Wait(T old, MemOrder memOrder) noexcept -> void
+	void Atomic<T>::Wait(T old, MemOrder memOrder) noexcept
 	{
 		m_atomic.wait(old, static_cast<std::memory_order>(memOrder));
 	}
 
 	template <typename T>
-	auto Atomic<T>::NotifyOne() noexcept -> void
+	void Atomic<T>::NotifyOne() noexcept
 	{
 		m_atomic.notify_one();
 	}
 
 	template <typename T>
-	auto Atomic<T>::NotifyAll() noexcept -> void
+	void Atomic<T>::NotifyAll() noexcept
 	{
 		m_atomic.notify_all();
 	}

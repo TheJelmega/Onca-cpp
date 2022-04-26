@@ -64,28 +64,28 @@ namespace Core
 		 * Reserve additional space in the ByteBuffer
 		 * \param[in] newCap New capacity
 		 */
-		auto Reserve(usize newCap) noexcept -> void;
+		void Reserve(usize newCap) noexcept;
 		/**
 		 * Resize the ByteBuffer and fill missing elements if needed
 		 * \param[in] newSize New size of the DynArray
 		 * \param[in] val Value to fill missing elements with
 		 */
-		auto Resize(usize newSize, u8 val) noexcept -> void;
+		void Resize(usize newSize, u8 val) noexcept;
 		/**
 		 * Resize the ByteBuffer and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the DynArray
 		 */
-		auto Resize(usize newSize) noexcept -> void;
+		void Resize(usize newSize) noexcept;
 		/**
 		 * Shrink the memory used by the ByteBuffer to the minimum needed
 		 */
-		auto ShrinkToFit() noexcept -> void;
+		void ShrinkToFit() noexcept;
 
 		/**
 		 * Move the cursor to a position
 		 * \param[in] pos Position in bytes
 		 */
-		auto Seek(usize pos) noexcept -> void;
+		void Seek(usize pos) noexcept;
 
 		/**
 		 * Peek at a value in the ByteBuffer, without advancing the cursor
@@ -111,7 +111,7 @@ namespace Core
 		 * \note Read overwrites the data already present at the location being read, or adds data when the cursor is at the end
 		 */
 		template<typename T>
-		auto Write(const T& val) noexcept -> void;
+		void Write(const T& val) noexcept;
 		/**
 		 * Insert a value in the ByteBuffer
 		 * \tparam T Type to write
@@ -119,7 +119,7 @@ namespace Core
 		 * \param[in] numBytes How many bytes to insert before writing the value, numBytes needs to be smaller or equal to sizeof(T), if 0, the function works like a write
 		 */
 		template<typename T>
-		auto Insert(const T& val, usize numBytes = sizeof(T)) noexcept -> void;
+		void Insert(const T& val, usize numBytes = sizeof(T)) noexcept;
 
 		/**
 		 * Get the position of the cursor

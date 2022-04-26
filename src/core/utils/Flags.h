@@ -74,7 +74,7 @@ namespace Core
 		constexpr operator I() const noexcept;
 		explicit constexpr operator bool() const noexcept;
 
-		constexpr auto Set(E val, bool set) noexcept -> void;
+		constexpr void Set(E val, bool set) noexcept;
 		constexpr auto IsSet(E val) const noexcept -> bool;
 		constexpr auto IsSet(Flags flags) const noexcept -> bool;
 

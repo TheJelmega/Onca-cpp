@@ -150,61 +150,61 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
+		void Assign(const It& begin, const It& end) noexcept requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the Deque
 		 * \param[in] il Initializer list with elements
 		 */
-		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
+		void Assign(const InitializerList<T>& il) noexcept requires CopyConstructible<T>;
 
 		/**
 		 * Fill the Deque with a number of elements
 		 * \param[in] count Number of elements to fill
 		 * \param[in] val Value to fill elements with
 		 */
-		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
+		void Fill(usize count, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Fill the Deque with a number of elements with a default value (via placement new)
 		 * \param[in] count Number of elements to fill
 		 */
-		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>;
+		void FillDefault(usize count) noexcept requires NoThrowDefaultConstructible<T>;
 		
 		/**
 		 * Resize the Deque and fill missing elements if needed
 		 * \param[in] newSize New size of the Deque
 		 * \param[in] val Value to fill missing elements with
 		 */
-		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>;
+		void Resize(usize newSize, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Resize the Deque and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the Deque
 		 */
-		auto Resize(usize newSize) noexcept -> void  requires NoThrowDefaultConstructible<T>;
+		void Resize(usize newSize) noexcept requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Add an element to the front of the Deque
 		 * \param[in] val Element to add
 		 */
-		auto PushFront(const T& val) noexcept -> void requires CopyConstructible<T>;
+		void PushFront(const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add an element to the front of the Deque
 		 * \param[in] val Element to add
 		 */
-		auto PushFront(T&& val) noexcept -> void;
+		void PushFront(T&& val) noexcept;
 		/**
 		 * Add the contents of a Deque to the front of the Deque
 		 * \tparam B Block size of other deque
 		 * \param[in] other Deque to add
 		 */
 		template<usize B>
-		auto PushFront(const Deque<T, B>& other) -> void requires CopyConstructible<T>;
+		void PushFront(const Deque<T, B>& other) requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a Deque to the front of the Deque
 		 * \tparam B Block size of other deque
 		 * \param[in] other Deque to add
 		 */
 		template<usize B>
-		auto PushFront(Deque<T, B>&& other) -> void;
+		void PushFront(Deque<T, B>&& other);
 
 		/**
 		 * Emplace an element at the front of the Deque
@@ -213,32 +213,32 @@ namespace Core
 		 */
 		template<typename ...Args>
 		requires ConstructableFrom<T, Args...>
-			auto EmplaceFront(Args&&... args) noexcept -> void;
+			void EmplaceFront(Args&&... args) noexcept;
 
 		/**
 		 * Add an element to the Deque
 		 * \param[in] val Element to add
 		 */
-		auto Push(const T& val) noexcept -> void requires CopyConstructible<T>;
+		void Push(const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add an element to the Deque
 		 * \param[in] val Element to add
 		 */
-		auto Push(T&& val) noexcept -> void;
+		void Push(T&& val) noexcept;
 		/**
 		 * Add the contents of a Deque to the Deque
 		 * \tparam B Block size of other deque
 		 * \param[in] other Deque to add
 		 */
 		template<usize B>
-		auto Push(const Deque<T, B>& other) -> void requires CopyConstructible<T>;
+		void Push(const Deque<T, B>& other) requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a Deque to the Deque
 		 * \tparam B Block size of other deque
 		 * \param[in] other Deque to add
 		 */
 		template<usize B>
-		auto Push(Deque<T, B>&& other) -> void;
+		void Push(Deque<T, B>&& other);
 
 		/**
 		 * Emplace an element at the back of the Deque
@@ -247,7 +247,7 @@ namespace Core
 		 */
 		template<typename ...Args>
 		requires ConstructableFrom<T, Args...>
-			auto EmplaceBack(Args&&... args) noexcept -> void;
+			void EmplaceBack(Args&&... args) noexcept;
 
 		/**
 		 * Insert an element in a certain location
@@ -321,32 +321,32 @@ namespace Core
 		 * Clear the contents of the Deque, possibly also deallocate the memory
 		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
-		auto Clear(bool clearMemory = false) noexcept -> void;
+		void Clear(bool clearMemory = false) noexcept;
 		/**
 		 * Remove the first element from the Deque
 		 */
-		auto PopFront() noexcept -> void;
+		void PopFront() noexcept;
 		/**
 		 * Remove the last element from the Deque
 		 */
-		auto Pop() noexcept -> void;
+		void Pop() noexcept;
 		/**
 		 * Erase an element from the Deque
 		 * \param[in] it Iterator to element to erase
 		 */
-		auto Erase(const Iterator& it) noexcept -> void;
+		void Erase(const Iterator& it) noexcept;
 		/**
 		 * Erase a number of elements from the Deque
 		 * \param[in] it Iterator to first element to erase
 		 * \param[in] count Number of elements to erase
 		 */
-		auto Erase(const Iterator& it, usize count) noexcept -> void;
+		void Erase(const Iterator& it, usize count) noexcept;
 		/**
 		 * Erase a range of elements from the Deque
 		 * \param[in] begin Iterator to first element to erase
 		 * \param[in] end Iterator to last element to erase
 		 */
-		auto Erase(const Iterator& begin, const Iterator& end) noexcept -> void;
+		void Erase(const Iterator& begin, const Iterator& end) noexcept;
 
 		/**
 		 * Find the first element that matches the looked for value
@@ -526,12 +526,12 @@ namespace Core
 		 * Add a number of blocks at the back of the current blocks
 		 * \param[in] numBlocks Number of block to add
 		 */
-		auto AddBackBlocks(usize numBlocks) noexcept -> void;
+		void AddBackBlocks(usize numBlocks) noexcept;
 		/**
 		 * Add a number of blocks on the front of the current blocks
 		 * \param[in] numBlocks Number of block to add
 		 */
-		auto AddFrontBlocks(usize numBlocks) noexcept -> void;
+		void AddFrontBlocks(usize numBlocks) noexcept;
 
 		/**
 		 * Add space for a number of blocks in the base array
@@ -547,7 +547,7 @@ namespace Core
 		 * \param[in] idx Index to insert element at
 		 * \param[in] moveOffset Number of elements to reserve space for
 		 */
-		auto PrepareInsert(usize idx, usize moveOffset) noexcept -> void;
+		void PrepareInsert(usize idx, usize moveOffset) noexcept;
 		/**
 		 * Insert a range of elements into the Deque
 		 * \tparam It Forward iterator

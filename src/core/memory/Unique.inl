@@ -76,14 +76,14 @@ namespace Core
 	}
 
 	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::Reset(MemRef<T>&& ref) noexcept -> void
+	void Unique<T, D>::Reset(MemRef<T>&& ref) noexcept
 	{
 		m_deleter(Move(m_mem));
 		m_mem = std::move(ref);
 	}
 
 	template <typename T, MemRefDeleter<T> D>
-	auto Unique<T, D>::Swap(Unique<T>& other) noexcept -> void
+	void Unique<T, D>::Swap(Unique<T>& other) noexcept
 	{
 		MemRef<T> tmp = std::move(other);
 		other = std::move(*this);

@@ -74,7 +74,7 @@ namespace Core::Alloc
 	}
 
 	template<usize BlockSize, usize NumBlocks>
-	auto PoolAllocator<BlockSize, NumBlocks>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void PoolAllocator<BlockSize, NumBlocks>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 		u8* ptr = mem.Ptr();
 		u8** pBlock = reinterpret_cast<u8**>(ptr);

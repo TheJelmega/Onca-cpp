@@ -12,7 +12,7 @@ namespace Core
 	 * \note Regions cannot overlap
 	 */
 	template<typename T>
-	constexpr auto MemCpy(T* dst, const T* src, usize numBytes) noexcept -> void;
+	constexpr void MemCpy(T* dst, const T* src, usize numBytes) noexcept;
 	/**
 	 * Copy a region of memory from one location to another
 	 * \param[in] dst Pointer to destination
@@ -20,7 +20,7 @@ namespace Core
 	 * \param[in] numBytes Number of bytes to copy
 	 * \note Regions cannot overlap
 	 */
-	auto MemCpy(void* dst, const void* src, usize numBytes) noexcept -> void;
+	void MemCpy(void* dst, const void* src, usize numBytes) noexcept;
 	/**
 	 * Copy the contents from one element to another
 	 * \tparam T Type to copy
@@ -28,14 +28,14 @@ namespace Core
 	 * \param[in] src Source
 	 */
 	template<typename T>
-	auto MemCpy(T& dst, const T& src) noexcept -> void;
+	void MemCpy(T& dst, const T& src) noexcept;
 	/**
 	 * Move a region of memory from one location to another
 	 * \param[in] dst Pointer to destination
 	 * \param[in] src Pointer to source
 	 * \param[in] numBytes Number of bytes to copy
 	 */
-	auto MemMove(void* dst, void* src, usize numBytes) noexcept -> void;
+	void MemMove(void* dst, void* src, usize numBytes) noexcept;
 	/**
 	 * Move a region of memory from one location to another in a MemRef
 	 * \param mem MemRef to move memory in
@@ -44,41 +44,41 @@ namespace Core
 	 * \param[in] numElems Number of elements to copy
 	 */
 	template<typename T>
-	auto MemMove(MemRef<T>& mem, usize dst, usize src, usize numElems) noexcept -> void;
+	void MemMove(MemRef<T>& mem, usize dst, usize src, usize numElems) noexcept;
 	/**
 	 * Set the value of a region of memory to 'val'
 	 * \param[in] ptr Pointer to memory
 	 * \param[in] val Value to set memory to
 	 * \param[in] numBytes Number of bytes to set
 	 */
-	auto MemSet(void* ptr, u8 val, usize numBytes) noexcept -> void;
+	void MemSet(void* ptr, u8 val, usize numBytes) noexcept;
 	/**
 	 * Set the content of a MeMRef to 'val'
 	 * \param[in] mem MemRef to set content for
 	 * \param[in] val Value to set memory to
 	 */
 	template<typename T>
-	auto MemSet(MemRef<T>& mem, u8 val) noexcept -> void;
+	void MemSet(MemRef<T>& mem, u8 val) noexcept;
 	/**
 	 * Clear a region of memory (set to 0)
 	 * \param[in] ptr Pointer to memory
 	 * \param[in] numBytes Number of numElems to clear
 	 */
-	auto MemClear(void* ptr, usize numBytes) noexcept -> void;
+	void MemClear(void* ptr, usize numBytes) noexcept;
 	/**
 	 * Clears the content of a MemRef
 	 * \tparam T Type of value to clear
 	 * \param[in] mem MemRef to clear content for
 	 */
 	template<typename T>
-	auto MemClear(MemRef<T>& mem) noexcept -> void;
+	void MemClear(MemRef<T>& mem) noexcept;
 	/**
 	 * Clears an object
 	 * \tparam T Type of value to clear
 	 * \param[in] val Value to clear
 	 */
 	template<typename T>
-	auto MemClearData(T& val) noexcept -> void;
+	void MemClearData(T& val) noexcept;
 
 	/**
 	 * Compare 2 blocks of memory

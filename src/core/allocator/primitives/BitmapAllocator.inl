@@ -68,7 +68,7 @@ namespace Core::Alloc
 	}
 
 	template<usize BlockSize, usize NumBlocks>
-	auto BitmapAllocator<BlockSize, NumBlocks>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void BitmapAllocator<BlockSize, NumBlocks>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 		Threading::Lock lock{ m_mutex };
 		
@@ -92,7 +92,7 @@ namespace Core::Alloc
 	}
 
 	template<usize BlockSize, usize NumBlocks>
-	auto BitmapAllocator<BlockSize, NumBlocks>::MarkBits(usize startIdx, usize numBlocks, bool set) noexcept -> void
+	void BitmapAllocator<BlockSize, NumBlocks>::MarkBits(usize startIdx, usize numBlocks, bool set) noexcept
 	{
 		u8* pManagementInfo = m_mem.Ptr();
 

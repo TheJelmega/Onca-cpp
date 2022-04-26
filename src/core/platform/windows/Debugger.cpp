@@ -9,7 +9,7 @@ namespace Core::Debugger
 		return ::IsDebuggerPresent();
 	}
 
-	auto OutputDebugString(const String& str) noexcept -> void
+	void OutputDebugString(const String& str) noexcept
 	{
 		DynArray<char16_t> utf16 = str.ToUtf16();
 		::OutputDebugStringW(reinterpret_cast<LPCWSTR>(utf16.Data()));

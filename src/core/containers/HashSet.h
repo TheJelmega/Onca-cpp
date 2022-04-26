@@ -165,12 +165,12 @@ namespace Core
 		 * Rehash the HashSet to have a minimum number of buckets
 		 * \param[in] count Minimum number of buckets to rehash to
 		 */
-		auto Rehash(usize count) noexcept -> void;
+		void Rehash(usize count) noexcept;
 		/**
 		 * Reserve space for a number of elements and rehashes if needed
 		 * \param[in] count Number of elements to reserve
 		 */
-		auto Reserve(usize count) noexcept -> void;
+		void Reserve(usize count) noexcept;
 		
 		/**
 		 * Insert a key-value pair into the HashSet, override value if it already exists
@@ -203,13 +203,13 @@ namespace Core
 		 * \param[in] other DynArray to merge
 		 */
 		template<Hasher H2, EqualsComparator C2>
-		auto Merge(HashSet<K, H2, C2>& other) noexcept -> void;
+		void Merge(HashSet<K, H2, C2>& other) noexcept;
 
 		/**
 		 * Clear the contents of the HashSet, possibly also deallocate the memory
 		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
-		auto Clear(bool clearMemory = false) noexcept -> void;
+		void Clear(bool clearMemory = false) noexcept;
 
 		/**
 		 * Erase an element from the HashSet
@@ -229,7 +229,7 @@ namespace Core
 		 * \param[in] fun Functor
 		 */
 		template<Callable<bool, const K&> F>
-		auto EraseIf(F fun) noexcept -> void;
+		void EraseIf(F fun) noexcept;
 		
 		/**
 		 * Get an iterator to the elements with a key
@@ -338,7 +338,7 @@ namespace Core
 		 * Set the maximum load factor before rehashing
 		 * \param[in] ml Maximum load factor before rehashing
 		 */
-		auto SetMaxLoadFactor(f32 ml) noexcept -> void;
+		void SetMaxLoadFactor(f32 ml) noexcept;
 
 		/**
 		 * Get the allocator used by the HashSet

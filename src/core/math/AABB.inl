@@ -55,7 +55,7 @@ namespace Core::Math
 	}
 
 	template <Numeric T>
-	constexpr auto AABB<T>::SetSize(const Vec3<T>& size) noexcept -> void
+	constexpr void AABB<T>::SetSize(const Vec3<T>& size) noexcept
 	{
 		Vec3<T> center = Center();
 		Vec3<T> halfExtend = size / T(2);
@@ -70,7 +70,7 @@ namespace Core::Math
 	}
 
 	template <Numeric T>
-	constexpr auto AABB<T>::SetCenter(const Vec3<T>& center) noexcept -> void
+	constexpr void AABB<T>::SetCenter(const Vec3<T>& center) noexcept
 	{
 		Vec3<T> halfExtend = Size() / T(2);
 		min = center - halfExtend;

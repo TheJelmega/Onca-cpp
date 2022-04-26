@@ -26,7 +26,7 @@ namespace Core
 		return *this;
 	}
 
-	auto WindowManager::AddMonitorFromNativeHandle(void* pHandle) noexcept -> void
+	void WindowManager::AddMonitorFromNativeHandle(void* pHandle) noexcept
 	{
 		for (Monitor& monitor : m_monitors)
 		{
@@ -98,7 +98,7 @@ namespace Core
 		return m_invalidWindow;
 	}
 
-	auto WindowManager::Tick() noexcept -> void
+	void WindowManager::Tick() noexcept
 	{
 		Threading::ThreadID curThread = Threading::GetCurrentThreadId();
 		if (curThread != m_threadId)

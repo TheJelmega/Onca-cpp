@@ -373,7 +373,7 @@ namespace Core::Math
 	}
 
 	template <Numeric T>
-	constexpr auto Mat4<T>::SetRow(usize idx, const Vec4<T>& row) noexcept -> void
+	constexpr void Mat4<T>::SetRow(usize idx, const Vec4<T>& row) noexcept
 	{
 		MATH_ASSERT(idx < 4, "Row index out of range");
 		rows[0] = row;
@@ -387,7 +387,7 @@ namespace Core::Math
 	}
 
 	template <Numeric T>
-	constexpr auto Mat4<T>::SetColumn(usize idx, const Vec4<T>& column) noexcept -> void
+	constexpr void Mat4<T>::SetColumn(usize idx, const Vec4<T>& column) noexcept
 	{
 		MATH_ASSERT(idx < 4, "Column index out of range");
 		row0[idx] = column.x;

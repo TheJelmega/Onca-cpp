@@ -7,7 +7,7 @@
 
 namespace Core
 {
-	auto SystemInfo::Init() noexcept -> void
+	void SystemInfo::Init() noexcept
 	{
 		SYSTEM_INFO sysInfo;
 		::GetNativeSystemInfo(&sysInfo);

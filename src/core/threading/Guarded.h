@@ -80,7 +80,7 @@ namespace Core::Threading
 		 * Unlock the guarded data
 		 * \param[in] lockedGuard Locked guard to unlock
 		 */
-		auto Unlock(LockedGuard<T, LockT>&& lockedGuard) noexcept -> void;
+		void Unlock(LockedGuard<T, LockT>&& lockedGuard) noexcept;
 
 	private:
 		T     m_data; // Guarded data

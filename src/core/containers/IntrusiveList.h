@@ -96,12 +96,12 @@ namespace Core
 		 * Add an element to the IntrusiveList
 		 * \param[in] val Element to add
 		 */
-		auto Add(IntrusiveListNode<T>& val) noexcept -> void;
+		void Add(IntrusiveListNode<T>& val) noexcept;
 		/**
 		 * Add the contents of a IntrusiveList to the IntrusiveList
 		 * \param[in] other IntrusiveList to add
 		 */
-		auto Add(IntrusiveList&& other) -> void;
+		void Add(IntrusiveList&& other);
 
 		/**
 		 * Insert an element after a certain location
@@ -123,37 +123,37 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto AddFront(IntrusiveListNode<T>& val) noexcept -> void;
+		void AddFront(IntrusiveListNode<T>& val) noexcept;
 		/**
 		 * Add a IntrusiveList into the IntrusiveList at the front of the IntrusiveList
 		 * \param[in] other IntrusiveList to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(IntrusiveList&& other) noexcept -> void;
+		void AddFront(IntrusiveList&& other) noexcept;
 
 		/**
 		 * Clear the contents of the IntrusiveList
 		 */
-		auto Clear() noexcept -> void;
+		void Clear() noexcept;
 		/**
 		 * Remove the last element from the IntrusiveList
 		 */
-		auto Pop() noexcept -> void;
+		void Pop() noexcept;
 		/**
 		 * Remove the first element from the IntrusiveList
 		 */
-		auto PopFront() noexcept -> void;
+		void PopFront() noexcept;
 		/**
 		 * Erase an element from the IntrusiveList
 		 * \param[in] it Iterator to element before the element to erase
 		 */
-		auto EraseAfter(Iterator& it) noexcept -> void;
+		void EraseAfter(Iterator& it) noexcept;
 
 		/**
 		 * Reverse the elements in the list
 		 * \note This does not invalidate any iterators
 		 */
-		auto Reverse() noexcept -> void;
+		void Reverse() noexcept;
 
 		/**
 		 * Get the size of the IntrusiveList

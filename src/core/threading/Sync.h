@@ -24,7 +24,7 @@ namespace Core::Threading
 		/**
 		 * Lock the Mutex, blocks the thread if the Mutex is not available
 		 */
-		auto Lock() noexcept -> void;
+		void Lock() noexcept;
 		/**
 		 * Try to lock the Mutex, returns if the Mutex is not available
 		 * \return If the Mutex has been successfully locked
@@ -33,7 +33,7 @@ namespace Core::Threading
 		/**
 		 * Unlock the mutex
 		 */
-		auto Unlock() noexcept -> void;
+		void Unlock() noexcept;
 
 		/**
 		 * \brief Get the native handle to the OS object
@@ -65,7 +65,7 @@ namespace Core::Threading
 		/**
 		 * Lock the Mutex, blocks the thread if the Mutex is not available
 		 */
-		auto Lock() noexcept -> void;
+		void Lock() noexcept;
 		/**
 		 * Try to lock the Mutex, returns if the Mutex is not available
 		 * \return If the Mutex has been successfully locked
@@ -80,7 +80,7 @@ namespace Core::Threading
 		/**
 		 * Unlock the mutex
 		 */
-		auto Unlock() noexcept -> void;
+		void Unlock() noexcept;
 
 		/**
 		 * \brief Get the native handle to the OS object
@@ -112,7 +112,7 @@ namespace Core::Threading
 		/**
 		 * Lock the Mutex, blocks the thread if the Mutex is not available
 		 */
-		auto Lock() noexcept -> void;
+		void Lock() noexcept;
 		/**
 		 * Try to lock the Mutex, returns if the Mutex is not available
 		 * \return If the Mutex has been successfully locked
@@ -121,7 +121,7 @@ namespace Core::Threading
 		/**
 		 * Unlock the mutex
 		 */
-		auto Unlock() noexcept -> void;
+		void Unlock() noexcept;
 
 		/**
 		 * \brief Get the native handle to the OS object
@@ -171,7 +171,7 @@ namespace Core::Threading
 		/**
 		 * Lock the Mutex, blocks the thread if the Mutex is not available
 		 */
-		auto Lock() noexcept -> void;
+		void Lock() noexcept;
 		/**
 		 * Try to lock the Mutex, returns if the Mutex is not available
 		 * \return If the Mutex has been successfully locked
@@ -180,7 +180,7 @@ namespace Core::Threading
 		/**
 		 * Unlock the mutex
 		 */
-		auto Unlock() noexcept -> void;
+		void Unlock() noexcept;
 
 		/**
 		 * \brief Get the native handle to the OS object
@@ -229,15 +229,15 @@ namespace Core::Threading
 		/**
 		 * Signal the Event
 		 */
-		auto Signal() -> void;
+		void Signal();
 		/**
 		 * Set the Event as not signaled
 		 */
-		auto Unsignal() -> void;
+		void Unsignal();
 		/**
 		 * Wait until the event has been signaled
 		 */
-		auto Wait() -> void;
+		void Wait();
 
 		/**
 		 * \brief Get the native handle to the OS object
@@ -294,11 +294,11 @@ namespace Core::Threading
 			/**
 			 * Lock all lockable objects
 			 */
-			auto Lock() noexcept -> void;
+			void Lock() noexcept;
 			/**
 			 * Unlock all lockable objects
 			 */
-			auto Unlock() noexcept -> void;
+			void Unlock() noexcept;
 		private:
 			template<Lockable U, Lockable... V>
 			friend class ManualLock;
@@ -321,11 +321,11 @@ namespace Core::Threading
 			/**
 			 * Lock all lockable objects
 			 */
-			auto Lock() noexcept -> void;
+			void Lock() noexcept;
 			/**
 			 * Unlock all lockable objects
 			 */
-			auto Unlock() noexcept -> void;
+			void Unlock() noexcept;
 		private:
 			template<Lockable U, Lockable... V>
 			friend class ManualLock;

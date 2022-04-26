@@ -96,11 +96,11 @@ namespace Core::Threading
 		/**
 		 * Wait for the thread to exit
 		 */
-		auto Join() noexcept -> void;
+		void Join() noexcept;
 		/**
 		 * Detach the thread
 		 */
-		auto Detach() noexcept -> void;
+		void Detach() noexcept;
 
 		/**
 		 * Set the description of the thread
@@ -288,7 +288,7 @@ namespace Core::Threading
 		static auto FromCurrent() noexcept -> Thread;
 
 	private:
-		auto Init(void* pInvoke, void* pData) noexcept -> void;
+		void Init(void* pInvoke, void* pData) noexcept;
 
 		template<typename... Args>
 		static auto Invoke(void* pData) noexcept -> u32;

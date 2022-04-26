@@ -188,11 +188,11 @@ namespace Core
 		/**
 		 * Initialize and collect the system info
 		 */
-		auto Init() noexcept -> void;
+		void Init() noexcept;
 		/**
 		 * Cleanup the system info before allocator destruction
 		 */
-		auto Shutdown() noexcept -> void;
+		void Shutdown() noexcept;
 
 		/**
 		 * Get the identifiable data
@@ -381,7 +381,7 @@ namespace Core
 		 * Log out system info
 		 * \param[in] logIdentifiableInfo Whether to log identifiable info
 		 */
-		auto LogSystemInfo(bool logIdentifiableInfo) const noexcept -> void;
+		void LogSystemInfo(bool logIdentifiableInfo) const noexcept;
 	private:
 		DynArray<ProcessorInfo> m_processorInfo;                                    ///< Information about the processors
 		DynArray<NUMANodeInfo>  m_numaNodes;                                        ///< NUMA nodes

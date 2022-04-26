@@ -286,7 +286,7 @@ namespace Core
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::Rehash(usize count) noexcept -> void
+	void HashMap<K, V, H, C, IsMultiMap>::Rehash(usize count) noexcept
 	{
 		if (m_bucketCount >= count)
 			return;
@@ -319,7 +319,7 @@ namespace Core
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::Reserve(usize count) noexcept -> void
+	void HashMap<K, V, H, C, IsMultiMap>::Reserve(usize count) noexcept
 	{
 		Rehash(usize(Math::Ceil(count / m_maxLoadFactor)));
 	}
@@ -421,7 +421,7 @@ namespace Core
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	template <Hasher H2, EqualsComparator C2>
-	auto HashMap<K, V, H, C, IsMultiMap>::Merge(HashMap<K, V, H2, C2>& other) noexcept -> void
+	void HashMap<K, V, H, C, IsMultiMap>::Merge(HashMap<K, V, H2, C2>& other) noexcept
 	{
 		Iterator it = other.Begin();
 		while (it.m_node)
@@ -454,7 +454,7 @@ namespace Core
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::Clear(bool clearMemory) noexcept -> void
+	void HashMap<K, V, H, C, IsMultiMap>::Clear(bool clearMemory) noexcept
 	{
 		ClearInternal<true>(clearMemory);
 	}
@@ -485,7 +485,7 @@ namespace Core
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	template <Callable<bool, const K&, const V&> F>
-	auto HashMap<K, V, H, C, IsMultiMap>::EraseIf(F fun) noexcept -> void
+	void HashMap<K, V, H, C, IsMultiMap>::EraseIf(F fun) noexcept
 	{
 		Iterator it = Begin();
 		while (it.m_node)
@@ -688,7 +688,7 @@ namespace Core
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::SetMaxLoadFactor(f32 ml) noexcept -> void
+	void HashMap<K, V, H, C, IsMultiMap>::SetMaxLoadFactor(f32 ml) noexcept
 	{
 		m_maxLoadFactor = ml;
 		Rehash(m_size / m_maxLoadFactor);
@@ -894,7 +894,7 @@ namespace Core
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::RemoveNode(NodeRef node) noexcept -> void
+	void HashMap<K, V, H, C, IsMultiMap>::RemoveNode(NodeRef node) noexcept
 	{
 		u64 mask = u64(m_bucketCount) - 1;
 		usize bucketIdx = node->hash & mask;
@@ -918,7 +918,7 @@ namespace Core
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
 	template <bool Destruct>
-	auto HashMap<K, V, H, C, IsMultiMap>::ClearInternal(bool clearMemory) noexcept -> void
+	void HashMap<K, V, H, C, IsMultiMap>::ClearInternal(bool clearMemory) noexcept
 	{
 		NodeRef* pBuckets = m_buckets.Ptr();
 		for (usize i = 0; i < m_bucketCount; ++i)

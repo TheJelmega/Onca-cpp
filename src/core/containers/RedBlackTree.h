@@ -222,12 +222,12 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
+		void Assign(const It& begin, const It& end) noexcept requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the RedBlackTree
 		 * \param[in] il Initializer list with elements
 		 */
-		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
+		void Assign(const InitializerList<T>& il) noexcept requires CopyConstructible<T>;
 
 		/**
 		 * Insert a value in the RedBlackTree
@@ -249,12 +249,12 @@ namespace Core
 		 * \param[in] other RedBlackTree to merge
 		 */
 		template<Comparator C2>
-		auto Merge(RedBlackTree<T, C2>& other) noexcept -> void;
+		void Merge(RedBlackTree<T, C2>& other) noexcept;
 
 		/**
 		 * Clear the contents of the RedBlackTree
 		 */
-		auto Clear() noexcept -> void;
+		void Clear() noexcept;
 		/**
 		 * Erase an element from the HashMap
 		 * \param[in] it Iterator to element to erase
@@ -446,14 +446,14 @@ namespace Core
 		 * Initial case of rebalancing: node is red
 		 * \param[in] node Node to rebalance
 		 */
-		auto RebalanceInsert(NodeRef node, RotateDir dir) noexcept -> void;
+		void RebalanceInsert(NodeRef node, RotateDir dir) noexcept;
 
 		/**
 		 * Copy from another red black tree
 		 * \param[in] other Red black tree to copy
 		 */
 		template<bool Moved>
-		auto Copy(const RedBlackTree& other) noexcept -> void;
+		void Copy(const RedBlackTree& other) noexcept;
 
 		/**
 		 * Erase a value from the RedBlackTree
@@ -475,10 +475,10 @@ namespace Core
 		 * Removed a leaf node from the RedBlackTree
 		 * \param[in] node Leaf node to erase
 		 */
-		auto EraseLeafNode(NodeRef node) noexcept -> void;
+		void EraseLeafNode(NodeRef node) noexcept;
 
 		template<bool Destruct>
-		auto ClearInternal() noexcept -> void;
+		void ClearInternal() noexcept;
 
 		/**
 		 * Get the first node in the RedBlackTree

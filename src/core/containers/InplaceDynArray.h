@@ -72,57 +72,57 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		constexpr auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
+		constexpr void Assign(const It& begin, const It& end) noexcept requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the InplaceDynArray
 		 * \param[in] il Initializer list with elements
 		 */
-		constexpr auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
+		constexpr void Assign(const InitializerList<T>& il) noexcept requires CopyConstructible<T>;
 
 		/**
 		 * Fill the InplaceDynArray with a number of elements
 		 * \param[in] count Number of elements to fill
 		 * \param[in] val Value to fill elements with
 		 */
-		constexpr auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
+		constexpr void Fill(usize count, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Fill the InplaceDynArray with a number of elements with a default value (via placement new)
 		 * \param[in] count Number of elements to fill
 		 */
-		constexpr auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>;
+		constexpr void FillDefault(usize count) noexcept requires NoThrowDefaultConstructible<T>;
 		
 		/**
 		 * Resize the InplaceDynArray and fill missing elements if needed
 		 * \param[in] newSize New size of the InplaceDynArray
 		 * \param[in] val Value to fill missing elements with
 		 */
-		constexpr auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>;
+		constexpr void Resize(usize newSize, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Resize the InplaceDynArray and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the InplaceDynArray
 		 */
-		constexpr auto Resize(usize newSize) noexcept -> void  requires NoThrowDefaultConstructible<T>;
+		constexpr void Resize(usize newSize) noexcept requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Add an element to the InplaceDynArray
 		 * \param[in] val Element to add
 		 */
-		constexpr auto Add(const T& val) noexcept -> void requires CopyConstructible<T>;
+		constexpr void Add(const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add an element to the InplaceDynArray
 		 * \param[in] val Element to add
 		 */
-		constexpr auto Add(T&& val) noexcept -> void;
+		constexpr void Add(T&& val) noexcept;
 		/**
 		 * Add the contents of a InplaceDynArray to the InplaceDynArray
 		 * \param[in] other InplaceDynArray to add
 		 */
-		constexpr auto Add(const InplaceDynArray& other) -> void requires CopyConstructible<T>;
+		constexpr void Add(const InplaceDynArray& other) requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a InplaceDynArray to the InplaceDynArray
 		 * \param[in] other InplaceDynArray to add
 		 */
-		constexpr auto Add(InplaceDynArray&& other) -> void;
+		constexpr void Add(InplaceDynArray&& other);
 
 		/**
 		 * Emplace an element at the back of the InplaceDynArray
@@ -131,7 +131,7 @@ namespace Core
 		 */
 		template<typename ...Args>
 			requires ConstructableFrom<T, Args...>
-		constexpr auto EmplaceBack(Args&&... args) noexcept -> void;
+		constexpr void EmplaceBack(Args&&... args) noexcept;
 
 		/**
 		 * Insert an element in a certain location
@@ -199,30 +199,29 @@ namespace Core
 
 		/**
 		 * Clear the contents of the InplaceDynArray, possibly also deallocate the memory
-		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
-		constexpr auto Clear() noexcept -> void;
+		constexpr void Clear() noexcept;
 		/**
 		 * Remove the last element from the InplaceDynArray
 		 */
-		constexpr auto Pop() noexcept -> void;
+		constexpr void Pop() noexcept;
 		/**
 		 * Erase an element from the InplaceDynArray
 		 * \param[in] it Iterator to element to erase
 		 */
-		constexpr auto Erase(const Iterator& it) noexcept -> void;
+		constexpr void Erase(const Iterator& it) noexcept;
 		/**
 		 * Erase a number of elements from the InplaceDynArray
 		 * \param[in] it Iterator to first element to erase
 		 * \param[in] count Number of elements to erase
 		 */
-		constexpr auto Erase(const Iterator& it, usize count) noexcept -> void;
+		constexpr void Erase(const Iterator& it, usize count) noexcept;
 		/**
 		 * Erase a range of elements from the InplaceDynArray
 		 * \param[in] begin Iterator to first element to erase
 		 * \param[in] end Iterator to last element to erase
 		 */
-		constexpr auto Erase(const Iterator& begin, const Iterator& end) noexcept -> void;
+		constexpr void Erase(const Iterator& begin, const Iterator& end) noexcept;
 
 		/**
 		 * Find the first element that matches the looked for value

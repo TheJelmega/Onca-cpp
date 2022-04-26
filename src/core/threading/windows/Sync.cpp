@@ -17,7 +17,7 @@ namespace Core::Threading
 		DeleteCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(&m_nativeHandle));
 	}
 
-	auto Mutex::Lock() noexcept -> void
+	void Mutex::Lock() noexcept
 	{
 		EnterCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(&m_nativeHandle));
 	}
@@ -27,7 +27,7 @@ namespace Core::Threading
 		return TryEnterCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(&m_nativeHandle));
 	}
 
-	auto Mutex::Unlock() noexcept -> void
+	void Mutex::Unlock() noexcept
 	{
 		LeaveCriticalSection(reinterpret_cast<LPCRITICAL_SECTION>(&m_nativeHandle));
 	}
@@ -56,7 +56,7 @@ namespace Core::Threading
 		CloseHandle(handleUnion.handle);
 	}
 
-	auto TimedMutex::Lock() noexcept -> void
+	void TimedMutex::Lock() noexcept
 	{
 		union
 		{
@@ -94,7 +94,7 @@ namespace Core::Threading
 		return res == WAIT_OBJECT_0;
 	}
 
-	auto TimedMutex::Unlock() noexcept -> void
+	void TimedMutex::Unlock() noexcept
 	{
 		union
 		{
@@ -134,7 +134,7 @@ namespace Core::Threading
 		CloseHandle(handleUnion.handle);
 	}
 
-	auto MultiProcessMutex::Lock() noexcept -> void
+	void MultiProcessMutex::Lock() noexcept
 	{
 		union
 		{
@@ -159,7 +159,7 @@ namespace Core::Threading
 		return res == WAIT_OBJECT_0;
 	}
 
-	auto MultiProcessMutex::Unlock() noexcept -> void
+	void MultiProcessMutex::Unlock() noexcept
 	{
 		union
 		{
@@ -218,7 +218,7 @@ namespace Core::Threading
 		CloseHandle(handleUnion.handle);
 	}
 
-	auto Semaphore::Lock() noexcept -> void
+	void Semaphore::Lock() noexcept
 	{
 		union
 		{
@@ -243,7 +243,7 @@ namespace Core::Threading
 		return res == WAIT_OBJECT_0;
 	}
 
-	auto Semaphore::Unlock() noexcept -> void
+	void Semaphore::Unlock() noexcept
 	{
 		union
 		{
@@ -303,7 +303,7 @@ namespace Core::Threading
 		CloseHandle(handleUnion.handle);
 	}
 
-	auto Event::Signal() -> void
+	void Event::Signal()
 	{
 		union
 		{
@@ -315,7 +315,7 @@ namespace Core::Threading
 		ASSERT(res, "Signaling Event using SetEvent failed");
 	}
 
-	auto Event::Unsignal() -> void
+	void Event::Unsignal()
 	{
 		union
 		{
@@ -327,7 +327,7 @@ namespace Core::Threading
 		ASSERT(res, "Unsignaling Event using ResetEvent failed");
 	}
 
-	auto Event::Wait() -> void
+	void Event::Wait()
 	{
 		union
 		{

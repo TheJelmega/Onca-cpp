@@ -40,34 +40,34 @@ namespace Core
 		/**
 		 * Shutdown the logger
 		 */
-		auto Shutdown() noexcept -> void;
+		void Shutdown() noexcept;
 
 		/**
 		 * Set the filepath to log to and enable logging to file
 		 * \param[in] filePath Path to log file
 		 */
-		auto SetLogFile(const FileSystem::Path& filePath) noexcept -> void;
+		void SetLogFile(const FileSystem::Path& filePath) noexcept;
 
 		/**
 		 * Set the maximum log level
 		 * \param[in] level Maximum log level
 		 */
-		auto SetMaxLogLevel(LogLevel level) noexcept -> void;
+		void SetMaxLogLevel(LogLevel level) noexcept;
 		/**
 		 * Set if the logger needs to log to its file
 		 * \param[in] enable Whether to log to the file
 		 */
-		auto SetLogToFile(bool enable) noexcept -> void;
+		void SetLogToFile(bool enable) noexcept;
 		/**
 		 * Set if the logger needs to log to the system console
 		 * \param[in] enable Whether to log to the system console
 		 */
-		auto SetLogToSystemConsole(bool enable) noexcept -> void;
+		void SetLogToSystemConsole(bool enable) noexcept;
 		/**
 		 * Set if the logger needs to log to the debugger
 		 * \param[in] enable Whether to log to the debugger
 		 */
-		auto SetLogToDebugger(bool enable) noexcept -> void;
+		void SetLogToDebugger(bool enable) noexcept;
 
 		/**
 		 * Log a message with the given level and category
@@ -75,7 +75,7 @@ namespace Core
 		 * \param[in] category Log category
 		 * \param[in] message Message
 		 */
-		auto Log(LogLevel level, const LogCategory& category, const String& message) noexcept -> void;
+		void Log(LogLevel level, const LogCategory& category, const String& message) noexcept;
 
 		/**
 		 * Log a message with the given level and category
@@ -86,7 +86,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename... Args>
-		auto Log(LogLevel level, const LogCategory& category, const String& format, const Args&... args) noexcept -> void;
+		void Log(LogLevel level, const LogCategory& category, const String& format, const Args&... args) noexcept;
 
 		/**
 		 * Log a severe error message with the given category
@@ -96,7 +96,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename... Args>
-		auto Severe(const LogCategory& category, const String& format, const Args&... args) noexcept -> void;
+		void Severe(const LogCategory& category, const String& format, const Args&... args) noexcept;
 		/**
 		 * Log an error message with the given category
 		 * \tparam Args Argument types
@@ -105,7 +105,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename... Args>
-		auto Error(const LogCategory& category, const String& format, const Args&... args) noexcept -> void;
+		void Error(const LogCategory& category, const String& format, const Args&... args) noexcept;
 		/**
 		 * Log a warning message with the given category
 		 * \tparam Args Argument types
@@ -114,7 +114,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename... Args>
-		auto Warning(const LogCategory& category, const String& format, const Args&... args) noexcept -> void;
+		void Warning(const LogCategory& category, const String& format, const Args&... args) noexcept;
 		/**
 		 * Log info message with the given category
 		 * \tparam Args Argument types
@@ -123,7 +123,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename... Args>
-		auto Info(const LogCategory& category, const String& format, const Args&... args) noexcept -> void;
+		void Info(const LogCategory& category, const String& format, const Args&... args) noexcept;
 		/**
 		 * Log verbose info message with the given category
 		 * \tparam Args Argument types
@@ -132,7 +132,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename... Args>
-		auto Verbose(const LogCategory& category, const String& format, const Args&... args) noexcept -> void;
+		void Verbose(const LogCategory& category, const String& format, const Args&... args) noexcept;
 		/**
 		 * Append a message to the previous value with the given category
 		 * \tparam Args Argument types
@@ -141,7 +141,7 @@ namespace Core
 		 * \param[in] args Arguments
 		 */
 		template<typename... Args>
-		auto Append(const String& format, const Args&... args) noexcept -> void;
+		void Append(const String& format, const Args&... args) noexcept;
 
 	private:
 
@@ -149,18 +149,18 @@ namespace Core
 		 * Log a string to the logger's file
 		 * \param[in] str String to log
 		 */
-		auto LogToFile(const String& str) noexcept -> void;
+		void LogToFile(const String& str) noexcept;
 		/**
 		 * Log a string to the system's console
 		 * \param[in] str String to log
 		 * \param[in] level Log level (used for color in console)
 		 */
-		auto LogToSysConsole(const String& str, LogLevel level) noexcept -> void;
+		void LogToSysConsole(const String& str, LogLevel level) noexcept;
 		/**
 		 * Log a string to the attached debugger
 		 * \param[in] str String to log
 		 */
-		auto LogToDebugger(const String& str) noexcept -> void;
+		void LogToDebugger(const String& str) noexcept;
 
 		static constexpr const char* LogLevelNames[] =
 		{

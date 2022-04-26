@@ -331,14 +331,14 @@ namespace Core
 		return !(*this == other);
 	}
 
-	inline auto String::Assign(UCodepoint codepoint, usize count) noexcept -> void
+	inline void String::Assign(UCodepoint codepoint, usize count) noexcept
 	{
 		m_data.Clear();
 		m_length = 0;
 		Add(codepoint, count);
 	}
 
-	inline auto String::Assign(const String& other, usize pos, usize length) noexcept -> void
+	inline void String::Assign(const String& other, usize pos, usize length) noexcept
 	{
 		m_data.Clear();
 		m_length = 0;
@@ -346,13 +346,13 @@ namespace Core
 	}
 
 	template <CharacterType C>
-	auto String::Assign(const C* str) noexcept -> void
+	void String::Assign(const C* str) noexcept
 	{
 		Assign(str, StrLen(str));
 	}
 
 	template <CharacterType C>
-	auto String::Assign(const C* str, usize length) noexcept -> void
+	void String::Assign(const C* str, usize length) noexcept
 	{
 		m_data.Clear();
 		m_data.Reserve(length);
@@ -370,7 +370,7 @@ namespace Core
 	}
 
 	template <ConvertableToUnicode T>
-	auto String::Assign(const InitializerList<T>& il) noexcept -> void
+	void String::Assign(const InitializerList<T>& il) noexcept
 	{
 		m_data.Clear();
 		m_data.Reserve(il.size());
@@ -378,7 +378,7 @@ namespace Core
 	}
 
 	template <ForwardIterator It> requires DereferencableToUnicode<It>
-	auto String::Assign(const It& begin, const It& end) noexcept -> void
+	void String::Assign(const It& begin, const It& end) noexcept
 	{
 		m_data.Clear();
 		m_length = 0;
@@ -411,12 +411,12 @@ namespace Core
 	}
 
 
-	inline auto String::Reserve(usize capacity) noexcept -> void
+	inline void String::Reserve(usize capacity) noexcept
 	{
 		m_data.Reserve(capacity);
 	}
 
-	inline auto String::Resize(usize newSize, UCodepoint codepoint) noexcept -> void
+	inline void String::Resize(usize newSize, UCodepoint codepoint) noexcept
 	{
 		if (newSize > m_length)
 		{
@@ -431,14 +431,14 @@ namespace Core
 		m_length = newSize;
 	}
 
-	inline auto String::ShrinkToFit() noexcept -> void
+	inline void String::ShrinkToFit() noexcept
 	{
 		m_data.Add(0);
 		m_data.ShrinkToFit();
 		m_data.Pop();
 	}
 
-	inline auto String::Clear(bool clearMemory) noexcept -> void
+	inline void String::Clear(bool clearMemory) noexcept
 	{
 		m_data.Clear(clearMemory);
 	}
@@ -1542,7 +1542,7 @@ namespace Core
 		return End();
 	}
 
-	inline auto String::AssignSubstring(const String& other, usize idx, usize pos, usize size, usize length) noexcept -> void
+	inline void String::AssignSubstring(const String& other, usize idx, usize pos, usize size, usize length) noexcept
 	{
 		if (size > other.DataSize() - idx)
 			size = other.DataSize() - idx;
@@ -1709,7 +1709,7 @@ namespace Core
 		return pData;
 	}
 
-	inline auto String::NullTerminate() noexcept -> void
+	inline void String::NullTerminate() noexcept
 	{
 		const usize size = m_data.Size();
 		m_data.Reserve(size + 1);

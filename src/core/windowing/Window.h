@@ -215,18 +215,22 @@ namespace Core
 		auto IsMaximized() const noexcept -> bool { return m_maximized; }
 
 
-		auto RemoveCallbacksForObject(void* ptr) noexcept -> void;
+		/**
+		 * Remove all callbacks that are called on a certain object
+		 * \param[in] ptr Pointer to object
+		 */
+		void RemoveCallbacksForObject(void* ptr) noexcept;
 
 		/**
 		 * Register a close callback
 		 * \param[in] callback Callback(Window& window)
 		 */
-		auto RegisterCloseCallback(const Delegate<void(Window&)>& callback) noexcept -> void;
+		void RegisterCloseCallback(const Delegate<void(Window&)>& callback) noexcept;
 		/**
 		 * Register an input enable callback
 		 * \param[in] callback Callback(Window& window, bool enabled)
 		 */
-		auto RegisterInputEnableCallback(const Delegate<void(Window&, bool)>& callback) noexcept -> void;
+		void RegisterInputEnableCallback(const Delegate<void(Window&, bool)>& callback) noexcept;
 		/**
 		 * Register an size callback
 		 * \param[in] callback Callback(Window& window, u32v2 size, bool sizing)
@@ -234,7 +238,7 @@ namespace Core
 		 * \note The 'sizing' value in the callback specifies if the window is still being sized or not
 		 * \note If 'sizing' is false, the old value of the window will temporarily be set to the size it was before the current resizing started
 		 */
-		auto RegisterSizeCallback(const Delegate<void(Window&, u32v2, bool)>& callback) noexcept -> void;
+		void RegisterSizeCallback(const Delegate<void(Window&, u32v2, bool)>& callback) noexcept;
 		/**
 		 * Register an move callback
 		 * \param[in] callback Callback(Window& window, i32v2 pos, bool moving)
@@ -242,37 +246,37 @@ namespace Core
 		 * \note The 'moving' value in the callback specifies if the window is still being sized or not
 		 * \note If 'moving' is false, the old value of the window will temporarily be set to the position it was before the current moving started
 		 */
-		auto RegisterMoveCallback(const Delegate<void(Window&, i32v2, bool)>& callback) noexcept -> void;
+		void RegisterMoveCallback(const Delegate<void(Window&, i32v2, bool)>& callback) noexcept;
 		/**
 		 * Register a minimized callback
 		 * \param[in] callback Callback(Window& window)
 		 */
-		auto RegisterMinimizedCallback(const Delegate<void(Window&)>& callback) noexcept -> void;
+		void RegisterMinimizedCallback(const Delegate<void(Window&)>& callback) noexcept;
 		/**
 		 * Register a maximized callback
 		 * \param[in] callback Callback(Window& window)
 		 */
-		auto RegisterMaximizedCallback(const Delegate<void(Window&)>& callback) noexcept -> void;
+		void RegisterMaximizedCallback(const Delegate<void(Window&)>& callback) noexcept;
 		/**
 		 * Register a close callback
 		 * \param[in] callback Callback(Window& window, u32v2 size, i32v2 position, bool fromMaximized)
 		 */
-		auto RegisterRestoreCallback(const Delegate<void(Window&, u32v2, i32v2, bool)>& callback) noexcept -> void;
+		void RegisterRestoreCallback(const Delegate<void(Window&, u32v2, i32v2, bool)>& callback) noexcept;
 		/**
 		 * Register a maximized callback
 		 * \param[in] callback Callback(Window& window, bool inFocus)
 		 */
-		auto RegisterFocusCallback(const Delegate<void(Window&, bool)>& callback) noexcept -> void;
+		void RegisterFocusCallback(const Delegate<void(Window&, bool)>& callback) noexcept;
 		/**
 		 * Register a maximized callback
 		 * \param[in] callback Callback(Window& window, bool entered)
 		 */
-		auto RegisterEnterLeaveCallback(const Delegate<void(Window&, bool)>& callback) noexcept -> void;
+		void RegisterEnterLeaveCallback(const Delegate<void(Window&, bool)>& callback) noexcept;
 		/**
 		 * Register a maximized callback
 		 * \param[in] callback Callback(Window& window, bool shown)
 		 */
-		auto RegisterShowCallback(const Delegate<void(Window&, bool)>& callback) noexcept -> void;
+		void RegisterShowCallback(const Delegate<void(Window&, bool)>& callback) noexcept;
 
 		// TODO: unregister callbacks
 
@@ -280,68 +284,72 @@ namespace Core
 		 * Calls all close callbacks
 		 * \note Should not be called manually
 		 */
-		auto OnClose() noexcept -> void;
+		void OnClose() noexcept;
 		/**
 		 * Calls all input enable callbacks
 		 * \param[in] enabled Whether the window is enabled or not
 		 * \note Should not be called manually
 		 */
-		auto OnInputEnabled(bool enabled) noexcept -> void;
+		void OnInputEnabled(bool enabled) noexcept;
 
 		/**
 		 * Calls all resizing callbacks
 		 * \param[in] size Size of the window after resizing
 		 * \note Should not be called manually
 		 */
-		auto OnResized(u32v2 size) noexcept -> void;
+		void OnResized(u32v2 size) noexcept;
 		/**
 		 * Calls all resizing callbacks
 		 * \param[in] pos Position of the window after moving
 		 * \note Should not be called manually
 		 */
-		auto OnMoved(i32v2 pos) noexcept -> void;
+		void OnMoved(i32v2 pos) noexcept;
 		/**
 		 * Calls all minimized callbacks
 		 * \note Should not be called manually
 		 */
-		auto OnMinimized() noexcept -> void;
+		void OnMinimized() noexcept;
 		/**
 		 * Calls all maximized callbacks
 		 * \note Should not be called manually
 		 */
-		auto OnMaximized() noexcept -> void;
+		void OnMaximized() noexcept;
 		/**
 		 * Calls all restored callbacks
 		 * \param[in] fromMaximized Whether the window has been restored from a maximized window
 		 * \note Should not be called manually
 		 */
-		auto OnRestored(bool fromMaximized) noexcept -> void;
+		void OnRestored(bool fromMaximized) noexcept;
 		/**
 		 * Calls all focus callbacks
 		 * \param[in] inFocus Whether the window is in focus
 		 * \note Should not be called manually
 		 */
-		auto OnFocus(bool inFocus) noexcept -> void;
+		void OnFocus(bool inFocus) noexcept;
 		/**
 		 * Calls all focus callbacks
 		 * \param[in] entered Whether the window is entered
 		 * \note Should not be called manually
 		 */
-		auto OnEnterLeave(bool entered) noexcept -> void;
+		void OnEnterLeave(bool entered) noexcept;
 		/**
 		 * Calls all focus callbacks
 		 * \param[in] shown Whether the window is shown
 		 * \note Should not be called manually
 		 */
-		auto OnShow(bool shown) noexcept -> void;
+		void OnShow(bool shown) noexcept;
 
 
 		/**
 		 * Calls all resizing and moving callbacks with its resizing/moving bool to false
 		 * \note Should not be called manually
 		 */
-		auto OnEndMoveSize() noexcept -> void;
-		auto OnMouseMove() noexcept -> void;
+		void OnEndMoveSize() noexcept;
+		/**
+		 * Handles mouse move
+		 * \note Should not be called manually
+		 */
+		void OnMouseMove() noexcept;
 
 	private:
 		friend class WindowManager;

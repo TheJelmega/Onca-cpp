@@ -88,7 +88,7 @@ namespace Core::FileSystem
 		return *this;
 	}
 
-	auto Path::Clear() noexcept -> void
+	void Path::Clear() noexcept
 	{
 		// TODO: String::Clear() ???
 		m_string = "";

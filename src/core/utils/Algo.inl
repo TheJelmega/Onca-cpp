@@ -6,7 +6,7 @@
 namespace Core::Algo
 {
 	template <Movable T>
-	constexpr auto Swap(T& a, T& b) noexcept -> void
+	constexpr void Swap(T& a, T& b) noexcept
 	{
 		T tmp{ Core::Move(a) };
 		a = Core::Move(b);
@@ -14,7 +14,7 @@ namespace Core::Algo
 	}
 
 	template <ForwardIterator It>
-	constexpr auto SwapIter(It a, It b) noexcept -> void
+	constexpr void SwapIter(It a, It b) noexcept
 	{
 		STATIC_ASSERT(Movable<Decay<decltype(*a)>>, "Value contained in iterator should be movable");
 		using UnderlyingType = Decay<decltype(*a)>;
@@ -25,7 +25,7 @@ namespace Core::Algo
 	}
 
 	template <ForwardIterator InIt, ForwardIterator OutIt>
-	constexpr auto Copy(InIt from, OutIt to, usize size) noexcept -> void
+	constexpr void Copy(InIt from, OutIt to, usize size) noexcept
 	{
 		STATIC_ASSERT((IsSame<Decay<decltype(*from)>, Decay<decltype(*to)>>), "Iterators should have the same underlying type");
 		using UnderlyingType = Decay<decltype(*to)>;
@@ -35,7 +35,7 @@ namespace Core::Algo
 	}
 
 	template <RandomAccessIterator InIt, RandomAccessIterator OutIt>
-	constexpr auto Copy(InIt from, OutIt to, usize size) noexcept -> void
+	constexpr void Copy(InIt from, OutIt to, usize size) noexcept
 	{
 		STATIC_ASSERT((IsSame<Decay<decltype(*from)>, Decay<decltype(*to)>>), "Iterators should have the same underlying type");
 		using UnderlyingType = Decay<decltype(*to)>;
@@ -55,7 +55,7 @@ namespace Core::Algo
 	}
 
 	template <ForwardIterator InIt, ForwardIterator OutIt>
-	constexpr auto Move(InIt from, OutIt to, usize size) noexcept -> void
+	constexpr void Move(InIt from, OutIt to, usize size) noexcept
 	{
 		STATIC_ASSERT((IsSame<Decay<decltype(*from)>, Decay<decltype(*to)>>), "Iterators should have the same underlying type");
 		using UnderlyingType = Decay<decltype(*to)>;
@@ -65,7 +65,7 @@ namespace Core::Algo
 	}
 
 	template <RandomAccessIterator InIt, RandomAccessIterator OutIt>
-	constexpr auto Move(InIt from, OutIt to, usize size) noexcept -> void
+	constexpr void Move(InIt from, OutIt to, usize size) noexcept
 	{
 		STATIC_ASSERT((IsSame<Decay<decltype(*from)>, Decay<decltype(*to)>>), "Iterators should have the same underlying type");
 		using UnderlyingType = Decay<decltype(*to)>;
@@ -85,7 +85,7 @@ namespace Core::Algo
 	}
 
 	template<BidirectionalIterator It>
-	constexpr auto Reverse(It first, It last) noexcept -> void
+	constexpr void Reverse(It first, It last) noexcept
 	{
 		if (!(first != last))
 			return;
@@ -95,7 +95,7 @@ namespace Core::Algo
 	}
 
 	template <RandomAccessIterator It>
-	constexpr auto Reverse(It first, It last) noexcept -> void
+	constexpr void Reverse(It first, It last) noexcept
 	{
 		if (!(first != last))
 			return;

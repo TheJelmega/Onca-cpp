@@ -38,18 +38,18 @@ namespace Core::Alloc
 		 * \param[in] overhead Memory overhead
 		 * \param[in] isBacking Whether the memory backs another allocator
 		 */
-		auto AddAlloc(usize memUse, usize overhead, bool isBacking) noexcept -> void;
+		void AddAlloc(usize memUse, usize overhead, bool isBacking) noexcept;
 		/**
 		 * Remove a memory allocation to the stats
 		 * \param[in] memUse Memory used by the allocation
 		 * \param[in] overhead Memory overhead
 		 * \param[in] isBacking Whether the memory backs another allocator
 		 */
-		auto RemoveAlloc(usize memUse, usize overhead, bool isBacking) noexcept -> void;
+		void RemoveAlloc(usize memUse, usize overhead, bool isBacking) noexcept;
 		/**
 		 * Reset the current memory stats
 		 */
-		auto ResetCur() noexcept -> void;
+		void ResetCur() noexcept;
 
 		/**
 		 * Get the current memory statistics
@@ -58,7 +58,7 @@ namespace Core::Alloc
 		 * \param[out] overhead Current memory overhead
 		 * \param[out] backingMem Current backing memory
 		 */
-		auto GetCurStats(usize& memUse, usize& numAllocs, usize& overhead, usize& backingMem) noexcept -> void;
+		void GetCurStats(usize& memUse, usize& numAllocs, usize& overhead, usize& backingMem) noexcept;
 	};
 
 	// TODO: Go over ownership system + possible redo
@@ -84,7 +84,7 @@ namespace Core::Alloc
 		 * \param[in] mem [move] MemRef to deallocate
 		 */
 		template<typename T>
-		auto Deallocate(MemRef<T>&& mem) noexcept -> void;
+		void Deallocate(MemRef<T>&& mem) noexcept;
 
 		/**
 		 * \brief 
@@ -114,7 +114,7 @@ namespace Core::Alloc
 		 * \brief Deallocate a raw memory pointer
 		 * \param[in] mem MemRef to deallocate
 		 */
-		virtual auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void = 0;
+		virtual void DeallocateRaw(MemRef<u8>&& mem) noexcept = 0;
 		/**
 		 * \brief Check if the allocation was allocated by this allocator (this or child allocator)
 		 * \param[in] mem MemRef to check

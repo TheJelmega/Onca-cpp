@@ -22,14 +22,14 @@ namespace Core::Threading
 		}
 
 		template <Lockable T, Lockable ... Others>
-		auto ManualLock<T, Others...>::Lock() noexcept -> void
+		void ManualLock<T, Others...>::Lock() noexcept
 		{
 			m_lock.Lock();
 			m_others.Lock();
 		}
 
 		template <Lockable T, Lockable ... Others>
-		auto ManualLock<T, Others...>::Unlock() noexcept -> void
+		void ManualLock<T, Others...>::Unlock() noexcept
 		{
 			m_others.Unlock();
 			m_lock.Unlock();
@@ -55,13 +55,13 @@ namespace Core::Threading
 		}
 
 		template <Lockable T>
-		auto ManualLock<T>::Lock() noexcept -> void
+		void ManualLock<T>::Lock() noexcept
 		{
 			m_lock.Lock();
 		}
 
 		template <Lockable T>
-		auto ManualLock<T>::Unlock() noexcept -> void
+		void ManualLock<T>::Unlock() noexcept
 		{
 			m_lock.Unlock();
 		}

@@ -9,7 +9,7 @@
 namespace Core
 {
 	template<typename T>
-	constexpr auto MemCpy(T* dst, const T* src, usize numBytes) noexcept -> void
+	constexpr void MemCpy(T* dst, const T* src, usize numBytes) noexcept
 	{
 		IF_CONSTEVAL
 		{
@@ -24,19 +24,19 @@ namespace Core
 		}
 	}
 
-	inline auto MemCpy(void* dst, const void* src, usize numBytes) noexcept -> void
+	inline void MemCpy(void* dst, const void* src, usize numBytes) noexcept
 	{
 		memcpy(dst, src, numBytes);
 	}
 
 	template <typename T>
-	auto MemCpy(T& dst, const T& src) noexcept -> void
+	void MemCpy(T& dst, const T& src) noexcept
 	{
 		MemCpy(&dst, &src, sizeof(T));
 	}
 
 	template <typename T>
-	auto MemMove(MemRef<T>& mem, usize dst, usize src, usize numBytes) noexcept -> void
+	void MemMove(MemRef<T>& mem, usize dst, usize src, usize numBytes) noexcept
 	{
 		const usize maxOffset = Math::Max(dst, src);
 		const usize maxBytes = mem.Size() - maxOffset;
@@ -45,46 +45,46 @@ namespace Core
 		MemMove(pBegin + dst, pBegin + src, numBytes);
 	}
 
-	inline auto MemMove(void* dst, void* src, usize numBytes) noexcept -> void
+	inline void MemMove(void* dst, void* src, usize numBytes) noexcept
 	{
 		memmove(dst, src, numBytes);
 	}
 
-	inline auto MemSet(void* ptr, u8 val, usize numBytes) noexcept -> void
+	inline void MemSet(void* ptr, u8 val, usize numBytes) noexcept
 	{
 		memset(ptr, val, numBytes);
 	}
 
-	inline auto MemClear(void* ptr, usize numBytes) noexcept -> void
+	inline void MemClear(void* ptr, usize numBytes) noexcept
 	{
 		MemSet(ptr, 0, numBytes);
 	}
 
 	template <typename T>
-	auto MemSet(MemRef<T>& mem, u8 val) noexcept -> void
+	void MemSet(MemRef<T>& mem, u8 val) noexcept
 	{
 		MemSet(mem.Ptr(), val, mem.Size());
 	}
 
 	template <typename T>
-	auto MemClear(MemRef<T>& mem) noexcept -> void
+	void MemClear(MemRef<T>& mem) noexcept
 	{
 		MemClear(mem.Ptr(), mem.Size());
 	}
 
 	template<typename T>
-	auto MemClearData(T& val) noexcept -> void
+	void MemClearData(T& val) noexcept
 	{
 		MemClear(&val, sizeof(T));
 	}
 
-	inline auto MemCmp(const void* pA, const void* pB, usize numBytes) noexcept -> i8
+	inline i8 MemCmp(const void* pA, const void* pB, usize numBytes) noexcept
 	{
 		return memcmp(pA, pB, numBytes);
 	}
 
 	template <typename T>
-	auto MemCmp(MemRef<T>& a, MemRef<T>& b) noexcept -> i8
+	i8 MemCmp(MemRef<T>& a, MemRef<T>& b) noexcept
 	{
 		const usize sizeA = a.Size();
 		const usize sizeB = b.Size();

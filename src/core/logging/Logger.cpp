@@ -38,7 +38,7 @@ namespace Core
 		Info(LogCategories::CORE, "Logger intialized with file: {}"_s, filePath);
 	}
 
-	auto Logger::Shutdown() noexcept -> void
+	void Logger::Shutdown() noexcept
 	{
 		Info(LogCategories::CORE, "Logger Shutdown"_s);
 
@@ -46,7 +46,7 @@ namespace Core
 			m_file.~File();
 	}
 
-	auto Logger::SetLogFile(const FileSystem::Path& filePath) noexcept -> void
+	void Logger::SetLogFile(const FileSystem::Path& filePath) noexcept
 	{
 		if (m_file)
 			m_file.Close();
@@ -65,27 +65,27 @@ namespace Core
 		}
 	}
 
-	auto Logger::SetMaxLogLevel(LogLevel level) noexcept -> void
+	void Logger::SetMaxLogLevel(LogLevel level) noexcept
 	{
 		m_maxLevel = level;
 	}
 
-	auto Logger::SetLogToFile(bool enable) noexcept -> void
+	void Logger::SetLogToFile(bool enable) noexcept
 	{
 		m_logToFile = enable && m_file;
 	}
 
-	auto Logger::SetLogToSystemConsole(bool enable) noexcept -> void
+	void Logger::SetLogToSystemConsole(bool enable) noexcept
 	{
 		m_logToSysConsole = enable;
 	}
 
-	auto Logger::SetLogToDebugger(bool enable) noexcept -> void
+	void Logger::SetLogToDebugger(bool enable) noexcept
 	{
 		m_logToDebugger = enable && Debugger::IsAttached();
 	}
 
-	auto Logger::Log(LogLevel level, const LogCategory& category, const String& message) noexcept -> void
+	void Logger::Log(LogLevel level, const LogCategory& category, const String& message) noexcept
 	{
 		bool validLevel = u8(level) <= u8(m_maxLevel) || (level == LogLevel::Append && u8(m_prevLevel) < u8(m_maxLevel));
 		if (!validLevel && !m_ignoreMaxLevelForFile)
@@ -116,7 +116,7 @@ namespace Core
 			Debugger::OutputDebugString(formatted);
 	}
 
-	auto Logger::LogToFile(const String& str) noexcept -> void
+	void Logger::LogToFile(const String& str) noexcept
 	{
 		if (!m_file)
 			return;
@@ -125,7 +125,7 @@ namespace Core
 		m_file.Write(buffer);
 	}
 
-	auto Logger::LogToSysConsole(const String& str, LogLevel level) noexcept -> void
+	void Logger::LogToSysConsole(const String& str, LogLevel level) noexcept
 	{
 		constexpr SystemConsoleColor colors[usize(LogLevel::Verbose) + 1] =
 		{
@@ -142,7 +142,7 @@ namespace Core
 		SystemConsole::SetForeColor(SystemConsoleColor::Default);
 	}
 
-	auto Logger::LogToDebugger(const String& str) noexcept -> void
+	void Logger::LogToDebugger(const String& str) noexcept
 	{
 		Debugger::OutputDebugString(str);
 	}

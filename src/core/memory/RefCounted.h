@@ -18,16 +18,16 @@ namespace Core
 			 * Increment the strong ref count and check if the data needs to be deleted
 			 * \return Whether the data should be deleted
 			 */
-			auto IncStrongRef() noexcept -> void;
+			void IncStrongRef() noexcept;
 			/**
 			 * Increment the weal ref count and check if the data needs to be deleted
 			 */
-			auto IncWeakRef() noexcept -> void;
+			void IncWeakRef() noexcept;
 			/**
 			 * Acquire a reference to the control block
 			 * \return 
 			 */
-			auto Acquire() noexcept -> void;
+			void Acquire() noexcept;
 
 			/**
 			 * Decrement the strong ref count and check if the data needs to be deleted
@@ -37,7 +37,7 @@ namespace Core
 			/**
 			 * Decrement the weal ref count and check if the data needs to be deleted
 			 */
-			auto DecWeakRef() noexcept -> void;
+			void DecWeakRef() noexcept;
 			/**
 			 * Release a reference to the control block and check if the control block need to be deleted
 			 * \return Whether the control block should be deleted
@@ -53,7 +53,7 @@ namespace Core
 			/**
 			 * Set the strong to 0, allowing the data to be invalidated
 			 */
-			auto ReleaseData() noexcept -> void;
+			void ReleaseData() noexcept;
 		};
 
 		struct AtomicRefCountedControlBlock
@@ -66,16 +66,16 @@ namespace Core
 			 * Increment the strong ref count and check if the data needs to be deleted
 			 * \return Whether the data should be deleted
 			 */
-			auto IncStrongRef() noexcept -> void;
+			void IncStrongRef() noexcept;
 			/**
 			 * Increment the weal ref count and check if the data needs to be deleted
 			 */
-			auto IncWeakRef() noexcept -> void;
+			void IncWeakRef() noexcept;
 			/**
 			 * Acquire a reference to the control block
 			 * \return
 			 */
-			auto Acquire() noexcept -> void;
+			void Acquire() noexcept;
 
 			/**
 			 * Decrement the strong ref count and check if the data needs to be deleted
@@ -85,7 +85,7 @@ namespace Core
 			/**
 			 * Decrement the weal ref count and check if the data needs to be deleted
 			 */
-			auto DecWeakRef() noexcept -> void;
+			void DecWeakRef() noexcept;
 			/**
 			 * Release a reference to the control block and check if the control block need to be deleted
 			 * \return Whether the control block should be deleted
@@ -101,11 +101,11 @@ namespace Core
 			/**
 			 * Set the strong to 0, allowing the data to be invalidated
 			 */
-			auto ReleaseData() noexcept -> void;
+			void ReleaseData() noexcept;
 		};
 
 		template<typename T>
-		auto DefaultRefCountedDeleter(MemRef<T>&& memref) noexcept -> void;
+		void DefaultRefCountedDeleter(MemRef<T>&& memref) noexcept;
 
 		template<typename T, typename ControlBlock>
 		class RefCounted
@@ -151,12 +151,12 @@ namespace Core
 			 * \brief Reset the internal memory of the Unique<T>
 			 * \param[in] ref Memory reference to reset the Unique<T> with
 			 */
-			auto Reset(MemRef<T>&& ref) noexcept -> void;
+			void Reset(MemRef<T>&& ref) noexcept;
 			/**
 			 * \brief Swap the contents of this Unique with another
 			 * \param[in] other Unique to swap contents with
 			 */
-			auto Swap(RefCounted& other) noexcept -> void;
+			void Swap(RefCounted& other) noexcept;
 
 			/**
 			 * \brief Get a pointer to the managed memory
@@ -217,11 +217,11 @@ namespace Core
 			/**
 			 * Acquire the control block and increment the reference count of the object
 			 */
-			auto AcquireAndIncRef() noexcept -> void;
+			void AcquireAndIncRef() noexcept;
 			/**
 			 * Decrement the reference count of the object and release the control block
 			 */
-			auto DecRefAndRelease() noexcept -> void;
+			void DecRefAndRelease() noexcept;
 
 			MemRef<T>                   m_data;    ///< Data
 			MemRef<ControlBlock>        m_control; ///< Control block
@@ -260,7 +260,7 @@ namespace Core
 			 * \brief Swap the contents of this Unique with another
 			 * \param[in] other Unique to swap contents with
 			 */
-			auto Swap(Weak& other) noexcept -> void;
+			void Swap(Weak& other) noexcept;
 
 			/**
 			 * \brief Get a pointer to the managed memory
@@ -303,11 +303,11 @@ namespace Core
 			/**
 			 * Acquire the control block and increment the reference count of the object
 			 */
-			auto AcquireAndIncRef() noexcept -> void;
+			void AcquireAndIncRef() noexcept;
 			/**
 			 * Decrement the reference count of the object and release the control block
 			 */
-			auto DecRefAndRelease() noexcept -> void;
+			void DecRefAndRelease() noexcept;
 
 			MemRef<T>            m_data;    ///< Data
 			MemRef<ControlBlock> m_control; ///< Control block

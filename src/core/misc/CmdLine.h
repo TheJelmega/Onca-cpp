@@ -94,7 +94,7 @@ namespace Core
 		 * \param[in] desc Option description
 		 */
 		template<TryParsable T >
-		auto AddOption(const String& names, T& value, const String& desc = ""_s) noexcept -> void;
+		void AddOption(const String& names, T& value, const String& desc = ""_s) noexcept;
 		/**
 		 * Add an option to the command line option
 		 * \tparam T Type of the associated value
@@ -103,7 +103,7 @@ namespace Core
 		 * \param[in] desc Option description
 		 */
 		template<TryParsable T >
-		auto AddOptionCallback(const String& names, const Delegate<void(T&&)>& callback, const String& desc = ""_s) noexcept -> void;
+		void AddOptionCallback(const String& names, const Delegate<void(T&&)>& callback, const String& desc = ""_s) noexcept;
 
 		/**
 		 * Add a positional argument
@@ -112,21 +112,21 @@ namespace Core
 		 * \param[in] desc Description
 		 */
 		template<TryParsable T>
-		auto AddPositional(T& value, const String& desc = ""_s) noexcept -> void;
+		void AddPositional(T& value, const String& desc = ""_s) noexcept;
 
 		/**
 		 * Add a flag to the command line options
 		 * \param[in] names Names for the option, separated by commas
 		 * \param[in] desc Description
 		 */
-		auto AddFlag(const String& names, const String& desc = ""_s) noexcept -> void;
+		void AddFlag(const String& names, const String& desc = ""_s) noexcept;
 		/**
 		 * Add a flag callback to the command line options
 		 * \param[in] names Names for the option, separated by commas
 		 * \param[in] callback Delegate to call when the flag is encountered
 		 * \param[in] desc Description
 		 */
-		auto AddFlagCallback(const String& names, const Delegate<void()>& callback, const String& desc = ""_s) noexcept -> void;
+		void AddFlagCallback(const String& names, const Delegate<void()>& callback, const String& desc = ""_s) noexcept;
 
 		/**
 		 * Check if a flag is set
@@ -138,14 +138,14 @@ namespace Core
 		/**
 		 * Print out help for the command line options
 		 */
-		auto PrintHelp() const noexcept -> void;
+		void PrintHelp() const noexcept;
 
 		/**
 		 * Parse the command line for the application
 		 * \param[in] argc 'argc' from the main function
 		 * \param[in] argv 'argv' from the main function
 		 */
-		auto Parse(i32 argc, char* argv[]) noexcept -> void;
+		void Parse(i32 argc, char* argv[]) noexcept;
 
 	private:
 		String m_helpHeader;

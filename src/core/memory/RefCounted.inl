@@ -9,17 +9,17 @@ namespace Core
 {
 	namespace Detail
 	{
-		inline auto RefCountedControlBlock::IncStrongRef() noexcept -> void
+		inline void RefCountedControlBlock::IncStrongRef() noexcept
 		{
 			++strongCount;
 		}
 
-		inline auto RefCountedControlBlock::IncWeakRef() noexcept -> void
+		inline void RefCountedControlBlock::IncWeakRef() noexcept
 		{
 			++strongCount;
 		}
 
-		inline auto RefCountedControlBlock::Acquire() noexcept -> void
+		inline void RefCountedControlBlock::Acquire() noexcept
 		{
 			++controlCount;
 		}
@@ -34,7 +34,7 @@ namespace Core
 			return false;
 		}
 
-		inline auto RefCountedControlBlock::DecWeakRef() noexcept -> void
+		inline void RefCountedControlBlock::DecWeakRef() noexcept
 		{
 			if (weakCount > 0)
 				--weakCount;
@@ -51,22 +51,22 @@ namespace Core
 			return strongCount > 0;
 		}
 
-		inline auto RefCountedControlBlock::ReleaseData() noexcept -> void
+		inline void RefCountedControlBlock::ReleaseData() noexcept
 		{
 			strongCount = 0;
 		}
 
-		inline auto AtomicRefCountedControlBlock::IncStrongRef() noexcept -> void
+		inline void AtomicRefCountedControlBlock::IncStrongRef() noexcept
 		{
 			++strongCount;
 		}
 
-		inline auto AtomicRefCountedControlBlock::IncWeakRef() noexcept -> void
+		inline void AtomicRefCountedControlBlock::IncWeakRef() noexcept
 		{
 			++weakCount;
 		}
 
-		inline auto AtomicRefCountedControlBlock::Acquire() noexcept -> void
+		inline void AtomicRefCountedControlBlock::Acquire() noexcept
 		{
 			++controlCount;
 		}
@@ -84,7 +84,7 @@ namespace Core
 			return count == 0;
 		}
 
-		inline auto AtomicRefCountedControlBlock::DecWeakRef() noexcept -> void
+		inline void AtomicRefCountedControlBlock::DecWeakRef() noexcept
 		{
 			u32 count = weakCount;
 			if (count == 0)
@@ -106,7 +106,7 @@ namespace Core
 			return strongCount > 0;
 		}
 
-		inline auto AtomicRefCountedControlBlock::ReleaseData() noexcept -> void
+		inline void AtomicRefCountedControlBlock::ReleaseData() noexcept
 		{
 			u32 count;
 			while (strongCount.CompareExchangeWeak(count, 0) && count > 0)
@@ -114,7 +114,7 @@ namespace Core
 		}
 
 		template<typename T>
-		auto DefaultRefCountedDeleter(MemRef<T>&& memref) noexcept -> void
+		void DefaultRefCountedDeleter(MemRef<T>&& memref) noexcept
 		{
 			static DefaultDeleter<T> deleter;
 			deleter(Move(memref));
@@ -214,7 +214,7 @@ namespace Core
 		}
 
 		template <typename T, typename ControlBlock>
-		auto RefCounted<T, ControlBlock>::Reset(MemRef<T>&& ref) noexcept -> void
+		void RefCounted<T, ControlBlock>::Reset(MemRef<T>&& ref) noexcept
 		{
 			DecRefAndRelease();
 			m_data = Move(ref);
@@ -223,7 +223,7 @@ namespace Core
 		}
 
 		template <typename T, typename ControlBlock>
-		auto RefCounted<T, ControlBlock>::Swap(RefCounted& other) noexcept -> void
+		void RefCounted<T, ControlBlock>::Swap(RefCounted& other) noexcept
 		{
 			Algo::Swap(m_data, other.m_data);
 			Algo::Swap(m_control, other.m_control);
@@ -313,7 +313,7 @@ namespace Core
 		}
 
 		template <typename T, typename ControlBlock>
-		auto RefCounted<T, ControlBlock>::AcquireAndIncRef() noexcept -> void
+		void RefCounted<T, ControlBlock>::AcquireAndIncRef() noexcept
 		{
 			if (!m_control)
 				return;
@@ -323,7 +323,7 @@ namespace Core
 		}
 		
 		template <typename T, typename ControlBlock>
-		auto RefCounted<T, ControlBlock>::DecRefAndRelease() noexcept -> void
+		void RefCounted<T, ControlBlock>::DecRefAndRelease() noexcept
 		{
 			if (!m_control)
 				return;
@@ -400,7 +400,7 @@ namespace Core
 		}
 
 		template <typename T, typename ControlBlock>
-		auto Weak<T, ControlBlock>::Swap(Weak& other) noexcept -> void
+		void Weak<T, ControlBlock>::Swap(Weak& other) noexcept
 		{
 			Algo::Swap(m_data, other.m_data);
 			Algo::Swap(m_control, other.m_control);
@@ -480,7 +480,7 @@ namespace Core
 		}
 
 		template <typename T, typename ControlBlock>
-		auto Weak<T, ControlBlock>::AcquireAndIncRef() noexcept -> void
+		void Weak<T, ControlBlock>::AcquireAndIncRef() noexcept
 		{
 			if (!m_control)
 				return;
@@ -490,7 +490,7 @@ namespace Core
 		}
 
 		template <typename T, typename ControlBlock>
-		auto Weak<T, ControlBlock>::DecRefAndRelease() noexcept -> void
+		void Weak<T, ControlBlock>::DecRefAndRelease() noexcept
 		{
 			if (!m_control)
 				return;

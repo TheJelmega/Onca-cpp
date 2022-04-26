@@ -43,25 +43,25 @@ namespace Core
 		 * Set the current foreground color
 		 * \param[in] color Foreground color
 		 */
-		static auto SetForeColor(SystemConsoleColor color) noexcept -> void;
+		static void SetForeColor(SystemConsoleColor color) noexcept;
 		/**
 		 * Set the current background color
 		 * \param[in] color Background color
 		 */
-		static auto SetBackColor(SystemConsoleColor color) noexcept -> void;
+		static void SetBackColor(SystemConsoleColor color) noexcept;
 		/**
 		 * Set the current foreground and background color
 		 * \param[in] fore Foreground color
 		 * \param[in] back Background color
 		 */
-		static auto SetColor(SystemConsoleColor fore, SystemConsoleColor back) noexcept -> void;
+		static void SetColor(SystemConsoleColor fore, SystemConsoleColor back) noexcept;
 
 		/**
 		 * Write a string to the console
 		 * \param[in] str String to write
 		 * \note If the string starts with an 'ESC', the current colors will be ignored
 		 */
-		static auto Write(const String& str, bool writeToErr = false) noexcept -> void;
+		static void Write(const String& str, bool writeToErr = false) noexcept;
 		/**
 		 * Read the console input
 		 * \return Read input
@@ -72,17 +72,17 @@ namespace Core
 		/**
 		 * Clear the console output
 		 */
-		static auto Clear() noexcept -> void;
+		static void Clear() noexcept;
 
 		/**
 		 * Get or create the system console
 		 * \return System console
 		 */
-		static auto Init() noexcept -> void;
+		static void Init() noexcept;
 		/**
 		 * Shutdown the system console and clean it up if the program had to create the console
 		 */
-		static auto Shutdown() noexcept -> void;
+		static void Shutdown() noexcept;
 
 	private:
 		constexpr static const char* ForeCodes[] =

@@ -218,12 +218,12 @@ namespace Core
 		 * \param[in] other DynArray to merge
 		 */
 		template<Comparator C2>
-		auto Merge(SortedMap<K, V, C2>& other) noexcept -> void;
+		void Merge(SortedMap<K, V, C2>& other) noexcept;
 
 		/**
 		 * Clear the contents of the SortedMap, possibly also deallocate the memory
 		 */
-		auto Clear() noexcept -> void;
+		void Clear() noexcept;
 
 		/**
 		 * Erase an element from the SortedMap

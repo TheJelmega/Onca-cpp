@@ -71,7 +71,7 @@ namespace Core::Threading
 
 	}
 
-	auto Thread::Join() noexcept -> void
+	void Thread::Join() noexcept
 	{
 		if (m_handle == INVALID_HANDLE_VALUE)
 			return;
@@ -79,7 +79,7 @@ namespace Core::Threading
 		WaitForSingleObject(m_handle, INFINITE);
 	}
 
-	auto Thread::Detach() noexcept -> void
+	void Thread::Detach() noexcept
 	{
 		if (m_handle != INVALID_HANDLE_VALUE)
 			::CloseHandle(m_handle);
@@ -464,7 +464,7 @@ namespace Core::Threading
 		return FromNativeHandle(::GetCurrentThread());
 	}
 
-	auto Thread::Init(void* pInvoke, void* pData) noexcept -> void
+	void Thread::Init(void* pInvoke, void* pData) noexcept
 	{
 		m_handle = ::CreateThread(nullptr,
 								  m_attribs.stackSize,
@@ -500,7 +500,7 @@ namespace Core::Threading
 		return ThreadID(::GetCurrentThreadId());
 	}
 
-	auto ExitThread(u32 exitCode) noexcept -> void
+	void ExitThread(u32 exitCode) noexcept
 	{
 		::ExitThread(exitCode);
 	}

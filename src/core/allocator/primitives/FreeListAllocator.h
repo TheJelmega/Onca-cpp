@@ -48,7 +48,7 @@ namespace Core::Alloc
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
-		auto DeallocateRaw(MemRef<u8>&& mem) noexcept -> void override;
+		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
 		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	private:
@@ -67,7 +67,7 @@ namespace Core::Alloc
 		 * \param[in]pCur Pointer of current block
 		 * \param[in]pNext Pointer of next block
 		 */
-		auto Coalesce(u8* pPrev, u8* pCur, u8* pNext) noexcept -> void;
+		void Coalesce(u8* pPrev, u8* pCur, u8* pNext) noexcept;
 
 		MemRef<u8> m_mem;  ///< Managed memory
 		u8*        m_head; ///< Offset to free head

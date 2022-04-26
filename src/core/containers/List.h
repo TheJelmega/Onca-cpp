@@ -122,57 +122,57 @@ namespace Core
 		 * \param[in] end End iterator
 		 */
 		template<ForwardIterator It>
-		auto Assign(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
+		void Assign(const It& begin, const It& end) noexcept requires CopyConstructible<T>;
 		/**
 		 * Assign a linked list to the List
 		 * \param[in] il Initializer list with elements
 		 */
-		auto Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
+		void Assign(const InitializerList<T>& il) noexcept requires CopyConstructible<T>;
 
 		/**
 		 * Fill the List with a number of elements
 		 * \param[in] count Number of elements to fill
 		 * \param[in] val Value to fill elements with
 		 */
-		auto Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
+		void Fill(usize count, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Fill the List with a number of elements with a default value (via placement new)
 		 * \param[in] count Number of elements to fill
 		 */
-		auto FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>;
+		void FillDefault(usize count) noexcept requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Resize the List and fill missing elements if needed
 		 * \param[in] newSize New size of the DynArray
 		 * \param[in] val Value to fill missing elements with
 		 */
-		auto Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>;
+		void Resize(usize newSize, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Resize the List and fill missing elements with a default value (via placement new) if needed
 		 * \param[in] newSize New size of the DynArray
 		 */
-		auto Resize(usize newSize) noexcept -> void requires NoThrowDefaultConstructible<T>;
+		void Resize(usize newSize) noexcept requires NoThrowDefaultConstructible<T>;
 
 		/**
 		 * Add an element to the List
 		 * \param[in] val Element to add
 		 */
-		auto Add(const T& val) noexcept -> void requires CopyConstructible<T>;
+		void Add(const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add an element to the List
 		 * \param[in] val Element to add
 		 */
-		auto Add(T&& val) noexcept -> void;
+		void Add(T&& val) noexcept;
 		/**
 		 * Add the contents of a List to the List
 		 * \param[in] other List to add
 		 */
-		auto Add(const List& other) -> void requires CopyConstructible<T>;
+		void Add(const List& other) requires CopyConstructible<T>;
 		/**
 		 * Add the contents of a List to the List
 		 * \param[in] other List to add
 		 */
-		auto Add(List&& other) -> void;
+		void Add(List&& other);
 
 		/**
 		 * Emplace an element at the back of the List
@@ -181,7 +181,7 @@ namespace Core
 		 */
 		template<typename ...Args>
 			requires ConstructableFrom<T, Args...>
-		auto EmplaceBack(Args&&... args) noexcept -> void;
+		void EmplaceBack(Args&&... args) noexcept;
 
 		/**
 		 * Insert an element after a certain location
@@ -252,20 +252,20 @@ namespace Core
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto AddFront(const T& val) noexcept -> void requires CopyConstructible<T>;
+		void AddFront(const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add an element at the front of the List
 		 * \param[in] val Element to insert
 		 * \return Iterator to inserted element
 		 */
-		auto AddFront(T&& val) noexcept -> void;
+		void AddFront(T&& val) noexcept;
 		/**
 		 * Add a number of elements at the front of the List
 		 * \param[in] count Number of elements to insert
 		 * \param[in] val Value of elements to insert
 		 * \return Iterator to the first element that was inserter
 		 */
-		auto AddFront(usize count, const T& val) noexcept -> void requires CopyConstructible<T>;
+		void AddFront(usize count, const T& val) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add an iterable range at the front of the List
 		 * \tparam It Iterator type
@@ -274,25 +274,25 @@ namespace Core
 		 * \return Iterator to the first element that was inserted
 		 */
 		template<ForwardIterator It>
-		auto AddFront(const It& begin, const It& end) noexcept -> void requires CopyConstructible<T>;
+		void AddFront(const It& begin, const It& end) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add an initializer list at the front of the List
 		 * \param[in] il Initializer list to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>;
+		void AddFront(const InitializerList<T>& il) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add a List into the List at the front of the List
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(const List& other) noexcept -> void requires CopyConstructible<T>;
+		void AddFront(const List& other) noexcept requires CopyConstructible<T>;
 		/**
 		 * Add a List into the List at the front of the List
 		 * \param[in] other List to insert
 		 * \return Iterator to the first element that was inserted
 		 */
-		auto AddFront(List&& other) noexcept -> void;
+		void AddFront(List&& other) noexcept;
 
 		/**
 		 * Emplace an element at the front of the List
@@ -301,43 +301,43 @@ namespace Core
 		 */
 		template<typename ...Args>
 			requires ConstructableFrom<T, Args...>
-		auto EmplaceFront(Args&&... args) noexcept -> void;
+		void EmplaceFront(Args&&... args) noexcept;
 
 		/**
 		 * Clear the contents of the List
 		 */
-		auto Clear() noexcept -> void;
+		void Clear() noexcept;
 		/**
 		 * Remove the last element from the List
 		 */
-		auto Pop() noexcept -> void;
+		void Pop() noexcept;
 		/**
 		 * Remove the first element from the List
 		 */
-		auto PopFront() noexcept -> void;
+		void PopFront() noexcept;
 		/**
 		 * Erase an element from the List
 		 * \param[in] it Iterator to element before the element to erase
 		 */
-		auto EraseAfter(const Iterator& it) noexcept -> void;
+		void EraseAfter(const Iterator& it) noexcept;
 		/**
 		 * Erase a number of elements from the List
 		 * \param[in] it Iterator to first element before the element to erase
 		 * \param[in] count Number of elements to erase
 		 */
-		auto EraseAfter(const Iterator& it, usize count) noexcept -> void;
+		void EraseAfter(const Iterator& it, usize count) noexcept;
 		/**
 		 * Erase a range of elements from the List
 		 * \param[in] begin Iterator to first element before the element to erase
 		 * \param[in] end Iterator to last element to erase
 		 */
-		auto EraseAfter(const Iterator& begin, const Iterator& end) noexcept -> void;
+		void EraseAfter(const Iterator& begin, const Iterator& end) noexcept;
 
 		/**
 		 * Reverse the elements in the list
 		 * \note This does not invalidate any iterators
 		 */
-		auto Reverse() noexcept -> void;
+		void Reverse() noexcept;
 
 		/**
 		 * Get the size of the List

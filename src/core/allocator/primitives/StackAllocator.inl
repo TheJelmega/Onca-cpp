@@ -47,7 +47,7 @@ namespace Core::Alloc
 	}
 
 	template<usize Size, usize MaxAlignment>
-	auto StackAllocator<Size, MaxAlignment>::DeallocateRaw(MemRef<u8>&& mem) noexcept -> void
+	void StackAllocator<Size, MaxAlignment>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
 #if ENABLE_ASSERT || ENABLE_ALLOC_STATS
 		const usize align = mem.Align();

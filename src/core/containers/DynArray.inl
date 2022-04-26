@@ -119,7 +119,7 @@ namespace Core
 
 	template <typename T>
 	template <ForwardIterator It>
-	auto DynArray<T>::Assign(const It& begin, const It& end) noexcept -> void  requires CopyConstructible<T>
+	void DynArray<T>::Assign(const It& begin, const It& end) noexcept requires CopyConstructible<T>
 	{
 		Clear();
 		if (!(begin != end))
@@ -147,7 +147,7 @@ namespace Core
 	
 
 	template <typename T>
-	auto DynArray<T>::Assign(const InitializerList<T>& il) noexcept -> void requires CopyConstructible<T>
+	void DynArray<T>::Assign(const InitializerList<T>& il) noexcept requires CopyConstructible<T>
 	{
 		Clear();
 		const usize size = il.size();
@@ -166,7 +166,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Fill(usize count, const T& val) noexcept -> void requires CopyConstructible<T>
+	void DynArray<T>::Fill(usize count, const T& val) noexcept requires CopyConstructible<T>
 	{
 		STATIC_ASSERT(CopyConstructible<T>, "T needs to be copy constructable");
 		Clear();
@@ -174,14 +174,14 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::FillDefault(usize count) noexcept -> void requires NoThrowDefaultConstructible<T>
+	void DynArray<T>::FillDefault(usize count) noexcept requires NoThrowDefaultConstructible<T>
 	{
 		Clear();
 		Resize(count);
 	}
 
 	template <typename T>
-	auto DynArray<T>::Reserve(usize newCap) noexcept -> void
+	void DynArray<T>::Reserve(usize newCap) noexcept
 	{
 		const usize curCap = Capacity();
 		if (curCap >= newCap)
@@ -205,7 +205,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Resize(usize newSize, const T& val) noexcept -> void requires CopyConstructible<T>
+	void DynArray<T>::Resize(usize newSize, const T& val) noexcept requires CopyConstructible<T>
 	{
 		if (newSize < m_size)
 		{
@@ -224,7 +224,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Resize(usize newSize) noexcept -> void  requires NoThrowDefaultConstructible<T>
+	void DynArray<T>::Resize(usize newSize) noexcept requires NoThrowDefaultConstructible<T>
 	{
 		if (newSize < m_size)
 		{
@@ -250,7 +250,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::ShrinkToFit() noexcept -> void
+	void DynArray<T>::ShrinkToFit() noexcept
 	{
 		usize cap = Capacity();
 		if (cap > m_size)
@@ -269,19 +269,19 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Add(const T& val) noexcept -> void requires CopyConstructible<T>
+	void DynArray<T>::Add(const T& val) noexcept requires CopyConstructible<T>
 	{
 		InsertEnd(Move(T{ val }));
 	}
 
 	template <typename T>
-	auto DynArray<T>::Add(T&& val) noexcept -> void
+	void DynArray<T>::Add(T&& val) noexcept
 	{
 		InsertEnd(Move(val));
 	}
 
 	template <typename T>
-	auto DynArray<T>::Add(const DynArray& other) -> void requires CopyConstructible<T>
+	void DynArray<T>::Add(const DynArray& other) requires CopyConstructible<T>
 	{
 		Reserve(m_size + other.m_size);
 		if constexpr (MemCopyable<T>)
@@ -297,7 +297,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Add(DynArray&& other) -> void
+	void DynArray<T>::Add(DynArray&& other)
 	{
 		const usize idx = m_size;
 		m_size += other.m_size;
@@ -333,7 +333,7 @@ namespace Core
 	template <typename T>
 	template <typename ...Args>
 		requires ConstructableFrom<T, Args...>
-	auto DynArray<T>::EmplaceBack(Args&&... args) noexcept -> void
+	void DynArray<T>::EmplaceBack(Args&&... args) noexcept
 	{
 		InsertEnd(Move(T{ Forward<Args>(args)... }));
 	}
@@ -435,7 +435,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Clear(bool clearMemory) noexcept -> void
+	void DynArray<T>::Clear(bool clearMemory) noexcept
 	{
 		m_size = 0;
 		if (clearMemory && m_mem)
@@ -447,7 +447,7 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Pop() noexcept -> void
+	void DynArray<T>::Pop() noexcept
 	{
 		ASSERT(m_size, "Cannot pop from an empty DynArray");
 		--m_size;
@@ -455,13 +455,13 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Erase(ConstIterator& it) noexcept -> void
+	void DynArray<T>::Erase(ConstIterator& it) noexcept
 	{
 		Erase(it, 1);
 	}
 
 	template <typename T>
-	auto DynArray<T>::Erase(ConstIterator& it, usize count) noexcept -> void
+	void DynArray<T>::Erase(ConstIterator& it, usize count) noexcept
 	{
 		const usize offset = usize(it - m_mem.Ptr());
 		ASSERT(offset < m_size, "Iterator out of range");
@@ -482,14 +482,14 @@ namespace Core
 	}
 
 	template <typename T>
-	auto DynArray<T>::Erase(ConstIterator& begin, ConstIterator& end) noexcept -> void
+	void DynArray<T>::Erase(ConstIterator& begin, ConstIterator& end) noexcept
 	{
 		Erase(begin, usize(end - begin));
 	}
 
 	template <typename T>
 	template <EqualComparable<T> U>
-	auto DynArray<T>::Erase(const U& val, bool onlyFirst) noexcept -> void
+	void DynArray<T>::Erase(const U& val, bool onlyFirst) noexcept
 	{
 		if (onlyFirst)
 		{
@@ -510,7 +510,7 @@ namespace Core
 
 	template <typename T>
 	template <Callable<bool, const T&> F>
-	auto DynArray<T>::EraseIf(F fun) noexcept -> void
+	void DynArray<T>::EraseIf(F fun) noexcept
 	{
 		for (auto it = Begin(); it != End();)
 		{

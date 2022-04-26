@@ -23,7 +23,7 @@ namespace Core
 	* \param[in] alloc New global allocator
 	* \note The allocator being assigned needs to live longer than all allocations made by it
 	*/
-	CORE_API auto SetGlobalAlloc(Alloc::IAllocator& alloc) -> void;
+	CORE_API void SetGlobalAlloc(Alloc::IAllocator& alloc);
 }
 
 #define g_GlobalAlloc (::Core::GetGlobalAlloc())

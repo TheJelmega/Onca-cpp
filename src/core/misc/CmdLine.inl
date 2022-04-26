@@ -47,7 +47,7 @@ namespace Core
 	}
 
 	template <TryParsable T>
-	auto CmdLine::AddOption(const String& names, T& value, const String& desc) noexcept -> void
+	void CmdLine::AddOption(const String& names, T& value, const String& desc) noexcept
 	{
 		Option option;
 		option.desc = desc;
@@ -64,7 +64,7 @@ namespace Core
 	}
 
 	template <TryParsable T>
-	auto CmdLine::AddOptionCallback(const String& names, const Delegate<void(T&&)>& callback, const String& desc) noexcept -> void
+	void CmdLine::AddOptionCallback(const String& names, const Delegate<void(T&&)>& callback, const String& desc) noexcept
 	{
 		Option option;
 		option.desc = desc;
@@ -80,7 +80,7 @@ namespace Core
 	}
 
 	template <TryParsable T>
-	auto CmdLine::AddPositional(T& value, const String& desc) noexcept -> void
+	void CmdLine::AddPositional(T& value, const String& desc) noexcept
 	{
 		Positional positional;
 		positional.desc = desc;
@@ -88,7 +88,7 @@ namespace Core
 		m_positionals.Add(Move(positional));
 	}
 
-	inline auto CmdLine::AddFlag(const String& names, const String& desc) noexcept -> void
+	inline void CmdLine::AddFlag(const String& names, const String& desc) noexcept
 	{
 		Flag flag;
 		flag.names = names.Split(',');
@@ -102,7 +102,7 @@ namespace Core
 		m_flags.Add(Move(flag));
 	}
 
-	inline auto CmdLine::AddFlagCallback(const String& names, const Delegate<void()>& callback, const String& desc) noexcept -> void
+	inline void CmdLine::AddFlagCallback(const String& names, const Delegate<void()>& callback, const String& desc) noexcept
 	{
 		Flag flag;
 		flag.names = names.Split(',');
@@ -125,7 +125,7 @@ namespace Core
 		return m_flags[it->second].isSet;
 	}
 
-	inline auto CmdLine::PrintHelp() const noexcept -> void
+	inline void CmdLine::PrintHelp() const noexcept
 	{
 		g_Logger.Info(Detail::LogCategories::CMDLINE, m_helpHeader.IsEmpty() ? "Command line help"_s : m_helpHeader);
 		g_Logger.Append("Options:"_s);
@@ -176,7 +176,7 @@ namespace Core
 		}
 	}
 
-	inline auto CmdLine::Parse(i32 argc, char* argv[]) noexcept -> void
+	inline void CmdLine::Parse(i32 argc, char* argv[]) noexcept
 	{
 		// Reuse string to minimize allocations
 		String line;

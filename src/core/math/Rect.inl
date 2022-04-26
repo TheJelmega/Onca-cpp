@@ -55,7 +55,7 @@ namespace Core::Math
 	}
 
 	template <Numeric T>
-	constexpr auto Rect<T>::SetSize(const Vec2<T>& size) noexcept -> void
+	constexpr void Rect<T>::SetSize(const Vec2<T>& size) noexcept
 	{
 		Vec2<T> center = Center();
 		Vec2<T> halfExtend = size / T(2);
@@ -70,7 +70,7 @@ namespace Core::Math
 	}
 
 	template <Numeric T>
-	constexpr auto Rect<T>::SetCenter(const Vec2<T>& center) noexcept -> void
+	constexpr void Rect<T>::SetCenter(const Vec2<T>& center) noexcept
 	{
 		Vec2<T> halfExtend = Size() / T(2);
 		min = center - halfExtend;
