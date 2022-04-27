@@ -348,8 +348,8 @@ namespace Onca
 		g_Logger.Append("Page size        : {}"_s, m_pageSize);
 		g_Logger.Append("Memory start     : {:X}"_s, usize(m_appMemoryStart));
 		g_Logger.Append("Memory end       : {:X}"_s, usize(m_appMemoryEnd));
-		g_Logger.Append("Memory size      : {}"_s, usize(m_appMemoryEnd) - usize(m_appMemoryStart));
-		g_Logger.Append("Alloc granularity: {}"_s, m_virtAllocGranulariy);
+		g_Logger.Append("Memory size      : {}GiB"_s, f32(usize(m_appMemoryEnd) - usize(m_appMemoryStart)) / 1_GiB);
+		g_Logger.Append("Alloc granularity: {}B"_s, m_virtAllocGranulariy);
 		g_Logger.Append("Installed memory : {}MiB"_s, m_installedMemory / 1_MiB);
 
 		String cpuArch = m_processorArchitecture == ProcessorArch::X86_64 ? "x86-64"_s :
@@ -373,30 +373,32 @@ namespace Onca
 		}
 
 		g_Logger.Append("Number of processors: {}"_s, m_processorInfo.Size());
+
+		String sep0 = "+---"_s;
+		String sep1 = "|   "_s;
+
 		for (usize i = 0; i < m_processorInfo.Size(); ++i)
 		{
 			const ProcessorInfo& info = m_processorInfo[i];
 
-			g_Logger.Append("CPU[{}]: Physical cores: {}"_s, i, info.cores.Size());
-			g_Logger.Append("CPU[{}]: Logical cores:  {}"_s, i, info.numLogicalCores);
-			g_Logger.Append("CPU[{}]: HUMA node id:   {}"_s, i, info.numaNodeId);
-
-			g_Logger.Append("CPU[{}]: Processor groups: {}"_s, i, info.groups.Size());
+			g_Logger.Append("CPU[{}]: Physical cores: {}, Logical core: {}, NUMA node id: {}, Processor groups: {}"_s,
+							i, info.cores.Size(), info.numLogicalCores, info.numaNodeId, info.groups.Size());
 			for (usize j = 0; j < info.groups.Size(); ++j)
 			{
 				const ProcessorGroup& group = info.groups[j];
-				g_Logger.Append("CPU[{}].Group[{}]: idx: {}, logical cores: {}, mask={:X}"_s, i, j, group.groupIdx, group.coreCount, group.mask);
+				const String& sep = j == 0 ? sep0 : sep1;
+				g_Logger.Append("{}Group[{}]: idx: {}, logical cores: {}, mask={:X}"_s, sep, j, group.groupIdx, group.coreCount, group.mask);
 			}
-
-			//g_Logger.Append("CPU[{}]: ")
+			
 			for (usize j = 0; j < info.cores.Size(); ++j)
 			{
 				const CoreInfo& core = info.cores[j];
 
 				String SMTinfo = core.supportSMT ? Format("SMT ({} thread{})"_s, core.numThreads, core.numThreads > 1 ? "s"_s : ""_s) : "No SMT"_s;
 
-				g_Logger.Append("CPU[{}].Core[{}]{}: {}, {} [group={} mask={:X}]"_s, i, j, j < 10 ? " "_s : ""_s,
-								core.efficiency == EfficiencyClass::Performance ? "performance"_s : "efficiency "_s,
+				const String& sep = j == 0 ? sep0 : sep1;
+				g_Logger.Append("{}Core[{,2}]: {}, {} [group={} mask={:X}]"_s, sep, j,
+								core.efficiency == EfficiencyClass::Performance ? "perf"_s : "effy "_s,
 								SMTinfo,
 								core.groupIdx,
 								core.mask);
@@ -412,19 +414,19 @@ namespace Onca
 						"L3"_s;
 
 					String kind = cache.kind == CacheKind::Unified ? "unified    "_s :
-						cache.kind == CacheKind::Instruction ? "instruction"_s :
-						cache.kind == CacheKind::Data ? "data       "_s :
+						cache.kind == CacheKind::Instruction       ? "instruction"_s :
+						cache.kind == CacheKind::Data              ? "data       "_s :
 						"trace      "_s;
 
 					String associativity = cache.associativity == u8(-1) ? "   fully associative"_s :
 						Format("{,-3}-way associative"_s, cache.associativity);
 
-					String line = Format("CPU[{}].Cache[{}][{}]{}:  {}{} line_size={,-3}B cache_size={,-9}B"_s, i, level, k,
-										 k < 10 ? " "_s : ""_s,
+					const String& sep = k == 0 ? sep0 : sep1;
+					String line = Format("{}Cache[{}][{,2}]: {}{}, line={,-3}B, size={,-6}KiB"_s, sep, level, k,
 										 kind,
 										 associativity,
 										 cache.lineSize,
-										 cache.cacheSize);
+										 cache.cacheSize / 1_KiB);
 
 					for (Pair<usize, u64> coreInfo : cache.coreInfo)
 					{
@@ -437,8 +439,9 @@ namespace Onca
 			for (usize j = 0; j < info.cpuSets.Size(); ++j)
 			{
 				const CPUSetInfo& cpuSet = info.cpuSets[j];
-				g_Logger.Append("CPU[{}].CPUSet[{}]{}: id={} group={} logical_core={,2} physical_core={,2} last_level_cache_index={}",
-								i, j, j < 10 ? " "_s : ""_s, cpuSet.id, cpuSet.group, cpuSet.core, cpuSet.physicalCore, cpuSet.lastLvlCacheIdx);
+				const String& sep = j == 0 ? sep0 : sep1;
+				g_Logger.Append("{}CPUSet[{,2}]: id={} group={} logical core={,2}, physical core={,2}, last level cache index={}",
+								sep, j, cpuSet.id, cpuSet.group, cpuSet.core, cpuSet.physicalCore, cpuSet.lastLvlCacheIdx);
 			}
 		}
 
@@ -446,54 +449,54 @@ namespace Onca
 		String no = "NO"_s;
 
 		g_Logger.Append("Flags: ");
-		g_Logger.Append("Is hybrid:                       {}"_s, m_processorFeatures.isHybrid           ? yes : no);
-		g_Logger.Append("Compare exchange:                {}"_s, m_processorFeatures.hasCompareExchange ? yes : no);
-		g_Logger.Append("128-bit ompare exchange:         {}"_s, m_processorFeatures.hasCompareExchange ? yes : no);
-		g_Logger.Append("64-bit compare 128-bit exchange: {}"_s, m_processorFeatures.hasCompareExchange ? yes : no);
+		g_Logger.Append("    Is hybrid:                       {}"_s, m_processorFeatures.isHybrid           ? yes : no);
+		g_Logger.Append("    Compare exchange:                {}"_s, m_processorFeatures.hasCompareExchange ? yes : no);
+		g_Logger.Append("    128-bit ompare exchange:         {}"_s, m_processorFeatures.hasCompareExchange ? yes : no);
+		g_Logger.Append("    64-bit compare 128-bit exchange: {}"_s, m_processorFeatures.hasCompareExchange ? yes : no);
 
 		if (m_processorArchitecture == ProcessorArch::X86_64)
 		{
-			g_Logger.Append("MMX:                             {}"_s, m_processorFeatures.x86HasMMX                ? yes : no);
-			g_Logger.Append("SSE:                             {}"_s, m_processorFeatures.x86HasSSE                ? yes : no);
-			g_Logger.Append("SSE2:                            {}"_s, m_processorFeatures.x86HasSSE2               ? yes : no);
-			g_Logger.Append("SSE3:                            {}"_s, m_processorFeatures.x86HasSSE3               ? yes : no);
-			g_Logger.Append("SSSE3:                           {}"_s, m_processorFeatures.x86HasSSSE3              ? yes : no);
-			g_Logger.Append("SSE4.1:                          {}"_s, m_processorFeatures.x86HasSSE4_1             ? yes : no);
-			g_Logger.Append("SSE4.2:                          {}"_s, m_processorFeatures.x86HasSSE4_2             ? yes : no);
-			g_Logger.Append("AVX:                             {}"_s, m_processorFeatures.x86HasAVX                ? yes : no);
-			g_Logger.Append("AVX2:                            {}"_s, m_processorFeatures.x86HasAVX2               ? yes : no);
-			g_Logger.Append("AVX512F:                         {}"_s, m_processorFeatures.x86HasAVX512F            ? yes : no);
-			g_Logger.Append("AVX512DQ:                        {}"_s, m_processorFeatures.x86HasAVX512DQ           ? yes : no);
-			g_Logger.Append("AVX512IFMA:                      {}"_s, m_processorFeatures.x86HasAVX512IFMA         ? yes : no);
-			g_Logger.Append("AVX512PF:                        {}"_s, m_processorFeatures.x86HasAVX512PF           ? yes : no);
-			g_Logger.Append("AVX512ER:                        {}"_s, m_processorFeatures.x86HasAVX512ER           ? yes : no);
-			g_Logger.Append("AVX512CD:                        {}"_s, m_processorFeatures.x86HasAVX512CD           ? yes : no);
-			g_Logger.Append("AVX512BW:                        {}"_s, m_processorFeatures.x86HasAVX512BW           ? yes : no);
-			g_Logger.Append("AVX512VL:                        {}"_s, m_processorFeatures.x86HasAVX512VL           ? yes : no);
-			g_Logger.Append("AVX512VBMI:                      {}"_s, m_processorFeatures.x86HasAVX512VBMI         ? yes : no);
-			g_Logger.Append("AVX512VBMI2:                     {}"_s, m_processorFeatures.x86HasAVX512VBMI2        ? yes : no);
-			g_Logger.Append("AVX512VNNI:                      {}"_s, m_processorFeatures.x86HasAVX512VNNI         ? yes : no);
-			g_Logger.Append("AVX512BITALG:                    {}"_s, m_processorFeatures.x86HasAVX512BITALG       ? yes : no);
-			g_Logger.Append("AVX512VPOPCNTDQ:                 {}"_s, m_processorFeatures.x86HasAVX512VPOPCNTDQ    ? yes : no);
-			g_Logger.Append("AVX512_4VNNIW:                   {}"_s, m_processorFeatures.x86HasAVX5124VNNIW       ? yes : no);
-			g_Logger.Append("AVX512_4FMAPS:                   {}"_s, m_processorFeatures.x86HasAVX5124FMAPS       ? yes : no);
-			g_Logger.Append("AVX512VPINTERSECT:               {}"_s, m_processorFeatures.x86HasAVX512VP2INTERSECT ? yes : no);
-			g_Logger.Append("AVX512FP16:                      {}"_s, m_processorFeatures.x86HasAVX512FP16         ? yes : no);
-			g_Logger.Append("AVX512BF16:                      {}"_s, m_processorFeatures.x86HasAVX512BF16         ? yes : no);
-			g_Logger.Append("POPCNT:                          {}"_s, m_processorFeatures.x86HasPOPCNT             ? yes : no);
-			g_Logger.Append("BMI1:                            {}"_s, m_processorFeatures.x86HasBMI1               ? yes : no);
-			g_Logger.Append("BMI2:                            {}"_s, m_processorFeatures.x86HasBMI2               ? yes : no);
-			g_Logger.Append("AMXBF16:                         {}"_s, m_processorFeatures.x86HasAMXBF16            ? yes : no);
-			g_Logger.Append("AMXTILE:                         {}"_s, m_processorFeatures.x86HasAMXTILE            ? yes : no);
-			g_Logger.Append("AMXINT8:                         {}"_s, m_processorFeatures.x86HasAMXINT8            ? yes : no);
+			g_Logger.Append("    MMX:                             {}"_s, m_processorFeatures.x86HasMMX                ? yes : no);
+			g_Logger.Append("    SSE:                             {}"_s, m_processorFeatures.x86HasSSE                ? yes : no);
+			g_Logger.Append("    SSE2:                            {}"_s, m_processorFeatures.x86HasSSE2               ? yes : no);
+			g_Logger.Append("    SSE3:                            {}"_s, m_processorFeatures.x86HasSSE3               ? yes : no);
+			g_Logger.Append("    SSSE3:                           {}"_s, m_processorFeatures.x86HasSSSE3              ? yes : no);
+			g_Logger.Append("    SSE4.1:                          {}"_s, m_processorFeatures.x86HasSSE4_1             ? yes : no);
+			g_Logger.Append("    SSE4.2:                          {}"_s, m_processorFeatures.x86HasSSE4_2             ? yes : no);
+			g_Logger.Append("    AVX:                             {}"_s, m_processorFeatures.x86HasAVX                ? yes : no);
+			g_Logger.Append("    AVX2:                            {}"_s, m_processorFeatures.x86HasAVX2               ? yes : no);
+			g_Logger.Append("    AVX512F:                         {}"_s, m_processorFeatures.x86HasAVX512F            ? yes : no);
+			g_Logger.Append("    AVX512DQ:                        {}"_s, m_processorFeatures.x86HasAVX512DQ           ? yes : no);
+			g_Logger.Append("    AVX512IFMA:                      {}"_s, m_processorFeatures.x86HasAVX512IFMA         ? yes : no);
+			g_Logger.Append("    AVX512PF:                        {}"_s, m_processorFeatures.x86HasAVX512PF           ? yes : no);
+			g_Logger.Append("    AVX512ER:                        {}"_s, m_processorFeatures.x86HasAVX512ER           ? yes : no);
+			g_Logger.Append("    AVX512CD:                        {}"_s, m_processorFeatures.x86HasAVX512CD           ? yes : no);
+			g_Logger.Append("    AVX512BW:                        {}"_s, m_processorFeatures.x86HasAVX512BW           ? yes : no);
+			g_Logger.Append("    AVX512VL:                        {}"_s, m_processorFeatures.x86HasAVX512VL           ? yes : no);
+			g_Logger.Append("    AVX512VBMI:                      {}"_s, m_processorFeatures.x86HasAVX512VBMI         ? yes : no);
+			g_Logger.Append("    AVX512VBMI2:                     {}"_s, m_processorFeatures.x86HasAVX512VBMI2        ? yes : no);
+			g_Logger.Append("    AVX512VNNI:                      {}"_s, m_processorFeatures.x86HasAVX512VNNI         ? yes : no);
+			g_Logger.Append("    AVX512BITALG:                    {}"_s, m_processorFeatures.x86HasAVX512BITALG       ? yes : no);
+			g_Logger.Append("    AVX512VPOPCNTDQ:                 {}"_s, m_processorFeatures.x86HasAVX512VPOPCNTDQ    ? yes : no);
+			g_Logger.Append("    AVX512_4VNNIW:                   {}"_s, m_processorFeatures.x86HasAVX5124VNNIW       ? yes : no);
+			g_Logger.Append("    AVX512_4FMAPS:                   {}"_s, m_processorFeatures.x86HasAVX5124FMAPS       ? yes : no);
+			g_Logger.Append("    AVX512VPINTERSECT:               {}"_s, m_processorFeatures.x86HasAVX512VP2INTERSECT ? yes : no);
+			g_Logger.Append("    AVX512FP16:                      {}"_s, m_processorFeatures.x86HasAVX512FP16         ? yes : no);
+			g_Logger.Append("    AVX512BF16:                      {}"_s, m_processorFeatures.x86HasAVX512BF16         ? yes : no);
+			g_Logger.Append("    POPCNT:                          {}"_s, m_processorFeatures.x86HasPOPCNT             ? yes : no);
+			g_Logger.Append("    BMI1:                            {}"_s, m_processorFeatures.x86HasBMI1               ? yes : no);
+			g_Logger.Append("    BMI2:                            {}"_s, m_processorFeatures.x86HasBMI2               ? yes : no);
+			g_Logger.Append("    AMXBF16:                         {}"_s, m_processorFeatures.x86HasAMXBF16            ? yes : no);
+			g_Logger.Append("    AMXTILE:                         {}"_s, m_processorFeatures.x86HasAMXTILE            ? yes : no);
+			g_Logger.Append("    AMXINT8:                         {}"_s, m_processorFeatures.x86HasAMXINT8            ? yes : no);
 		}
 		else if (m_processorArchitecture == ProcessorArch::ARM64)
 		{
-			g_Logger.Append(" 64-bit load/store atomic:       {}"_s, m_processorFeatures.armHas64bitLoadStoreAtomic ? yes : no);
-			g_Logger.Append("Divide instruction:              {}"_s, m_processorFeatures.armHasDivideInstruction    ? yes : no);
-			g_Logger.Append("External cache:                  {}"_s, m_processorFeatures.armHasExternalCache        ? yes : no);
-			g_Logger.Append("FMAC instruction:                {}"_s, m_processorFeatures.armHasFMACInstruction      ? yes : no);
-			g_Logger.Append("CFP32 registers:                 {}"_s, m_processorFeatures.armHasCFP32Registers       ? yes : no);
+			g_Logger.Append("    64-bit load/store atomic:        {}"_s, m_processorFeatures.armHas64bitLoadStoreAtomic ? yes : no);
+			g_Logger.Append("    Divide instruction:              {}"_s, m_processorFeatures.armHasDivideInstruction    ? yes : no);
+			g_Logger.Append("    External cache:                  {}"_s, m_processorFeatures.armHasExternalCache        ? yes : no);
+			g_Logger.Append("    FMAC instruction:                {}"_s, m_processorFeatures.armHasFMACInstruction      ? yes : no);
+			g_Logger.Append("    CFP32 registers:                 {}"_s, m_processorFeatures.armHasCFP32Registers       ? yes : no);
 		}
 	}
 

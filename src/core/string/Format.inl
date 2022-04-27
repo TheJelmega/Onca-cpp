@@ -578,7 +578,7 @@ namespace Onca
 		auto FormatFloatingPoint(UnsignedOfSameSize<F> significand, i32 exp, u8 precision) noexcept -> String
 		{
 			if (significand == 0)
-				return 0;
+				return "0"_s;
 
 			if (exp > 9 || exp < -7)
 				return FormatFloatSci<F>(significand, exp, precision);
@@ -591,8 +591,8 @@ namespace Onca
 			if (exp >= 0)
 			{
 				u64 pow10 = PowOf10[digits - exp + 1];
-				u64 decimal = significand % pow10;
-				u64 integral = significand / pow10;
+				u64 decimal = pow10 != 0 ? significand% pow10 : 0;
+				u64 integral = pow10 != 0 ? significand / pow10 : significand;
 
 				bufferPtr = FormatIntegerDecToBuf(integral, bufferPtr);
 
@@ -607,7 +607,11 @@ namespace Onca
 
 					i32 decDigits = CountDecDigits(decimal);
 					if (decDigits > precision)
-						decimal /= PowOf10[decDigits - precision + 1];
+					{
+						pow10 = PowOf10[decDigits - precision + 1];
+						if (pow10 != 0)
+							decimal /= pow10;
+					}
 					bufferPtr = FormatIntegerDecToBuf(decimal, bufferPtr);
 				}
 				return String{ reinterpret_cast<char*>(buffer), bufferPtr };
