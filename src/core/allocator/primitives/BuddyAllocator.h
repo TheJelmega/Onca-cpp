@@ -31,11 +31,11 @@ namespace Onca::Alloc
 	 *
 	 */
 	template<usize Size, u8 MaxSubDivisions>
-	class BuddyAllocator final : public IAllocator
+	class BuddyAllocator final : public IMemBackedAllocator
 	{
 	private:
-		static constexpr u8 FreeFlag  = 0x00;
-		static constexpr u8 SplitFlag = 0x01;
+		static constexpr u8 FreeFlag  = 0b00;
+		static constexpr u8 SplitFlag = 0b01;
 		static constexpr u8 UsedFlag  = 0b10;
 
 	public:
@@ -45,12 +45,10 @@ namespace Onca::Alloc
 		 */
 		BuddyAllocator(IAllocator* pBackingAlloc) noexcept;
 		BuddyAllocator(BuddyAllocator&&) noexcept = default;
-		~BuddyAllocator() noexcept override;
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
-		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	public:
 		/**
@@ -127,8 +125,7 @@ namespace Onca::Alloc
 
 		static constexpr usize SmallestBlockSize = Size >> MaxSubDivisions;
 		static constexpr usize ManagementSize = CalculateManagementSize();
-
-		MemRef<u8>       m_mem;           ///< Managed memory
+		
 		Threading::Mutex m_mutex;         ///< Mutex to guard division flag modifications
 	};
 }

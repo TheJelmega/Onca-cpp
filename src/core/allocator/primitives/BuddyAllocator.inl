@@ -9,7 +9,7 @@ namespace Onca::Alloc
 {
 	template<usize Size, u8 MaxSubDivisions>
 	BuddyAllocator<Size, MaxSubDivisions>::BuddyAllocator(IAllocator* pBackingAlloc) noexcept
-		: m_mem(nullptr)
+		: IMemBackedAllocator(nullptr)
 	{
 		STATIC_ASSERT(Math::IsPowOf2(Size), "A buddy allocator requires a size that is a power of 2");
 		STATIC_ASSERT(SmallestBlockSize, "MaxSubDivision is too high");
@@ -17,16 +17,12 @@ namespace Onca::Alloc
 		m_mem = pBackingAlloc->Allocate<u8>(Size + ManagementSize, align, true);
 		MemClear(m_mem.Ptr(), ManagementSize);
 	}
-
-	template <usize Size, u8 MaxSubDivisions>
-	BuddyAllocator<Size, MaxSubDivisions>::~BuddyAllocator() noexcept
-	{
-		m_mem.Dealloc();
-	}
-
+	
 	template<usize Size, u8 MaxSubDivisions>
 	auto BuddyAllocator<Size, MaxSubDivisions>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
+		ASSERT(Math::IsPowOf2(align), "Alignment needs to be a power of 2");
+
 		Threading::Lock lock{ m_mutex };
 
 		u8* pManagementInfo = m_mem.Ptr();
@@ -70,15 +66,7 @@ namespace Onca::Alloc
 		m_stats.AddAlloc(mem.Size(), overHead, mem.IsBackingMem());
 #endif
 	}
-
-	template <usize Size, u8 MaxSubDivisions>
-	bool BuddyAllocator<Size, MaxSubDivisions>::OwnsInternal(const MemRef<u8>& mem) noexcept
-	{
-		u8* ptr = mem.Ptr();
-		u8* buffer = m_mem.Ptr();
-		return ptr >= buffer && ptr < buffer + m_mem.Size();
-	}
-
+	
 	template<usize Size, u8 MaxSubDivisions>
 	auto BuddyAllocator<Size, MaxSubDivisions>::CalculateSizeClassAndBlockSize(usize size) noexcept -> Tuple<usize, usize>
 	{
@@ -98,19 +86,7 @@ namespace Onca::Alloc
 		if (flag & UsedFlag)
 			return usize(-1);
 
-		auto [lFlag, rflag] = GetDivFlags(pManagementInfo, 1);
-		if (neededClass == 1)
-		{
-			if (lFlag == FreeFlag)
-				return 1;
-			if (rflag == FreeFlag)
-				return 2;
-			return usize(-1);
-		}
-
-		if (!(lFlag & UsedFlag))
-			return GetSubIdx(pManagementInfo, neededClass, 1, 1);
-		return GetSubIdx(pManagementInfo, neededClass, 1, 2);
+		return GetSubIdx(pManagementInfo, neededClass, 1, 0);
 	}
 
 	template<usize Size, u8 MaxSubDivisions>
@@ -119,7 +95,7 @@ namespace Onca::Alloc
 		usize newDivIdx = curDivIdx * 2 + 1;
 		auto [lFlag, rflag] = GetDivFlags(pManagementInfo, newDivIdx);
 
-		if (neededClass == curClass + 1)
+		if (neededClass == curClass)
 		{
 			if (lFlag == FreeFlag)
 				return newDivIdx;
@@ -173,12 +149,9 @@ namespace Onca::Alloc
 		while (divIdx)
 		{
 			u8 buddyFlag = GetDivFlag(pManagementInfo, divIdx & 0x1 ? divIdx + 1 : divIdx - 1);
-			ownFlag = SplitFlag | ((ownFlag & buddyFlag) & UsedFlag);
-
-			const usize layerStart2 = (1ull << Math::Log2(divIdx + 1));
-			const usize layerStart = (layerStart2 >> 1) - 1;
-			const usize offset = divIdx - (layerStart2 - 1);
-			divIdx = layerStart + offset / 2;
+			ownFlag = SplitFlag | (ownFlag & buddyFlag);
+			
+			divIdx = (divIdx + 1) / 2 - 1;
 			SetDivFlag(pManagementInfo, divIdx, ownFlag);
 		}
 	}
@@ -191,12 +164,9 @@ namespace Onca::Alloc
 		while (divIdx)
 		{
 			u8 buddyFlag = GetDivFlag(pManagementInfo, divIdx & 0x1 ? divIdx + 1 : divIdx - 1);
-			ownFlag = ownFlag | !!(buddyFlag & (SplitFlag | UsedFlag)) * SplitFlag;
+			ownFlag = ownFlag | !!buddyFlag;
 
-			const usize layerStart2 = (1ull << Math::Log2(divIdx + 1));
-			const usize layerStart = (layerStart2 >> 1) - 1;
-			const usize offset = divIdx - (layerStart2 - 1);
-			divIdx = layerStart + offset / 2;
+			divIdx = (divIdx + 1) / 2 - 1;
 			SetDivFlag(pManagementInfo, divIdx, ownFlag);
 		}
 	}

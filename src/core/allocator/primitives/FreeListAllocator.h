@@ -15,7 +15,7 @@ namespace Onca::Alloc
 	 * \tparam Size Size of the managed memory
 	 */
 	template<usize Size>
-	class FreeListAllocator final : public IAllocator
+	class FreeListAllocator final : public IMemBackedAllocator
 	{
 	private:
 
@@ -44,15 +44,12 @@ namespace Onca::Alloc
 		 */
 		FreeListAllocator(IAllocator* pBackingAllocator) noexcept;
 		FreeListAllocator(FreeListAllocator&&) = default;
-		~FreeListAllocator() noexcept override;
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
-		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	private:
-
 		/**
 		 * Find space for the allocation (first-fit) and create space for the allcoation
 		 * \param[in]size Size of the allocation
@@ -68,8 +65,7 @@ namespace Onca::Alloc
 		 * \param[in]pNext Pointer of next block
 		 */
 		void Coalesce(u8* pPrev, u8* pCur, u8* pNext) noexcept;
-
-		MemRef<u8> m_mem;  ///< Managed memory
+		
 		u8*        m_head; ///< Offset to free head
 	};
 

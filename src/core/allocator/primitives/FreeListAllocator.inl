@@ -7,7 +7,7 @@ namespace Onca::Alloc
 {
 	template<usize Size>
 	FreeListAllocator<Size>::FreeListAllocator(IAllocator* pBackingAllocator) noexcept
-		: m_mem(pBackingAllocator->Allocate<u8>(Size, sizeof(usize), true))
+		: IMemBackedAllocator(pBackingAllocator->Allocate<u8>(Size, sizeof(usize), true))
 	{
 		STATIC_ASSERT(Size > sizeof(FreeHeader), "Size needs to be larger than 16 bytes");
 		FreeHeader* pFreeHeader = reinterpret_cast<FreeHeader*>(m_mem.Ptr());
@@ -15,16 +15,12 @@ namespace Onca::Alloc
 		pFreeHeader->size = Size;
 		m_head = m_mem.Ptr();
 	}
-
-	template <usize Size>
-	FreeListAllocator<Size>::~FreeListAllocator() noexcept
-	{
-		m_mem.Dealloc();
-	}
-
+	
 	template<usize Size>
 	auto FreeListAllocator<Size>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
+		ASSERT(Math::IsPowOf2(align), "Alignment needs to be a power of 2");
+
 		u8* ptr = AllocFirst(size, align, isBacking);
 		if (!ptr)
 			return nullptr;
@@ -72,15 +68,7 @@ namespace Onca::Alloc
 		m_stats.RemoveAlloc(mem.Size(), overhead, mem.IsBackingMem());
 #endif
 	}
-
-	template <usize Size>
-	bool FreeListAllocator<Size>::OwnsInternal(const MemRef<u8>& mem) noexcept
-	{
-		u8* ptr = mem.Ptr();
-		u8* buffer = m_mem.Ptr();
-		return ptr >= buffer && ptr < buffer + m_mem.Size();
-	}
-
+	
 	template<usize Size>
 	auto FreeListAllocator<Size>::AllocFirst(usize size, u16 align, bool isBacking) noexcept -> u8*
 	{

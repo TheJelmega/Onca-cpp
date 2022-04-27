@@ -22,7 +22,7 @@ namespace Onca::Alloc
 	 * \tparam NumBlocks Number of blocks
 	 */
 	template<usize BlockSize, usize NumBlocks>
-	class BitmapAllocator final : public IAllocator
+	class BitmapAllocator final : public IMemBackedAllocator
 	{
 	public:
 		/**
@@ -31,12 +31,10 @@ namespace Onca::Alloc
 		 */
 		BitmapAllocator(IAllocator* pBackingAlloc) noexcept;
 		BitmapAllocator(BitmapAllocator&&) = default;
-		~BitmapAllocator() noexcept override;
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
-		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	private:
 		static constexpr auto CalcNumManagementBlocks() noexcept -> usize
@@ -60,11 +58,10 @@ namespace Onca::Alloc
 		 * \param[in] set Whether to mark the bits as set or not
 		 */
 		void MarkBits(usize startIdx, usize numBlocks, bool set) noexcept;
-	private:
-		static constexpr usize NumManagementBlocks = CalcNumManagementBlocks();
 	
-		MemRef<u8>       m_mem;                 ///< Managed memory
-		Threading::Mutex m_mutex;               ///< Mutex to guard bitmap modifications
+		static constexpr usize NumManagementBlocks = CalcNumManagementBlocks();                     
+	
+		Threading::Mutex m_mutex; ///< Mutex to guard bitmap modifications
 	};
 }
 

@@ -124,7 +124,7 @@ namespace Onca
 	template <typename T>
 	auto MemRef<T>::IsBackingMem() const noexcept -> bool
 	{
-		return m_isBackingMem;
+		return bool(m_isBackingMem);
 	}
 
 	template <typename T>
@@ -144,7 +144,7 @@ namespace Onca
 	template <typename U>
 	auto MemRef<T>::As() noexcept -> MemRef<U>
 	{
-		return { reinterpret_cast<U*>(m_pAddr), m_pAlloc, m_log2Align, m_size, m_isBackingMem };
+		return { reinterpret_cast<U*>(m_pAddr), m_pAlloc, u8(m_log2Align), m_size, bool(m_isBackingMem) };
 	}
 
 	template <typename T>

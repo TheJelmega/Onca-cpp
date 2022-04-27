@@ -20,15 +20,15 @@ namespace Onca::Alloc
 	auto InPlaceStackAllocator<Size, MaxAlignment>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
 		ASSERT(align <= MaxAlignment, "Alignment cannot be larger than is allowed by the allocator");
-		UNUSED(align);
-
-		if (m_head + size > m_mem + Size) UNLIKELY
-			return nullptr;
+		ASSERT(Math::IsPowOf2(align), "Alignment needs to be a power of 2");
 
 		const usize mask = align - 1;
 		const usize diff = size & mask;
-		const usize padding = (diff == 0 ? 0 : MaxAlignment - diff);
+		const usize padding = (MaxAlignment - diff) & mask;
 		const usize paddedSize = size + padding;
+
+		if (m_head + paddedSize > m_mem + Size) UNLIKELY
+			return nullptr;
 
 		u8* ptr = m_head;
 		m_head += paddedSize;
@@ -48,7 +48,7 @@ namespace Onca::Alloc
 		const usize size = mem.Size();
 		const usize mask = align - 1;
 		const usize diff = size & mask;
-		const usize padding = (diff == 0 ? 0 : MaxAlignment - diff);
+		const usize padding = (MaxAlignment - diff) & mask;
 		const usize paddedSize = size + padding;
 
 		ASSERT(mem.Ptr() == m_head - paddedSize, "Deallocations can only happen from the top of the stack");
@@ -65,7 +65,6 @@ namespace Onca::Alloc
 	bool InPlaceStackAllocator<Size, MaxAlignment>::OwnsInternal(const MemRef<u8>& mem) noexcept
 	{
 		u8* ptr = mem.Ptr();
-		u8* buffer = m_mem.Ptr();
-		return ptr >= buffer && ptr < buffer + m_mem.Size();
+		return ptr >= m_mem && ptr < m_mem + Size;
 	}
 }

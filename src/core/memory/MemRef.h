@@ -8,6 +8,8 @@ namespace Onca
 		class IAllocator;
 	}
 
+#pragma pack(push, 1)
+
 	/**
 	 * \brief Struct that encapsulates all info for an allocation
 	 * \tparam T Underlying type
@@ -111,10 +113,15 @@ namespace Onca
 	private:
 		T*                 m_pAddr;                                           ///< Pointer
 		Alloc::IAllocator* m_pAlloc;                                          ///< Allocator used to allocate the allocation
-		u8                 m_log2Align    : 7;                                ///< Log2 of alignment
-		bool               m_isBackingMem : 1;                                ///< Whether the memory backs an allocator
+		usize              m_log2Align    : 7;                                ///< Log2 of alignment
+		usize              m_isBackingMem : 1;                                ///< Whether the memory backs an allocator
 		usize              m_size         : (sizeof(usize) - sizeof(u8)) * 8; ///< Size of the allocation
 	};
+
+	
+	static_assert(sizeof(MemRef<u8>) == 24, "Invalid MemRef<T> size");
+
+#pragma pack(pop)
 
 	/**
 	 * Copy a region of memory from one location to another

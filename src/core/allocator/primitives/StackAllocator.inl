@@ -9,7 +9,7 @@ namespace Onca::Alloc
 {
 	template<usize Size, usize MaxAlignment>
 	StackAllocator<Size, MaxAlignment>::StackAllocator(IAllocator* pBackingAlloc) noexcept
-		: m_mem(pBackingAlloc->Allocate<u8>(Size, MaxAlignment, true))
+		: IMemBackedAllocator(pBackingAlloc->Allocate<u8>(Size, MaxAlignment, true))
 	{
 		STATIC_ASSERT(Math::IsPowOf2(MaxAlignment), "Max alignment needs to be a power of 2");
 		STATIC_ASSERT(Size & ~(MaxAlignment - 1), "Memory size needs to be a multiple of maxAlignment");
@@ -17,24 +17,18 @@ namespace Onca::Alloc
 	}
 
 	template<usize Size, usize MaxAlignment>
-	StackAllocator<Size, MaxAlignment>::~StackAllocator() noexcept
-	{
-		m_mem.Dealloc();
-	}
-
-	template<usize Size, usize MaxAlignment>
 	auto StackAllocator<Size, MaxAlignment>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
 		ASSERT(align <= MaxAlignment, "Alignment cannot be larger than is allowed by the allocator");
-		UNUSED(align);
-
-		if (m_head + size > m_mem.Ptr() + m_mem.Size()) UNLIKELY
-			return nullptr;
+		ASSERT(Math::IsPowOf2(align), "Alignment needs to be a power of 2");
 
 		const usize mask = align - 1;
 		const usize diff = size & mask;
-		const usize padding = (diff == 0 ? 0 : MaxAlignment - diff);
+		const usize padding = (MaxAlignment - diff) & mask;
 		const usize paddedSize = size + padding;
+
+		if (m_head + paddedSize > m_mem.Ptr() + m_mem.Size()) UNLIKELY
+			return nullptr;
 		 
 		u8* ptr = m_head;
 		m_head += paddedSize;
@@ -65,13 +59,5 @@ namespace Onca::Alloc
 #if ENABLE_ALLOC_STATS
 		m_stats.RemoveAlloc(size, padding, mem.IsBackingMem());
 #endif
-	}
-
-	template <usize Size, usize MaxAlignment>
-	bool StackAllocator<Size, MaxAlignment>::OwnsInternal(const MemRef<u8>& mem) noexcept
-	{
-		u8* ptr = mem.Ptr();
-		u8* buffer = m_mem.Ptr();
-		return ptr >= buffer && ptr < buffer + m_mem.Size();
 	}
 }

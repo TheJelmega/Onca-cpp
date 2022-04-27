@@ -9,26 +9,23 @@ namespace Onca::Alloc
 {
 	template<usize BlockSize, usize NumBlocks>
 	BitmapAllocator<BlockSize, NumBlocks>::BitmapAllocator(IAllocator* pBackingAlloc) noexcept
-		: m_mem(pBackingAlloc->Allocate<u8>(CalcReqMemSize(), u16(BlockSize > 0x8000 ? 0x8000 : BlockSize), true))
+		: IMemBackedAllocator(pBackingAlloc->Allocate<u8>(CalcReqMemSize(), u16(BlockSize > 0x8000 ? 0x8000 : BlockSize), true))
 	{
 		STATIC_ASSERT(Math::IsPowOf2(BlockSize), "Blocksize needs to be a power of 2");
 		MemClear(m_mem.Ptr(), NumManagementBlocks * BlockSize);
 	}
-
-	template<usize BlockSize, usize NumBlocks>
-	BitmapAllocator<BlockSize, NumBlocks>::~BitmapAllocator() noexcept
-	{
-		m_mem.Dealloc();
-	}
-
+	
 	template<usize BlockSize, usize NumBlocks>
 	auto BitmapAllocator<BlockSize, NumBlocks>::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
 	{
 		ASSERT(align <= BlockSize, "Alignment cannot be greater than blocksize");
-		Threading::Lock lock{m_mutex};
+		ASSERT(Math::IsPowOf2(align), "Alignment needs to be a power of 2");
+
+		const usize blocksNeeded = (size + BlockSize - 1) / BlockSize;
+
+		Threading::Lock lock{ m_mutex };
 		
 		const u8* pManagementInfo = m_mem.Ptr();
-		const usize blocksNeeded = (size + BlockSize - 1) / BlockSize;
 		
 		for (usize i = 0; i < NumBlocks; ++i)
 		{
@@ -36,19 +33,27 @@ namespace Onca::Alloc
 			usize byteIdx = i / 8;
 			usize numBlocks = blocksNeeded;
 
+			// Up to first 8 blocks
+			const u8 firstBlockShift = u8(numBlocks >= 8 ? 0 : 8 - numBlocks);
+			u8 searchMask = u8(0xFF << firstBlockShift) >> startBit;
+			if (pManagementInfo[byteIdx] & searchMask)
+				continue;;
+
+			++byteIdx;
+
+			u8 blocksWritten = 8 - startBit;
+			numBlocks = blocksWritten >= numBlocks ? 0 : numBlocks - blocksWritten;
+
+			// If we need more blocks
 			while (numBlocks > 0)
 			{
 				const u8 curBlockShift = u8(numBlocks >= 8 ? 0 : 8 - numBlocks);
-				u8 searchMask = u8(0xFF << curBlockShift) >> startBit;
-
+				searchMask = u8(0xFF << curBlockShift);
 				if (pManagementInfo[byteIdx] & searchMask)
 					break;
 
 				++byteIdx;
-
-				const u8 blocksWritten = 8 - startBit;
-				numBlocks = blocksWritten >= numBlocks ? 0 : numBlocks - blocksWritten;
-				startBit = 0;
+				numBlocks = numBlocks <= 8 ? 0 : numBlocks - 8;
 			}
 
 			if (numBlocks == 0)
@@ -70,11 +75,12 @@ namespace Onca::Alloc
 	template<usize BlockSize, usize NumBlocks>
 	void BitmapAllocator<BlockSize, NumBlocks>::DeallocateRaw(MemRef<u8>&& mem) noexcept
 	{
-		Threading::Lock lock{ m_mutex };
-		
+		// Threadsafe as memory pointers and total allocator memory size is consistent over threads
 		const usize startIdx = (mem.Ptr() - m_mem.Ptr()) / BlockSize - NumManagementBlocks;
 		const usize size = mem.Size();
 		const usize numBlocks = (size + BlockSize - 1) / BlockSize;
+
+		Threading::Lock lock{ m_mutex };
 		MarkBits(startIdx, numBlocks, false);
 
 #if ENABLE_ALLOC_STATS
@@ -82,15 +88,7 @@ namespace Onca::Alloc
 		m_stats.RemoveAlloc(size, overhead, mem.IsBackingMem());
 #endif
 	}
-
-	template <usize BlockSize, usize NumBlocks>
-	bool BitmapAllocator<BlockSize, NumBlocks>::OwnsInternal(const MemRef<u8>& mem) noexcept
-	{
-		u8* ptr = mem.Ptr();
-		u8* buffer = m_mem.Ptr();
-		return ptr >= buffer && ptr < buffer + m_mem.Size();
-	}
-
+	
 	template<usize BlockSize, usize NumBlocks>
 	void BitmapAllocator<BlockSize, NumBlocks>::MarkBits(usize startIdx, usize numBlocks, bool set) noexcept
 	{

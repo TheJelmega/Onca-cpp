@@ -93,4 +93,30 @@ namespace Onca::Alloc
 	{
 		return mem.GetAlloc() == this;
 	}
+
+	inline IMemBackedAllocator::IMemBackedAllocator(MemRef<u8>&& mem) noexcept
+		: m_mem(Move(mem))
+	{
+	}
+
+	inline IMemBackedAllocator::~IMemBackedAllocator() noexcept
+	{
+		m_mem.Dealloc();
+	}
+
+	inline auto IMemBackedAllocator::AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8>
+	{
+		return {};
+	}
+
+	inline void IMemBackedAllocator::DeallocateRaw(MemRef<u8>&& mem) noexcept
+	{
+	}
+
+	inline bool IMemBackedAllocator::OwnsInternal(const MemRef<u8>& mem) noexcept
+	{
+		u8* ptr = mem.Ptr();
+		u8* buffer = m_mem.Ptr();
+		return ptr >= buffer && ptr < buffer + m_mem.Size();
+	}
 }

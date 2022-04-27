@@ -19,11 +19,9 @@ namespace Onca::Alloc
 	 *
 	 * \tparam BlockSize Size of the blocks
 	 * \tparam NumBlocks Number of blocks
-	 *
-	 * \note This allocator needs no defragmentation as all blocks can always be used
 	 */
 	template<usize BlockSize, usize NumBlocks>
-	class PoolAllocator final : public IAllocator
+	class PoolAllocator final : public IMemBackedAllocator
 	{
 	public:
 		/**
@@ -31,16 +29,13 @@ namespace Onca::Alloc
 		 * \param[in] pBackingAlloc Allocator to create the underlying memory block
 		 */
 		explicit PoolAllocator(IAllocator* pBackingAlloc) noexcept;
-		PoolAllocator(PoolAllocator&& other) noexcept; // = default; is deleted
-		~PoolAllocator() noexcept override;
+		PoolAllocator(PoolAllocator&& other) noexcept;
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
-		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	private:
-		MemRef<u8>   m_mem;          ///< Managed memory
 		Atomic<u8*>  m_head;         ///< Offset to first empty block
 	};
 }

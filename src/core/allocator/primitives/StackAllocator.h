@@ -7,7 +7,7 @@ namespace Onca::Alloc
 	  * \brief An allocator that allows the allocation of items on a stack (NOT threadsafe)
 	  *
 	  * A stack allocator holds a chunk of memory, from which it can allocate memory from,
-	  * memory can also be deallocated, but this is required to happen in the reverse order of allocation (FIFO).
+	  * memory can also be deallocated, but this is required to happen in the reverse order of allocation (FILO).
 	  *	This limitation is what limits the allocator to just 1 thread, since otherwise no guarantee can be made about the order of deallocations.
 	  *	Each new allocation is aligned to the allocator's max alignment, any allocation with a smaller or equal alignment are possible.
 	  *
@@ -19,11 +19,9 @@ namespace Onca::Alloc
 	  *
 	  *	\tparam Size Size of the managed memory
 	  *	\tparam MaxAlignment Maximum alignment of an allocation
-	  *
-	  * \note A linear allocator cannot be defragmented
 	  */
 	template<usize Size, usize MaxAlignment>
-	class StackAllocator final : public IAllocator
+	class StackAllocator final : public IMemBackedAllocator
 	{
 	public:
 		/**
@@ -32,15 +30,12 @@ namespace Onca::Alloc
 		 */
 		explicit StackAllocator(IAllocator* pBackingAlloc) noexcept;
 		StackAllocator(StackAllocator&&) = default;
-		~StackAllocator() noexcept override;
 
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
-		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	private:
-		MemRef<u8> m_mem;    ///< Managed memory
 		u8*        m_head;   ///< Current location on the stack
 	};
 }

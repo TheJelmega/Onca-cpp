@@ -6,10 +6,10 @@ namespace Onca::Alloc
 	/**
 	 * \brief An allocator that allows the allocation of items on a stack (NOT threadsafe)
 	 *
-	 * An in-place stack allocator holds a chunk of stack memory, from which it can allocate memory from,
-	 * memory can also be deallocated, but this is required to happen in the reverse order of allocation (FIFO).
-	 *	This limitation is what limits the allocator to just 1 thread, since otherwise no guarantee can be made about the order of deallocations.
-	 *	Each new allocation is aligned to the allocator's max alignment, any allocation with a smaller or equal alignment are possible.
+	 * An in-place stack allocator holds a chunk of stack memory, from which it can allocate memory,
+	 * memory can also be deallocated, but this is required to happen in the reverse order of allocation (FILO).
+	 * This limitation is what limits the allocator to just 1 thread, since otherwise no guarantee can be made about the order of deallocations.
+	 * Each new allocation is aligned to the allocator's max alignment, any allocation with a smaller or equal alignment are possible.
 	 *
 	 * begin        last        head
 	 * v            v           v
@@ -19,8 +19,6 @@ namespace Onca::Alloc
 	 *
 	 * \tparam Size Size of the managed memory
 	 * \tparam MaxAlignment Maximum alignment of an allocation
-	 *
-	 * \note A linear allocator cannot be defragmented
 	 */
 	template<usize Size, usize MaxAlignment>
 	class InPlaceStackAllocator final : public IAllocator

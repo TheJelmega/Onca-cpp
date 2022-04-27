@@ -127,6 +127,39 @@ namespace Onca::Alloc
 #endif
 	};
 
+	/**
+	 * Allocator backed by a block of memory
+	 */
+	class CORE_API IMemBackedAllocator : public IAllocator
+	{
+	public:
+		IMemBackedAllocator(MemRef<u8>&& mem) noexcept;
+		~IMemBackedAllocator() noexcept override;
+
+		/**
+		 * \brief Allocate a raw memory pointer
+		 * \param[in] size Min size of the allocation (implementation dependent)
+		 * \param[in] align Min alignment of the allocation
+		 * \param[in] isBacking Whether the memory backs another allocator
+		 * \return Tuple with the raw pointer to allocated memory (may be nullptr) and the allocator used to allocate (for nested allocators)
+		 */
+		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
+		/**
+		 * \brief Deallocate a raw memory pointer
+		 * \param[in] mem MemRef to deallocate
+		 */
+		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
+		/**
+		 * \brief Check if the allocation was allocated by this allocator (this or child allocator)
+		 * \param[in] mem MemRef to check
+		 * \return If the allocation is owned by the allocator
+		 */
+		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
+
+	protected:
+		MemRef<u8> m_mem; ///< Memory backing allocator
+	};
+
 	template<typename T>
 	concept ImplementsIAllocator = DerivesFrom<T, IAllocator>;
 

@@ -20,11 +20,9 @@ namespace Onca::Alloc
 	 *
 	 * \tparam Size Size of the managed memory
 	 * \tparam BaseAlignment Alignment of initial offset
-	 *
-	 * \note A linear allocator cannot be defragmented
 	 */
 	template<usize Size, usize BaseAlignment>
-	class LinearAllocator final : public IAllocator
+	class LinearAllocator final : public IMemBackedAllocator
 	{
 	public:
 		/**
@@ -33,7 +31,6 @@ namespace Onca::Alloc
 		 */
 		LinearAllocator(IAllocator* pBackingAlloc);
 		LinearAllocator(LinearAllocator&&) = default;
-		~LinearAllocator() noexcept override;
 
 		/**
 		 * Reset the head of the allocator
@@ -44,10 +41,8 @@ namespace Onca::Alloc
 	protected:
 		auto AllocateRaw(usize size, u16 align, bool isBacking) noexcept -> MemRef<u8> override;
 		void DeallocateRaw(MemRef<u8>&& mem) noexcept override;
-		auto OwnsInternal(const MemRef<u8>& mem) noexcept -> bool override;
 
 	private:
-		MemRef<u8> m_mem;  ///< Managed memory
 		u8*        m_head; ///< Current location in the linear allocator
 	};
 
