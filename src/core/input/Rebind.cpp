@@ -100,7 +100,7 @@ namespace Onca::Input
 		bool foundSection = m_neededSections.IsEmpty() ||
 			m_neededSections.ContainsIf([&key](const String& section) -> bool
 			{
-				return key.path.Contains(section);
+				return key.path.Get().Contains(section);
 			});
 		if (!foundSection)
 			return false;

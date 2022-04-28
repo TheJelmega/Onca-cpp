@@ -73,7 +73,7 @@ namespace Onca::Input
 
 		auto operator==(const Key& other) const noexcept -> bool { return path == other.path; }
 		
-		String           path;    ///< Path of the key // TODO: Use interned string
+		InternedString   path;    ///< Path of the key
 		Weak<KeyDetails> details; ///< Key information
 	};
 

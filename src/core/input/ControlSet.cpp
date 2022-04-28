@@ -32,8 +32,8 @@ namespace Onca::Input
 			String name;
 			const bool foundDev = availableDevices.ContainsIf([&req, &reqScore, &name](const Device* dev) -> bool
 			{
-				const DynArray<String>& names = dev->GetDeviceNames();
-				const auto nameIt = names.FindIf([&req](const String& name) -> bool
+				const DynArray<InternedString>& names = dev->GetDeviceNames();
+				const auto nameIt = names.FindIf([&req](const InternedString& name) -> bool
 				{
 					return name == req.name;
 				});

@@ -69,7 +69,7 @@ namespace Onca::Input
 		void DispatchCallbacks(const User& user, TriggerEvent event, Value value, f32 dt) noexcept;
 
 	private:
-		String                                  m_name;            ///< Input action name // TODO: Use interned string
+		InternedString                          m_name;            ///< Input action name
 		ValueType                               m_valueType;       ///< Value type
 		bool                                    m_consumeInput;    ///< Whether the action consumes all input bound to the action (prevent other actions from using it after this action)
 		DynArray<Pair<TriggerEvents, Callback>> m_callbacks;       ///< Registered callbacks

@@ -203,8 +203,6 @@ namespace Onca::Input
 
 	auto InputManager::RegisterDevice(Unique<Device>&& device) noexcept -> bool
 	{
-		// TODO: reconnection
-
 		const DeviceType type = device->GetDeviceInfo().type;
 		if (type == DeviceType::Keyboard || type == DeviceType::Mouse)
 		{
@@ -231,9 +229,8 @@ namespace Onca::Input
 			m_devs.Add(Move(device));
 		else
 			m_devs[devId] = Move(device);
-
-		const DynArray<String>& idens = m_devs[devId]->GetDeviceNames();
-		for (const String& iden : idens)
+		
+		for (const InternedString& iden : m_devs[devId]->GetDeviceNames())
 		{
 			auto it = m_devMapping.Find(iden);
 			if (it == m_devMapping.End())
@@ -272,7 +269,7 @@ namespace Onca::Input
 			return;
 
 		u32 idx = u32(it - m_devs.Begin());
-		for (Pair<const String, DynArray<u32>>& pair : m_devMapping)
+		for (Pair<const InternedString, DynArray<u32>>& pair : m_devMapping)
 		{
 			pair.second.Erase(idx);
 		}
@@ -400,7 +397,7 @@ namespace Onca::Input
 			{
 				unusedDevices.EraseIf([&conflictingDevices](const Device* dev) -> bool
 				{
-					const DynArray<String>& devNames = dev->GetDeviceNames();
+					const DynArray<InternedString>& devNames = dev->GetDeviceNames();
 					for (const String& name : conflictingDevices)
 					{
 						if (devNames.Contains(name))
@@ -568,11 +565,11 @@ namespace Onca::Input
 		if (!pDev)
 			return;
 
-		const DynArray<String>& devNames = pDev->GetDeviceNames();
+		const DynArray<InternedString>& devNames = pDev->GetDeviceNames();
 		Key key;
 		for (usize i = 0; i < devNames.Size(); ++i)
 		{
-			const String& devName = devNames[i];
+			const InternedString& devName = devNames[i];
 			key = { Format("<{}>/{}", devName, name) };
 
 			auto it = m_keys.Find(key);
@@ -581,7 +578,7 @@ namespace Onca::Input
 				u32 curNativeCode = m_keyDevNative[key].second;
 				if (curNativeCode != nativeCode)
 				{
-					const String& actDevName = pDev->GetDeviceNames().Back();
+					const InternedString& actDevName = pDev->GetDeviceNames().Back();
 					g_Logger.Warning(LogCategories::INPUT, "Key '{}' has incompatible native code for '{}' when registering keys for '{}'", key.path, devName, actDevName);
 				}
 
@@ -602,8 +599,9 @@ namespace Onca::Input
 
 	void InputManager::UnregisterKey(Device* pDev, const Key& key) noexcept
 	{
-		usize slashIdx = key.path.Find('/');
-		String keyName = key.path.SubString(0, slashIdx);
+		const String& path = key.path.Get();
+		usize slashIdx = path.Find('/');
+		String keyName = path.SubString(0, slashIdx);
 
 		for (const String& devName : pDev->GetDeviceNames())
 		{
@@ -875,7 +873,7 @@ namespace Onca::Input
 			{
 				unusedDevices.EraseIf([&conflictingDevices](const Device* dev) -> bool
 				{
-					const DynArray<String>& devNames = dev->GetDeviceNames();
+					const DynArray<InternedString>& devNames = dev->GetDeviceNames();
 					for (const String& name : conflictingDevices)
 					{
 						if (devNames.Contains(name))

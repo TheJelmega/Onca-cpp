@@ -29,17 +29,45 @@ namespace Onca
 		auto operator=(InternedString&&) noexcept -> InternedString& = default;
 
 		auto operator==(const InternedString& other) const noexcept -> bool;
+		auto operator==(const String& other) const noexcept -> bool;
 
 		/**
 		 * Get the string the interned string represents
 		 * \return String
 		 */
 		auto Get() const noexcept -> const String&;
+		/**
+		 * Get the string the interned string represents
+		 * \return String
+		 */
+		auto ToString() const noexcept -> String;
+		/**
+		 * Get the string id of the interned string
+		 * \return String id
+		 */
+		auto Id() const noexcept -> StringId;
+		/**
+		 * Check if the interned string refers to an empty string
+		 * \return Whether the interned string refers to an empty string
+		 */
+		auto IsEmpty() const noexcept -> bool;
 
-		operator const String&() noexcept;
+
+		operator const String&() const noexcept;
 
 	private:
 		StringId m_id; ///< String id
+	};
+
+	CORE_API auto operator==(const String& str, const InternedString& interned) noexcept -> bool;
+
+	template<>
+	struct CORE_API Hash<InternedString>
+	{
+		auto operator()(const InternedString& t) const noexcept -> u64
+		{
+			return t.Id();
+		}
 	};
 
 	class CORE_API InternedStringManager

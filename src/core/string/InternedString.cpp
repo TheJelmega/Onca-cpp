@@ -22,14 +22,39 @@ namespace Onca
 		return m_id == other.m_id;
 	}
 
+	auto InternedString::operator==(const String& other) const noexcept -> bool
+	{
+		return Get() == other;
+	}
+
 	auto InternedString::Get() const noexcept -> const String&
 	{
 		return GetInternedStringManager().GetString(m_id);
 	}
 
-	InternedString::operator const String&() noexcept
+	auto InternedString::ToString() const noexcept -> String
 	{
 		return Get();
+	}
+
+	auto InternedString::Id() const noexcept -> StringId
+	{
+		return m_id;
+	}
+
+	auto InternedString::IsEmpty() const noexcept -> bool
+	{
+		return m_id == 0;
+	}
+
+	InternedString::operator const String&() const noexcept
+	{
+		return Get();
+	}
+
+	auto operator==(const String& str, const InternedString& interned) noexcept -> bool
+	{
+		return str == interned.Get();
 	}
 
 	InternedStringManager::InternedStringManager() noexcept

@@ -411,13 +411,13 @@ namespace Onca::Input
 		void OnUserRemoved(u32 id, const User& user) noexcept;
 
 
-		using DeviceMapping = HashMap<String, DynArray<u32>>; // TODO: use interned string
+		using DeviceMapping = HashMap<InternedString, DynArray<u32>>;
 		using DevInitMapping = HashMap<u32, DevInitDelegate>;
 
 		using DeviceRegistry = DynArray<Unique<Device>>;
 
 		using KeyRegistry = HashMap<Key, Rc<KeyDetails>>;
-		using KeyDevNativeRegistry = HashMap<Key, Pair<String, u32>>; // TODO: use interned string
+		using KeyDevNativeRegistry = HashMap<Key, Pair<InternedString, u32>>;
 		
 		DeviceMapping           m_devMapping;               ///< Name to id mapping
 		DeviceRegistry          m_devs;                     ///< Input device

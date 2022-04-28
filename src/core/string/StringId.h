@@ -54,6 +54,12 @@ namespace Onca
 
 		u64 m_id;
 	};
+
+	template<>
+	struct CORE_API Hash<StringId>
+	{
+		auto operator()(const StringId& t) const noexcept -> u64;
+	};
 }
 
 inline namespace Literals

@@ -28,7 +28,7 @@ namespace Onca::Input
 			return false;
 		}
 		
-		info.uid.Assign(reinterpret_cast<const char16_t*>(devNameArr.Data()), size - 1);
+		info.uid = String{ reinterpret_cast<const char16_t*>(devNameArr.Data()), size - 1 };
 
 		RID_DEVICE_INFO devInfo = {};
 		devInfo.cbSize = size = sizeof(RID_DEVICE_INFO);
@@ -61,15 +61,18 @@ namespace Onca::Input
 		{
 			DynArray<wchar_t> nameArr{ usize(128), '\0', g_GlobalAlloc };
 
+			String productName;
 			if (HidD_GetManufacturerString(handle, nameArr.Data(), ULONG(nameArr.Size())))
-				info.productName.Assign(reinterpret_cast<const char16_t*>(nameArr.Data()));
+				productName.Assign(reinterpret_cast<const char16_t*>(nameArr.Data()));
 			if (HidD_GetProductString(handle, nameArr.Data(), ULONG(nameArr.Size())))
 			{
-				info.productName += ' ';
-				info.productName.Add(String{ reinterpret_cast<const char16_t*>(nameArr.Data()) });
+				productName += ' ';
+				productName.Add(String{ reinterpret_cast<const char16_t*>(nameArr.Data()) });
 			}
+			info.productName = productName;
+
 			if (HidD_GetSerialNumberString(handle, nameArr.Data(), ULONG(nameArr.Size())))
-				info.serialNumber.Assign(reinterpret_cast<const char16_t*>(nameArr.Data()));
+				info.serialNumber = String{ reinterpret_cast<const char16_t*>(nameArr.Data()) };
 
 			CloseHandle(handle);
 		}

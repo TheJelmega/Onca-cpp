@@ -10,10 +10,10 @@ namespace Onca::Input
 
 	struct DeviceRequirement
 	{
-		String name;         ///< Device name // TODO: use interned string
-		bool   optional : 1; ///< If the device is optional
-		bool   orNext   : 1; ///< If this OR the next device need to be available, otherwise this AND the next device are required
-		u8     idx;          ///< Control scheme device index (set by control scheme)
+		InternedString name;         ///< Device name
+		bool           optional : 1; ///< If the device is optional
+		bool           orNext   : 1; ///< If this OR the next device need to be available, otherwise this AND the next device are required
+		u8             idx;          ///< Control scheme device index (set by control scheme)
 	};
 
 	/**
@@ -56,7 +56,7 @@ namespace Onca::Input
 		 * Get the name
 		 * \return Name
 		 */
-		auto Name() const noexcept -> const String& { return m_name; }
+		auto Name() const noexcept -> const InternedString& { return m_name; }
 
 		/**
 		 * Check if the control scheme can be used, if so, return additional info about the match
@@ -87,7 +87,7 @@ namespace Onca::Input
 		auto operator==(const ControlScheme& other) const noexcept -> bool { return m_name == other.m_name; }
 
 	private:
-		String                      m_name;          ///< Control scheme name // TODO: use interned string
+		InternedString              m_name;          ///< Control scheme name
 		DynArray<DeviceRequirement> m_reqs;          ///< Device requirements
 	};
 		
@@ -147,8 +147,6 @@ namespace Onca::Input
 		friend class InputManager;
 
 		u32                  m_schemeId;             ///< ID of the control scheme the set represents
-		DynArray<u32>        m_devIds;               ///< Device ids // TODO: index in DynArray relative to index in scheme
-
-		// TODO: also track unique identifiers for reconnecting devices
+		DynArray<u32>        m_devIds;               ///< Device ids
 	};
 }

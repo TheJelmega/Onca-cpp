@@ -6,11 +6,11 @@ namespace Onca::Input
 {
 	Device::Device(const String& name)
 		: m_deviceId(InvalidId)
-		, m_devNames(name.Split('/'))
 		, m_pManager(nullptr)
 	{
-		for (String& devName : m_devNames)
-			devName.ToLower();
+		DynArray<String> names = name.Split('/');
+		for (const String& name : names)
+			m_devNames.EmplaceBack(name.AsLower());
 	}
 
 	Device::~Device()

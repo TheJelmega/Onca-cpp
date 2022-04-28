@@ -52,6 +52,11 @@ namespace Onca
 		}
 		return hash;
 	}
+
+	inline auto Hash<StringId>::operator()(const StringId& t) const noexcept -> u64
+	{
+		return t;
+	}
 }
 
 constexpr auto Literals::operator ""_sid(const char* cstr, usize size) noexcept -> Onca::StringId

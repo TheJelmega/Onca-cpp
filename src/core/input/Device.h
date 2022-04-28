@@ -18,15 +18,15 @@ namespace Onca::Input
 
 	struct DeviceInfo
 	{
-		NativeDevice handle       = nullptr;            ///< Native device handle
-		DeviceType   type        = DeviceType::Unknown; ///< Device type
-		u16          vendorId    = 0;                   ///< Vendor id (only valid for 'Other' type)
-		u16          productId   = 0;                   ///< Product id (only valid for 'Other' type)
-		u16          usagePage   = 0;                   ///< HID usage page (only valid for 'Other' type)
-		u16          usage       = 0;                   ///< HID usage (only valid for 'Other' type)
-		String       uid;                               ///< Unique identifier (usually system dependent) // TODO: Use interned strings
-		String       productName;                       ///< HID product name  (only valid for 'Other' type) // TODO: Use interned strings
-		String       serialNumber;                      ///< HID serial number
+		NativeDevice   handle       = nullptr;            ///< Native device handle
+		DeviceType     type        = DeviceType::Unknown; ///< Device type
+		u16            vendorId    = 0;                   ///< Vendor id (only valid for 'Other' type)
+		u16            productId   = 0;                   ///< Product id (only valid for 'Other' type)
+		u16            usagePage   = 0;                   ///< HID usage page (only valid for 'Other' type)
+		u16            usage       = 0;                   ///< HID usage (only valid for 'Other' type)
+		InternedString uid;                               ///< Unique identifier (usually system dependent)
+		InternedString productName;                       ///< HID product name  (only valid for 'Other' type)
+		InternedString serialNumber;                      ///< HID serial number
 	};
 
 	/**
@@ -65,7 +65,7 @@ namespace Onca::Input
 		 * Get the input device identifier
 		 * \return Input device identifier
 		 */
-		auto GetDeviceNames() const noexcept -> const DynArray<String>& { return m_devNames; };
+		auto GetDeviceNames() const noexcept -> const DynArray<InternedString>& { return m_devNames; };
 		/**
 		 * Get the input device id
 		 * \return Input device id
@@ -98,10 +98,10 @@ namespace Onca::Input
 	protected:
 		friend class InputManager;
 
-		DeviceInfo       m_devInfo;    ///< Device info
-		u32              m_deviceId;   ///< Device id
-		InputManager*    m_pManager;   ///< Input manager
-		DynArray<String> m_devNames;   ///< Device names (e.g. ["category", "generic name", "name"] or ["keyboard"]) // TODO: Use interned strings
-		DynArray<Key>    m_nativeKeys; ///< Native to key mapping
+		DeviceInfo               m_devInfo;    ///< Device info
+		u32                      m_deviceId;   ///< Device id
+		InputManager*            m_pManager;   ///< Input manager
+		DynArray<InternedString> m_devNames;   ///< Device names (e.g. ["category", "generic name", "name"] or ["keyboard"])
+		DynArray<Key>            m_nativeKeys; ///< Native to key mapping
 	};
 }
