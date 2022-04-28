@@ -7,6 +7,7 @@
 #include "Format.h"
 #include "Parse.h"
 #include "StringId.h"
+#include "InternedString.h"
 
 #include "StringUtils.inl"
 #include "String.inl"
@@ -15,3 +16,4 @@
 #include "Format.inl"
 #include "Parse.inl"
 #include "StringId.inl"
+#include "InternedString.inl"
