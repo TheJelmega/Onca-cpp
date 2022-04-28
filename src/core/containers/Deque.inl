@@ -683,7 +683,6 @@ namespace Onca
 			Algo::Move(it + count, it, numElems);
 
 			auto [offset, index] = GetElemOffsetIdx(m_size - count);
-			// TODO
 			if (offset)
 			{
 				usize usedBlocks = (m_initialIdx + m_size + Mask) / BlockSize;

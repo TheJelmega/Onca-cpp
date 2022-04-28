@@ -494,7 +494,7 @@ namespace Onca::Input
 
 		OnUserRemoved(id, m_users[id]);
 		m_users[id].m_valid = false;
-		m_users.Erase(m_users.IteratorAt(id));
+		m_users.EraseAt(id);
 	}
 
 	auto InputManager::GetUser(u32 id) noexcept -> User&

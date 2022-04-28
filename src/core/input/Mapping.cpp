@@ -233,7 +233,7 @@ namespace Onca::Input
 	void ControlBinding::RemoveTrigger(usize idx) noexcept
 	{
 		if (idx < m_triggers.Size())
-			m_triggers.Erase(m_triggers.IteratorAt(idx));
+			m_triggers.EraseAt(idx);
 	}
 
 	void ControlBinding::AddModifier(Unique<IModifier>&& modifier) noexcept
@@ -244,7 +244,7 @@ namespace Onca::Input
 	void ControlBinding::RemoveModifier(usize idx) noexcept
 	{
 		if (idx < m_modifiers.Size())
-			m_triggers.Erase(m_triggers.IteratorAt(idx));
+			m_triggers.EraseAt(idx);
 	}
 
 	void ControlBinding::MoveModifier(usize from, usize to) noexcept
@@ -253,7 +253,7 @@ namespace Onca::Input
 			return;
 
 		Unique<IModifier> modifier = m_modifiers.Extract(from);
-		m_modifiers.Insert(m_modifiers.IteratorAt(to), Move(modifier));
+		m_modifiers.Insert(to, Move(modifier));
 	}
 
 	void ControlBinding::Rebind(RebindState& state) noexcept
@@ -277,7 +277,7 @@ namespace Onca::Input
 	void ActionMapping::RemoveControlBinding(usize idx) noexcept
 	{
 		if (idx < m_bindings.Size())
-			m_bindings.Erase(m_bindings.IteratorAt(idx));
+			m_bindings.EraseAt(idx);
 	}
 
 	void MappingContext::AddInputMapping(const ActionMapping& mapping) noexcept
@@ -290,7 +290,7 @@ namespace Onca::Input
 		if (idx >= m_mappings.Size())
 			return;
 
-		m_mappings.Erase(m_mappings.IteratorAt(idx));
+		m_mappings.EraseAt(idx);
 	}
 
 	void MappingContext::SetDescription(const String& desc) noexcept

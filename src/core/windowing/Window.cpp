@@ -8,7 +8,7 @@ namespace Onca
 		for (usize i = 0; i < callbacks.Size();)
 		{
 			if (callbacks[i].IsCalledOn(ptr))
-				callbacks.Erase(callbacks.IteratorAt(i));
+				callbacks.EraseAt(i);
 			else
 				++i;
 		}

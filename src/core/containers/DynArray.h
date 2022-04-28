@@ -226,6 +226,60 @@ namespace Onca
 		auto Insert(ConstIterator& it, DynArray&& other) noexcept -> Iterator;
 
 		/**
+		 * Insert an element in a certain location
+		 * \param[in] idx Index to insert the element at
+		 * \param[in] val Element to insert
+		 * \return Iterator to inserted element
+		 */
+		auto Insert(usize idx, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
+		/**
+		 * Insert an element in a certain location
+		 * \param[in] idx Index to insert the element at
+		 * \param[in] val Element to insert
+		 * \return Iterator to inserted element
+		 */
+		auto Insert(usize idx, T&& val) noexcept -> Iterator;
+		/**
+		 * Insert a number of elements in the DynArray
+		 * \param[in] idx Index to insert elements at
+		 * \param[in] count Number of elements to insert
+		 * \param[in] val Value of elements to insert
+		 * \return Iterator to the first element that was inserter
+		 */
+		auto Insert(usize idx, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>;
+		/**
+		 * Insert an iterable range into the DynArray
+		 * \tparam It Iterator type
+		 * \param[in] idx Index to insert elements at
+		 * \param[in] begin Begin iterator
+		 * \param[in] end End iterator
+		 * \return Iterator to the first element that was inserted
+		 */
+		template<ForwardIterator It>
+		auto Insert(usize idx, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>;
+		/**
+		 * Insert an initializer list into the DynArray
+		 * \param[in] idx Index to insert elements at
+		 * \param[in] il Initializer list to insert
+		 * \return Iterator to the first element that was inserted
+		 */
+		auto Insert(usize idx, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>;
+		/**
+		 * Insert a DynArray into the DynArray
+		 * \param[in] idx Index to insert elements at
+		 * \param[in] other DynArray to insert
+		 * \return Iterator to the first element that was inserted
+		 */
+		auto Insert(usize idx, const DynArray& other) noexcept -> Iterator requires CopyConstructible<T>;
+		/**
+		 * Insert a DynArray into the DynArray
+		 * \param[in] idx Index to insert elements at
+		 * \param[in] other DynArray to insert
+		 * \return Iterator to the first element that was inserted
+		 */
+		auto Insert(usize idx, DynArray&& other) noexcept -> Iterator;
+
+		/**
 		 * Emplace an element into the DynArray
 		 * \tparam Args Type of arguments
 		 * \param[in] it Iterator to position to insert elements at
@@ -276,6 +330,17 @@ namespace Onca
 		 */
 		template<Callable<bool, const T&> F>
 		void EraseIf(F fun) noexcept;
+		/**
+		 * Erase an element at a given index from the DynArray
+		 * \param[in] idx Index
+		 */
+		void EraseAt(usize idx) noexcept;
+		/**
+		 * Erase a number of element at a given index from the DynArray
+		 * \param[in] idx Index
+		 * \param[in] count Number of elements to erase
+		 */
+		void EraseAt(usize idx, usize count) noexcept;
 
 		/**
 		 * Move the element out of the DynArray and erase the invalid data at its iterator

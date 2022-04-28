@@ -451,7 +451,7 @@ namespace Onca
 			--count;
 			size -= c.size;
 		}
-		m_data.Insert(m_data.IteratorAt(m_data.Size()), count * c.size, 0);
+		m_data.Insert(m_data.Size(), count * c.size, 0);
 
 		u8* pData = m_data.Data() + m_data.Size();
 		for (usize i = 0; i < count; ++i, pData += c.size)
@@ -510,7 +510,7 @@ namespace Onca
 
 		const usize idx = IndexAtCharPos(pos);
 		const usize end = IndexForOffset(idx, count);
-		m_data.Erase(m_data.IteratorAt(idx), end - idx);
+		m_data.EraseAt(idx, end - idx);
 
 		m_length -= count;
 		NullTerminate();
@@ -669,7 +669,7 @@ namespace Onca
 			otherSize = tmpIdx - strIdx;
 		}
 
-		m_data.Insert(m_data.IteratorAt(idx), otherSize, 0);
+		m_data.Insert(idx, otherSize, 0);
 		MemCpy<u8>(m_data.Data() + idx, str.m_data.Data() + strIdx, otherSize);
 		m_length += strLength;
 		NullTerminate();
@@ -689,7 +689,7 @@ namespace Onca
 			--count;
 			size -= c.size;
 		}
-		m_data.Insert(m_data.IteratorAt(idx), count * c.size, 0);
+		m_data.Insert(idx, count * c.size, 0);
 
 		u8* pData = m_data.Data() + idx;
 		for (usize i = 0; i < count; ++i, pData += c.size)
@@ -1651,9 +1651,9 @@ namespace Onca
 	{
 		usize needed = count * c.size;
 		if (needed > byteLength)
-			m_data.Insert(m_data.IteratorAt(idx), needed - byteLength, 0);
+			m_data.Insert(idx, needed - byteLength, 0);
 		else if (needed < byteLength)
-			m_data.Erase(m_data.IteratorAt(idx), byteLength - needed);
+			m_data.EraseAt(idx, byteLength - needed);
 
 		if (byteLength < needed)
 		{
@@ -1665,7 +1665,7 @@ namespace Onca
 		}
 		else
 		{
-			m_data.Erase(m_data.IteratorAt(idx), byteLength - needed);
+			m_data.EraseAt(idx, byteLength - needed);
 		}
 
 		u8* pData = m_data.Data() + idx;
@@ -1695,7 +1695,7 @@ namespace Onca
 		}
 		else
 		{
-			m_data.Erase(m_data.IteratorAt(idx), byteLength - otherSize);
+			m_data.EraseAt(idx, byteLength - otherSize);
 		}
 
 		MemCpy(m_data.Data() + idx, str.m_data.Data() + strIdx, otherSize);

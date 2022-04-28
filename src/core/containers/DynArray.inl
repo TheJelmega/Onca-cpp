@@ -421,6 +421,49 @@ namespace Onca
 	}
 
 	template <typename T>
+	auto DynArray<T>::Insert(usize idx, const T& val) noexcept -> Iterator requires CopyConstructible<T>
+	{
+		return Insert(IteratorAt(idx), val);
+	}
+
+	template <typename T>
+	auto DynArray<T>::Insert(usize idx, T&& val) noexcept -> Iterator
+	{
+		return Insert(IteratorAt(idx), Move(val));
+	}
+
+	template <typename T>
+	auto DynArray<T>::Insert(usize idx, usize count, const T& val) noexcept -> Iterator requires CopyConstructible<T>
+	{
+		return Insert(IteratorAt(idx), count, val);
+	}
+
+	template <typename T>
+	template <ForwardIterator It>
+	auto DynArray<T>::Insert(usize idx, const It& begin, const It& end) noexcept -> Iterator requires CopyConstructible<T>
+	{
+		return Insert(IteratorAt(idx), begin, end);
+	}
+
+	template <typename T>
+	auto DynArray<T>::Insert(usize idx, const InitializerList<T>& il) noexcept -> Iterator requires CopyConstructible<T>
+	{
+		return Insert(IteratorAt(idx), il);
+	}
+
+	template <typename T>
+	auto DynArray<T>::Insert(usize idx, const DynArray& other) noexcept -> Iterator requires CopyConstructible<T>
+	{
+		return Insert(IteratorAt(idx), other);
+	}
+
+	template <typename T>
+	auto DynArray<T>::Insert(usize idx, DynArray&& other) noexcept -> Iterator
+	{
+		return Insert(IteratorAt(idx), Move(other));
+	}
+
+	template <typename T>
 	template <typename ... Args>
 		requires ConstructableFrom<T, Args...>
 	auto DynArray<T>::Emplace(ConstIterator& it, Args&&... args) noexcept -> Iterator
@@ -519,6 +562,18 @@ namespace Onca
 			else
 				++it;
 		}
+	}
+
+	template <typename T>
+	void DynArray<T>::EraseAt(usize idx) noexcept
+	{
+		Erase(IteratorAt(idx), 1);
+	}
+
+	template <typename T>
+	void DynArray<T>::EraseAt(usize idx, usize count) noexcept
+	{
+		Erase(IteratorAt(idx), count);
 	}
 
 	template <typename T>

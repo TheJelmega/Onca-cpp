@@ -130,7 +130,7 @@ namespace Onca
 	template <typename T>
 	void ByteBuffer::Insert(const T& val, usize numBytes) noexcept
 	{
-		m_data.Insert(m_data.IteratorAt(m_cursor), numBytes, 0);
+		m_data.Insert(m_cursor, numBytes, 0);
 		Write(val);
 	}
 
