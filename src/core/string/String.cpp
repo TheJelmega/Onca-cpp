@@ -1,88 +1,74 @@
-#pragma once
-#if __RESHARPER__
-#include "ConstString.h"
-#endif
+#include "String.h"
 
 namespace Onca
 {
-	template<usize Cap>
-	constexpr ConstString<Cap>::Iterator::Iterator() noexcept
-		: m_pCStr(nullptr)
+	String::Iterator::Iterator() noexcept
+		: m_pData(nullptr)
 		, m_idx(0)
 	{
 	}
 
-	template<usize Cap>
-	constexpr ConstString<Cap>::Iterator::Iterator(const Iterator& other) noexcept
-		: m_pCStr(other.m_pCStr)
+	String::Iterator::Iterator(const Iterator& other) noexcept
+		: m_pData(other.m_pData)
 		, m_idx(other.m_idx)
 	{
 	}
 
-	template<usize Cap>
-	constexpr ConstString<Cap>::Iterator::Iterator(Iterator&& other) noexcept
-		: m_pCStr(other.m_pCStr)
+	String::Iterator::Iterator(Iterator&& other) noexcept
+		: m_pData(other.m_pData)
 		, m_idx(other.m_idx)
 	{
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator=(const Iterator& other) noexcept -> Iterator&
+	auto String::Iterator::operator=(const Iterator& other) noexcept -> Iterator&
 	{
-		m_pCStr = other.m_pCStr;
+		m_pData = other.m_pData;
 		m_idx = other.m_idx;
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator=(Iterator&& other) noexcept -> Iterator&
+	auto String::Iterator::operator=(Iterator&& other) noexcept -> Iterator&
 	{
-		m_pCStr = other.m_pCStr;
+		m_pData = other.m_pData;
 		m_idx = other.m_idx;
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator*() const noexcept -> UCodepoint
+	auto String::Iterator::operator*() const noexcept -> UCodepoint
 	{
-		return Unicode::GetCpFromUtf8(m_pCStr->Data() + m_idx);
+		return Unicode::GetCpFromUtf8(m_pData->Data() + m_idx);
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator++() noexcept -> Iterator&
+	auto String::Iterator::operator++() noexcept -> Iterator&
 	{
-		m_idx += Unicode::GetUtf8Size(m_pCStr->Data()[m_idx]);
+		m_idx += Unicode::GetUtf8Size(m_pData->Data()[m_idx]);
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator++(int) noexcept -> Iterator
+	auto String::Iterator::operator++(int) noexcept -> Iterator
 	{
 		Iterator it{ *this };
 		operator++();
 		return it;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator--() noexcept -> Iterator&
+	auto String::Iterator::operator--() noexcept -> Iterator&
 	{
-		const u8* pData = m_pCStr->Data();
+		const u8* pData = m_pData->Data();
 		--m_idx;
 		while (m_idx && (pData[m_idx] & 0x80) == 0x80)
 			--m_idx;
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator--(int) noexcept -> Iterator
+	auto String::Iterator::operator--(int) noexcept -> Iterator
 	{
 		Iterator it{ *this };
 		operator--();
 		return it;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator+(usize count) const noexcept -> Iterator
+	auto String::Iterator::operator+(usize count) const noexcept -> Iterator
 	{
 		Iterator it{ *this };
 		for (usize i = 0; i < count; ++i)
@@ -90,8 +76,7 @@ namespace Onca
 		return it;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator-(usize count) const noexcept -> Iterator
+	auto String::Iterator::operator-(usize count) const noexcept -> Iterator
 	{
 		Iterator it{ *this };
 		for (usize i = 0; i < count; ++i)
@@ -99,8 +84,7 @@ namespace Onca
 		return it;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator-(const Iterator& other) const noexcept -> isize
+	auto String::Iterator::operator-(const Iterator& other) const noexcept -> isize
 	{
 		ASSERT(*this >= other, "Cannot subtract iterator coming before this iterator");
 		usize diff = 0;
@@ -109,38 +93,33 @@ namespace Onca
 		return diff;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator+=(usize count) noexcept -> Iterator&
+	auto String::Iterator::operator+=(usize count) noexcept -> Iterator&
 	{
 		for (usize i = 0; i < count; ++i)
 			operator++();
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator-=(usize count) noexcept -> Iterator&
+	auto String::Iterator::operator-=(usize count) noexcept -> Iterator&
 	{
 		for (usize i = 0; i < count; ++i)
 			operator--();
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator==(const Iterator& other) const noexcept -> bool
+	auto String::Iterator::operator==(const Iterator& other) const noexcept -> bool
 	{
-		return m_pCStr == other.m_pCStr && m_idx == other.m_idx;
+		return m_pData == other.m_pData && m_idx == other.m_idx;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator!=(const Iterator& other) const noexcept -> bool
+	auto String::Iterator::operator!=(const Iterator& other) const noexcept -> bool
 	{
 		return !(*this == other);
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator<=>(const Iterator& other) const noexcept -> std::partial_ordering
+	auto String::Iterator::operator<=>(const Iterator& other) const noexcept -> std::partial_ordering
 	{
-		if (m_pCStr != other.m_pCStr)
+		if (m_pData != other.m_pData)
 			return std::partial_ordering::unordered;
 
 		if (m_idx < other.m_idx) return std::partial_ordering::less;
@@ -148,134 +127,95 @@ namespace Onca
 		return std::partial_ordering::equivalent;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Iterator::operator[](usize idx) const noexcept -> const UCodepoint&
+	auto String::Iterator::operator[](usize idx) const noexcept -> UCodepoint
 	{
-		return *(*this + idx);
+		return Unicode::GetCpFromUtf8(m_pData->Data() + m_idx);
 	}
 
-	template<usize Cap>
-	constexpr ConstString<Cap>::Iterator::Iterator(const ConstString<Cap>* pData, usize idx)
-		: m_pCStr(pData)
+	String::Iterator::Iterator(const DynArray<u8>* pData, usize idx)
+		: m_pData(pData)
 		, m_idx(idx)
 	{
 	}
 
-	template<usize Cap>
-	constexpr ConstString<Cap>::ConstString() noexcept
-		: m_data()
+	String::String(Alloc::IAllocator& alloc) noexcept
+		: m_data(alloc)
 		, m_length(0)
 	{
 	}
 
-	template<usize Cap>
-	constexpr ConstString<Cap>::ConstString(usize capacity) noexcept
-		: m_data(capacity)
+	String::String(usize capacity, Alloc::IAllocator& alloc) noexcept
+		: m_data(capacity, alloc)
 		, m_length(0)
 	{
 	}
 
-	template<usize Cap>
-	constexpr ConstString<Cap>::ConstString(UCodepoint codepoint, usize count) noexcept
-		: m_data()
+	String::String(UCodepoint codepoint, usize count, Alloc::IAllocator& alloc) noexcept
+		: m_data(alloc)
 		, m_length(0)
 	{
 		Assign(codepoint, count);
 	}
 
-	template<usize Cap>
-	constexpr ConstString<Cap>::ConstString(const ConstString& other, usize pos) noexcept
-		: m_data()
+	String::String(const String& other, usize pos, Alloc::IAllocator& alloc) noexcept
+		: m_data(alloc)
 		, m_length(0)
 	{
 		Assign(other, pos);
 	}
 
-	template<usize Cap>
-	constexpr ConstString<Cap>::ConstString(const ConstString& other, usize pos, usize length) noexcept
-		: m_data()
+	String::String(const String& other, usize pos, usize length) noexcept
+		: m_data(*other.GetAllocator())
 		, m_length(0)
 	{
 		Assign(other, pos, length);
 	}
-	
-	template<usize Cap>
-	template <CharacterType C>
-	constexpr ConstString<Cap>::ConstString(const C* str) noexcept
-		: m_data()
+
+	String::String(const String& other, usize pos, usize length, Alloc::IAllocator& alloc) noexcept
+		: m_data(alloc)
 		, m_length(0)
 	{
-		Assign(str);
+		Assign(other, pos, length);
 	}
 
-	template<usize Cap>
-	template <CharacterType C>
-	constexpr ConstString<Cap>::ConstString(const C* str, usize length) noexcept
-		: m_data()
-		, m_length(0)
-	{
-		Assign(str, length);
-	}
-
-	template<usize Cap>
-	template <ConvertableToUnicode T>
-	constexpr ConstString<Cap>::ConstString(const InitializerList<T>& il) noexcept
-		: m_data()
-		, m_length(0)
-	{
-		Assign(il);
-	}
-
-	template<usize Cap>
-	template <ForwardIterator It> requires DereferencableToUnicode<It>
-	constexpr ConstString<Cap>::ConstString(const It& begin, const It& end) noexcept
-		: m_data()
-		, m_length(0)
-	{
-		Assign(begin, end);
-	}
-
-	template<usize Cap>
-	template <CharacterType C>
-	constexpr auto ConstString<Cap>::operator=(const C* str) noexcept -> ConstString&
-	{
-		Assign(str);
-		return *this;
-	}
-
-	template<usize Cap>
-	template <ConvertableToUnicode T>
-	constexpr auto ConstString<Cap>::operator=(const InitializerList<T>& il) noexcept -> ConstString&
-	{
-		Assign(il);
-		return *this;
-	}
-
-	template<usize Cap>
-	constexpr ConstString<Cap>::ConstString(const ConstString& other) noexcept
+	String::String(const String& other) noexcept
 		: m_data(other.m_data)
 		, m_length(other.m_length)
 	{
+		NullTerminate();
 	}
-	
-	template<usize Cap>
-	constexpr ConstString<Cap>::ConstString(ConstString&& other) noexcept
+
+	String::String(const String& other, Alloc::IAllocator& alloc) noexcept
+		: m_data(other.m_data, alloc)
+		, m_length(other.m_length)
+	{
+		NullTerminate();
+	}
+
+	String::String(String&& other) noexcept
 		: m_data(Move(other.m_data))
 		, m_length(other.m_length)
 	{
 		other.m_length = 0;
 	}
-	
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator=(const ConstString& other) noexcept -> ConstString&
+
+	String::String(String&& other, Alloc::IAllocator& alloc) noexcept
+		: m_data(Move(other.m_data), alloc)
+		, m_length(other.m_length)
+	{
+		NullTerminate();
+		other.m_length = 0;
+	}
+
+	auto String::operator=(const String& other) noexcept -> String&
 	{
 		m_data = other.m_data;
 		m_length = other.m_length;
+		NullTerminate();
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator=(ConstString&& other) noexcept -> ConstString&
+	auto String::operator=(String&& other) noexcept -> String&
 	{
 		m_data = Move(other.m_data);
 		m_length = other.m_length;
@@ -283,52 +223,31 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator+(UCodepoint codepoint) const noexcept -> ConstString
+	auto String::operator+(UCodepoint codepoint) const noexcept -> String
 	{
-		ConstString copy{ *this };
+		String copy{ *this };
 		copy.Add(codepoint);
 		return copy;
 	}
 
-	template<usize Cap>
-	template <CharacterType C>
-	constexpr auto ConstString<Cap>::operator+(const C* str) const noexcept -> ConstString
+	auto String::operator+(const String& other) const noexcept -> String
 	{
-		ConstString copy{ *this };
-		copy.Add(str);
-		return copy;
-	}
-
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator+(const ConstString& other) const noexcept -> ConstString
-	{
-		ConstString copy{ *this };
+		String copy{ *this };
 		copy.Add(other);
 		return copy;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator+=(UCodepoint codepoint) noexcept -> ConstString&
+	auto String::operator+=(UCodepoint codepoint) noexcept -> String&
 	{
 		return Add(codepoint);
 	}
 
-	template<usize Cap>
-	template <CharacterType C>
-	constexpr auto ConstString<Cap>::operator+=(const C* str) noexcept -> ConstString&
-	{
-		return Add(str);
-	}
-
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator+=(const ConstString& other) noexcept -> ConstString&
+	auto String::operator+=(const String& other) noexcept -> String&
 	{
 		return Add(other);
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator<=>(const ConstString& other) const noexcept -> std::strong_ordering
+	auto String::operator<=>(const String& other) const noexcept -> std::strong_ordering
 	{
 		i8 res = Compare(other);
 		if (res == 0) return std::strong_ordering::equal;
@@ -336,97 +255,34 @@ namespace Onca
 		return std::strong_ordering::greater;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator==(const ConstString& other) const noexcept -> bool
+	auto String::operator==(const String& other) const noexcept -> bool
 	{
 		if (m_data.Size() != other.DataSize())
 			return false;
 
 		return MemCmp(m_data.Data(), other.Data(), m_data.Size()) == 0;
 	}
-
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator!=(const ConstString& other) const noexcept -> bool
-	{
-		return !(*this == other);
-	}
-
-	template<usize Cap>
-	constexpr void ConstString<Cap>::Assign(UCodepoint codepoint, usize count) noexcept
+	
+	void String::Assign(UCodepoint codepoint, usize count) noexcept
 	{
 		m_data.Clear();
 		m_length = 0;
 		Add(codepoint, count);
 	}
 
-	template<usize Cap>
-	constexpr void ConstString<Cap>::Assign(const ConstString& other, usize pos, usize length) noexcept
+	void String::Assign(const String& other, usize pos, usize length) noexcept
 	{
 		m_data.Clear();
 		m_length = 0;
 		Add(other, pos, length);
 	}
 
-	template<usize Cap>
-	template <CharacterType C>
-	constexpr void ConstString<Cap>::Assign(const C* str) noexcept
+	void String::Reserve(usize capacity) noexcept
 	{
-		Assign(str, StrLen(str));
+		m_data.Reserve(capacity);
 	}
 
-	template<usize Cap>
-	template <CharacterType C>
-	constexpr void ConstString<Cap>::Assign(const C* str, usize length) noexcept
-	{
-		m_data.Clear();
-		m_length = 0;
-		for (usize i = 0; i < length; ++i)
-		{
-			const auto [c, toSkip] = Unicode::ToUtf8(str);
-			str += toSkip;
-
-			const usize size = m_data.Size();
-			if (size + c.size + 1 >= Cap) // +1 for null terminator
-				break;
-			m_data.Resize(size + c.size);
-			MemCpy<u8>(m_data.Data() + size, c.data, c.size);
-			++m_length;
-		}
-		NullTerminate();
-	}
-
-	template<usize Cap>
-	template <ConvertableToUnicode T>
-	constexpr void ConstString<Cap>::Assign(const InitializerList<T>& il) noexcept
-	{
-		m_data.Clear();
-		Assign(il.begin(), il.end());
-	}
-
-	template<usize Cap>
-	template <ForwardIterator It> requires DereferencableToUnicode<It>
-	constexpr void ConstString<Cap>::Assign(const It& begin, const It& end) noexcept
-	{
-		m_data.Clear();
-		m_length = 0;
-		for (It it = begin; it != end;)
-		{
-			const auto [c, toSkip] = Unicode::ToUtf8(&*it);
-			for (usize i = 0; i < toSkip; ++i)
-				++it;
-
-			const usize size = m_data.Size();
-			if (size + c.size + 1 >= Cap) // +1 for null terminator
-				break;
-			m_data.Resize(size + c.size);
-			MemCpy<u8>(m_data.Data() + size, c.data, c.size);
-			++m_length;
-		}
-		NullTerminate();
-	}
-	
-	template<usize Cap>
-	constexpr void ConstString<Cap>::Resize(usize newSize, UCodepoint codepoint) noexcept
+	void String::Resize(usize newSize, UCodepoint codepoint) noexcept
 	{
 		if (newSize > m_length)
 		{
@@ -440,70 +296,65 @@ namespace Onca
 		}
 		m_length = newSize;
 	}
-	
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Add(UCodepoint codepoint, usize count) noexcept -> ConstString&
+
+	void String::ShrinkToFit() noexcept
+	{
+		m_data.Add(0);
+		m_data.ShrinkToFit();
+		m_data.Pop();
+	}
+
+	void String::Clear(bool clearMemory) noexcept
+	{
+		m_data.Clear(clearMemory);
+	}
+
+	auto String::Add(UCodepoint codepoint, usize count) noexcept -> String&
 	{
 		const Unicode::Utf8Char c = Unicode::GetUtf8FromCp(codepoint);
-		usize size = count * c.size;
-		while (m_data.Size() + size + 1 > Cap)
-		{
-			--count;
-			size -= c.size;
-		}
-		m_data.Insert(m_data.IteratorAt(m_data.Size()), count * c.size, 0);
+		const usize size = m_data.Size();
+		m_data.Resize(m_data.Size() + count * c.size);
 
-		u8* pData = m_data.Data() + m_data.Size();
+		u8* pData = m_data.Data() + size;
 		for (usize i = 0; i < count; ++i, pData += c.size)
-			MemCpy<u8>(pData, c.data, c.size);
+			MemCpy(pData, c.data, c.size);
 
 		m_length += count;
 		NullTerminate();
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Add(const ConstString& other, usize pos, usize length) noexcept -> ConstString&
+	auto String::Add(const String& other, usize pos, usize length) noexcept -> String&
 	{
-		ASSERT(pos < other.Length(), "'pos' needs to point to a character inside the ConstString");
 		if (length > other.Length() - pos)
 			length = other.Length() - pos;
-
-		if (length == 0)
+		if (length == 0 || pos > other.Length())
 			return *this;
 
 		const usize startIdx = other.IndexAtCharPos(pos);
 		const usize endIdx = other.IndexForOffset(startIdx, length);
-		usize byteLen = endIdx - startIdx;
+		const usize byteLen = endIdx - startIdx;
 
 		const usize size = m_data.Size();
-		while (size + byteLen + 1 > Cap)
-		{
-			--length;
-			const usize tmpIdx = other.IndexForOffset(startIdx, length);
-			byteLen = tmpIdx - startIdx;
-		}
-		
-		MemCpy<u8>(m_data.Data() + size, other.Data() + startIdx, byteLen);
+		m_data.Resize(size + byteLen);
+		MemCpy(m_data.Data() + size, other.Data() + startIdx, byteLen);
+
 		m_length += length;
 		NullTerminate();
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::PadLeft(usize count, UCodepoint codepoint) noexcept -> ConstString&
+	auto String::PadLeft(usize count, UCodepoint codepoint) noexcept -> String&
 	{
 		return Insert(0, codepoint, count);
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::PadRight(usize count, UCodepoint codepoint) noexcept -> ConstString&
+	auto String::PadRight(usize count, UCodepoint codepoint) noexcept -> String&
 	{
 		return Add(codepoint, count);
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Erase(usize pos, usize count) noexcept -> ConstString&
+	auto String::Erase(usize pos, usize count) noexcept -> String&
 	{
 		if (count > m_length - pos)
 			count = m_length - pos;
@@ -517,8 +368,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::TrimLeft(UCodepoint codepoint) noexcept -> ConstString&
+	auto String::TrimLeft(UCodepoint codepoint) noexcept -> String&
 	{
 		if (m_length == 0)
 			return *this;
@@ -544,8 +394,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::TrimLeft() noexcept -> ConstString&
+	auto String::TrimLeft() noexcept -> String&
 	{
 		if (m_length == 0)
 			return *this;
@@ -570,8 +419,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::TrimRight(UCodepoint codepoint) noexcept -> ConstString&
+	auto String::TrimRight(UCodepoint codepoint) noexcept -> String&
 	{
 		if (m_length == 0)
 			return *this;
@@ -599,8 +447,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::TrimRight() noexcept -> ConstString&
+	auto String::TrimRight() noexcept -> String&
 	{
 		if (m_length == 0)
 			return *this;
@@ -627,8 +474,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Trim(UCodepoint codepoint) noexcept -> ConstString&
+	auto String::Trim(UCodepoint codepoint) noexcept -> String&
 	{
 		if (m_length == 0)
 			return *this;
@@ -638,8 +484,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Trim() noexcept -> ConstString&
+	auto String::Trim() noexcept -> String&
 	{
 		if (m_length == 0)
 			return *this;
@@ -649,10 +494,9 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Insert(usize pos, const ConstString& str, usize strPos, usize strLength) noexcept -> ConstString&
+	auto String::Insert(usize pos, const String& str, usize strPos, usize strLength) noexcept -> String&
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the ConstString");
+		ASSERT(pos == 0 || pos < m_length, "'pos' needs to point to a character inside the string");
 		ASSERT(strPos < str.Length(), "'strPos' needs to point to a character inside 'str'");
 		if (strLength > str.Length() - strPos)
 			strLength = str.Length() - strPos;
@@ -660,50 +504,34 @@ namespace Onca
 		const usize idx = IndexAtCharPos(pos);
 		const usize strIdx = str.IndexAtCharPos(strPos);
 		const usize strEnd = str.IndexForOffset(strIdx, strLength);
-		usize otherSize = strEnd - strIdx;
-
-		while (m_data.Size() + otherSize + 1 > Cap)
-		{
-			--strLength;
-			const usize tmpIdx = str.IndexForOffset(strIdx, strLength);
-			otherSize = tmpIdx - strIdx;
-		}
+		const usize otherSize = strEnd - strIdx;
 
 		m_data.Insert(m_data.IteratorAt(idx), otherSize, 0);
-		MemCpy<u8>(m_data.Data() + idx, str.m_data.Data() + strIdx, otherSize);
+		MemCpy(m_data.Data() + idx, str.m_data.Data() + strIdx, otherSize);
 		m_length += strLength;
 		NullTerminate();
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Insert(usize pos, UCodepoint codepoint, usize count) noexcept -> ConstString&
+	auto String::Insert(usize pos, UCodepoint codepoint, usize count) noexcept -> String&
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the ConstString");
+		ASSERT(pos == 0 || pos < m_length, "'pos' needs to point to a character inside the string");
 		const usize idx = IndexAtCharPos(pos);
 		const Unicode::Utf8Char c = Unicode::GetUtf8FromCp(codepoint);
-
-		usize size = count * c.size;
-		while (m_data.Size() + size + 1 > Cap)
-		{
-			--count;
-			size -= c.size;
-		}
 		m_data.Insert(m_data.IteratorAt(idx), count * c.size, 0);
 
 		u8* pData = m_data.Data() + idx;
 		for (usize i = 0; i < count; ++i, pData += c.size)
-			MemCpy<u8>(pData, c.data, c.size);
+			MemCpy(pData, c.data, c.size);
 
 		m_length += count;
 		NullTerminate();
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Replace(usize pos, usize length, const ConstString& str, usize strPos, usize strLength) noexcept -> ConstString&
+	auto String::Replace(usize pos, usize length, const String& str, usize strPos, usize strLength) noexcept -> String&
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the ConstString");
+		ASSERT(pos == 0 || pos < m_length, "'pos' needs to point to a character inside the string");
 		ASSERT(strPos < str.Length(), "'pos' needs to point to a character inside 'str'");
 		if (strLength > str.Length() - strPos)
 			strLength = str.Length() - strPos;
@@ -719,10 +547,9 @@ namespace Onca
 		return ReplaceInternal(idx, byteLength, length, str, strIdx, strEnd, strLength);
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Replace(usize pos, usize length, UCodepoint codepoint, usize count) noexcept -> ConstString&
+	auto String::Replace(usize pos, usize length, UCodepoint codepoint, usize count) noexcept -> String&
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the ConstString");
+		ASSERT(pos == 0 || pos < m_length, "'pos' needs to point to a character inside the string");
 		if (length > m_length - pos)
 			length = m_length - pos;
 
@@ -733,8 +560,7 @@ namespace Onca
 		return ReplaceInternal(idx, byteLength, length, c, count);
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Replace(UCodepoint toReplace, UCodepoint replaceWith) noexcept -> ConstString&
+	auto String::Replace(UCodepoint toReplace, UCodepoint replaceWith) noexcept -> String&
 	{
 		const Unicode::Utf8Char c = Unicode::GetUtf8FromCp(replaceWith);
 
@@ -758,8 +584,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Replace(UCodepoint toReplace, const ConstString& replaceWith) noexcept -> ConstString&
+	auto String::Replace(UCodepoint toReplace, const String& replaceWith) noexcept -> String&
 	{
 		usize charIdx = 0, byteIdx = 0;
 		const usize otherSize = replaceWith.DataSize();
@@ -783,8 +608,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Replace(const ConstString& toReplace, UCodepoint replaceWith) noexcept -> ConstString&
+	auto String::Replace(const String& toReplace, UCodepoint replaceWith) noexcept -> String&
 	{
 		const Unicode::Utf8Char c = Unicode::GetUtf8FromCp(replaceWith);
 		const usize curLen = toReplace.DataSize();
@@ -808,8 +632,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Replace(const ConstString& toReplace, const ConstString& replaceWith) noexcept -> ConstString&
+	auto String::Replace(const String& toReplace, const String& replaceWith) noexcept -> String&
 	{
 		usize charIdx = 0, byteIdx = 0;
 		const usize otherSize = replaceWith.DataSize();
@@ -833,8 +656,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::ToUpper() noexcept -> ConstString&
+	auto String::ToUpper() noexcept -> String&
 	{
 		u8* pData = m_data.Data();
 		for (usize i = 0, size = m_data.Size(); i < size;)
@@ -850,17 +672,16 @@ namespace Onca
 			{
 				m_data.Erase(pData + i, utf8size - upper.size);
 			}
-			MemCpy<u8>(pData + i, upper.data, upper.size);
+			MemCpy(pData + i, upper.data, upper.size);
 			i += upper.size;
 		}
 		NullTerminate();
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::AsUpper() const noexcept -> ConstString
+	auto String::AsUpper() const noexcept -> String
 	{
-		ConstString res;
+		String res{ m_data.Capacity(), *GetAllocator() };
 		const u8* pSourceData = m_data.Data();
 		u8* pData = res.Data();
 		for (usize i = 0, size = m_data.Size(); i < size;)
@@ -871,7 +692,7 @@ namespace Onca
 			res.m_data.Resize(res.DataSize() + upper.size);
 			pData = res.Data();
 
-			MemCpy<u8>(pData + i, upper.data, upper.size);
+			MemCpy(pData + i, upper.data, upper.size);
 			i += upper.size;
 			pSourceData += utf8size;
 		}
@@ -881,8 +702,7 @@ namespace Onca
 		return res;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::ToLower() noexcept -> ConstString&
+	auto String::ToLower() noexcept -> String&
 	{
 		u8* pData = m_data.Data();
 		for (usize i = 0, size = m_data.Size(); i < size;)
@@ -898,17 +718,16 @@ namespace Onca
 			{
 				m_data.Erase(pData + i, utf8size - upper.size);
 			}
-			MemCpy<u8>(pData + i, upper.data, upper.size);
+			MemCpy(pData + i, upper.data, upper.size);
 			i += upper.size;
 		}
 		NullTerminate();
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::AsLower() const noexcept -> ConstString
+	auto String::AsLower() const noexcept -> String
 	{
-		ConstString res;
+		String res{ m_data.Capacity(), *GetAllocator() };
 		const u8* pSourceData = m_data.Data();
 		u8* pData = res.Data();
 		for (usize i = 0, size = m_data.Size(); i < size;)
@@ -919,7 +738,7 @@ namespace Onca
 			res.m_data.Resize(res.DataSize() + upper.size);
 			pData = res.Data();
 
-			MemCpy<u8>(pData + i, upper.data, upper.size);
+			MemCpy(pData + i, upper.data, upper.size);
 			i += upper.size;
 			pSourceData += utf8size;
 		}
@@ -929,23 +748,20 @@ namespace Onca
 		return res;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::SubConstString(usize pos, usize length) const noexcept -> ConstString
+	auto String::SubString(usize pos, usize length) const noexcept -> String
 	{
-		return ConstString{ *this, pos, length };
+		return String{ *this, pos, length, *GetAllocator() };
 	}
 
-	template<usize Cap>
-	template<usize Max>
-	constexpr auto ConstString<Cap>::Split(UCodepoint delimiter, StringSplitOptions options) noexcept -> InplaceDynArray<ConstString, Cap * sizeof(this)>
+	auto String::Split(UCodepoint delimiter, usize max, StringSplitOptions options) const noexcept -> DynArray<String>
 	{
 		usize curPos = 0;
 		usize curIdx = 0;
 
 		const usize strSize = m_data.Size();
-		
-		InplaceDynArray<ConstString, Cap * sizeof(this)> res;
-		usize max = Max;
+
+		Alloc::IAllocator& alloc = *GetAllocator();
+		DynArray<String> res{ alloc };
 		while (curIdx < strSize && max > 1)
 		{
 			auto [pos, idx] = FindInternal(delimiter, curPos, curIdx, NPos);
@@ -954,8 +770,8 @@ namespace Onca
 
 			if (size || !(options & StringSplitOption::RemoveEmpty))
 			{
-				ConstString subStr;
-				subStr.AssignSubConstString(*this, curIdx, curPos, size, len);
+				String subStr{ alloc };
+				subStr.AssignSubstring(*this, curIdx, curPos, size, len);
 				subStr.NullTerminate();
 
 				if (options & StringSplitOption::TrimEntries)
@@ -973,16 +789,14 @@ namespace Onca
 
 		if (max == 1)
 		{
-			res.EmplaceBack();
-			res.Back().AssignSubConstString(*this, curIdx, curPos, strSize - curIdx, m_length - curPos);
+			res.EmplaceBack(*GetAllocator());
+			res.Back().AssignSubstring(*this, curIdx, curPos, strSize - curIdx, m_length - curPos);
 			res.Back().NullTerminate();
 		}
 		return res;
 	}
 
-	template<usize Cap>
-	template<usize Max>
-	constexpr auto ConstString<Cap>::Split(const ConstString& delimiter, StringSplitOptions options) const noexcept -> InplaceDynArray<ConstString, Cap * sizeof(this)>
+	auto String::Split(const String& delimiter, usize max, StringSplitOptions options) const noexcept -> DynArray<String>
 	{
 		usize curPos = 0;
 		usize curIdx = 0;
@@ -990,9 +804,9 @@ namespace Onca
 		const usize strSize = m_data.Size();
 		const usize delimiterSize = delimiter.DataSize();
 		const usize delimiterLen = delimiter.Length();
-		
-		InplaceDynArray<ConstString, Cap * sizeof(this)> res;
-		usize max = Max;
+
+		Alloc::IAllocator& alloc = *GetAllocator();
+		DynArray<String> res{ alloc };
 		while (curIdx < strSize && max > 1)
 		{
 			auto [pos, idx] = FindInternal(delimiter, curPos, curIdx, NPos);
@@ -1001,8 +815,8 @@ namespace Onca
 
 			if (size || !(options & StringSplitOption::RemoveEmpty))
 			{
-				ConstString subStr;
-				subStr.AssignSubConstString(*this, curIdx, curPos, size, len);
+				String subStr{ alloc };
+				subStr.AssignSubstring(*this, curIdx, curPos, size, len);
 				subStr.NullTerminate();
 
 				if (options & StringSplitOption::TrimEntries)
@@ -1020,24 +834,22 @@ namespace Onca
 
 		if (max == 1)
 		{
-			res.EmplaceBack();
-			res.Back().AssignSubConstString(*this, curIdx, curPos, strSize - curIdx, m_length - curPos);
+			res.EmplaceBack(*GetAllocator());
+			res.Back().AssignSubstring(*this, curIdx, curPos, strSize - curIdx, m_length - curPos);
 			res.Back().NullTerminate();
 		}
 		return res;
 	}
 
-	template<usize Cap>
-	template<usize Max>
-	constexpr auto ConstString<Cap>::SplitWhitespace(StringSplitOptions options) const noexcept -> InplaceDynArray<ConstString, Cap * sizeof(this)>
+	auto String::SplitWhitespace(usize max, StringSplitOptions options) const noexcept -> DynArray<String>
 	{
 		usize curPos = 0;
 		usize curIdx = 0;
 
 		const usize strSize = m_data.Size();
-		
-		InplaceDynArray<ConstString, Cap * sizeof(this)> res;
-		usize max = Max;
+
+		Alloc::IAllocator& alloc = *GetAllocator();
+		DynArray<String> res{ alloc };
 		while (curIdx < strSize && max > 1)
 		{
 			auto [pos, idx] = FindWhitespaceInternal(curPos, curIdx, NPos);
@@ -1046,8 +858,8 @@ namespace Onca
 
 			if (size || !(options & StringSplitOption::RemoveEmpty))
 			{
-				ConstString subStr;
-				subStr.AssignSubConstString(*this, curIdx, curPos, size, len);
+				String subStr{ alloc };
+				subStr.AssignSubstring(*this, curIdx, curPos, size, len);
 				subStr.NullTerminate();
 
 				if (options & StringSplitOption::TrimEntries)
@@ -1065,26 +877,27 @@ namespace Onca
 
 		if (max == 1)
 		{
-			res.EmplaceBack();
-			res.Back().AssignSubConstString(*this, curIdx, curPos, strSize - curIdx, m_length - curPos);
+			res.EmplaceBack(*GetAllocator());
+			res.Back().AssignSubstring(*this, curIdx, curPos, strSize - curIdx, m_length - curPos);
 			res.Back().NullTerminate();
 		}
 		return res;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Find(UCodepoint codepoint, usize pos, usize count) const noexcept -> usize
+	auto String::Find(UCodepoint codepoint, usize pos, usize count) const noexcept -> usize
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the ConstString");
+		if (pos >= m_length)
+			return NPos;
+
 		const usize startIdx = IndexAtCharPos(pos);
 		auto [ret, _] = FindInternal(codepoint, pos, startIdx, count);
 		return ret;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Find(const ConstString& str, usize pos, usize count) const noexcept -> usize
+	auto String::Find(const String& str, usize pos, usize count) const noexcept -> usize
 	{
-		ASSERT(pos < m_length, "'pos' needs to point to a character inside the ConstString");
+		if (pos >= m_length)
+			return NPos;
 		if (str.Length() > m_length)
 			return NPos;
 
@@ -1093,14 +906,10 @@ namespace Onca
 		return ret;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::RFind(UCodepoint codepoint, usize pos, usize count) const noexcept -> usize
+	auto String::RFind(UCodepoint codepoint, usize pos, usize count) const noexcept -> usize
 	{
-		if (pos == NPos)
+		if (pos >= m_length)
 			pos = m_length - 1;
-		else
-			ASSERT(pos < m_length, "'pos' needs to point to a character inside the ConstString");
-
 		if (count > pos)
 			count = pos;
 
@@ -1123,17 +932,12 @@ namespace Onca
 		return pos;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::RFind(const ConstString& str, usize pos, usize count) const noexcept -> usize
+	auto String::RFind(const String& str, usize pos, usize count) const noexcept -> usize
 	{
-		if (pos == NPos)
+		if (pos >= m_length)
 			pos = m_length - 1;
-		else
-			ASSERT(pos < m_length, "'pos' needs to point to a character inside the ConstString");
-
 		if (str.Length() > m_length)
 			return NPos;
-
 		if (count > pos)
 			count = pos;
 
@@ -1166,8 +970,7 @@ namespace Onca
 		return pos;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::FindFirstOf(const ConstString& codepoints, usize pos, usize count) const noexcept -> usize
+	auto String::FindFirstOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
 		const u8* pData = m_data.Data();
 		const usize len = Math::Min(m_length, count);
@@ -1194,8 +997,7 @@ namespace Onca
 		return NPos;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::FindFirstNotOf(const ConstString& codepoints, usize pos, usize count) const noexcept -> usize
+	auto String::FindFirstNotOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
 		const u8* pData = m_data.Data();
 		const usize len = Math::Min(m_length, count);
@@ -1228,8 +1030,7 @@ namespace Onca
 		return NPos;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::RFindFirstOf(const ConstString& codepoints, usize pos, usize count) const noexcept -> usize
+	auto String::RFindFirstOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
 		const u8* pData = PrevCharPtr(m_data.Data() + m_data.Size());
 		const u8* pCodepoints = codepoints.Data();
@@ -1260,8 +1061,7 @@ namespace Onca
 		return 0;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::RFindFirstNotOf(const ConstString& codepoints, usize pos, usize count) const noexcept -> usize
+	auto String::RFindFirstNotOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
 		const u8* pData = PrevCharPtr(m_data.Data() + m_data.Size());
 
@@ -1299,20 +1099,17 @@ namespace Onca
 		return NPos;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Contains(UCodepoint codepoint) const noexcept -> bool
+	auto String::Contains(UCodepoint codepoint) const noexcept -> bool
 	{
 		return Find(codepoint) != NPos;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Contains(const ConstString& str) const noexcept -> bool
+	auto String::Contains(const String& str) const noexcept -> bool
 	{
 		return Find(str) != NPos;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::StartsWith(UCodepoint codepoint) const noexcept -> bool
+	auto String::StartsWith(UCodepoint codepoint) const noexcept -> bool
 	{
 		if (m_length == 0)
 			return false;
@@ -1324,8 +1121,7 @@ namespace Onca
 		return MemCmp(m_data.Data(), c.data, c.size) == 0;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::StartsWith(const ConstString& str) const noexcept -> bool
+	auto String::StartsWith(const String& str) const noexcept -> bool
 	{
 		const usize strSize = str.DataSize();
 		const usize size = m_data.Size();
@@ -1334,8 +1130,7 @@ namespace Onca
 		return MemCmp(m_data.Data(), str.Data(), strSize) == 0;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::EndsWith(UCodepoint codepoint) const noexcept -> bool
+	auto String::EndsWith(UCodepoint codepoint) const noexcept -> bool
 	{
 		if (m_length == 0)
 			return false;
@@ -1348,8 +1143,7 @@ namespace Onca
 		return MemCmp(pData, c.data, c.size) == 0;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::EndsWith(const ConstString& str) const noexcept -> bool
+	auto String::EndsWith(const String& str) const noexcept -> bool
 	{
 		const usize strSize = str.DataSize();
 		const usize size = m_data.Size();
@@ -1358,10 +1152,11 @@ namespace Onca
 		return MemCmp(m_data.Data() + size - strSize, str.Data(), strSize) == 0;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::ToAscii() const noexcept -> InplaceDynArray<char, Cap>
+	auto String::ToAscii() const noexcept -> DynArray<char>
 	{
-		InplaceDynArray<char, Cap> ascii;
+		DynArray<char> ascii{ *GetAllocator() };
+		ascii.Reserve(m_length);
+
 		usize len = m_length;
 		const u8* pData = m_data.Data();
 
@@ -1378,20 +1173,21 @@ namespace Onca
 		return ascii;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::ToUtf8() const noexcept -> InplaceDynArray<char8_t, Cap>
+	auto String::ToUtf8() const noexcept -> DynArray<char8_t>
 	{
-		InplaceDynArray<char8_t, Cap> utf8;
+		DynArray<char8_t> utf8{ *GetAllocator() };
+		utf8.Resize(m_data.Size() + 1);
 		MemCpy(utf8.Data(), m_data.Data(), m_data.Size());
 
 		utf8.Pop();
 		return utf8;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::ToUtf16() const noexcept -> InplaceDynArray<char16_t, Cap * sizeof(char16_t)>
+	auto String::ToUtf16() const noexcept -> DynArray<char16_t>
 	{
-		InplaceDynArray<char16_t, Cap * sizeof(char16_t)> utf16;
+		DynArray<char16_t> utf16{ *GetAllocator() };
+		utf16.Reserve(m_length);
+
 		usize len = m_length;
 		const u8* pData = m_data.Data();
 
@@ -1411,10 +1207,11 @@ namespace Onca
 		return utf16;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::ToUtf32() const noexcept -> InplaceDynArray<char32_t, Cap * sizeof(char32_t)>
+	auto String::ToUtf32() const noexcept -> DynArray<char32_t>
 	{
-		InplaceDynArray<char32_t, Cap * sizeof(char32_t)> utf32;
+		DynArray<char32_t> utf32{ *GetAllocator() };
+		utf32.Reserve(m_length);
+
 		usize len = m_length;
 		const u8* pData = m_data.Data();
 
@@ -1430,10 +1227,11 @@ namespace Onca
 		return utf32;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::ToCodepoints() const noexcept -> InplaceDynArray<UCodepoint, Cap * sizeof(UCodepoint)>
+	auto String::ToCodepoints() const noexcept -> DynArray<UCodepoint>
 	{
-		InplaceDynArray<UCodepoint, Cap * sizeof(UCodepoint)> codepoints;
+		DynArray<UCodepoint> codepoints{ *GetAllocator() };
+		codepoints.Reserve(m_length);
+
 		usize len = m_length;
 		const u8* pData = m_data.Data();
 
@@ -1449,8 +1247,7 @@ namespace Onca
 		return codepoints;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Compare(const ConstString& str) const noexcept -> i8
+	auto String::Compare(const String& str) const noexcept -> i8
 	{
 		const usize size = m_data.Size();
 		const usize strSize = str.DataSize();
@@ -1464,8 +1261,7 @@ namespace Onca
 		return size < strSize ? -1 : 1;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::IsWhitespace() const noexcept -> bool
+	auto String::IsWhitespace() const noexcept -> bool
 	{
 		usize len = m_length;
 		const u8* pData = m_data.Data();
@@ -1480,159 +1276,139 @@ namespace Onca
 		return true;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::At(usize idx) const noexcept -> Optional<UCodepoint>
+	auto String::At(usize idx) const noexcept -> Optional<UCodepoint>
 	{
 		if (idx >= m_length)
 			return NullOpt;
 		return m_data.Data()[IndexAtCharPos(idx)];
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::operator[](usize idx) const noexcept -> UCodepoint
+	auto String::operator[](usize idx) const noexcept -> UCodepoint
 	{
 		ASSERT(idx < m_length, "Index out of range");
 		return m_data.Data()[IndexAtCharPos(idx)];
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Length() const noexcept -> usize
+	auto String::Length() const noexcept -> usize
 	{
 		return m_length;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::IsEmpty() const noexcept -> bool
+	auto String::IsEmpty() const noexcept -> bool
 	{
 		return m_length == 0;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Capacity() const noexcept -> usize
+	auto String::Capacity() const noexcept -> usize
 	{
 		return m_data.Capacity();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::DataSize() const noexcept -> usize
+	auto String::DataSize() const noexcept -> usize
 	{
 		return m_data.Size();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Data() noexcept -> u8*
+	auto String::Data() noexcept -> u8*
 	{
 		return m_data.Data();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Data() const noexcept -> const u8*
+	auto String::Data() const noexcept -> const u8*
 	{
 		return m_data.Data();
 	}
-	
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Front() const noexcept -> UCodepoint
+
+	auto String::GetAllocator() const noexcept -> Alloc::IAllocator*
 	{
-		ASSERT(m_length, "Invalid when ConstString is empty");
+		return m_data.GetAllocator();
+	}
+
+	auto String::Front() const noexcept -> UCodepoint
+	{
+		ASSERT(m_length, "Invalid when String is empty");
 		return Unicode::GetCpFromUtf8(m_data.Data());
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Back() const noexcept -> UCodepoint
+	auto String::Back() const noexcept -> UCodepoint
 	{
-		ASSERT(m_length, "Invalid when ConstString is empty");
+		ASSERT(m_length, "Invalid when String is empty");
 		const u8* pData = m_data.Data();
 		usize end = PrevIdx(pData, m_data.Size());
 		return Unicode::GetCpFromUtf8(pData + end);
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Begin() noexcept -> Iterator
+	auto String::Begin() noexcept -> Iterator
 	{
-		return { this, 0 };
+		return { &m_data, 0 };
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::Begin() const noexcept -> ConstIterator
+	auto String::Begin() const noexcept -> ConstIterator
 	{
-		return { this, 0 };
+		return { &m_data, 0 };
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::End() noexcept -> Iterator
+	auto String::End() noexcept -> Iterator
 	{
-		return { this, m_data.Size() };
+		return { &m_data, m_data.Size() };
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::End() const noexcept -> ConstIterator
+	auto String::End() const noexcept -> ConstIterator
 	{
-		return { this, m_data.Size() };
+		return { &m_data, m_data.Size() };
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::RBegin() noexcept -> Iterator
+	auto String::RBegin() noexcept -> Iterator
 	{
 		return End();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::RBegin() const noexcept -> ConstIterator
+	auto String::RBegin() const noexcept -> ConstIterator
 	{
 		return End();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::REnd() noexcept -> Iterator
+	auto String::REnd() noexcept -> Iterator
 	{
 		return Begin();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::REnd() const noexcept -> ConstIterator
+	auto String::REnd() const noexcept -> ConstIterator
 	{
 		return Begin();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::begin() noexcept -> Iterator
+	auto String::begin() noexcept -> Iterator
 	{
 		return Begin();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::begin() const noexcept -> ConstIterator
+	auto String::begin() const noexcept -> ConstIterator
 	{
 		return Begin();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::cbegin() const noexcept -> ConstIterator
+	auto String::cbegin() const noexcept -> ConstIterator
 	{
 		return Begin();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::end() noexcept -> Iterator
+	auto String::end() noexcept -> Iterator
 	{
 		return End();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::end() const noexcept -> ConstIterator
+	auto String::end() const noexcept -> ConstIterator
 	{
 		return End();
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::cend() const noexcept -> ConstIterator
+	auto String::cend() const noexcept -> ConstIterator
 	{
 		return End();
 	}
 
-	template<usize Cap>
-	constexpr void ConstString<Cap>::AssignSubConstString(const ConstString& other, usize idx, usize pos, usize size, usize length) noexcept
+	void String::AssignSubstring(const String& other, usize idx, usize pos, usize size, usize length) noexcept
 	{
 		if (size > other.DataSize() - idx)
 			size = other.DataSize() - idx;
@@ -1640,33 +1416,20 @@ namespace Onca
 			length = other.Length() - pos;
 		if (size == 0)
 			return;
-		
+
+		m_data.Resize(size);
 		MemCpy(m_data.Data(), other.Data() + idx, size);
 		NullTerminate();
 		m_length = length;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::ReplaceInternal(usize idx, usize byteLength, usize length, Unicode::Utf8Char c, usize count) noexcept -> ConstString&
+	auto String::ReplaceInternal(usize idx, usize byteLength, usize length, Unicode::Utf8Char c, usize count) noexcept -> String&
 	{
-		usize needed = count * c.size;
+		const usize needed = count * c.size;
 		if (needed > byteLength)
 			m_data.Insert(m_data.IteratorAt(idx), needed - byteLength, 0);
 		else if (needed < byteLength)
 			m_data.Erase(m_data.IteratorAt(idx), byteLength - needed);
-
-		if (byteLength < needed)
-		{
-			while (m_data.Size() - byteLength + needed + 1 > Cap)
-			{
-				--count;
-				needed -= c.size;
-			}
-		}
-		else
-		{
-			m_data.Erase(m_data.IteratorAt(idx), byteLength - needed);
-		}
 
 		u8* pData = m_data.Data() + idx;
 		for (usize i = 0; i < count; ++i, pData += c.size)
@@ -1678,25 +1441,14 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::ReplaceInternal(usize idx, usize byteLength, usize length, const ConstString& str, usize strIdx, usize strByteEnd, usize strLength) noexcept -> ConstString&
+	auto String::ReplaceInternal(usize idx, usize byteLength, usize length, const String& str, usize strIdx, usize strByteLength, usize strLength) noexcept -> String&
 	{
-		usize otherSize = strByteEnd - strIdx;
+		const usize otherSize = strByteLength - strIdx;
 
 		if (byteLength < otherSize)
-		{
-			const usize strBeginByte = str.IndexAtCharPos(strIdx);
-			while (m_data.Size() - byteLength + otherSize + 1 > Cap)
-			{
-				--strLength;
-				strByteEnd = str.IndexForOffset(strIdx, strLength) - strBeginByte;
-				otherSize = strByteEnd - strIdx;
-			}
-		}
-		else
-		{
+			m_data.Insert(m_data.IteratorAt(idx), otherSize - byteLength, 0);
+		else if (byteLength > otherSize)
 			m_data.Erase(m_data.IteratorAt(idx), byteLength - otherSize);
-		}
 
 		MemCpy(m_data.Data() + idx, str.m_data.Data() + strIdx, otherSize);
 		m_length -= length;
@@ -1705,8 +1457,7 @@ namespace Onca
 		return *this;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::FindInternal(UCodepoint codepoint, usize pos, usize idx, usize count) const noexcept -> Pair<usize, usize>
+	auto String::FindInternal(UCodepoint codepoint, usize pos, usize idx, usize count) const noexcept -> Pair<usize, usize>
 	{
 		const Unicode::Utf8Char c = Unicode::GetUtf8FromCp(codepoint);
 		const usize endByte = m_data.Size();
@@ -1727,13 +1478,12 @@ namespace Onca
 		return { NPos, endByte };
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::FindInternal(const ConstString& str, usize pos, usize idx, usize count) const noexcept -> Pair<usize, usize>
+	auto String::FindInternal(const String& str, usize pos, usize idx, usize count) const noexcept -> Pair<usize, usize>
 	{
 		if (count > m_length - pos)
 			count = m_length - pos;
 
-		const usize endPos = pos + count - str.Length();
+		const usize endPos = pos + count - str.Length() + 1;
 		if (endPos < pos)
 			return { NPos, NPos };
 
@@ -1764,8 +1514,7 @@ namespace Onca
 		return { NPos, endByte };
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::FindWhitespaceInternal(usize pos, usize idx, usize count) const noexcept -> Pair<usize, usize>
+	auto String::FindWhitespaceInternal(usize pos, usize idx, usize count) const noexcept -> Pair<usize, usize>
 	{
 		if (count > m_length - pos)
 			count = m_length - pos;
@@ -1784,8 +1533,7 @@ namespace Onca
 		return { NPos, endByte };
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::IndexAtCharPos(usize pos) const noexcept -> usize
+	auto String::IndexAtCharPos(usize pos) const noexcept -> usize
 	{
 		if (pos > m_length / 2)
 		{
@@ -1802,8 +1550,7 @@ namespace Onca
 		}
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::IndexForOffset(usize startIdx, usize offset) const noexcept -> usize
+	auto String::IndexForOffset(usize startIdx, usize offset) const noexcept -> usize
 	{
 		usize idx = startIdx;
 		const u8* pData = m_data.Data();
@@ -1812,8 +1559,7 @@ namespace Onca
 		return idx;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::PrevIdx(const u8* pData, usize idx) const noexcept -> usize
+	auto String::PrevIdx(const u8* pData, usize idx) const noexcept -> usize
 	{
 		--idx;
 		while ((pData[idx] & 0xC0) == 0x80)
@@ -1821,8 +1567,7 @@ namespace Onca
 		return idx;
 	}
 
-	template<usize Cap>
-	constexpr auto ConstString<Cap>::PrevCharPtr(const u8* pData) const noexcept -> const u8*
+	auto String::PrevCharPtr(const u8* pData) const noexcept -> const u8*
 	{
 		--pData;
 		while ((*pData & 0xC0) == 0x80)
@@ -1830,10 +1575,16 @@ namespace Onca
 		return pData;
 	}
 
-	template<usize Cap>
-	constexpr void ConstString<Cap>::NullTerminate() noexcept
+	void String::NullTerminate() noexcept
 	{
 		const usize size = m_data.Size();
+		m_data.Reserve(size + 1);
 		m_data.Data()[size] = 0;
+	}
+
+	auto Hash<String>::operator()(const String& t) const noexcept -> u64
+	{
+		static Hashing::FVN1A_64 fnv;
+		return fnv(t.Data(), t.DataSize());
 	}
 }

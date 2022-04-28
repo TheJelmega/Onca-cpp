@@ -1,26 +1,10 @@
 #pragma once
 #include "String.h"
 #include "core/math/IntUtils.h"
-#include "core/math/FloatUtils.h"
-#include "DragonBox.h"
+#include "Interfaces.h"
 
 namespace Onca
 {
-	template<typename T>
-	concept ToFormatableMethod =
-		requires(const T & t, const String & options)
-	{
-		{ t.ToFormat(options) } noexcept -> SameAs<String>;
-	};
-
-	template<typename T>
-	concept Formatable =
-		ToFormatableMethod<T> ||
-		requires(const T & t, const String & options)
-	{
-		{ ToFormat(t, options) } noexcept -> SameAs<String>;
-	};
-
 	namespace Detail::Format
 	{
 		constexpr u8 Log2Digits10[] =
@@ -316,3 +300,5 @@ namespace Onca
 	template<typename... Args>
 	auto Format(const String& format, const Args&... args) noexcept -> String;
 }
+
+#include "Format.inl"

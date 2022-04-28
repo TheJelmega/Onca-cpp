@@ -4,7 +4,6 @@
 #endif
 
 #include "Format.h"
-#include "core/math/MathUtils.h"
 
 namespace Onca
 {
@@ -30,8 +29,7 @@ namespace Onca
 	{
 		return String{ cstr };
 	}
-
-	// TODO: optimize
+	
 	template <Integral I>
 	auto ToString(I val) noexcept -> String
 	{

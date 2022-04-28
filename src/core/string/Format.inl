@@ -3,8 +3,10 @@
 #include "Format.h"
 #endif
 
-#include "Format.h"
+#include "core/math/FloatUtils.h"
+#include "DragonBox.h"
 #include "core/math/MathUtils.h"
+#include "Stringify.h"
 
 namespace Onca
 {
@@ -681,7 +683,7 @@ namespace Onca
 		return str;
 	}
 
-	inline auto ToFormat(bool val, const String& options) noexcept -> String
+	inline auto ToFormat(bool val, const String&) noexcept -> String
 	{
 		return val ? "true"_s : "false"_s;
 	}
@@ -693,7 +695,7 @@ namespace Onca
 	}
 
 	template <CharacterType C>
-	auto ToFormat(const C* cstr, const String& options) noexcept -> String
+	auto ToFormat(const C* cstr, const String&) noexcept -> String
 	{
 		return String{ cstr };
 	}

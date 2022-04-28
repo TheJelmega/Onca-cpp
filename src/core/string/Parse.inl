@@ -43,7 +43,6 @@ namespace Onca
 			// http://www.exploringbinary.com/fast-path-decimal-to-floating-point-conversion/
 			// https://rapidjson.org/strtod_8h_source.html
 
-
 			// The fast path failed, so use a slower path
 			// We need to adjust i, so that it is > 1 << 63, this is not possible for 0, so it handled separately
 			if (i == 0)

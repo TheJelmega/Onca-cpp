@@ -9,7 +9,7 @@ namespace Onca
 	/**
 	 * Utf8 string
 	 */
-	class String
+	class CORE_API String
 	{
 	public:
 		/**
@@ -21,7 +21,7 @@ namespace Onca
 		 * String iterator
 		 * \node The iterator does not allow modification of the elements
 		 */
-		class Iterator
+		class CORE_API Iterator
 		{
 		public:
 			Iterator() noexcept;
@@ -50,7 +50,7 @@ namespace Onca
 			auto operator!=(const Iterator& other) const noexcept -> bool;
 			auto operator<=>(const Iterator& other) const noexcept -> std::partial_ordering;
 			
-			auto operator[](usize idx) const noexcept -> const UCodepoint&;
+			auto operator[](usize idx) const noexcept -> UCodepoint;
 
 		private:
 			Iterator(const DynArray<u8>* pData, usize idx);
@@ -181,7 +181,6 @@ namespace Onca
 
 		auto operator<=>(const String& other) const noexcept -> std::strong_ordering;
 		auto operator==(const String& other) const noexcept -> bool;
-		auto operator!=(const String& other) const noexcept -> bool;
 
 		/**
 		 * Assign a number of codepoints to a String
@@ -806,7 +805,7 @@ namespace Onca
 	};
 
 	template<>
-	struct Hash<String>
+	struct CORE_API Hash<String>
 	{
 		auto operator()(const String& t) const noexcept -> u64;
 	};
@@ -819,3 +818,5 @@ inline namespace Literals
 	auto operator""_s(const char16_t* cstr, usize size) noexcept -> Onca::String;
 	auto operator""_s(const char32_t* cstr, usize size) noexcept -> Onca::String;
 }
+
+#include "String.inl"

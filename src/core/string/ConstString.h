@@ -763,3 +763,5 @@ namespace Onca
 	};
 
 }
+
+#include "ConstString.inl"

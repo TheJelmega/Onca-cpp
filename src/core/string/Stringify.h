@@ -1,41 +1,10 @@
 #pragma once
 #include "core/MinInclude.h"
 #include "String.h"
+#include "Interfaces.h"
 
 namespace Onca
 {
-	template<typename T>
-	concept ToStringMethod =
-		requires(const T& t)
-	{
-		{ t.ToString() } noexcept -> SameAs<String>;
-	};
-
-	template<typename T>
-	concept Stringifyable =
-		ToStringMethod<T> ||
-		requires(const T& t)
-	{
-		{ ToString(t) } noexcept -> SameAs<String>;
-	};
-
-	template<typename T>
-	concept ToDebugStringMethod =
-		requires(const T & t)
-	{
-		{ t.ToDebugString() } noexcept -> SameAs<String>;
-	};
-
-	template<typename T>
-	concept DebugStringifyable =
-		ToDebugStringMethod<T> ||
-		requires(const T & t)
-	{
-		{ ToDebugString(t) } noexcept -> SameAs<String>;
-	};
-
-	////////////////////////////////////////////////////////////////
-
 	/**
 	 * Convert a string to a string
 	 * \param[in] str String
@@ -145,5 +114,6 @@ namespace Onca
 	 * \return String
 	 */
 	auto ToDebugString(bool val) noexcept -> String;
-
 }
+
+#include "Stringify.inl"

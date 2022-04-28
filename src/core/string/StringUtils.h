@@ -177,3 +177,5 @@ namespace Onca
 		constexpr auto ToUtf8(const C* pCh) noexcept -> Pair<Utf8Char, usize>;
 	}
 }
+
+#include "StringUtils.inl"

@@ -8,7 +8,7 @@ namespace Onca
 	/**
 	 * Interned string
 	 */
-	class InternedString
+	class CORE_API InternedString
 	{
 	public:
 		/**
@@ -42,7 +42,7 @@ namespace Onca
 		StringId m_id; ///< String id
 	};
 
-	class InternedStringManager
+	class CORE_API InternedStringManager
 	{
 	public:
 		/**
@@ -72,5 +72,5 @@ namespace Onca
 		HashMap<StringId, String> m_strings; ///< Interned strings
 	};
 
-	auto GetInternedStringManager() noexcept -> InternedStringManager&;
+	CORE_API auto GetInternedStringManager() noexcept -> InternedStringManager&;
 }
