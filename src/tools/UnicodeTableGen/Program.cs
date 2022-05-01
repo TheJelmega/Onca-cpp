@@ -55,7 +55,7 @@ class UnicodeTableGen
 			writer.WriteLine("#include \"core/MinInclude.h\"");
 			writer.WriteLine("#include \"StringUtilTypes.h\"");
 			writer.WriteLine();
-			writer.WriteLine("namespace Core::Unicode");
+			writer.WriteLine("namespace Onca::Unicode");
 			writer.WriteLine("{");
 
 			writer.WriteLine($"\tconstexpr usize UnicodeCaseTableSize = {_singleMapping.Count};");
@@ -85,7 +85,7 @@ class UnicodeTableGen
 				writer.Write($"\t\t");
 
 				for (int j = 0; j < 8 && i < _singleMapping.Count; ++j, ++i)
-					writer.Write($"0x{_singleMapping[i].Item1:X5}, ");
+					writer.Write($"0x{_singleMapping[i].Item2:X5}, ");
 
 				writer.WriteLine();
 			}
