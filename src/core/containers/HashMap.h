@@ -168,7 +168,7 @@ namespace Onca
 		 * \param[in] alloc Allocator the container should use
 		 */
 		HashMap(HashMap&& other, Alloc::IAllocator& alloc) noexcept;
-		~HashMap();
+		~HashMap() noexcept;
 
 		auto operator=(const InitializerList<Pair<K, V>>& il) noexcept -> HashMap& requires CopyConstructible<K> && CopyConstructible<V>;
 		auto operator=(const HashMap& other) noexcept -> HashMap& requires CopyConstructible<K> && CopyConstructible<V>;

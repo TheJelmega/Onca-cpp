@@ -7,8 +7,6 @@
 
 namespace Onca::FileSystem
 {
-	// TODO: when implementing memory defragmentations, make sure the data in the tasks are pinned to a fixed location
-
 	using AsyncReadCallback = Delegate<void(const ByteBuffer&, const SystemError&)>;
 	using AsyncWriteCallback = Delegate<void(const SystemError&)>;
 

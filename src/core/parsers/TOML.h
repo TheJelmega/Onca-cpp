@@ -379,6 +379,7 @@ namespace Onca
 
 	private:
 
+		// TODO: Figure out why using `Toml` instead of `Unique<Toml>` makes `Toml` not `Movable<>`
 		Variant<std::monostate, HashMap<String, Unique<Toml>>, DynArray<Unique<Toml>>, String, i64, f64, bool> m_value;
 	};
 

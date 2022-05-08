@@ -231,7 +231,7 @@ namespace Onca
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	HashMap<K, V, H, C, IsMultiMap>::~HashMap()
+	HashMap<K, V, H, C, IsMultiMap>::~HashMap() noexcept
 	{
 		ClearInternal<true>(true);
 	}
