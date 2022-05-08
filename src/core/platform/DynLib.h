@@ -46,7 +46,7 @@ namespace Onca
 		 * \param[in] path Path the dynamic library
 		 * \return Dynamic library
 		 */
-		static auto Create(FileSystem::Path& path) noexcept -> Result<DynLib, SystemError>;
+		static auto Create(const FileSystem::Path& path) noexcept -> Result<DynLib, SystemError>;
 
 	private:
 		NativeHandle m_handle; ///< Handle to dynamic library

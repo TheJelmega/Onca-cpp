@@ -50,10 +50,10 @@ namespace Onca
 		return m_handle;
 	}
 
-	auto DynLib::Create(FileSystem::Path& path) noexcept -> Result<DynLib, SystemError>
+	auto DynLib::Create(const FileSystem::Path& path) noexcept -> Result<DynLib, SystemError>
 	{
 		DynLib dynLib;
-		DynArray<char16_t> utf16 = ((path.HasParentPath() ? "\\\\?\\"_path : ""_path) + path.AsAbsolute()).ToNative().GetString().ToUtf16();
+		DynArray<char16_t> utf16 = ((path.HasParentPath() ? "\\\\?\\"_path : ""_path) + path).ToNative().GetString().ToUtf16();
 		dynLib.m_handle = LoadLibraryW(reinterpret_cast<LPCWSTR>(utf16.Data()));
 
 		if (!dynLib.IsValid())
