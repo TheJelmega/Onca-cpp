@@ -104,6 +104,20 @@ namespace Onca::FileSystem
 		auto Read(const FileRegion& region) const noexcept -> Result<ByteBuffer, SystemError>;
 
 		/**
+		 * Read the entire file into a string
+		 * \return Result
+		 * \note Reads are currently limited to 4GiB, this might change in the future
+		 */
+		auto ReadString() const noexcept -> Result<String, SystemError>;
+		/**
+		 * Read a region of the file into a string
+		 * \param[in] region File region to read
+		 * \return Result
+		 * \note Reads are currently limited to 4GiB, this might change in the future
+		 */
+		auto ReadString(const FileRegion& region) const noexcept -> Result<String, SystemError>;
+
+		/**
 		 * Initiate an async I/O read operation
 		 * \param[in] callback Callback on async completion
 		 * \return I/O read tack

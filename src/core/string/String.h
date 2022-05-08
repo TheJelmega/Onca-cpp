@@ -6,6 +6,7 @@
 
 namespace Onca
 {
+	class ByteBuffer;
 	/**
 	 * Utf8 string
 	 */
@@ -140,6 +141,12 @@ namespace Onca
 			requires DereferencableToUnicode<It>
 		explicit String(const It& begin, const It& end, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
 		/**
+		 * Create a String with a raw bytes
+		 * \param[in] bytes Raw bytes
+		 * \param[in] alloc Allocator the string should use
+		 */
+		explicit String(const ByteBuffer& bytes, Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
+		/**
 		 * Create a String with the contents of another String
 		 * \param[in] other String to copy
 		 */
@@ -226,6 +233,12 @@ namespace Onca
 		template<ForwardIterator It>
 			requires DereferencableToUnicode<It>
 		void Assign(const It& begin, const It& end) noexcept;
+
+		/**
+		 * Assign a string from raw bytes
+		 * \param[in] bytes Bytes
+		 */
+		void AssignRaw(const ByteBuffer& bytes) noexcept;
 
 		/**
 		 * Reserve capacity for the underlying utf8 data

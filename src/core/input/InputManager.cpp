@@ -521,8 +521,7 @@ namespace Onca::Input
 		m_rebindState.action = m_rebindContext.GetAction();
 		m_rebindState.path = m_rebindContext.GetPath();
 	}
-
-	// TODO: Modifiers
+	
 	void InputManager::NotifyKeyForMapping(const Key& key, const Value& value)
 	{
 		if (!m_rebindContext.IsValid())

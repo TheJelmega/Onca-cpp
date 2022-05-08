@@ -641,7 +641,7 @@ namespace Onca::DragonBox
 				u32 quotient;
 
 				// is n divisible by 10^4
-				quotient = Intrin::RotateR(n * divtable.table[4].modInv, 4);
+				quotient = u32(Intrin::RotateR(n * divtable.table[4].modInv, 4));
 				if (quotient <= (divtable.table[4].maxQuotient >> 4))
 				{
 					n = quotient;
@@ -650,7 +650,7 @@ namespace Onca::DragonBox
 				}
 
 				// is n divisible by 10^2
-				quotient = Intrin::RotateR(n * divtable.table[2].modInv, 2);
+				quotient = u32(Intrin::RotateR(n * divtable.table[2].modInv, 2));
 				if (quotient <= (divtable.table[2].maxQuotient >> 2))
 				{
 					n = quotient;
@@ -659,7 +659,7 @@ namespace Onca::DragonBox
 				}
 
 				// is n divisible by 10^1
-				quotient = Intrin::RotateR(n * divtable.table[1].modInv, 1);
+				quotient = u32(Intrin::RotateR(n * divtable.table[1].modInv, 1));
 				if (quotient <= (divtable.table[1].maxQuotient >> 1))
 				{
 					n = quotient;

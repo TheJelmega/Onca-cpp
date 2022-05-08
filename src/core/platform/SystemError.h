@@ -84,6 +84,12 @@ namespace Onca
 
 		SystemError(SystemErrorCode code, const String& str) noexcept : code(code), info(str) {}
 
+		SystemError(const SystemError&) noexcept = default;
+		SystemError(SystemError&&) noexcept = default;
+
+		auto operator=(const SystemError&) noexcept -> SystemError& = default;
+		auto operator=(SystemError&&) noexcept -> SystemError & = default;
+
 		SystemErrorCode code = SystemErrorCode::Success;
 		String info;
 

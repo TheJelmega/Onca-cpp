@@ -72,8 +72,9 @@ namespace Onca::FileSystem
 		auto Append(const Path& other) noexcept -> Path&;
 		/**
 		 * Clear the contents of the path
+		 * \param[in] clearMemory Whether to deallocate the memory
 		 */
-		void Clear() noexcept;
+		void Clear(bool clearMemory = false) noexcept;
 
 		/**
 		 * Remove the file name from the path

@@ -335,7 +335,7 @@ namespace Onca
 					// Significand is at most 10^17, the quotient is at most 10^9,
 					// so it fits inside a 32-bit integer
 					s32 = u32(significand / 100'000'000);
-					u32 r = significand - s32 * 100'000'000;
+					u32 r = u32(significand - s32 * 100'000'000);
 					
 					remainingDigitsMinus1 = CountDecDigits(s32) - 1;
 					exp += remainingDigitsMinus1;
@@ -453,7 +453,7 @@ namespace Onca
 							goto InsideLoopPrintC1Label_;
 						}
 
-						i8 tz = TrailingZeroCountTable[c1];
+						tz = TrailingZeroCountTable[c1];
 						if (tz == 0)
 						{
 							mayHaveMoreTrailingZeros = false;
@@ -572,7 +572,7 @@ namespace Onca
 					*end++ = char('0' + exp);
 				}
 
-				return String{ buffer, end };
+				return String{ static_cast<char*>(buffer), end };
 			}
 		}
 		

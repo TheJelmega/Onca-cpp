@@ -170,9 +170,9 @@ namespace Onca
 		HashMap(HashMap&& other, Alloc::IAllocator& alloc) noexcept;
 		~HashMap();
 
-		auto operator=(const InitializerList<Pair<K, V>>& il) noexcept -> HashMap requires CopyConstructible<K> && CopyConstructible<V>;
-		auto operator=(const HashMap& other) noexcept -> HashMap requires CopyConstructible<K> && CopyConstructible<V>;
-		auto operator=(HashMap&& other) noexcept -> HashMap;
+		auto operator=(const InitializerList<Pair<K, V>>& il) noexcept -> HashMap& requires CopyConstructible<K> && CopyConstructible<V>;
+		auto operator=(const HashMap& other) noexcept -> HashMap& requires CopyConstructible<K> && CopyConstructible<V>;
+		auto operator=(HashMap&& other) noexcept -> HashMap&;
 
 		/**
 		 * Rehash the HashMap to have a minimum number of buckets

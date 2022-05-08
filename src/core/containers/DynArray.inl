@@ -192,8 +192,7 @@ namespace Onca
 		usize cap = curCap == 0 ? 2 : curCap;
 		while (cap < newCap)
 			cap = (cap << 1) - (cap >> 1);
-
-		// TODO: Allocators, align to min 8 bytes boundaries
+		
 		MemRef<T> mem = m_mem.GetAlloc()->template Allocate<T>(cap * sizeof(T), Math::Max(8, alignof(T)));
 		if (m_mem.IsValid())
 		{

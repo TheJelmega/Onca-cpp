@@ -237,7 +237,7 @@ namespace Onca
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::operator=(const InitializerList<Pair<K, V>>& il) noexcept -> HashMap
+	auto HashMap<K, V, H, C, IsMultiMap>::operator=(const InitializerList<Pair<K, V>>& il) noexcept -> HashMap&
 		requires CopyConstructible<K> && CopyConstructible<V>
 	{
 		ClearInternal<true>(false);
@@ -248,7 +248,7 @@ namespace Onca
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::operator=(const HashMap& other) noexcept -> HashMap requires
+	auto HashMap<K, V, H, C, IsMultiMap>::operator=(const HashMap& other) noexcept -> HashMap& requires
 		CopyConstructible<K> && CopyConstructible<V>
 	{
 		ClearInternal<true>(false);
@@ -260,7 +260,7 @@ namespace Onca
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashMap<K, V, H, C, IsMultiMap>::operator=(HashMap&& other) noexcept -> HashMap
+	auto HashMap<K, V, H, C, IsMultiMap>::operator=(HashMap&& other) noexcept -> HashMap&
 	{
 		if (GetAllocator() == other.GetAllocator())
 		{

@@ -417,7 +417,6 @@ namespace Onca
 		 * \param[in] idx Index to get iterator to
 		 * \return Iterator to element at idx
 		 */
-		// TODO: Allow functions that take its to also use an index, avoiding a verbose call to this
 		auto IteratorAt(usize idx) noexcept -> Iterator;
 		/**
 		 * Get an iterator to the element at an index

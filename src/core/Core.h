@@ -60,3 +60,5 @@
 
 #include "windowing/WindowManager.h"
 #include "input/InputManager.h"
+
+#include "parsers/Parsers.h"

@@ -533,22 +533,12 @@ namespace Onca::Math
 			euler.roll = 0;
 			return euler;
 		}
-		else if (test < -T(0.5) + Consts::MathEpsilon<T>)
+		if (test < -T(0.5) + Consts::MathEpsilon<T>)
 		{
 			euler.yaw = T(2) * ATan2(y, x);
 			euler.pitch = -Consts::HalfPi<T>;
 			euler.roll = 0;
 			return euler;
-		}
-		else
-		{
-			T yawY = T(2) * (x * w + y * z);
-			T yawX = T(1) - T(2) * (z * z + w * w);
-			euler.yaw = ATan2(yawY, yawX);
-			euler.pitch = ASin(T(2) * (x * z - w * y));
-			T rollY = T(2) * (x * y + z * w);
-			T rollX = T(1) - T(2) * (y * y + z * z);
-			euler.roll = ATan2(rollY, rollX);
 		}
 
 		switch (order)

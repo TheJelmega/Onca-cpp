@@ -157,9 +157,9 @@ namespace Onca
 		 */
 		HashSet(HashSet&& other, Alloc::IAllocator& alloc) noexcept;
 
-		auto operator=(const InitializerList<K>& il) noexcept -> HashSet requires CopyConstructible<K>;
-		auto operator=(const HashSet& other) noexcept -> HashSet requires CopyConstructible<K>;
-		auto operator=(HashSet&& other) noexcept -> HashSet;
+		auto operator=(const InitializerList<K>& il) noexcept -> HashSet& requires CopyConstructible<K>;
+		auto operator=(const HashSet& other) noexcept -> HashSet& requires CopyConstructible<K>;
+		auto operator=(HashSet&& other) noexcept -> HashSet&;
 
 		/**
 		 * Rehash the HashSet to have a minimum number of buckets

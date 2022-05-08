@@ -282,6 +282,19 @@ namespace Onca::FileSystem
 		return buffer;
 	}
 
+	auto File::ReadString() const noexcept -> Result<String, SystemError>
+	{
+		return ReadString({ .offset = 0, .size = Math::Consts::MaxVal<u64> });
+	}
+
+	auto File::ReadString(const FileRegion& region) const noexcept -> Result<String, SystemError>
+	{
+		Result<ByteBuffer, SystemError> readRes = Read(region);
+		if (readRes.Failed())
+			return SystemError{ readRes.Error() };
+		return String{ readRes.Value() };
+	}
+
 	auto File::ReadAsync(AsyncReadCallback callback) const noexcept -> IOReadTask
 	{
 		return ReadAsync({ .offset = 0, .size = Math::Consts::MaxVal<u64> }, callback);

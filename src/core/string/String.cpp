@@ -1,5 +1,7 @@
 #include "String.h"
 
+#include "core/containers/ByteBuffer.h"
+
 namespace Onca
 {
 	String::Iterator::Iterator() noexcept
@@ -178,6 +180,13 @@ namespace Onca
 		Assign(other, pos, length);
 	}
 
+	String::String(const ByteBuffer& bytes, Alloc::IAllocator& alloc) noexcept
+		: m_data(alloc)
+		, m_length(0)
+	{
+		AssignRaw(bytes);
+	}
+
 	String::String(const String& other) noexcept
 		: m_data(other.m_data)
 		, m_length(other.m_length)
@@ -275,6 +284,18 @@ namespace Onca
 		m_data.Clear();
 		m_length = 0;
 		Add(other, pos, length);
+	}
+
+	void String::AssignRaw(const ByteBuffer& bytes) noexcept
+	{
+		m_data = bytes.GetContainer();
+		for (usize i = 0; i < m_data.Size();)
+		{
+			// TODO: Validate chars
+
+			++m_length;
+			i += Unicode::GetUtf8Size(m_data[i]);
+		}
 	}
 
 	void String::Reserve(usize capacity) noexcept
@@ -972,7 +993,7 @@ namespace Onca
 
 	auto String::FindFirstOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
-		const u8* pData = m_data.Data();
+		const u8* pData = m_data.Data() + IndexAtCharPos(pos);
 		const usize len = Math::Min(m_length, count);
 
 		const u8* pCodepoints = codepoints.Data();
@@ -999,7 +1020,7 @@ namespace Onca
 
 	auto String::FindFirstNotOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
-		const u8* pData = m_data.Data();
+		const u8* pData = m_data.Data() + IndexAtCharPos(pos);
 		const usize len = Math::Min(m_length, count);
 
 		const u8* pCodepoints = codepoints.Data();
@@ -1032,7 +1053,7 @@ namespace Onca
 
 	auto String::RFindFirstOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
-		const u8* pData = PrevCharPtr(m_data.Data() + m_data.Size());
+		const u8* pData = PrevCharPtr(m_data.Data() + IndexAtCharPos(pos));
 		const u8* pCodepoints = codepoints.Data();
 		const usize numCodepoints = codepoints.Length();
 
@@ -1063,7 +1084,7 @@ namespace Onca
 
 	auto String::RFindFirstNotOf(const String& codepoints, usize pos, usize count) const noexcept -> usize
 	{
-		const u8* pData = PrevCharPtr(m_data.Data() + m_data.Size());
+		const u8* pData = PrevCharPtr(m_data.Data() + IndexAtCharPos(pos));
 
 		const u8* pCodepoints = codepoints.Data();
 		const usize numCodepoints = codepoints.Length();

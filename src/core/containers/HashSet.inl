@@ -165,7 +165,7 @@ namespace Onca
 	}
 
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::operator=(const InitializerList<K>& il) noexcept -> HashSet requires CopyConstructible<K>
+	auto HashSet<K, H, C, IsMultiMap>::operator=(const InitializerList<K>& il) noexcept -> HashSet& requires CopyConstructible<K>
 	{
 		m_hashMap.Clear();
 		m_hashMap.Reserve(il.size());
@@ -175,14 +175,14 @@ namespace Onca
 	}
 
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::operator=(const HashSet& other) noexcept -> HashSet requires CopyConstructible<K>
+	auto HashSet<K, H, C, IsMultiMap>::operator=(const HashSet& other) noexcept -> HashSet& requires CopyConstructible<K>
 	{
 		m_hashMap = other.m_hashMap;
 		return *this;
 	}
 
 	template <typename K, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
-	auto HashSet<K, H, C, IsMultiMap>::operator=(HashSet&& other) noexcept -> HashSet
+	auto HashSet<K, H, C, IsMultiMap>::operator=(HashSet&& other) noexcept -> HashSet&
 	{
 		m_hashMap = Move(other.m_hashMap);
 		return *this;

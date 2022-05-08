@@ -1,6 +1,7 @@
 #pragma once
 #include "core/MinInclude.h"
 #include "String.h"
+#include "ConstString.h"
 #include "Interfaces.h"
 
 namespace Onca

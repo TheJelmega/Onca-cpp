@@ -88,10 +88,9 @@ namespace Onca::FileSystem
 		return *this;
 	}
 
-	void Path::Clear() noexcept
+	void Path::Clear(bool clearMemory) noexcept
 	{
-		// TODO: String::Clear() ???
-		m_string = "";
+		m_string.Clear(clearMemory);
 	}
 
 	auto Path::RemoveFileName() noexcept -> Path&
@@ -304,15 +303,15 @@ namespace Onca::FileSystem
 
 	auto Path::HasParentPath() const noexcept -> bool
 	{
-		usize lastSlash = m_string.RFindFirstNotOf("/\\"_s);
+		usize lastSlash = m_string.RFindFirstOf("/\\"_s);
 		if (lastSlash == m_string.Length() - 1)
-			lastSlash = m_string.RFindFirstNotOf("/\\"_s, lastSlash - 1);
-		return lastSlash != String::NPos;
+			lastSlash = m_string.RFindFirstOf("/\\"_s, lastSlash - 1);
+		return lastSlash != 0;
 	}
 
 	auto Path::HasFileName() const noexcept -> bool
 	{
-		return !m_string.IsEmpty() && m_string.RFindFirstNotOf("/\\"_s) != m_string.Length() - 1;
+		return !m_string.IsEmpty() && m_string.RFindFirstOf("/\\"_s) != m_string.Length() - 1;
 	}
 
 	auto Path::HasStem() const noexcept -> bool
