@@ -65,10 +65,14 @@ namespace Onca
 
 	public:
 		/**
+		 * Create a String using the global allocator
+		 */
+		String() noexcept;
+		/**
 		 * Create a String with an allocator
 		 * \param[in] alloc Allocator the string should use
 		 */
-		explicit String(Alloc::IAllocator& alloc = g_GlobalAlloc) noexcept;
+		explicit String(Alloc::IAllocator& alloc) noexcept;
 		/**
 		 * Create a String with a capacity an allocator
 		 * \param[in] capacity Initial capacity of the string (in bytes)

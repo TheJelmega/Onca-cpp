@@ -140,6 +140,11 @@ namespace Onca
 	{
 	}
 
+	String::String() noexcept
+		: String(g_GlobalAlloc)
+	{
+	}
+
 	String::String(Alloc::IAllocator& alloc) noexcept
 		: m_data(alloc)
 		, m_length(0)
