@@ -212,6 +212,7 @@ namespace Onca
 		, m_comp(other.m_comp)
 	{
 		other.m_size = 0;
+		other.m_bucketCount = 0;
 	}
 
 	template <typename K, typename V, Hasher<K> H, EqualsComparator<K> C, bool IsMultiMap>
@@ -273,6 +274,7 @@ namespace Onca
 			m_hash = Move(other.m_hash);
 			m_comp = Move(other.m_comp);
 			other.m_size = 0;
+			other.m_bucketCount = 0;
 		}
 		else
 		{

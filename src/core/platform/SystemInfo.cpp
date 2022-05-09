@@ -114,17 +114,12 @@ namespace Onca
 		return m_processorInfo[processor].cores[core];
 	}
 
-	auto SystemInfo::GetCacheInfo(u32 processor) const noexcept -> DynArray<CacheInfo>
+	auto SystemInfo::GetCacheInfo(u32 processor) const noexcept -> const DynArray<CacheInfo>&
 	{
+		static DynArray<CacheInfo> dummy;
 		if (processor >= m_processorInfo.Size())
-			return DynArray<CacheInfo>{};
-
-		DynArray<CacheInfo> cacheInfos;
-		for (usize i = 0; i < usize(CacheLevel::Count); ++i)
-		{
-			cacheInfos.Add(m_processorInfo[processor].caches[i]);
-		}
-		return cacheInfos;
+			return dummy;
+		return m_processorInfo[processor].caches;
 	}
 
 	auto SystemInfo::GetCacheInfo(CacheLevel level, u32 processor) const noexcept -> DynArray<CacheInfo>
@@ -133,7 +128,13 @@ namespace Onca
 		if (processor >= m_processorInfo.Size())
 			return DynArray<CacheInfo>{};
 
-		return m_processorInfo[processor].caches[u8(level)];
+		DynArray<CacheInfo> infos;
+		for (const CacheInfo& cache : m_processorInfo[processor].caches)
+		{
+			if (cache.level == level)
+				infos.Add(cache);
+		}
+		return infos;
 	}
 
 	auto SystemInfo::GetCoresPerLastLevelCache(u32 processor) const noexcept -> const DynArray<DynArray<CPUSetInfo>>&
@@ -387,7 +388,7 @@ namespace Onca
 			{
 				const ProcessorGroup& group = info.groups[j];
 				const String& sep = j == 0 ? sep0 : sep1;
-				g_Logger.Append("{}Group[{}]: idx: {}, logical cores: {}, mask={:X}"_s, sep, j, group.groupIdx, group.coreCount, group.mask);
+				g_Logger.Append("{}Group[{}]: idx: {}, logical cores: {}, mask={:b}"_s, sep, j, group.groupIdx, group.coreCount, group.mask);
 			}
 			
 			for (usize j = 0; j < info.cores.Size(); ++j)
@@ -397,42 +398,38 @@ namespace Onca
 				String SMTinfo = core.supportSMT ? Format("SMT ({} thread{})"_s, core.numThreads, core.numThreads > 1 ? "s"_s : ""_s) : "No SMT"_s;
 
 				const String& sep = j == 0 ? sep0 : sep1;
-				g_Logger.Append("{}Core[{,2}]: {}, {} [group={} mask={:X}]"_s, sep, j,
+				g_Logger.Append("{}Core[{,2}]: {}, {} [group={} mask={:b}]"_s, sep, j,
 								core.efficiency == EfficiencyClass::Performance ? "perf"_s : "effy "_s,
 								SMTinfo,
 								core.groupIdx,
 								core.mask);
 			}
 
-			for (usize j = 0; j < usize(CacheLevel::Count); ++j)
+			for (usize j = 0; j < info.caches.Size(); ++j)
 			{
-				for (usize k = 0; k < info.caches[j].Size(); ++k)
+				const CacheInfo& cache = info.caches[j];
+
+				String level = CacheLevel(j) == CacheLevel::L1 ? "L1"_s :
+					CacheLevel(j) == CacheLevel::L2 ? "L2"_s :
+					"L3"_s;
+
+				String kind = cache.kind == CacheKind::Unified ? "unified    "_s :
+					cache.kind == CacheKind::Instruction ? "instruction"_s :
+					cache.kind == CacheKind::Data ? "data       "_s :
+					"trace      "_s;
+
+				String associativity = cache.associativity == u8(-1) ? "   fully associative"_s :
+					Format("{,-3}-way associative"_s, cache.associativity);
+				
+				g_Logger.Append("{}Cache[{}][{}]: {}, line={,-3}B, size={,-6}KiB ({}x)"_s, sep0, level, kind,
+									associativity,
+									cache.lineSize,
+									cache.cacheSize / 1_KiB,
+									cache.coreInfo.Size());
+				
+				for (Pair<usize, u64> coreInfo : cache.coreInfo)
 				{
-					const CacheInfo& cache = info.caches[j][k];
-					String level = CacheLevel(j) == CacheLevel::L1 ? "L1"_s :
-						CacheLevel(j) == CacheLevel::L2 ? "L2"_s :
-						"L3"_s;
-
-					String kind = cache.kind == CacheKind::Unified ? "unified    "_s :
-						cache.kind == CacheKind::Instruction       ? "instruction"_s :
-						cache.kind == CacheKind::Data              ? "data       "_s :
-						"trace      "_s;
-
-					String associativity = cache.associativity == u8(-1) ? "   fully associative"_s :
-						Format("{,-3}-way associative"_s, cache.associativity);
-
-					const String& sep = k == 0 ? sep0 : sep1;
-					String line = Format("{}Cache[{}][{,2}]: {}{}, line={,-3}B, size={,-6}KiB"_s, sep, level, k,
-										 kind,
-										 associativity,
-										 cache.lineSize,
-										 cache.cacheSize / 1_KiB);
-
-					for (Pair<usize, u64> coreInfo : cache.coreInfo)
-					{
-						line += Format(" [group={} mask={:X}]"_s, coreInfo.first, coreInfo.second);
-					}
-					g_Logger.Append(line);
+					g_Logger.Append(Format("{}{}[group={} mask={:b}]"_s, sep1, sep0, coreInfo.first, coreInfo.second));
 				}
 			}
 

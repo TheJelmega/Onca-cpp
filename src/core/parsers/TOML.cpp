@@ -252,7 +252,7 @@ namespace Onca
 		return NullOpt;
 	}
 
-	auto Toml::GetStringAt(usize idx) const noexcept -> String
+	auto Toml::GetString(usize idx) const noexcept -> String
 	{
 		ASSERT(GetType() == TomlValueType::Array, "Node is not an array");
 		const DynArray<Unique<Toml>>& arr = std::get<DynArray<Unique<Toml>>>(m_value);
@@ -364,7 +364,7 @@ namespace Onca
 		return arr[idx]->TryGetBool();
 	}
 
-	auto Toml::GetStringAt(const String& name) const noexcept -> String
+	auto Toml::GetString(const String& name) const noexcept -> String
 	{
 		ASSERT(GetType() == TomlValueType::Table, "Node is not a table");
 		const HashMap<String, Unique<Toml>>& table = std::get<HashMap<String, Unique<Toml>>>(m_value);

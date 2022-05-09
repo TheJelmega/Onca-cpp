@@ -157,7 +157,24 @@ namespace Onca
 						if (group.groupIdx != cache.coreInfo[0].first)
 							continue;
 
-						m_processorInfo[j].caches[pProcessorInfo->Cache.Level - 1].Add(cache);
+						auto it = m_processorInfo[j].caches.FindIf([&cache](const CacheInfo& info) -> bool
+						{
+							return info.level == cache.level &&
+								info.associativity == cache.associativity &&
+								info.kind == cache.kind &&
+								info.lineSize == cache.lineSize &&
+								info.cacheSize == cache.cacheSize;
+						});
+
+						if (it == m_processorInfo[j].caches.End())
+						{
+							m_processorInfo[j].caches.Add(cache);
+							it = m_processorInfo[j].caches.End() - 1;
+						}
+						else
+						{
+							it->coreInfo.Add(cache.coreInfo);
+						}
 						exit = true;
 					}
 

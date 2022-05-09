@@ -107,7 +107,7 @@ namespace Onca
 			DynArray<CPUSetInfo>                              cpuSets;                 ///< CPU set info
 			DynArray<DynArray<CPUSetInfo>>                    cpuSetsSharedCache;      ///< CPU set info, separated by shared cache
 			DynArray<usize>                                   physicalCoreIds;         ///< IDs of the physical cores
-			Array<DynArray<CacheInfo>, u8(CacheLevel::Count)> caches;                  ///< Per level cache info
+			DynArray<CacheInfo>                               caches;                  ///< Cache info
 		};
 
 		struct IdentifiableInfo
@@ -285,7 +285,7 @@ namespace Onca
 		 * \param[in] processor Processor index
 		 * \return Cache info
 		 */
-		auto GetCacheInfo(u32 processor) const noexcept -> DynArray<CacheInfo>;
+		auto GetCacheInfo(u32 processor) const noexcept -> const DynArray<CacheInfo>&;
 		/**
 		 * Get cache info for a given processor and cache level
 		 * \param[in] level Cache level

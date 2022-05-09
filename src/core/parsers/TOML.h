@@ -170,7 +170,7 @@ namespace Onca
 		 * \param[in] idx Index
 		 * \return String
 		 */
-		auto GetStringAt(usize idx) const noexcept -> String;
+		auto GetString(usize idx) const noexcept -> String;
 		/**
 		 * Get an integer from an array sub-node, if the contained type is convertible to an integer, convert it
 		 * \param[in] idx Index
@@ -251,7 +251,7 @@ namespace Onca
 		 * \param[in] name Sub-node name
 		 * \return String
 		 */
-		auto GetStringAt(const String& name) const noexcept -> String;
+		auto GetString(const String& name) const noexcept -> String;
 		/**
 		 * Get an integer from a table sub-node, if the contained type is convertible to an integer, convert it
 		 * \param[in] name Sub-node name
