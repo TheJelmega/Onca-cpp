@@ -45,10 +45,10 @@ namespace Onca
 		
 		auto operator=(Toml&&) noexcept -> Toml& = default;
 
-		operator String() const noexcept;
-		operator i64() const noexcept;
-		operator f64() const noexcept;
-		operator bool() const noexcept;
+		explicit operator String() const noexcept;
+		explicit operator i64() const noexcept;
+		explicit operator f64() const noexcept;
+		explicit operator bool() const noexcept;
 
 		auto operator[](usize idx) const noexcept -> const Toml&;
 		auto operator[](const String& name) const noexcept -> const Toml&;
